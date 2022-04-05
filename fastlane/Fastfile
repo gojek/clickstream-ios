@@ -1,0 +1,193 @@
+
+default_platform :ios
+
+platform :ios do
+
+    lane :run_danger_pr_validations do
+        danger(
+            danger_id: "pr-sanity-check",
+            dangerfile: "#{Dir.pwd}/../Danger/Dangerfile",
+            github_api_token: ENV["DANGER_GITLAB_API_TOKEN"],
+            verbose: true,
+            fail_on_errors: true,
+            use_bundle_exec: true
+      )
+    end
+
+    # Lane to install cocoapods .
+    lane :update_cocoapods do |options|
+        cocoapods(        
+          try_repo_update_on_error: true,
+          repo_update: options[:repo_update],
+          podfile: "#{root_path}/ClickStream/Podfile", 
+          error_callback: lambda { |result|
+            UI.user_error!("Failed to install cocoapods: \n #{result}")
+          }
+        )
+    end
+
+
+    # Lane to run the unit_tests. TODO: Expand it to cover the test coverage etc.
+    lane :unit_test do
+
+        update_cocoapods(repo_update: true)
+
+        run_tests(
+            workspace: "#{library_name}/#{library_name}.xcworkspace",
+            scheme: scheme_name,
+            sdk: "iphonesimulator",
+            clean: true,
+            code_coverage: true,
+            output_directory: "fastlane/reports",
+            buildlog_path: "./build/tests_log",
+        )
+        code_coverage_report
+    end
+
+    # Lane to publish code coverage.
+    private_lane :code_coverage_report do 
+        xcov(
+            workspace: "#{library_name}/#{library_name}.xcworkspace",
+            scheme: scheme_name,
+            output_directory: "#{library_name}/xcov_output",
+            ignore_file_path: ".xcov-ignore",
+            json_report: true
+        ) 
+    end
+
+    # Lane to bump current pod version.
+    lane :bump_pod_version do 
+        sh "mkdir CLONE"
+        sh "cd CLONE && git clone git@source.golabs.io:mobile/#{repo_name}.git"
+
+        Dir.chdir("CLONE/#{repo_name}") do
+            host_branch = ENV["CI_COMMIT_REF_NAME"]
+            checkout_branch = "git checkout #{host_branch}"
+            sh checkout_branch
+            podspec_path_for_version_bump = "#{Pathname.new(File.expand_path(Dir.pwd))}/#{library_name}.podspec"
+            new_version = version_bump_podspec(path: podspec_path_for_version_bump)
+            puts "\nVersion bumped to: #{new_version}"
+            
+            stage_podspec = "git add #{library_name}.podspec"
+            commit_podspec = "git commit -m \"Bump #{library_name} version to #{new_version}\""
+            push_new_podspec = "git push origin -o ci.skip"
+            sh stage_podspec
+            sh commit_podspec
+            sh push_new_podspec
+        end
+    end
+
+    # Lane to distribute pods via artifactory. WIP
+    lane :distribute_pod do
+        
+        update_cocoapods(repo_update: true)
+        prepare_for_distribution
+        compress_pod_folder
+
+        puts "\n --- ---  --- ---  --- ---  UPLOAD VIA ARTIFACTORY --- ---  --- ---  --- ---  --- --- \n"
+
+        username = ENV['gojekMobileArtifactoryUser']
+        password = ENV['gojekMobileArtifactoryPassword']
+
+        artifactory_endpoint = "http://artifactory-gojek.golabs.io/artifactory/"
+        artifactory_repo = "gojek-ios-pods"
+        artifactory_upload_path = "#{library_name}/#{compressed_pod_filename}" 
+        begin
+            artifactory_upload_path = "#{artifactory_upload_path}"
+            artifactory(
+                username: username,
+                password: password,
+                endpoint: artifactory_endpoint,
+                file: compressed_pod_filename,      # File to upload
+                repo: artifactory_repo,             # Artifactory repo
+                repo_path: artifactory_upload_path  # Path to place the artifact including its filename
+            )
+        rescue
+            puts "\n --- ---  --- ---  --- ---  RESCUED; UPLOAD VIA CURL --- ---  --- ---  --- ---  --- --- \n"
+            artifactory_url = "#{artifactory_endpoint}/#{artifactory_repo}/#{library_name}/"  
+            sh "cd .. ; curl -u #{username}:#{password} -XPUT #{artifactory_url} -T #{compressed_pod_filename} --create-dirs"
+        end
+
+        puts "\n --- ---  --- ---  --- --- PUSH POD SPECS  --- ---  --- ---  --- ---  --- --- \n"
+
+        begin
+            pod_push(path: podspec_path, repo: "gojek-specs", sources: ["https://github.com/CocoaPods/Specs,gojek-specs"], allow_warnings: true, skip_tests: true, swift_version: "5.0", verbose:true)
+        rescue
+            next # skip doing the rest of this lane
+        end 
+        # push the tags if the distribution is successful
+        push_tag
+    end 
+
+    private_lane :push_tag do 
+
+        pod_version = version_get_podspec(path: podspec_path)
+        tag = "v#{pod_version}"
+
+        sh "mkdir CLONE"
+        sh "cd CLONE && git clone git@source.golabs.io:mobile/#{repo_name}.git"
+
+        Dir.chdir("CLONE/#{repo_name}") do
+            host_branch = ENV["CI_COMMIT_REF_NAME"]
+            checkout_branch = "git checkout #{host_branch}"
+            sh checkout_branch
+
+            add_tag = "git tag -a #{tag} -m \"Version Bumped to #{tag}\""
+            push_tag = "git push origin #{tag}"
+
+            puts "\n --- ---  --- ---  --- --- ADDING TAG: #{tag}  --- ---  --- ---  --- ---  --- --- \n"
+
+            sh add_tag
+
+            puts "\n --- ---  --- ---  --- --- PUSHING TAG: #{tag}  --- ---  --- ---  --- ---  --- --- \n"
+
+            sh push_tag
+        end
+    end
+
+    def prepare_for_distribution
+        puts "\n --- ---  --- ---  --- --- FETCH LATEST FOR HOST_BRANCH --- ---  --- ---  --- ---  --- --- \n"
+    
+        host_branch = ENV["CI_COMMIT_REF_NAME"]
+        if host_branch == nil || host_branch.empty?
+            UI.user_error!("Could not find `host_branch` to bump version")
+        end
+        sh("git pull origin #{host_branch} -v", error_callback: lambda { |result|
+            UI.user_error!("Could not pull latest from #{host_branch}: \n #{result}")
+        })
+    end
+
+    def compress_pod_folder
+        puts "\n --- ---  --- ---  --- --- COMPRESS POD FOLDER --- ---  --- ---  --- ---  --- --- \n"
+        sh "cd .. ; git archive -o #{compressed_pod_filename} --format tar.gz HEAD"    
+    end
+
+    def compressed_pod_filename
+        "#{library_name}_#{pod_version}.tar.gz"
+    end
+
+    def pod_version
+        version_get_podspec(path: podspec_path)
+    end
+
+    def podspec_path
+        "#{root_path}/#{library_name}.podspec"
+    end
+
+    def root_path
+        Pathname.new(File.expand_path(Dir.pwd)).parent
+    end
+
+    # TODO: Update this after moving to GojekFarm
+    def repo_name
+        "clickstream-ios-sdk"
+    end
+
+    def library_name
+        "ClickStream"
+    end
+
+    def scheme_name 
+        library_name
+    end
+end

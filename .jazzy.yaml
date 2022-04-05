@@ -1,0 +1,26 @@
+output: public
+
+clean: true
+source_directory: ClickStream
+
+xcodebuild_arguments:
+  - -workspace
+  - ClickStream.xcworkspace
+  - -scheme
+  - ClickStream
+  - -destination 
+  - 'platform=iOS Simulator,name=iPhone 11'
+
+author: GOJEK
+module: ClickStream
+copyright: Copyright 2019 GOJEK
+
+readme: README.md
+
+min_acl: public
+exclude: 
+  - ClickStream/ClickStream/ThirdPartyLibraries/*
+  - ClickStream/ClickStream/Contracts/*
+  - /*/Constants/*
+
+theme: apple

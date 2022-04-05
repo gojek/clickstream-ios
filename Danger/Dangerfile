@@ -1,0 +1,59 @@
+#!/bin/ruby
+
+# Check for assignee
+def verifyAssignee
+  	unless gitlab.mr_json["assignee"]
+  		warn "This merge request does not have any assignee yet. Setting an assignee clarifies who needs to take action on the merge request at any given time."
+	end
+end
+
+# MR title must include one of the following: [Task] or [Refactoring] or [Fixes] or WIP
+def verifyTitle
+  	if !gitlab.mr_title.start_with?('WIP','[Task]:[DEVX-','[Feature]:[DEVX-','[Refactoring]:[DEVX-','[Bug]:[DEVX-')
+  		warn "PR title doesn't follow the standard convention.\
+  				\nSample Example:\
+  				\n`[Task]:[DEVX-XXXX] : PR Title`\
+  				\n`[Feature]:[DEVX-XXXX] : PR Title`\
+ 				\n`[Refactoring]:[DEVX-XXXX] : PR Title`\
+  				\n`[Bug]:[DEVX-XXXX] : PR Title`"
+  	end
+  	if gitlab.pr_title.length < 10
+  		fail "Please provide a better/longer title for the Merge Request (len should be > 10)" 
+  	end
+end
+
+# MR description must not be empty!
+def verifyDesciption
+  	if gitlab.mr_body.size < 5
+  		fail "Please provide a proper merge request description."
+	end
+end
+
+def verifyMergeIntoBranch
+    
+   has_pick_into_stable_label = gitlab.mr_labels.find { |label| label.start_with?('Pick into') }
+
+   if gitlab.branch_for_base != "develop" && !has_pick_into_stable_label
+      warn "Most of the time, merge requests should target `develop`. Otherwise, please set the relevant `Pick into branch-name` label."
+   end
+end
+
+
+verifyAssignee()
+verifyTitle()
+verifyDesciption()
+verifyMergeIntoBranch()
+
+swiftlint.binary_path = "/usr/local/bin/swiftlint"
+swiftlint.config_file = "ClickStream/.swiftlint.yml"
+swiftlint.max_num_violations = 20
+
+# Explicitly setting this to false to avoid conflicts with product's danger-swiftlint run.
+swiftlint.lint_all_files = false
+
+# Setting `inline_mode` = true to comment on the Diff instead as a comment on the MR.
+swiftlint.lint_files inline_mode: true
+
+# Enable debug mode.
+swiftlint.verbose = false
+

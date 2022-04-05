@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuites name='ClickStreamTests.xctest' tests='94' failures='0'>
+  <testsuite name='ClickStreamTests.AppStateNotifierServiceTests' tests='8' failures='0'>
+    <testcase classname='ClickStreamTests.AppStateNotifierServiceTests' name='test_respondToNotification' time='0.002'/>
+    <testcase classname='ClickStreamTests.AppStateNotifierServiceTests' name='test_stop_appStateNotifierService' time='0.001'/>
+    <testcase classname='ClickStreamTests.AppStateNotifierServiceTests' name='testInit_default' time='0.000'/>
+    <testcase classname='ClickStreamTests.AppStateNotifierServiceTests' name='testInit_didBecomeActive' time='0.000'/>
+    <testcase classname='ClickStreamTests.AppStateNotifierServiceTests' name='testInit_didEnterBackground' time='0.000'/>
+    <testcase classname='ClickStreamTests.AppStateNotifierServiceTests' name='testInit_willEnterForeground' time='0.000'/>
+    <testcase classname='ClickStreamTests.AppStateNotifierServiceTests' name='testInit_willResignActive' time='0.000'/>
+    <testcase classname='ClickStreamTests.AppStateNotifierServiceTests' name='testInit_willTerminate' time='0.000'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.BucketTypeTests' tests='1' failures='0'>
+    <testcase classname='ClickStreamTests.BucketTypeTests' name='testBucketTypeDescription' time='0.001'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.CSCommonPropertiesTests' tests='1' failures='0'>
+    <testcase classname='ClickStreamTests.CSCommonPropertiesTests' name='testInit' time='0.015'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.CSCustomerInfoTests' tests='2' failures='0'>
+    <testcase classname='ClickStreamTests.CSCustomerInfoTests' name='testInit' time='0.001'/>
+    <testcase classname='ClickStreamTests.CSCustomerInfoTests' name='testProto' time='0.001'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.CSLocationTests' tests='2' failures='0'>
+    <testcase classname='ClickStreamTests.CSLocationTests' name='test_location_proto' time='0.001'/>
+    <testcase classname='ClickStreamTests.CSLocationTests' name='testInit' time='0.001'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.CSSessionInfoTests' tests='2' failures='0'>
+    <testcase classname='ClickStreamTests.CSSessionInfoTests' name='testExample' time='0.001'/>
+    <testcase classname='ClickStreamTests.CSSessionInfoTests' name='testProto' time='0.001'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.CacheHandlerTests' tests='7' failures='0'>
+    <testcase classname='ClickStreamTests.CacheHandlerTests' name='testPrefixAndRemove_RetrievedObjects_ShouldBeDeletedFromCache' time='0.022'/>
+    <testcase classname='ClickStreamTests.CacheHandlerTests' name='testPrefixAndRemove_RetrievedObjectsSize_ShouldBeLessThanGivenSize' time='0.015'/>
+    <testcase classname='ClickStreamTests.CacheHandlerTests' name='testPrefixAndRemoveAll_RetrievedAllObject_ClearAllCache' time='0.011'/>
+    <testcase classname='ClickStreamTests.CacheHandlerTests' name='testRemoveFirstObjects' time='0.002'/>
+    <testcase classname='ClickStreamTests.CacheHandlerTests' name='testRemoveObjects' time='0.002'/>
+    <testcase classname='ClickStreamTests.CacheHandlerTests' name='testStore_SingleObject' time='0.002'/>
+    <testcase classname='ClickStreamTests.CacheHandlerTests' name='testStoreObject_with_sizeLimit' time='0.009'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.ClickStreamDependenciesTests' tests='3' failures='0'>
+    <testcase classname='ClickStreamTests.ClickStreamDependenciesTests' name='testEventProcessor' time='0.007'/>
+    <testcase classname='ClickStreamTests.ClickStreamDependenciesTests' name='testEventSplitter' time='0.002'/>
+    <testcase classname='ClickStreamTests.ClickStreamDependenciesTests' name='testNetworkBuilder' time='0.002'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.DataFactoryTests' tests='1' failures='0'>
+    <testcase classname='ClickStreamTests.DataFactoryTests' name='test_whenNPrioritiesAreProvided_thenDataFactoryMustCreateNCaches' time='0.001'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.DeviceStatusNotifierTests' tests='3' failures='0'>
+    <testcase classname='ClickStreamTests.DeviceStatusNotifierTests' name='testBatteryLevelChanged' time='0.001'/>
+    <testcase classname='ClickStreamTests.DeviceStatusNotifierTests' name='testBatteryStateChanged' time='0.001'/>
+    <testcase classname='ClickStreamTests.DeviceStatusNotifierTests' name='testIsDeviceLowOnPower' time='0.001'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.EventBatchProcessorTests' tests='2' failures='0'>
+    <testcase classname='ClickStreamTests.EventBatchProcessorTests' name='test_whenAppStateIsEnterBackground_thenAllEventsMustBeFlushed' time='1.017'/>
+    <testcase classname='ClickStreamTests.EventBatchProcessorTests' name='test_whenBatchSizeIsGiven_shouldForwardABatch' time='2.003'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.EventBatchTests' tests='2' failures='0'>
+    <testcase classname='ClickStreamTests.EventBatchTests' name='testInit' time='0.001'/>
+    <testcase classname='ClickStreamTests.EventBatchTests' name='testInit_with_no_events' time='0.001'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.EventCreatorTests' tests='5' failures='0'>
+    <testcase classname='ClickStreamTests.EventCreatorTests' name='test_whenMalformedUrlPassed_shouldReturnCanForwardAsFalse' time='0.001'/>
+    <testcase classname='ClickStreamTests.EventCreatorTests' name='test_whenNotReachableMockService_shouldReturnCanForwardAsFalse' time='0.001'/>
+    <testcase classname='ClickStreamTests.EventCreatorTests' name='test_whenNotReachableMockService_shouldReturnFalse' time='0.001'/>
+    <testcase classname='ClickStreamTests.EventCreatorTests' name='test_whenReachableMockService_shouldReturnCanForwardAsTrue' time='0.001'/>
+    <testcase classname='ClickStreamTests.EventCreatorTests' name='test_whenReachableMockService_shouldReturnTrue' time='0.001'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.EventProcessorDependenciesTests' tests='1' failures='0'>
+    <testcase classname='ClickStreamTests.EventProcessorDependenciesTests' name='testMakeEventProcessor' time='0.001'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.EventProcessorTest' tests='2' failures='0'>
+    <testcase classname='ClickStreamTests.EventProcessorTest' name='test_createEvent' time='2.034'/>
+    <testcase classname='ClickStreamTests.EventProcessorTest' name='test_eventClassification' time='0.001'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.EventSchedulerDependenciesTests' tests='1' failures='0'>
+    <testcase classname='ClickStreamTests.EventSchedulerDependenciesTests' name='testInit' time='0.001'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.EventSpecificDataTests' tests='1' failures='0'>
+    <testcase classname='ClickStreamTests.EventSpecificDataTests' name='testInit' time='0.001'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.EventSplitterTests' tests='1' failures='0'>
+    <testcase classname='ClickStreamTests.EventSplitterTests' name='test_whenAnEventIsGiven_thenTheSplitterMustSplitItBasedOnType' time='2.046'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.EventTests' tests='2' failures='0'>
+    <testcase classname='ClickStreamTests.EventTests' name='test_eventComparision_basedOnTimestamp' time='0.000'/>
+    <testcase classname='ClickStreamTests.EventTests' name='testEventIntialization' time='0.001'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.HealthAnalysisEventBatchTests' tests='1' failures='0'>
+    <testcase classname='ClickStreamTests.HealthAnalysisEventBatchTests' name='testInit' time='0.000'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.NetworkBuilderTests' tests='3' failures='0'>
+    <testcase classname='ClickStreamTests.NetworkBuilderTests' name='test_whenNetworkIsConnected_thenIsConnectedFlagMustBeSet' time='2.042'/>
+    <testcase classname='ClickStreamTests.NetworkBuilderTests' name='test_whenNetworkIsConnectedAndAppMovesToBackground_thenIsConnectedFlagMustNotBeSet' time='3.003'/>
+    <testcase classname='ClickStreamTests.NetworkBuilderTests' name='test_whenSerialisableMockDataIsPassed_shouldNotThrowException' time='0.005'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.NetworkManagerDependenciesTests' tests='1' failures='0'>
+    <testcase classname='ClickStreamTests.NetworkManagerDependenciesTests' name='testMakeNetworkBuilder' time='0.002'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.NetworkServiceTests' tests='4' failures='0'>
+    <testcase classname='ClickStreamTests.NetworkServiceTests' name='test_whenMalformedUrlPassed_shouldReturnMalformedUrlError' time='0.001'/>
+    <testcase classname='ClickStreamTests.NetworkServiceTests' name='test_whenMockDataIsPassed_shouldDisconnectSuccessfully' time='0.551'/>
+    <testcase classname='ClickStreamTests.NetworkServiceTests' name='test_whenMockDataIsPassed_shouldReturnConnectedResponse' time='0.516'/>
+    <testcase classname='ClickStreamTests.NetworkServiceTests' name='test_whenMockDataIsPassed_shouldWriteSuccessfully' time='0.513'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.PerformanceBatchEventTests' tests='1' failures='0'>
+    <testcase classname='ClickStreamTests.PerformanceBatchEventTests' name='testInit' time='0.001'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.PerformanceEventTests' tests='10' failures='0'>
+    <testcase classname='ClickStreamTests.PerformanceEventTests' name='testBucketType_LT_10KB' time='0.001'/>
+    <testcase classname='ClickStreamTests.PerformanceEventTests' name='testBucketType_LT_10sec' time='0.001'/>
+    <testcase classname='ClickStreamTests.PerformanceEventTests' name='testBucketType_LT_5sec' time='0.001'/>
+    <testcase classname='ClickStreamTests.PerformanceEventTests' name='testBucketType_MT_10KB' time='0.001'/>
+    <testcase classname='ClickStreamTests.PerformanceEventTests' name='testBucketType_MT_10sec' time='0.000'/>
+    <testcase classname='ClickStreamTests.PerformanceEventTests' name='testBucketType_MT_20KB' time='0.000'/>
+    <testcase classname='ClickStreamTests.PerformanceEventTests' name='testBucketType_MT_20sec' time='0.000'/>
+    <testcase classname='ClickStreamTests.PerformanceEventTests' name='testBucketType_MT_50KB' time='0.000'/>
+    <testcase classname='ClickStreamTests.PerformanceEventTests' name='testInitFailed' time='0.000'/>
+    <testcase classname='ClickStreamTests.PerformanceEventTests' name='testInitSuccess' time='0.001'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.ReachabilityTests' tests='9' failures='0'>
+    <testcase classname='ClickStreamTests.ReachabilityTests' name='testGetNetworkType' time='0.001'/>
+    <testcase classname='ClickStreamTests.ReachabilityTests' name='testGetWWANNetworkType' time='0.009'/>
+    <testcase classname='ClickStreamTests.ReachabilityTests' name='testTrackingID_NoConnection' time='0.001'/>
+    <testcase classname='ClickStreamTests.ReachabilityTests' name='testTrackingID_Unknown' time='0.000'/>
+    <testcase classname='ClickStreamTests.ReachabilityTests' name='testTrackingID_UnknownTechnology' time='0.001'/>
+    <testcase classname='ClickStreamTests.ReachabilityTests' name='testTrackingID_Wifi' time='0.000'/>
+    <testcase classname='ClickStreamTests.ReachabilityTests' name='testTrackingID_Wwan2g' time='0.000'/>
+    <testcase classname='ClickStreamTests.ReachabilityTests' name='testTrackingID_Wwan3g' time='0.000'/>
+    <testcase classname='ClickStreamTests.ReachabilityTests' name='testTrackingID_Wwan4g' time='0.000'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.SchedulerServiceTests' tests='3' failures='0'>
+    <testcase classname='ClickStreamTests.SchedulerServiceTests' name='test_whenMultiplePrioritiesAreGiven_thenThereMustBeMultipleCallbacks' time='2.001'/>
+    <testcase classname='ClickStreamTests.SchedulerServiceTests' name='test_whenServiceIsStopped_thenNoCallbackMustBeReceived' time='6.591'/>
+    <testcase classname='ClickStreamTests.SchedulerServiceTests' name='test_whenTimerTriggeredOnOneQueue_shouldRespondOnTheGivenQueue' time='1.002'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.SortedArrayTests' tests='10' failures='0'>
+    <testcase classname='ClickStreamTests.SortedArrayTests' name='testAppendSequenceOfElements' time='0.001'/>
+    <testcase classname='ClickStreamTests.SortedArrayTests' name='testAppendSingleElement' time='0.001'/>
+    <testcase classname='ClickStreamTests.SortedArrayTests' name='testIndexBefore' time='0.001'/>
+    <testcase classname='ClickStreamTests.SortedArrayTests' name='testInit' time='0.001'/>
+    <testcase classname='ClickStreamTests.SortedArrayTests' name='testInitWithArray' time='0.001'/>
+    <testcase classname='ClickStreamTests.SortedArrayTests' name='testPrefixAndRemoveAll' time='0.001'/>
+    <testcase classname='ClickStreamTests.SortedArrayTests' name='testPrefixAndRemoveElement' time='0.001'/>
+    <testcase classname='ClickStreamTests.SortedArrayTests' name='testRemoveAllElements' time='0.001'/>
+    <testcase classname='ClickStreamTests.SortedArrayTests' name='testRemoveElementAtIndex' time='0.001'/>
+    <testcase classname='ClickStreamTests.SortedArrayTests' name='testRemoveFirst' time='0.001'/>
+  </testsuite>
+  <testsuite name='ClickStreamTests.TrackerTests' tests='5' failures='0'>
+    <testcase classname='ClickStreamTests.TrackerTests' name='testInitialise' time='0.001'/>
+    <testcase classname='ClickStreamTests.TrackerTests' name='testInitiseFailed' time='0.001'/>
+    <testcase classname='ClickStreamTests.TrackerTests' name='testRecordHealthAnalysisEvent' time='0.001'/>
+    <testcase classname='ClickStreamTests.TrackerTests' name='testRecordPerformanceEvent' time='0.001'/>
+    <testcase classname='ClickStreamTests.TrackerTests' name='testSessionID' time='0.001'/>
+  </testsuite>
+</testsuites>
