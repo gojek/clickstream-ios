@@ -11,7 +11,9 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - name: Test
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        
+      - name: Testing Clickstream
         run: bundle exec fastlane unit_test
       
