@@ -11,7 +11,7 @@ platform :ios do
         update_cocoapods(repo_update: true)
 
         run_tests(
-            workspace: "#{library_name}/#{library_name}.xcworkspace",
+            workspace: "#{library_name}.xcworkspace",
             scheme: scheme_name,
             sdk: "iphonesimulator",
             clean: true,
@@ -19,7 +19,6 @@ platform :ios do
             output_directory: "fastlane/reports",
             buildlog_path: "./build/tests_log",
         )
-        code_coverage_report
     end
 
 
@@ -45,6 +44,15 @@ platform :ios do
 
   def root_path
         Pathname.new(File.expand_path(Dir.pwd)).parent
-    end
+  end
+
+  def library_name
+        "Clickstream"
+  end
+
+  def scheme_name 
+        library_name
+  end
+
 
 end
