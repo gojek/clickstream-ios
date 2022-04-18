@@ -38,23 +38,17 @@
 		9A266FAB27F6ADA9000D6C36 /* App.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = App.pb.swift; sourceTree = "<group>"; };
 		9A8114EB0E960B6EEE70792A /* Pods-ClickStreamHostUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickStreamHostUITests.debug.xcconfig"; path = "Target Support Files/Pods-ClickStreamHostUITests/Pods-ClickStreamHostUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		9AA23CF2249C7589001BE490 /* AnalyticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsManager.swift; sourceTree = "<group>"; };
-		9ABDE54C24972EC700EC286E /* ExampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleUITests.swift; sourceTree = "<group>"; };
-		9ABDE54E24972EC700EC286E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9AEA264C24924B340018931D /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9AEA264F24924B340018931D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9AEA265624924B340018931D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		9AEA265824924B360018931D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9AEA265B24924B360018931D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9AEA265D24924B360018931D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		9AEA266624924B360018931D /* ExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleTests.swift; sourceTree = "<group>"; };
-		9AEA266824924B360018931D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9F9D06F37319046974F530D6 /* Pods-ClickStreamHostTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickStreamHostTests.release.xcconfig"; path = "Target Support Files/Pods-ClickStreamHostTests/Pods-ClickStreamHostTests.release.xcconfig"; sourceTree = "<group>"; };
 		B312B4D498118BE205C39344 /* Pods-ClickStreamHostUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickStreamHostUITests.release.xcconfig"; path = "Target Support Files/Pods-ClickStreamHostUITests/Pods-ClickStreamHostUITests.release.xcconfig"; sourceTree = "<group>"; };
 		BE2825306976FEAA777D8E99 /* Pods-ClickStreamHostTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickStreamHostTests.debug.xcconfig"; path = "Target Support Files/Pods-ClickStreamHostTests/Pods-ClickStreamHostTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C422B8F8C3D12E4796CBC538 /* Pods-ClickStreamHost.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickStreamHost.release.xcconfig"; path = "Target Support Files/Pods-ClickStreamHost/Pods-ClickStreamHost.release.xcconfig"; sourceTree = "<group>"; };
-		C8B34FF1DEAA6F2C842F06B3 /* libPods-ExampleUITests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ExampleUITests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDD9BE2452FB2F21C98C5E74 /* Pods-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.debug.xcconfig"; path = "Target Support Files/Pods-Example/Pods-Example.debug.xcconfig"; sourceTree = "<group>"; };
-		E729472BDBDCB4CDFD9E4182 /* libPods-ExampleTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ExampleTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAE028227A9E5AAA64FDE7A7 /* Pods-ExampleTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExampleTests.release.xcconfig"; path = "Target Support Files/Pods-ExampleTests/Pods-ExampleTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -94,8 +88,6 @@
 			isa = PBXGroup;
 			children = (
 				202F48543D1D2CA5DC16CAEF /* libPods-Example.a */,
-				E729472BDBDCB4CDFD9E4182 /* libPods-ExampleTests.a */,
-				C8B34FF1DEAA6F2C842F06B3 /* libPods-ExampleUITests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -132,15 +124,6 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		9ABDE54B24972EC700EC286E /* ExampleUITests */ = {
-			isa = PBXGroup;
-			children = (
-				9ABDE54C24972EC700EC286E /* ExampleUITests.swift */,
-				9ABDE54E24972EC700EC286E /* Info.plist */,
-			);
-			path = ExampleUITests;
-			sourceTree = "<group>";
-		};
 		9AE28DE126EF035A00513705 /* Contracts */ = {
 			isa = PBXGroup;
 			children = (
@@ -155,8 +138,6 @@
 			isa = PBXGroup;
 			children = (
 				9AEA264E24924B340018931D /* Example */,
-				9AEA266524924B360018931D /* ExampleTests */,
-				9ABDE54B24972EC700EC286E /* ExampleUITests */,
 				9AEA264D24924B340018931D /* Products */,
 				1A29E502C341D01021F5DD6A /* Pods */,
 				247AA4EBE83D740CCE3F5E60 /* Frameworks */,
@@ -179,15 +160,6 @@
 				9AEA265D24924B360018931D /* Info.plist */,
 			);
 			path = Example;
-			sourceTree = "<group>";
-		};
-		9AEA266524924B360018931D /* ExampleTests */ = {
-			isa = PBXGroup;
-			children = (
-				9AEA266624924B360018931D /* ExampleTests.swift */,
-				9AEA266824924B360018931D /* Info.plist */,
-			);
-			path = ExampleTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

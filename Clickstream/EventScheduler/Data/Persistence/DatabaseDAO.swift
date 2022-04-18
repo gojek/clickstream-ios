@@ -22,6 +22,17 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
          performOnQueue: SerialQueue) {
         self.performQueue = performOnQueue
         self.database = database
+        self.createTable()
+    }
+    
+    /// Responsible to create the table and initiate a legacy daga migration, if needed.
+    private func createTable() {
+        do {
+            try self.database.createTable(Object.self, {
+            })
+        } catch {
+            print("Failed to create table in database with error:- \(error)", .verbose)
+        }
     }
     
     /// Use this method to insert the provided object into the db.
