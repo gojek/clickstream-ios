@@ -1,0 +1,25 @@
+name: "Clickstream CI"
+
+on: [push]
+
+# Allows you to run this workflow manually from the Actions tab
+  # workflow_dispatch:
+
+jobs:
+  RunTests:
+    name: "Unit Tests"
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        
+      - name: Set up ruby environment
+        uses: ruby/setup-ruby@v1
+        with:
+         ruby-version: 2.6.6 # omit if .ruby-version file exists in project, or replace with your team’s supported ruby version
+         bundler-cache: true
+
+      - name: Testing Clickstream
+        run: bundle exec fastlane unit_test
+      
