@@ -1,6 +1,6 @@
 
 <p align="center">
-<img src="https://github.com/gojekfarm/clickstream-android/blob/main/Resources/clickstream_horizontal.png" width="500"/>
+<img src="https://github.com/gojekfarm/clickstream-ios/blob/main/Resources/clickstream_horizontal.png" width="500"/>
 </p>
 
 # Welcome to Clickstream!
