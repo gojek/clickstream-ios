@@ -1,4 +1,8 @@
 
+<p align="center">
+<img src="https://github.com/gojekfarm/clickstream-android/blob/main/Resources/clickstream_horizontal.png" width="500"/>
+</p>
+
 # Welcome to Clickstream!
 
 Clickstream is an event agnostic, real-time data ingestion platform. Clickstream allows apps to maintain a long-running connection to send data in real-time.
@@ -6,6 +10,8 @@ Clickstream is an event agnostic, real-time data ingestion platform. Clickstream
 The word “Clickstream” is a trail of digital breadcrumbs left by users as they click their way through a website or mobile app. It is loaded with valuable customer information for businesses and its analysis and usage has emerged as a powerful data source.
 
 **To know more about Clickstream, you can read our [Medium post](https://www.gojek.io/blog/introducing-clickstream?utm_source=blog&utm_medium=medium%20blog&utm_campaign=blog_clickstream)**
+
+**Clickstream provide end to end solution for ingestion platform purposes. For setup the infrastructure please check [raccoon](https://odpf.gitbook.io/raccoon/)**
 
 
 ## Architecture
