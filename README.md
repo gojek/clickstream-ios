@@ -1,6 +1,10 @@
 
 <p align="center">
-<img src="https://github.com/gojekfarm/clickstream-ios/blob/main/Resources/clickstream_horizontal.png" width="500"/>
+<img src="https://github.com/gojekfarm/clickstream-ios/blob/main/Resources/clickstream-horizontal-black.svg#gh-light-mode-only" width="500"/>
+</p>
+
+<p align="center">
+<img src="https://github.com/gojekfarm/clickstream-ios/blob/main/Resources/clickstream-horizontal-white.svg#gh-dark-mode-only" width="500"/>
 </p>
 
 # Welcome to Clickstream!
