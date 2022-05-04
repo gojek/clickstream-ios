@@ -42,10 +42,13 @@ enum Constants {
         case dao = "com.clickstream.dao"
         case connectableAccess = "com.clickstream.connectableAccess"
         case atomicAccess = "com.clickstream.atomicAccess"
+        case tracker = "com.gojek.clickstream.tracker"
     }
     
     enum CacheIdentifiers: CacheIdentifier {
         case retry = "com.clickstream.retryCache"
+        case healthAnalytics = "com.gojek.clickstream.healthAnalyticsCache"
+        case performanceAnalytics = "com.gojek.clickstream.performanceAnalyticsCache"
     }
     
     enum EventType: String, Codable {

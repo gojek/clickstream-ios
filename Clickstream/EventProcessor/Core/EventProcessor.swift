@@ -36,6 +36,12 @@ final class DefaultEventProcessor: EventProcessor {
             // Create an Event instance and forward it to the scheduler.
             if let event = checkedSelf.constructEvent(event: event) {
                 checkedSelf.eventWarehouser.store(event)
+                
+                let healthEvent = HealthAnalysisEvent(eventName:  ClickstreamDebugConstants.Health.Events.ClickstreamEventObjectCreated,
+                                                      eventGUID: event.guid)
+                if event.type != Constants.EventType.instant.rawValue {
+                    Clickstream.trackHealthEvent(event: healthEvent)
+                }
             }
         }
     }

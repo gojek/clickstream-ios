@@ -29,9 +29,32 @@ class AnalyticsManager {
             self.clickstream = try Clickstream.initialise(networkConfiguration: networkConfigs,
                                                           constraints: constraints,
                                                           eventClassification: classification)
+            
+            let configs = ClickstreamHealthConfigurations(minimumTrackedVersion: "1.0", destination: ["CT", "CS"])
+            let commonProperties = CSCommonProperties(customer: self.getCustomerInfo(), session: getSessionInfo(), app: getAppInfo())
+            Tracker.initialise(dataSource: self, commonEventProperties: commonProperties, healthTrackingConfigs: configs)
         } catch  {
             print(error.localizedDescription)
         }
+    }
+    
+//    private func setCommomProperties() {
+//        let commonProperties = CSCommonProperties(customer: self.getCustomerInfo(), session: getSessionInfo(), app: getAppInfo())
+////        self.clickStream?.commonEventProperties = commonProperties
+//    }
+    
+    private func getAppInfo() -> CSAppInfo {
+        return CSAppInfo(version: "1.0")
+    }
+    
+    private func getCustomerInfo() -> CSCustomerInfo {
+        let customerInfo = CSCustomerInfo(signedUpCountry: "India", email: "test@test.com", currentCountry: "91", identity: 105)
+        return customerInfo
+    }
+    
+    private func getSessionInfo() -> CSSessionInfo {
+        let sessionInfo = CSSessionInfo(sessionId: "1")
+        return sessionInfo
     }
     
     /// Track events using Clickstream
@@ -54,3 +77,12 @@ class AnalyticsManager {
         clickstream = nil
     }
 }
+
+extension AnalyticsManager: ClickstreamHealthDataSource {
+    func currentUserLocation() -> CSLocation? {
+        return CSLocation(longitude: 0.0, latitude: 0.0)
+    }
+    
+    
+}
+

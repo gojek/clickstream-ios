@@ -28,13 +28,16 @@ public final class Clickstream {
     internal static var isInitialisedOnBackgroundQueue: Bool = false
     
     /// Tells whether the debugMode is enabled or not.
-    internal static var debugMode: Bool = false
+//    internal static var debugMode: Bool = false
     
     /// Holds the constraints for the sdk.
     internal static var constraints: ClickstreamConstraints = ClickstreamConstraints()
     
     /// Holds the event classification for the sdk.
     internal static var eventClassifier: ClickstreamEventClassification = ClickstreamEventClassification()
+    
+    // Holds the health tracking configs for the SDK
+    internal static var healthTrackingConfigs: ClickstreamHealthConfigurations?
     
     /// Clickstream shared instance.
     private static var sharedInstance: Clickstream?
@@ -103,7 +106,8 @@ extension Clickstream {
     ///            You can always get the instance by calling getInstance()
     @discardableResult public static func initialise(networkConfiguration: NetworkConfigurations,
                                                      constraints: ClickstreamConstraints? = nil,
-                                                     eventClassification: ClickstreamEventClassification? = nil) throws -> Clickstream? {
+                                                     eventClassification: ClickstreamEventClassification? = nil,
+                                                     healthTrackingConfigs: ClickstreamHealthConfigurations? = nil) throws -> Clickstream? {
         
         let semaphore = DispatchSemaphore(value: 1)
         defer {
@@ -125,6 +129,13 @@ extension Clickstream {
                 Clickstream.eventClassifier = eventClassifier
             } else {
                 print("Initialising Clickstream using default event classification",.verbose)
+            }
+            
+            // Setting Health tracking configurations to be used for the SDK.
+            if let healthTrackingConfigs = healthTrackingConfigs {
+                Clickstream.healthTrackingConfigs = healthTrackingConfigs
+            } else {
+                print("Initialising Clickstream using default health tracking configurations",.verbose)
             }
             
             // All the dependency injections pertaining to the clickstream blocks happen here!

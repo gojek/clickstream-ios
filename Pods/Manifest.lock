@@ -1,0 +1,30 @@
+PODS:
+  - GRDB.swift (5.12.0):
+    - GRDB.swift/standard (= 5.12.0)
+  - GRDB.swift/standard (5.12.0)
+  - ReachabilitySwift (5.0.0)
+  - Starscream (4.0.4)
+  - SwiftProtobuf (1.10.2)
+
+DEPENDENCIES:
+  - GRDB.swift (= 5.12.0)
+  - ReachabilitySwift
+  - Starscream (~> 4.0.4)
+  - SwiftProtobuf (~> 1.10.2)
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - GRDB.swift
+    - ReachabilitySwift
+    - Starscream
+    - SwiftProtobuf
+
+SPEC CHECKSUMS:
+  GRDB.swift: f94b00ac11ab22597771b6a47211d1c44284395a
+  ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
+  Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
+  SwiftProtobuf: bec1ae7d686ff73dd09d79866154f4970b891410
+
+PODFILE CHECKSUM: af50fc33ec8f89fbd5d26b7bb3b601f2914281b0
+
+COCOAPODS: 1.11.2
