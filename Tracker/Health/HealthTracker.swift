@@ -8,7 +8,7 @@
 
 import Foundation
 
-typealias HealthConstants = ClickstreamDebugConstants.Health
+//typealias HealthConstants = ClickstreamDebugConstants.Health
 
 final class HealthTracker {
     
@@ -42,10 +42,10 @@ final class HealthTracker {
     func flushErrorEvents() {
         queue.async {
             if let events = self._persistence.deleteWhere(HealthAnalysisEvent.Columns.trackedVia,
-                                                         value: ClickstreamDebugConstants.TrackedVia.cleverTap.rawValue),
+                                                          value: TrackedVia.external.rawValue),
                                                          !events.isEmpty {
                 
-                let instantEvents = events.filter { $0.eventType == ClickstreamDebugConstants.Health.EventType.instant }
+                let instantEvents = events.filter { $0.eventType.rawValue == ClickstreamTrackerConstant.EventType.instant.rawValue }
                 for instantEvent in instantEvents {
                     if let events = instantEvent.events {
                         let eventsArray = events.components(separatedBy: ", ")
@@ -64,11 +64,11 @@ final class HealthTracker {
                     }
                 }
                 
-                let aggregatedEvents = events.filter { $0.eventType == ClickstreamDebugConstants.Health.EventType.aggregate }
+                let aggregatedEvents = events.filter { $0.eventType == ClickstreamTrackerConstant.EventType.aggregate }
                 
                 var arrayOfAggreagatedEvents = [[HealthAnalysisEvent]]()
                 
-                for event in HealthConstants.Events.allCases {
+                for event in ClickstreamTrackerConstant.Events.allCases {
                     let eventNameBasedAggregation = aggregatedEvents.filter { $0.eventName ==  event }
                     if eventNameBasedAggregation.isEmpty {
                         continue
@@ -124,7 +124,7 @@ final class HealthTracker {
     func flushFunnelEvents() -> [HealthAnalysisEvent]? {
         if let doesTableExist = _persistence.doesTableExist(with: HealthAnalysisEvent.description), doesTableExist {
             return _persistence.deleteWhere(HealthAnalysisEvent.Columns.trackedVia,
-                                            value: ClickstreamDebugConstants.TrackedVia.clickstream.rawValue)
+                                            value: TrackedVia.internal.rawValue)
         }
         return nil
     }

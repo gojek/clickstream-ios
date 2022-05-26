@@ -64,6 +64,9 @@ extension DefaultNetworkBuilder {
                 
                 if eventBatch.events.first?.type == Constants.EventType.instant.rawValue {
                     eventRequest.eventType = .instant
+                } else {
+                    checkedSelf.trackHealthAndPerformance(eventBatch: eventBatch,
+                                                          eventBatchData: data)
                 }
                 
                 checkedSelf.retryMech.trackBatch(with: eventRequest)
@@ -83,5 +86,21 @@ extension DefaultNetworkBuilder {
         performQueue.async { [weak self] in guard let checkedSelf = self else { return }
             checkedSelf.retryMech.stopTracking()
         }
+    }
+}
+
+extension DefaultNetworkBuilder {
+    // Track event batch size performance
+    func trackHealthAndPerformance(eventBatch: EventBatch, eventBatchData: Data) {
+        #if TRACKER_ENABLED
+        guard Tracker.debugMode else { return }
+        let eventGUIDs: [String] = eventBatch.events.compactMap { $0.guid }
+        let eventGUIDsString = "\(eventGUIDs.joined(separator: ", "))"
+        
+        let healthEvent = HealthAnalysisEvent(eventName:  ClickstreamTrackerConstant.Events.ClickstreamBatchSent,
+                                              events: eventGUIDsString,
+                                              eventBatchGUID: eventBatch.uuid)
+        Tracker.sharedInstance?.record(event: healthEvent)
+        #endif
     }
 }

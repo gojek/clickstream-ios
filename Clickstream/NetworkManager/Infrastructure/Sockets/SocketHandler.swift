@@ -144,11 +144,23 @@ extension DefaultSocketHandler {
                 checkedSelf.isRetryInProgress = false
                 checkedSelf.sendPing(Data())
                 checkedSelf.connectionCallback?(.success(.connected))
+                #if TRACKER_ENABLED
+                if Tracker.debugMode {
+                    let event = HealthAnalysisEvent(eventName: .ClickstreamConnectionSuccess)
+                    Tracker.sharedInstance?.record(event: event)
+                }
+                #endif
             case .disconnected(let error, let code):
                 // DuplicateID Error
                 print("disconnected with error: \(error) errorCode: \(code)", .critical)
                 checkedSelf.open = false
                 checkedSelf.stopPing()
+                #if TRACKER_ENABLED
+                if Tracker.debugMode {
+                    let event = HealthAnalysisEvent(eventName: .ClickstreamConnectionDropped, reason: error.description)
+                    Tracker.sharedInstance?.record(event: event)
+                }
+                #endif
             case .text(let responseString):
                 checkedSelf.writeCallback?(.success(responseString.data(using: .utf8)))
             case .error(let error):
@@ -161,6 +173,13 @@ extension DefaultSocketHandler {
                     checkedSelf.retryConnection()
                 }
                 checkedSelf.writeCallback?(.failure(.failed))
+                #if TRACKER_ENABLED
+                if Tracker.debugMode {
+                    let event = HealthAnalysisEvent(eventName: .ClickstreamConnectionFailure, reason: error?.localizedDescription)
+                    Tracker.sharedInstance?.record(event: event)
+                }
+                #endif
+                
             case .binary(let response):
                 checkedSelf.writeCallback?(.success(response))
             case .pong:

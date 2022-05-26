@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '11.0'
   s.swift_version    = '5.0'
 
-  s.source_files  = 'Clickstream/**/*.swift'
+  s.source_files  = 'Clickstream/**/*.swift', 'Clickstream/Shared/**/*.swift'
   s.exclude_files = "Example"
   s.frameworks    = "UIKit", "Foundation", "CoreTelephony"
   
@@ -30,5 +30,19 @@ Pod::Spec.new do |s|
   s.dependency    "ReachabilitySwift"
   s.dependency    "GRDB.swift", "5.12.0"
   s.dependency    "Starscream", "4.0.4"
+  s.default_subspec  = 'Lite'
+
+  s.subspec 'Lite' do |lite|
+    # ss.source_files = 'GRDB/**/*.swift'
+    # ss.library = 'sqlite3'
+  end
+
+  s.subspec 'Tracker' do |tracker|
+    tracker.source_files = 'Tracker/**/*.swift'
+    tracker.xcconfig =  { 'OTHER_CFLAGS' => '$(inherited) -DTRACKER_ENABLED' }
+
+    # ss.library = 'sqlite3'
+  end
+
 
 end

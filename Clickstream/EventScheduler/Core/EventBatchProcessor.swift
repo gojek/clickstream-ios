@@ -80,6 +80,7 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
             switch stateNotification {
             case .willTerminate, .didEnterBackground:
                 checkedSelf.flushAll()
+                checkedSelf.flushObservabilityEvents()
             case .willResignActive:
                 checkedSelf.stopTimer()
             case .didBecomeActive:
@@ -136,6 +137,14 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
                 
                 if !eventsToBeFlushed.isEmpty {
                     eventBatchCreator.forward(with: eventsToBeFlushed)
+                    #if TRACKER_ENABLED
+                    if Tracker.debugMode {
+                        let eventGUIDs = eventsToBeFlushed.map { $0.guid }
+                        let eventGUIDString = "\(eventGUIDs.joined(separator: ", "))"
+                        let healthAnalysisEvent = HealthAnalysisEvent(eventName: .ClickstreamFlushOnBackground, events: eventGUIDString)
+                        Tracker.sharedInstance?.record(event: healthAnalysisEvent)
+                    }
+                    #endif
                 }
             }
         }
@@ -156,6 +165,7 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
            let isConnected = object[Constants.Strings.didConnect] as? Bool,
            isConnected == true {
             flushAll()
+            flushObservabilityEvents()
         }
     }
     
@@ -168,5 +178,16 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
         schedulerService.stop()
         appStateNotifier.stop()
         eventBatchCreator.stop()
+    }
+}
+
+private extension DefaultEventBatchProcessor {
+    
+    func flushObservabilityEvents() {
+        #if TRACKER_ENABLED
+        if eventBatchCreator.canForward, let events = Tracker.sharedInstance?.getEvents(), !events.isEmpty {
+            eventBatchCreator.forward(with: events)
+        }
+        #endif
     }
 }

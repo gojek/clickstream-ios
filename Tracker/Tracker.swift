@@ -9,7 +9,7 @@
 import Foundation
 import SwiftProtobuf
 
-public protocol ClickstreamHealthDataSource {
+public protocol ClickstreamTrackerDataSource {
     
     /// Returns the current user location as `CSLocation` instance.
     /// - Returns: `CSLocation` instance.
@@ -22,19 +22,23 @@ protocol AnalysisEvent {
 
 public final class Tracker {
     
-    private(set) var performanceTracker: PerformanceTracker
     private(set) var healthTracker: HealthTracker
     
     static var sharedInstance: Tracker?
     
-    private var _commonProperties: CSCommonProperties?
-    var commonProperties: CSCommonProperties? {
-        get {
-            return _commonProperties
-        } set {
-            _commonProperties = newValue
-        }
-    }
+    // Holds the health tracking configs for the SDK
+    internal static var healthTrackingConfigs: ClickstreamHealthConfigurations!
+    
+    /// readonly public accessor for CSCommonProperties
+//    private var _commonProperties: CSCommonProperties?
+    internal var commonProperties: CSCommonProperties?
+//    {
+//        get {
+//            return _commonProperties
+//        } set {
+//            _commonProperties = newValue
+//        }
+//    }
     
     /// Tells whether the debugMode is enabled or not.
     internal static var debugMode: Bool = false
@@ -45,80 +49,60 @@ public final class Tracker {
     private var appStateNotifier: AppStateNotifierService
     private let database: Database
     
-    
     /// ClickStreamDataSource.
-    private var _dataSource: ClickstreamHealthDataSource
+    private var _dataSource: ClickstreamTrackerDataSource
     
     /// readonly public accessor for dataSource.
-    public var dataSource: ClickstreamHealthDataSource {
+    public var dataSource: ClickstreamTrackerDataSource {
         get {
             return _dataSource
         }
     }
     
-    /// CSCommonProperties
-    private var _commonEventProperties: CSCommonProperties?
-    
-    /// readonly public accessor for CSCommonProperties.
-//    public var commonEventProperties: CSCommonProperties? {
-//        get {
-//            return _commonEventProperties
-//        } set {
-//            _commonEventProperties = newValue
-////            // Set Health Tracking based on userID/version
-////            self.setHealthTracker()
-//        }
-//    }
-    
     init(appStateNotifier: AppStateNotifierService,
          db: Database,
-         dataSource: ClickstreamHealthDataSource) {
+         dataSource: ClickstreamTrackerDataSource) {
         self.database = db
         self.appStateNotifier = appStateNotifier
         self.healthTracker = HealthTracker(performOnQueue: Tracker.queue,
                                            db: database)
-        self.performanceTracker = PerformanceTracker(performOnQueue: Tracker.queue,
-                                                     db: database)
         self._dataSource = dataSource
         self.observeAppStateChanges()
         self.flushOnAppUpgrade()
     }
     
-    @discardableResult 
-    public static func initialise(
-//        appStateNotifier: AppStateNotifierService = DefaultAppStateNotifierService(with: queue),
-                           dataSource: ClickstreamHealthDataSource,
-                           commonEventProperties: CSCommonProperties,
-                           healthTrackingConfigs: ClickstreamHealthConfigurations) -> Tracker? {
-        Tracker.debugMode = healthTrackingConfigs.debugMode(userID: commonEventProperties.customer.identity,
-                                                                           currentAppVersion: commonEventProperties.app.version)
+    @discardableResult
+    static func initialise(dataSource: ClickstreamTrackerDataSource, commonProperties: CSCommonProperties,
+                                  healthTrackingConfigs: ClickstreamHealthConfigurations) -> Tracker? {
         
-        //        if Clickstream.debugMode {
-        guard let instance = self.sharedInstance else {
-            // Create a separate db for health and perf events.
-            var db: Database
-            do {
-                db = try DefaultDatabase()
-            } catch {
-                return nil
+        Tracker.healthTrackingConfigs = healthTrackingConfigs
+        
+        Tracker.debugMode = healthTrackingConfigs.debugMode(userID: commonProperties.customer.identity,
+                                                            currentAppVersion: commonProperties.app.version)
+        
+        if Tracker.debugMode {
+            guard let instance = self.sharedInstance else {
+                // Create a separate db for health and perf events.
+                var db: Database
+                do {
+                    db = try DefaultDatabase()
+                } catch {
+                    return nil
+                }
+                
+                sharedInstance = Tracker(appStateNotifier: DefaultAppStateNotifierService(with: queue),
+                                         db: db, dataSource: dataSource)
+                sharedInstance?.commonProperties = commonProperties
+                return sharedInstance
             }
-            
-            sharedInstance = Tracker(appStateNotifier: DefaultAppStateNotifierService(with: queue),
-                                     db: db, dataSource: dataSource)
-            return sharedInstance
+            return instance
         }
-        return instance
-        //        }
         return nil
     }
     
     func record(event: AnalysisEvent?) {
         if let event = event as? HealthAnalysisEvent {
             self.healthTracker.record(event: event)
-        }
-        
-        if let event = event as? PerformanceEvent {
-            self.performanceTracker.record(event: event)
         }
     }
     
@@ -127,9 +111,8 @@ public final class Tracker {
         appStateNotifier.start { [weak self] (stateNotification) in guard let checkedSelf = self else { return }
             switch stateNotification {
             case .willTerminate, .didEnterBackground:
-                if ClickstreamHealthConfigurations.isCTSupprted() {
+                if Tracker.healthTrackingConfigs.trackedVia == .external || Tracker.healthTrackingConfigs.trackedVia == .both {
                     checkedSelf.healthTracker.flushErrorEvents()
-                    checkedSelf.performanceTracker.flushPerformanceAnalysis()
                 }
             default:
                 break
@@ -138,8 +121,8 @@ public final class Tracker {
     }
     
     func getEvents() -> [Event]? {
-        
-        guard ClickstreamHealthConfigurations.isCSSupprted() else { return nil }
+        guard Tracker.healthTrackingConfigs.trackedVia == .internal || Tracker.healthTrackingConfigs.trackedVia == .both else { return nil }
+//        guard Tracker.healthTrackingConfigs.isCSSupprted() else { return nil }
         
         var events = [Event]()
         
@@ -182,7 +165,7 @@ public final class Tracker {
                 $0.deviceTimestamp = Google_Protobuf_Timestamp(date: Date())
             }
             
-            if ClickstreamHealthConfigurations.logVerbose || key == ClickstreamDebugConstants.Health.Events.ClickstreamEventReceived {
+            if ClickstreamHealthConfigurations.logVerbose || key == .ClickstreamEventReceived {
                 let healthEventDetails = Gojek_Clickstream_Internal_HealthDetails.with {
                     $0.eventGuids = eventGuids
                     $0.eventBatchGuids = eventBatchGuids
@@ -227,7 +210,7 @@ public final class Tracker {
         sharedInstance = nil
     }
     
-    public static func setCommonProperties(commonEventProperties: CSCommonProperties) {
-        sharedInstance?._commonEventProperties = commonEventProperties
+    public static func setCommonProperties(commonProperties: CSCommonProperties) {
+        sharedInstance?.commonProperties = commonProperties
     }
 }

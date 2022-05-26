@@ -53,6 +53,14 @@ extension DefaultEventWarehouser {
             } else {
                 checkedSelf.batchRegulator.observe(event)
                 checkedSelf.persistence.insert(event)
+                
+                #if TRACKER_ENABLED
+                let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventCached,
+                                                      eventGUID: event.guid)
+                if event.type != Constants.EventType.instant.rawValue {
+                    Tracker.sharedInstance?.record(event: healthEvent)
+                }
+                #endif
             }
         }
     }

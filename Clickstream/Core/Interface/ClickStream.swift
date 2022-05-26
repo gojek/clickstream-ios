@@ -36,9 +36,6 @@ public final class Clickstream {
     /// Holds the event classification for the sdk.
     internal static var eventClassifier: ClickstreamEventClassification = ClickstreamEventClassification()
     
-    // Holds the health tracking configs for the SDK
-    internal static var healthTrackingConfigs: ClickstreamHealthConfigurations?
-    
     /// Clickstream shared instance.
     private static var sharedInstance: Clickstream?
     
@@ -92,6 +89,25 @@ public final class Clickstream {
     public func trackEvent(with event: ClickstreamEvent) {
         self.eventProcessor.createEvent(event: event)
     }
+    
+    #if TRACKER_ENABLED
+    /// initialise tracker
+    /// - Parameters:
+    ///   - configs: ClickstreamHealthConfigurations
+    ///   - commonProperties: CSCommonProperties
+    ///   - dataSource: ClickstreamTrackerDataSource
+    public func setTracker(configs: ClickstreamHealthConfigurations,
+                           commonProperties: CSCommonProperties,
+                           dataSource: ClickstreamTrackerDataSource) {
+        Tracker.initialise(dataSource: dataSource, commonProperties: commonProperties, healthTrackingConfigs: configs)
+    }
+    
+    /// Update common properties needed for Tracker
+    /// - Parameter commonProperties: CSCommonProperties
+    public func updateCommonProperties(commonProperties: CSCommonProperties) {
+        Tracker.sharedInstance?.commonProperties = commonProperties
+    }
+    #endif
 }
 
 extension Clickstream {
@@ -129,13 +145,6 @@ extension Clickstream {
                 Clickstream.eventClassifier = eventClassifier
             } else {
                 print("Initialising Clickstream using default event classification",.verbose)
-            }
-            
-            // Setting Health tracking configurations to be used for the SDK.
-            if let healthTrackingConfigs = healthTrackingConfigs {
-                Clickstream.healthTrackingConfigs = healthTrackingConfigs
-            } else {
-                print("Initialising Clickstream using default health tracking configurations",.verbose)
             }
             
             // All the dependency injections pertaining to the clickstream blocks happen here!

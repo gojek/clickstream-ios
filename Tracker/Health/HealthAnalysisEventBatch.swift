@@ -9,7 +9,7 @@
 import Foundation
 
 struct HealthAnalysisEventBatch: Codable, Equatable {
-    private(set) var eventName: ClickstreamDebugConstants.Health.Events
+    private(set) var eventName: ClickstreamTrackerConstant.Events
     private(set) var count: Int
     private(set) var timeStamps: String
     private(set) var eventGUIDs: String
@@ -17,7 +17,7 @@ struct HealthAnalysisEventBatch: Codable, Equatable {
     private(set) var sessionID: String?
     private(set) var reason: String?
     
-    init(eventName: ClickstreamDebugConstants.Health.Events,
+    init(eventName: ClickstreamTrackerConstant.Events,
          count: Int, timeStamps: String,
          eventGUIDs: String,
          eventBatchGUIDs: String,
@@ -56,6 +56,6 @@ extension HealthAnalysisEventBatch: Notifiable {
         
         let dict: [String: Any] = [ClickstreamDebugConstants.eventName: eventName.rawValue,
                                    ClickstreamDebugConstants.eventProperties: properties]
-        NotificationCenter.default.post(name: ClickstreamDebugConstants.DebugEventsNotification, object: dict)
+        NotificationCenter.default.post(name: ClickstreamTrackerConstant.DebugEventsNotification, object: dict)
     }
 }

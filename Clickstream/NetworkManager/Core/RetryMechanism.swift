@@ -51,6 +51,21 @@ final class DefaultRetryMechanism: Retryable {
         let isConnected = networkService.isConnected
         let isOnLowPower = deviceStatus.isDeviceLowOnPower
         
+        #if TRACKER_ENABLED
+        if !isReachable && Tracker.debugMode {
+            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
+                                                  reason: ClickstreamTrackerConstant.EventReason.networkUnavailable.rawValue)
+            Tracker.sharedInstance?.record(event: healthEvent)
+        }
+        #endif
+        
+        #if TRACKER_ENABLED
+        if isOnLowPower && Tracker.debugMode {
+            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
+                                                  reason: ClickstreamTrackerConstant.EventReason.lowBattery.rawValue)
+            Tracker.sharedInstance?.record(event: healthEvent)
+        }
+        #endif
         return isReachable && isConnected && !isOnLowPower
     }
     
@@ -159,6 +174,10 @@ extension DefaultRetryMechanism {
                         if let guid = response.data["req_guid"] {
                             // remove the delivered batch from the cache.
                             checkedSelf.removeFromCache(with: guid)
+                            
+                            if let eventType = eventRequest.eventType, !(eventType == .internalEvent) {
+                                checkedSelf.trackHealthAndPerformanceEvents(eventRequest: eventRequest)
+                            }
                         }
                     } else {
                         if response.code == .maxConnectionLimitReached {
@@ -172,10 +191,26 @@ extension DefaultRetryMechanism {
                         
                         if response.code == .badRequest {
                             print("Error: Parsing Exception for eventRequest guid \(eventRequest.guid)", .verbose)
+                            #if TRACKER_ENABLED
+                            if Tracker.debugMode {
+                                let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamWriteToSocketFailed,
+                                                                      eventBatchGUID: eventRequest.guid,
+                                                                      reason: ClickstreamTrackerConstant.EventReason.ParsingException.rawValue)
+                                Tracker.sharedInstance?.record(event: healthEvent)
+                            }
+                            #endif
                         }
                     }
                 case .failure(let error):
                     print("Error: \(error.localizedDescription) for eventRequest guid \(eventRequest.guid)", .verbose)
+                    #if TRACKER_ENABLED
+                    if Tracker.debugMode {
+                        let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchErrorResponse,
+                                                              eventBatchGUID: eventRequest.guid, // eventRequest.guid is the batch GUID
+                                                              reason: error.localizedDescription)
+                        Tracker.sharedInstance?.record(event: healthEvent)
+                    }
+                    #endif
                 }
             }
         }
@@ -269,6 +304,13 @@ extension DefaultRetryMechanism {
         if var fetchedEventRequest = persistence.fetchOne(eventRequest.guid) {
             if fetchedEventRequest.retriesMade >= Clickstream.constraints.maxRetriesPerBatch {
                 persistence.deleteOne(eventRequest.guid)
+                #if TRACKER_ENABLED
+                if Tracker.debugMode {
+                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTimeout,
+                                                          eventBatchGUID: fetchedEventRequest.guid)
+                    Tracker.sharedInstance?.record(event: healthEvent)
+                }
+                #endif
             } else {
                 fetchedEventRequest.bumpRetriesMade() // This will bump the retriesMade.
                 fetchedEventRequest.refreshCachingTimeStamp() // This will update the timestamp with the latest retry time.
@@ -331,5 +373,21 @@ extension DefaultRetryMechanism {
                 }
             }
         }
+    }
+}
+
+extension DefaultRetryMechanism {
+    
+    func trackHealthAndPerformanceEvents(eventRequest: EventRequest) {
+        #if TRACKER_ENABLED
+        if Tracker.debugMode {
+            guard eventRequest.eventType != Constants.EventType.instant else { return }
+            
+            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchSuccessAck,
+                                                  eventBatchGUID: eventRequest.guid)
+            Tracker.sharedInstance?.record(event: healthEvent)
+            
+        }
+        #endif
     }
 }

@@ -16,6 +16,8 @@ class AnalyticsManager {
     
     /// Initialise Clickstream
     func initialiseClickstream() {
+        NotificationCenter.default.addObserver(self, selector: #selector(handleClickStreamDebugNotification), name: ClickstreamTrackerConstant.DebugEventsNotification, object: nil)
+        
         do {
             Clickstream.setLogLevel(.verbose)
             let url = URL(string: "ws://mock.clickstream.com/events")!
@@ -30,9 +32,13 @@ class AnalyticsManager {
                                                           constraints: constraints,
                                                           eventClassification: classification)
             
-            let configs = ClickstreamHealthConfigurations(minimumTrackedVersion: "1.0", destination: ["CT", "CS"])
+            
+            
+            let configs = ClickstreamHealthConfigurations(minimumTrackedVersion: "0.1", trackedVia: .internal)
             let commonProperties = CSCommonProperties(customer: self.getCustomerInfo(), session: getSessionInfo(), app: getAppInfo())
-            Tracker.initialise(dataSource: self, commonEventProperties: commonProperties, healthTrackingConfigs: configs)
+//            let tracker = Tracker.initialise(dataSource: self, commonEventProperties: commonProperties, healthTrackingConfigs: configs)
+            
+            self.clickstream?.setTracker(configs: configs, commonProperties: commonProperties, dataSource: self)
         } catch  {
             print(error.localizedDescription)
         }
@@ -78,11 +84,20 @@ class AnalyticsManager {
     }
 }
 
-extension AnalyticsManager: ClickstreamHealthDataSource {
+extension AnalyticsManager: ClickstreamTrackerDataSource {
     func currentUserLocation() -> CSLocation? {
         return CSLocation(longitude: 0.0, latitude: 0.0)
     }
-    
-    
+}
+
+extension AnalyticsManager {
+    @objc private func handleClickStreamDebugNotification(_ notification: Notification) {
+        guard let object = notification.object as? [String: Any],
+            let eventName = object[ClickstreamTrackerConstant.eventName] as? String,
+            let properties = object[ClickstreamTrackerConstant.eventProperties] as? [String: Any] else {
+            return
+        }
+        print("\(eventName): \(properties)")
+    }
 }
 

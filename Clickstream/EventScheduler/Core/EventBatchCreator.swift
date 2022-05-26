@@ -69,3 +69,16 @@ extension DefaultEventBatchCreator {
         networkBuilder.isAvailable
     }
 }
+
+
+extension DefaultEventBatchCreator {
+    func trackHealthAndPerformance(batch: EventBatch, events: [Event]) {
+        #if TRACKER_ENABLED
+        let eventGUIDs = batch.events.map { $0.guid }
+        let eventGUIDString = "\(eventGUIDs.joined(separator: ", "))"
+        let batchCreatedEvent = HealthAnalysisEvent(eventName:  .ClickstreamEventBatchCreated,
+                                                    events: eventGUIDString, eventBatchGUID: batch.uuid)
+        Tracker.sharedInstance?.record(event: batchCreatedEvent)
+        #endif
+    }
+}

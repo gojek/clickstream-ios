@@ -36,12 +36,15 @@ final class DefaultEventProcessor: EventProcessor {
             // Create an Event instance and forward it to the scheduler.
             if let event = checkedSelf.constructEvent(event: event) {
                 checkedSelf.eventWarehouser.store(event)
-                
-                let healthEvent = HealthAnalysisEvent(eventName:  ClickstreamDebugConstants.Health.Events.ClickstreamEventObjectCreated,
-                                                      eventGUID: event.guid)
-                if event.type != Constants.EventType.instant.rawValue {
-                    Clickstream.trackHealthEvent(event: healthEvent)
+                #if TRACKER_ENABLED
+                if Tracker.debugMode {
+                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventReceived,
+                                                          eventGUID: event.guid)
+                    if event.type != Constants.EventType.instant.rawValue {
+                        Tracker.sharedInstance?.record(event: healthEvent)
+                    }
                 }
+                #endif
             }
         }
     }
@@ -50,10 +53,20 @@ final class DefaultEventProcessor: EventProcessor {
         
         guard let typeOfEvent = type(of: event.message).protoMessageName.components(separatedBy: ".").last?.lowercased() else { return nil }
         
+        #if TRACKER_ENABLED
+        if Tracker.debugMode {
+            if event.type != Constants.EventType.instant.rawValue {
+                let _eventGuid = event.guid.appending("_\(typeOfEvent)")
+                let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventReceivedForDropRate, eventGUID: _eventGuid)
+                Tracker.sharedInstance?.record(event: healthEvent)
+            }
+        }
+        #endif
+        
         guard let classification = classifier.getClassification(eventName: type(of: event.message).protoMessageName) else {
             return nil
         }
-
+        
         do {
             // Constructing the Odpf_Raccoon_Event
             let csEvent = try Odpf_Raccoon_Event.with {
@@ -61,9 +74,9 @@ final class DefaultEventProcessor: EventProcessor {
                 $0.type = typeOfEvent
             }
             return try Event(guid: event.guid,
-                                    timestamp: event.timeStamp,
-                                    type: classification,
-                                    eventProtoData: csEvent.serializedData())
+                             timestamp: event.timeStamp,
+                             type: classification,
+                             eventProtoData: csEvent.serializedData())
         } catch {
             return nil
         }
