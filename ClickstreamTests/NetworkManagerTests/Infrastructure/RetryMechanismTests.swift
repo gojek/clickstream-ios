@@ -16,13 +16,11 @@ class RetryMechanismTests: XCTestCase {
     private var prioritiesMock: [Priority]!
 
     override func setUp() {
-        Clickstream.debugMode = true
         self.prioritiesMock = [Priority(priority: 0, identifier: "realTime", maxBatchSize: 50000.0, maxTimeBetweenTwoBatches: 1),
         Priority(priority: 1, identifier: "standard")]
         self.constraints = ClickstreamConstraints(maxConnectionRetries: 15, maxConnectionRetryInterval: 5, maxRetryIntervalPostPrematureDisconnection: 10, maxRetriesPostPrematureDisconnection: 20, maxPingInterval: 15, priorities: prioritiesMock, flushOnBackground: true, connectionTerminationTimerWaitTime: 2, maxRequestAckTimeout: 0.5, maxRetriesPerBatch: 2, maxRetryCacheSize: 100000, connectionRetryDuration: 3)
         Clickstream.constraints = constraints
         Clickstream.eventClassifier = MockConstants.eventClassification
-        Clickstream.debugMode = true
     }
     
     func test_whenNetworkIsNotAvailable_thenRetryMechanismMustRetryFailedBatches() {

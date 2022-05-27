@@ -27,9 +27,6 @@ public final class Clickstream {
     /// Temporary handling. Will be replaced by an experimentation module within Clickstream.
     internal static var isInitialisedOnBackgroundQueue: Bool = false
     
-    /// Tells whether the debugMode is enabled or not.
-//    internal static var debugMode: Bool = false
-    
     /// Holds the constraints for the sdk.
     internal static var constraints: ClickstreamConstraints = ClickstreamConstraints()
     
@@ -89,25 +86,6 @@ public final class Clickstream {
     public func trackEvent(with event: ClickstreamEvent) {
         self.eventProcessor.createEvent(event: event)
     }
-    
-    #if TRACKER_ENABLED
-    /// initialise tracker
-    /// - Parameters:
-    ///   - configs: ClickstreamHealthConfigurations
-    ///   - commonProperties: CSCommonProperties
-    ///   - dataSource: ClickstreamTrackerDataSource
-    public func setTracker(configs: ClickstreamHealthConfigurations,
-                           commonProperties: CSCommonProperties,
-                           dataSource: ClickstreamTrackerDataSource) {
-        Tracker.initialise(dataSource: dataSource, commonProperties: commonProperties, healthTrackingConfigs: configs)
-    }
-    
-    /// Update common properties needed for Tracker
-    /// - Parameter commonProperties: CSCommonProperties
-    public func updateCommonProperties(commonProperties: CSCommonProperties) {
-        Tracker.sharedInstance?.commonProperties = commonProperties
-    }
-    #endif
 }
 
 extension Clickstream {
@@ -122,8 +100,7 @@ extension Clickstream {
     ///            You can always get the instance by calling getInstance()
     @discardableResult public static func initialise(networkConfiguration: NetworkConfigurations,
                                                      constraints: ClickstreamConstraints? = nil,
-                                                     eventClassification: ClickstreamEventClassification? = nil,
-                                                     healthTrackingConfigs: ClickstreamHealthConfigurations? = nil) throws -> Clickstream? {
+                                                     eventClassification: ClickstreamEventClassification? = nil) throws -> Clickstream? {
         
         let semaphore = DispatchSemaphore(value: 1)
         defer {
@@ -165,3 +142,24 @@ extension Clickstream {
         return sharedInstance
     }
 }
+
+#if TRACKER_ENABLED
+extension Clickstream {
+    
+    /// initialise tracker
+    /// - Parameters:
+    ///   - configs: ClickstreamHealthConfigurations
+    ///   - commonProperties: CSCommonProperties
+    ///   - dataSource: ClickstreamTrackerDataSource
+    public func setTracker(configs: ClickstreamHealthConfigurations,
+                           commonProperties: CSCommonProperties,
+                           dataSource: ClickstreamTrackerDataSource) {
+        Tracker.initialise(dataSource: dataSource, commonProperties: commonProperties, healthTrackingConfigs: configs)
+    }
+    
+    public func getTracker() -> Tracker? {
+        return Tracker.sharedInstance
+    }
+    
+}
+#endif

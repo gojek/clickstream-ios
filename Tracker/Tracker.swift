@@ -26,19 +26,13 @@ public final class Tracker {
     
     static var sharedInstance: Tracker?
     
+    internal var verbosityLevel: VerbosityLevel = .minimum
+    
     // Holds the health tracking configs for the SDK
     internal static var healthTrackingConfigs: ClickstreamHealthConfigurations!
     
     /// readonly public accessor for CSCommonProperties
-//    private var _commonProperties: CSCommonProperties?
     internal var commonProperties: CSCommonProperties?
-//    {
-//        get {
-//            return _commonProperties
-//        } set {
-//            _commonProperties = newValue
-//        }
-//    }
     
     /// Tells whether the debugMode is enabled or not.
     internal static var debugMode: Bool = false
@@ -122,8 +116,7 @@ public final class Tracker {
     
     func getEvents() -> [Event]? {
         guard Tracker.healthTrackingConfigs.trackedVia == .internal || Tracker.healthTrackingConfigs.trackedVia == .both else { return nil }
-//        guard Tracker.healthTrackingConfigs.isCSSupprted() else { return nil }
-        
+           
         var events = [Event]()
         
         // get the health events which need to be send to CS
@@ -183,15 +176,13 @@ public final class Tracker {
                 }
                 let event = try Event(guid: metaData.eventGuid,
                                       timestamp: Date(),
-                                      type: ClickstreamDebugConstants.HealthEventType,
+                                      type: TrackerConstant.HealthEventType,
                                       eventProtoData: eventProto.serializedData())
                 events.append(event)
-                
             } catch {
                 return nil
             }
         }
-        
         return events
     }
     
@@ -212,5 +203,15 @@ public final class Tracker {
     
     public static func setCommonProperties(commonProperties: CSCommonProperties) {
         sharedInstance?.commonProperties = commonProperties
+    }
+    
+    /// Update common properties needed for Tracker
+    /// - Parameter commonProperties: CSCommonProperties
+    public func updateCommonProperties(commonProperties: CSCommonProperties) {
+        self.commonProperties = commonProperties
+    }
+    
+    public func setVerbosity(verbosityLevel: VerbosityLevel) {
+        self.verbosityLevel = verbosityLevel
     }
 }

@@ -113,18 +113,18 @@ extension CSSessionInfo: ProtoConvertible {
  - important: Need not be set. Gets set internally.
  */
 struct CSDeviceInfo {
-    let operatingSystem = ClickstreamDebugConstants.Strings.deviceOS
+    let operatingSystem = TrackerConstant.deviceOS
     let operatingSystemVersion = UIDevice.current.systemVersion
-    let deviceMake = ClickstreamDebugConstants.Strings.deviceMake
+    let deviceMake = TrackerConstant.deviceMake
     let deviceModel = UIDevice.modelName
 }
 
 extension CSDeviceInfo: ProtoConvertible {
     var proto: Gojek_Clickstream_Internal_HealthMeta.Device {
         return Gojek_Clickstream_Internal_HealthMeta.Device.with {
-            $0.operatingSystem = ClickstreamDebugConstants.Strings.deviceOS
+            $0.operatingSystem = TrackerConstant.deviceOS
             $0.operatingSystemVersion = UIDevice.current.systemVersion
-            $0.deviceMake = ClickstreamDebugConstants.Strings.deviceMake
+            $0.deviceMake = TrackerConstant.deviceMake
             $0.deviceModel = UIDevice.modelName
         }
     }

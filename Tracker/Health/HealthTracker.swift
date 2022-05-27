@@ -41,15 +41,23 @@ final class HealthTracker {
     
     func flushErrorEvents() {
         queue.async {
-            if let events = self._persistence.deleteWhere(HealthAnalysisEvent.Columns.trackedVia,
-                                                          value: TrackedVia.external.rawValue),
-                                                         !events.isEmpty {
+            let trackeVia: TrackedVia = Tracker.healthTrackingConfigs.trackedVia == .both ? .both : .external
+            
+            var events: [HealthAnalysisEvent]!
+            if Tracker.healthTrackingConfigs.trackedVia == .both {
+                events = self._persistence.fetchAll()
+            } else {
+                events = self._persistence.deleteWhere(HealthAnalysisEvent.Columns.trackedVia,
+                                                       value: trackeVia.rawValue)
+            }
+            
+            guard !events.isEmpty else { return }
                 
-                let instantEvents = events.filter { $0.eventType.rawValue == ClickstreamTrackerConstant.EventType.instant.rawValue }
+                let instantEvents = events.filter { $0.eventType.rawValue == TrackerConstant.EventType.instant.rawValue }
                 for instantEvent in instantEvents {
                     if let events = instantEvent.events {
                         let eventsArray = events.components(separatedBy: ", ")
-                        let chunks = eventsArray.chunked(into: ClickstreamDebugConstants.propertyLengthConstraint)
+                        let chunks = eventsArray.chunked(into: TrackerConstant.propertyLengthConstraint)
                         for chunk in chunks {
                             let eventGUIDsString = "\(chunk.joined(separator: ", "))"
                             let healthEvent = HealthAnalysisEvent(eventName: instantEvent.eventName,
@@ -64,11 +72,11 @@ final class HealthTracker {
                     }
                 }
                 
-                let aggregatedEvents = events.filter { $0.eventType == ClickstreamTrackerConstant.EventType.aggregate }
+                let aggregatedEvents = events.filter { $0.eventType == TrackerConstant.EventType.aggregate }
                 
                 var arrayOfAggreagatedEvents = [[HealthAnalysisEvent]]()
                 
-                for event in ClickstreamTrackerConstant.Events.allCases {
+                for event in TrackerConstant.Events.allCases {
                     let eventNameBasedAggregation = aggregatedEvents.filter { $0.eventName ==  event }
                     if eventNameBasedAggregation.isEmpty {
                         continue
@@ -88,7 +96,7 @@ final class HealthTracker {
                 
                 arrayOfAggreagatedEvents.forEach { (eventArray) in
                     if let eventName = eventArray.first?.eventName  {
-                        let chunks = eventArray.chunked(into: ClickstreamDebugConstants.propertyLengthConstraint)
+                        let chunks = eventArray.chunked(into: TrackerConstant.propertyLengthConstraint)
                         for chunk in chunks {
                             let eventTimeStamps = chunk.map { $0.timestamp }
                             let eventTimeStampString = "\(eventTimeStamps.joined(separator: ", "))"
@@ -116,15 +124,16 @@ final class HealthTracker {
                         }
                     }
                 }
-            }
+//            }
         }        
     }
     
     @discardableResult
     func flushFunnelEvents() -> [HealthAnalysisEvent]? {
+        let trackedVia: TrackedVia = Tracker.healthTrackingConfigs.trackedVia == .both ? .both : .internal
         if let doesTableExist = _persistence.doesTableExist(with: HealthAnalysisEvent.description), doesTableExist {
             return _persistence.deleteWhere(HealthAnalysisEvent.Columns.trackedVia,
-                                            value: TrackedVia.internal.rawValue)
+                                            value: trackedVia.rawValue)
         }
         return nil
     }

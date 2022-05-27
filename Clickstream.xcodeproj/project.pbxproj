@@ -107,8 +107,8 @@
 		9A2B9EE9281FBF9E009317C3 /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9ED4281FBF9D009317C3 /* Tracker.swift */; };
 		9A2B9EEA281FBF9E009317C3 /* AppVersionChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9ED5281FBF9D009317C3 /* AppVersionChecker.swift */; };
 		9A2B9EEB281FBF9E009317C3 /* AppVersionChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9ED5281FBF9D009317C3 /* AppVersionChecker.swift */; };
-		9A2B9EED281FBFEF009317C3 /* HealthConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9EEC281FBFEF009317C3 /* HealthConstants.swift */; };
-		9A2B9EEE281FBFEF009317C3 /* HealthConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9EEC281FBFEF009317C3 /* HealthConstants.swift */; };
+		9A2B9EED281FBFEF009317C3 /* TrackerConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9EEC281FBFEF009317C3 /* TrackerConstants.swift */; };
+		9A2B9EEE281FBFEF009317C3 /* TrackerConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9EEC281FBFEF009317C3 /* TrackerConstants.swift */; };
 		9A2B9EF1281FC313009317C3 /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9EF0281FC312009317C3 /* Array+Extension.swift */; };
 		9A2B9EF2281FC313009317C3 /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9EF0281FC312009317C3 /* Array+Extension.swift */; };
 		9A2B9EF6281FC44B009317C3 /* Health.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9EF4281FC44B009317C3 /* Health.pb.swift */; };
@@ -134,6 +134,8 @@
 		9ACCD6BA28081267006BD993 /* ClickStreamDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ACCD6B928081267006BD993 /* ClickStreamDependencies.swift */; };
 		9ACCD6BB28081267006BD993 /* ClickStreamDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ACCD6B928081267006BD993 /* ClickStreamDependencies.swift */; };
 		9ACF41E824ADEC7000A10832 /* MockConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ACF41E724ADEC7000A10832 /* MockConstants.swift */; };
+		9AD870C5283FD5FF0097CCB8 /* VerbosityLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AD870C4283FD5FE0097CCB8 /* VerbosityLevel.swift */; };
+		9AD870C6283FD5FF0097CCB8 /* VerbosityLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AD870C4283FD5FE0097CCB8 /* VerbosityLevel.swift */; };
 		9AF0C758280DEC8C00E39A12 /* ClickStreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB88AA0251B00030092659B /* ClickStreamTests.swift */; };
 		9AF0C759280DEC9600E39A12 /* EventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA23CFA24A5978B001BE490 /* EventTests.swift */; };
 		9AF0C75A280DECBD00E39A12 /* EventBatchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA23D0024A5A1A7001BE490 /* EventBatchTests.swift */; };
@@ -235,7 +237,7 @@
 		9A2B9ECE281FBF9D009317C3 /* Notifiable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notifiable.swift; sourceTree = "<group>"; };
 		9A2B9ED4281FBF9D009317C3 /* Tracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		9A2B9ED5281FBF9D009317C3 /* AppVersionChecker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppVersionChecker.swift; sourceTree = "<group>"; };
-		9A2B9EEC281FBFEF009317C3 /* HealthConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthConstants.swift; sourceTree = "<group>"; };
+		9A2B9EEC281FBFEF009317C3 /* TrackerConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerConstants.swift; sourceTree = "<group>"; };
 		9A2B9EF0281FC312009317C3 /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
 		9A2B9EF4281FC44B009317C3 /* Health.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Health.pb.swift; sourceTree = "<group>"; };
 		9A2B9EF5281FC44B009317C3 /* HealthMeta.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HealthMeta.pb.swift; sourceTree = "<group>"; };
@@ -262,6 +264,7 @@
 		9ACCD6B428080F57006BD993 /* NetworkManagerDependencies.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkManagerDependencies.swift; sourceTree = "<group>"; };
 		9ACCD6B928081267006BD993 /* ClickStreamDependencies.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClickStreamDependencies.swift; sourceTree = "<group>"; };
 		9ACF41E724ADEC7000A10832 /* MockConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockConstants.swift; sourceTree = "<group>"; };
+		9AD870C4283FD5FE0097CCB8 /* VerbosityLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerbosityLevel.swift; sourceTree = "<group>"; };
 		9AF461892508AE7F00B28C09 /* Reachability+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reachability+Extension.swift"; sourceTree = "<group>"; };
 		C3D7E5F007334D9078557F80 /* EventResponse.pb.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EventResponse.pb.swift; sourceTree = "<group>"; };
 		CFEE2E0E60B8C5900083BFDF /* EventRequest.pb.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EventRequest.pb.swift; sourceTree = "<group>"; };
@@ -720,7 +723,8 @@
 			children = (
 				9A2B9ED5281FBF9D009317C3 /* AppVersionChecker.swift */,
 				9A2B9ECE281FBF9D009317C3 /* Notifiable.swift */,
-				9A2B9EEC281FBFEF009317C3 /* HealthConstants.swift */,
+				9A2B9EEC281FBFEF009317C3 /* TrackerConstants.swift */,
+				9AD870C4283FD5FE0097CCB8 /* VerbosityLevel.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -962,9 +966,10 @@
 				686CD8F82604606B000ED8D8 /* FileStorable.swift in Sources */,
 				68E7BD6A245ACE210072549A /* Event.swift in Sources */,
 				686CD8F326046026000ED8D8 /* TableDefinable.swift in Sources */,
-				9A2B9EED281FBFEF009317C3 /* HealthConstants.swift in Sources */,
+				9A2B9EED281FBFEF009317C3 /* TrackerConstants.swift in Sources */,
 				9A2B9EDA281FBF9E009317C3 /* HealthAnalysisEventBatch.swift in Sources */,
 				9AC3D7A626BCEA1D002701FF /* ClickstreamEvent.swift in Sources */,
+				9AD870C5283FD5FF0097CCB8 /* VerbosityLevel.swift in Sources */,
 				9A2B9EF8281FC44B009317C3 /* HealthMeta.pb.swift in Sources */,
 				6867E5B22541BB5800EA3FEE /* KeepAliveService.swift in Sources */,
 				9A0573F7248F688000CA2744 /* EventClassifier.swift in Sources */,
@@ -1016,6 +1021,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9AD870C6283FD5FF0097CCB8 /* VerbosityLevel.swift in Sources */,
 				9AF461972509222700B28C09 /* Reachability+Extension.swift in Sources */,
 				6804B36F27660C2A00BA904D /* DispatchSourceTimer+RepeatingTimer.swift in Sources */,
 				68B78BA624BC599B002F5A60 /* DeviceInfo.swift in Sources */,
@@ -1084,7 +1090,7 @@
 				9A2B9F03281FEFEF009317C3 /* CSCommonPropertiesDTO.swift in Sources */,
 				9AF0C75B280DECBF00E39A12 /* ClickStreamDependenciesTests.swift in Sources */,
 				9AF0C760280DECDC00E39A12 /* SortedArrayTests.swift in Sources */,
-				9A2B9EEE281FBFEF009317C3 /* HealthConstants.swift in Sources */,
+				9A2B9EEE281FBFEF009317C3 /* TrackerConstants.swift in Sources */,
 				687B2A32246BD728008F2805 /* EventSchedulerDependencies.swift in Sources */,
 				688D02D527FC155A009E7081 /* Atomic.swift in Sources */,
 				68E7BD332456E7F20072549A /* Requestable.swift in Sources */,

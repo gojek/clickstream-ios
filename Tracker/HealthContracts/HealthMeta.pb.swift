@@ -74,7 +74,56 @@ struct Gojek_Clickstream_Internal_HealthMeta {
   /// Clears the value of `app`. Subsequent reads from it will return its default value.
   mutating func clearApp() {self._app = nil}
 
+  var network: Gojek_Clickstream_Internal_HealthMeta.Network {
+    get {return _network ?? Gojek_Clickstream_Internal_HealthMeta.Network()}
+    set {_network = newValue}
+  }
+  /// Returns true if `network` has been explicitly set.
+  var hasNetwork: Bool {return self._network != nil}
+  /// Clears the value of `network`. Subsequent reads from it will return its default value.
+  mutating func clearNetwork() {self._network = nil}
+
   var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  enum NetworkType: SwiftProtobuf.Enum {
+    typealias RawValue = Int
+    case unspecified // = 0
+    case noConnection // = 1
+    case wifi // = 2
+    case wwan2G // = 3
+    case wwan3G // = 4
+    case wwan4G // = 5
+    case UNRECOGNIZED(Int)
+
+    init() {
+      self = .unspecified
+    }
+
+    init?(rawValue: Int) {
+      switch rawValue {
+      case 0: self = .unspecified
+      case 1: self = .noConnection
+      case 2: self = .wifi
+      case 3: self = .wwan2G
+      case 4: self = .wwan3G
+      case 5: self = .wwan4G
+      default: self = .UNRECOGNIZED(rawValue)
+      }
+    }
+
+    var rawValue: Int {
+      switch self {
+      case .unspecified: return 0
+      case .noConnection: return 1
+      case .wifi: return 2
+      case .wwan2G: return 3
+      case .wwan3G: return 4
+      case .wwan4G: return 5
+      case .UNRECOGNIZED(let i): return i
+      }
+    }
+
+  }
 
   struct App {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
@@ -150,6 +199,18 @@ struct Gojek_Clickstream_Internal_HealthMeta {
     init() {}
   }
 
+  struct Network {
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+
+    var type: Gojek_Clickstream_Internal_HealthMeta.NetworkType = .unspecified
+
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+
+    init() {}
+  }
+
   init() {}
 
   fileprivate var _location: Gojek_Clickstream_Internal_HealthMeta.Location? = nil
@@ -157,7 +218,24 @@ struct Gojek_Clickstream_Internal_HealthMeta {
   fileprivate var _device: Gojek_Clickstream_Internal_HealthMeta.Device? = nil
   fileprivate var _session: Gojek_Clickstream_Internal_HealthMeta.Session? = nil
   fileprivate var _app: Gojek_Clickstream_Internal_HealthMeta.App? = nil
+  fileprivate var _network: Gojek_Clickstream_Internal_HealthMeta.Network? = nil
 }
+
+#if swift(>=4.2)
+
+extension Gojek_Clickstream_Internal_HealthMeta.NetworkType: CaseIterable {
+  // The compiler won't synthesize support with the UNRECOGNIZED case.
+  static var allCases: [Gojek_Clickstream_Internal_HealthMeta.NetworkType] = [
+    .unspecified,
+    .noConnection,
+    .wifi,
+    .wwan2G,
+    .wwan3G,
+    .wwan4G,
+  ]
+}
+
+#endif  // swift(>=4.2)
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
@@ -172,6 +250,7 @@ extension Gojek_Clickstream_Internal_HealthMeta: SwiftProtobuf.Message, SwiftPro
     6: .same(proto: "device"),
     7: .same(proto: "session"),
     8: .same(proto: "app"),
+    9: .same(proto: "network"),
   ]
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -183,6 +262,7 @@ extension Gojek_Clickstream_Internal_HealthMeta: SwiftProtobuf.Message, SwiftPro
       case 6: try decoder.decodeSingularMessageField(value: &self._device)
       case 7: try decoder.decodeSingularMessageField(value: &self._session)
       case 8: try decoder.decodeSingularMessageField(value: &self._app)
+      case 9: try decoder.decodeSingularMessageField(value: &self._network)
       default: break
       }
     }
@@ -207,6 +287,9 @@ extension Gojek_Clickstream_Internal_HealthMeta: SwiftProtobuf.Message, SwiftPro
     if let v = self._app {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 8)
     }
+    if let v = self._network {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 9)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -217,9 +300,21 @@ extension Gojek_Clickstream_Internal_HealthMeta: SwiftProtobuf.Message, SwiftPro
     if lhs._device != rhs._device {return false}
     if lhs._session != rhs._session {return false}
     if lhs._app != rhs._app {return false}
+    if lhs._network != rhs._network {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
+}
+
+extension Gojek_Clickstream_Internal_HealthMeta.NetworkType: SwiftProtobuf._ProtoNameProviding {
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    0: .same(proto: "NETWORK_TYPE_UNSPECIFIED"),
+    1: .same(proto: "NETWORK_TYPE_NO_CONNECTION"),
+    2: .same(proto: "NETWORK_TYPE_WIFI"),
+    3: .same(proto: "NETWORK_TYPE_WWAN2G"),
+    4: .same(proto: "NETWORK_TYPE_WWAN3G"),
+    5: .same(proto: "NETWORK_TYPE_WWAN4G"),
+  ]
 }
 
 extension Gojek_Clickstream_Internal_HealthMeta.App: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
@@ -404,6 +499,35 @@ extension Gojek_Clickstream_Internal_HealthMeta.Session: SwiftProtobuf.Message, 
 
   static func ==(lhs: Gojek_Clickstream_Internal_HealthMeta.Session, rhs: Gojek_Clickstream_Internal_HealthMeta.Session) -> Bool {
     if lhs.sessionID != rhs.sessionID {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Gojek_Clickstream_Internal_HealthMeta.Network: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = Gojek_Clickstream_Internal_HealthMeta.protoMessageName + ".Network"
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "type"),
+  ]
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      switch fieldNumber {
+      case 1: try decoder.decodeSingularEnumField(value: &self.type)
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if self.type != .unspecified {
+      try visitor.visitSingularEnumField(value: self.type, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Gojek_Clickstream_Internal_HealthMeta.Network, rhs: Gojek_Clickstream_Internal_HealthMeta.Network) -> Bool {
+    if lhs.type != rhs.type {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

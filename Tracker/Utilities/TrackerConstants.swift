@@ -14,14 +14,29 @@ public enum TrackedVia: String, Codable {
     case both = "both" // Track internally and externally
 }
 
-public struct ClickstreamTrackerConstant {
+public struct TrackerConstant {
     public static let DebugEventsNotification = NSNotification.Name(rawValue: "ClickstreamDebugNotifications")
     public static let TraceStartNotification = NSNotification.Name(rawValue: "ClickstreamTraceStartNotification")
     public static let TraceStopNotification = NSNotification.Name(rawValue: "ClickstreamTraceEventsNotification")
     
+    static var deviceMake = "Apple"
+    static var deviceOS = "iOS"
+    
     public static let eventName = "eventName"
     public static let eventProperties = "event_properties"
+    public static let clickstream_timestamp = "clickstream_timestamp"
+    public static let clickstream_event_guid = "clickstream_event_guid"
+    public static let clickstream_event_batch_guid = "clickstream_event_batch_guid"
+    public static let clickstream_sessionId = "clickstream_sessionId"
+    public static let clickstream_error_reason = "clickstream_error_reason"
+    public static let clickstream_event_guid_list = "clickstream_event_guid_list"
+    public static let clickstream_event_count = "clickstream_event_count"
+    public static let clickstream_timestamp_list = "clickstream_timestamp_list"
+    public static let clickstream_event_batch_guid_list = "clickstream_event_batch_guid_list"
     
+    public static let propertyLengthConstraint = 13
+    
+    static let HealthEventType = "healthEvent"
     
     enum Events: String, Codable, CaseIterable {
         
@@ -62,58 +77,15 @@ public struct ClickstreamTrackerConstant {
         case aggregate = "aggregate"
     }
     
-    static let InstantEvents: [ClickstreamTrackerConstant.Events] = [.ClickstreamEventBatchTimeout, .ClickstreamConnectionSuccess]
-     static let AggregateEvents: [ClickstreamTrackerConstant.Events] = [.ClickstreamEventReceived,
+    static let InstantEvents: [TrackerConstant.Events] = [.ClickstreamEventBatchTimeout, .ClickstreamConnectionSuccess]
+    static let AggregateEvents: [TrackerConstant.Events] = [.ClickstreamEventReceived,
                                             .ClickstreamBatchSent, .ClickstreamEventBatchTriggerFailed,
                                             .ClickstreamEventBatchSuccessAck,
                                             .ClickstreamEventBatchErrorResponse, .ClickstreamFlushOnBackground,
                                             .ClickstreamEventBatchCreated]
     
-     static let trackedViaClickstream: [ClickstreamTrackerConstant.Events] = [.ClickstreamEventReceived,
+    static let trackedViaClickstream: [TrackerConstant.Events] = [.ClickstreamEventReceivedForDropRate, .ClickstreamEventReceived,
                                                   .ClickstreamEventCached, .ClickstreamEventBatchCreated,
                                                   .ClickstreamBatchSent, .ClickstreamEventBatchSuccessAck,
                                                   .ClickstreamFlushOnBackground]
-}
-
-public enum ClickstreamDebugConstants {
-    // MARK: - Strings
-    enum Strings {
-        static var deviceMake = "Apple"
-        static var deviceOS = "iOS"
-    }
-    
-    internal enum Traces: String {
-        case ClickstreamSocketConnectionTime = "ClickstreamSocketConnectionTimeTrace"
-    }
-    
-    static let HealthEventType = "healthEvent"
-    
-    
-    
-    public static let propertyLengthConstraint = 13
-    
-    public static let eventName = "eventName"
-    public static let eventProperties = "event_properties"
-    public static let clickstream_sessionId = "clickstream_sessionId"
-    public static let bucketType = "bucket_type"
-    public static let clickstream_event_batch_guid_list = "clickstream_event_batch_guid_list"
-    public static let clickstream_event_guid_list = "clickstream_event_guid_list"
-    public static let clickstream_event_batch_guid = "clickstream_event_batch_guid"
-    public static let clickstream_event_guid = "clickstream_event_guid"
-    public static let clickstream_error_reason = "clickstream_error_reason"
-    public static let clickstream_event_count = "clickstream_event_count"
-    public static let clickstream_timestamp = "clickstream_timestamp"
-    public static let clickstream_timestamp_list = "clickstream_timestamp_list"
-    
-    public static var traceName = "traceName"
-    public static var traceAttributes = "traceAttributes"
-    
-     struct Health {
-        
-        enum ErrorReasons: String {
-            case failedToRetrieveCommonProperties = "failedToRetrieveCommonProperties"
-            case failedToRetrieveClassification = "failedToRetrieveClassification"
-            case failedToConvertToDEEventProto = "failedToConvertToDEEventProto"
-        }
-    }
 }

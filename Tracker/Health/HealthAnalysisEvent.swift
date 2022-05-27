@@ -12,8 +12,8 @@ import GRDB
 struct HealthAnalysisEvent: Codable, Equatable, AnalysisEvent {
     
     private(set) var guid: String
-    private(set) var eventName: ClickstreamTrackerConstant.Events
-    private(set) var eventType: ClickstreamTrackerConstant.EventType
+    private(set) var eventName: TrackerConstant.Events
+    private(set) var eventType: TrackerConstant.EventType
     private(set) var timestamp: String
     private(set) var reason: String?
     private(set) var eventGUID: String?
@@ -23,7 +23,7 @@ struct HealthAnalysisEvent: Codable, Equatable, AnalysisEvent {
     // Needs to be kept optional, as the old SQL schema will not have this field.
     private(set) var trackedVia: String?
     
-    init?(eventName: ClickstreamTrackerConstant.Events,
+    init?(eventName: TrackerConstant.Events,
           events: String? = nil,
           eventGUID: String? = nil,
           eventBatchGUID: String? = nil,
@@ -40,7 +40,7 @@ struct HealthAnalysisEvent: Codable, Equatable, AnalysisEvent {
         self.reason = reason
         self.eventGUID = eventGUID
         self.eventBatchGUID = eventBatchGUID
-        self.eventType = ClickstreamTrackerConstant.InstantEvents.contains(eventName) ? .instant : .aggregate
+        self.eventType = TrackerConstant.InstantEvents.contains(eventName) ? .instant : .aggregate
         self.events = events
         self.guid = UUID().uuidString
         self.sessionID = Tracker.sharedInstance?.commonProperties?.session.sessionId
@@ -64,31 +64,31 @@ struct HealthAnalysisEvent: Codable, Equatable, AnalysisEvent {
 extension HealthAnalysisEvent: Notifiable {
     
     func notify() {
-        var properties: [String: Any] = [ClickstreamDebugConstants.clickstream_timestamp: timestamp]
+        var properties: [String: Any] = [TrackerConstant.clickstream_timestamp: timestamp]
         
         if let eventGUID = eventGUID {
-            properties[ClickstreamDebugConstants.clickstream_event_guid] = eventGUID
+            properties[TrackerConstant.clickstream_event_guid] = eventGUID
         }
         
         if let eventBatchGUID = eventBatchGUID {
-            properties[ClickstreamDebugConstants.clickstream_event_batch_guid] = eventBatchGUID
+            properties[TrackerConstant.clickstream_event_batch_guid] = eventBatchGUID
         }
         
         if let events = events {
-            properties[ClickstreamDebugConstants.clickstream_event_guid_list] = events
+            properties[TrackerConstant.clickstream_event_guid_list] = events
         }
         
         if let sessionID = sessionID {
-            properties[ClickstreamDebugConstants.clickstream_sessionId] = sessionID
+            properties[TrackerConstant.clickstream_sessionId] = sessionID
         }
         
         if let reason = reason {
-            properties[ClickstreamDebugConstants.clickstream_error_reason] = reason
+            properties[TrackerConstant.clickstream_error_reason] = reason
         }
         
-        let dict: [String : Any] = [ClickstreamDebugConstants.eventName: eventName.rawValue,
-                                    ClickstreamDebugConstants.eventProperties: properties]
-        NotificationCenter.default.post(name: ClickstreamTrackerConstant.DebugEventsNotification, object: dict)
+        let dict: [String : Any] = [TrackerConstant.eventName: eventName.rawValue,
+                                    TrackerConstant.eventProperties: properties]
+        NotificationCenter.default.post(name: TrackerConstant.DebugEventsNotification, object: dict)
     }
 }
 

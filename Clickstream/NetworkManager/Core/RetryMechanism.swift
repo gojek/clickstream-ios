@@ -54,15 +54,13 @@ final class DefaultRetryMechanism: Retryable {
         #if TRACKER_ENABLED
         if !isReachable && Tracker.debugMode {
             let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
-                                                  reason: ClickstreamTrackerConstant.EventReason.networkUnavailable.rawValue)
+                                                  reason: TrackerConstant.EventReason.networkUnavailable.rawValue)
             Tracker.sharedInstance?.record(event: healthEvent)
         }
-        #endif
         
-        #if TRACKER_ENABLED
         if isOnLowPower && Tracker.debugMode {
             let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
-                                                  reason: ClickstreamTrackerConstant.EventReason.lowBattery.rawValue)
+                                                  reason: TrackerConstant.EventReason.lowBattery.rawValue)
             Tracker.sharedInstance?.record(event: healthEvent)
         }
         #endif
@@ -193,9 +191,15 @@ extension DefaultRetryMechanism {
                             print("Error: Parsing Exception for eventRequest guid \(eventRequest.guid)", .verbose)
                             #if TRACKER_ENABLED
                             if Tracker.debugMode {
-                                let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamWriteToSocketFailed,
-                                                                      eventBatchGUID: eventRequest.guid,
-                                                                      reason: ClickstreamTrackerConstant.EventReason.ParsingException.rawValue)
+                                var healthEvent: HealthAnalysisEvent!
+                                if Tracker.sharedInstance?.verbosityLevel == .minimum {
+                                    healthEvent = HealthAnalysisEvent(eventName: .ClickstreamWriteToSocketFailed,
+                                                                          reason: TrackerConstant.EventReason.ParsingException.rawValue)
+                                } else {
+                                    healthEvent = HealthAnalysisEvent(eventName: .ClickstreamWriteToSocketFailed,
+                                                                          eventBatchGUID: eventRequest.guid,
+                                                                          reason: TrackerConstant.EventReason.ParsingException.rawValue)
+                                }
                                 Tracker.sharedInstance?.record(event: healthEvent)
                             }
                             #endif

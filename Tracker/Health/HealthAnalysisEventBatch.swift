@@ -9,7 +9,7 @@
 import Foundation
 
 struct HealthAnalysisEventBatch: Codable, Equatable {
-    private(set) var eventName: ClickstreamTrackerConstant.Events
+    private(set) var eventName: TrackerConstant.Events
     private(set) var count: Int
     private(set) var timeStamps: String
     private(set) var eventGUIDs: String
@@ -17,7 +17,7 @@ struct HealthAnalysisEventBatch: Codable, Equatable {
     private(set) var sessionID: String?
     private(set) var reason: String?
     
-    init(eventName: ClickstreamTrackerConstant.Events,
+    init(eventName: TrackerConstant.Events,
          count: Int, timeStamps: String,
          eventGUIDs: String,
          eventBatchGUIDs: String,
@@ -35,27 +35,27 @@ struct HealthAnalysisEventBatch: Codable, Equatable {
 extension HealthAnalysisEventBatch: Notifiable {
     
     func notify() {
-        var properties: [String: Any] = [ClickstreamDebugConstants.clickstream_event_count: count,
-                                          ClickstreamDebugConstants.clickstream_timestamp_list: timeStamps]
+        var properties: [String: Any] = [TrackerConstant.clickstream_event_count: count,
+                                         TrackerConstant.clickstream_timestamp_list: timeStamps]
         
         if let sessionID = sessionID {
-            properties[ClickstreamDebugConstants.clickstream_sessionId] = sessionID
+            properties[TrackerConstant.clickstream_sessionId] = sessionID
         }
         
         if let reason = reason {
-            properties[ClickstreamDebugConstants.clickstream_error_reason] = reason
+            properties[TrackerConstant.clickstream_error_reason] = reason
         }
         
         if !eventGUIDs.isEmpty {
-             properties[ClickstreamDebugConstants.clickstream_event_guid_list] = eventGUIDs
+             properties[TrackerConstant.clickstream_event_guid_list] = eventGUIDs
         }
         
         if !eventBatchGUIDs.isEmpty {
-             properties[ClickstreamDebugConstants.clickstream_event_batch_guid_list] = eventBatchGUIDs
+             properties[TrackerConstant.clickstream_event_batch_guid_list] = eventBatchGUIDs
         }
         
-        let dict: [String: Any] = [ClickstreamDebugConstants.eventName: eventName.rawValue,
-                                   ClickstreamDebugConstants.eventProperties: properties]
-        NotificationCenter.default.post(name: ClickstreamTrackerConstant.DebugEventsNotification, object: dict)
+        let dict: [String: Any] = [TrackerConstant.eventName: eventName.rawValue,
+                                   TrackerConstant.eventProperties: properties]
+        NotificationCenter.default.post(name: TrackerConstant.DebugEventsNotification, object: dict)
     }
 }

@@ -38,6 +38,41 @@ struct Gojek_Clickstream_Internal_HealthDetails {
   init() {}
 }
 
+struct Gojek_Clickstream_Internal_ErrorDetails {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var reason: String = String()
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+struct Gojek_Clickstream_Internal_TraceDetails {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var timeToConnection: String = String()
+
+  var errorDetails: Gojek_Clickstream_Internal_ErrorDetails {
+    get {return _errorDetails ?? Gojek_Clickstream_Internal_ErrorDetails()}
+    set {_errorDetails = newValue}
+  }
+  /// Returns true if `errorDetails` has been explicitly set.
+  var hasErrorDetails: Bool {return self._errorDetails != nil}
+  /// Clears the value of `errorDetails`. Subsequent reads from it will return its default value.
+  mutating func clearErrorDetails() {self._errorDetails = nil}
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  fileprivate var _errorDetails: Gojek_Clickstream_Internal_ErrorDetails? = nil
+}
+
 struct Gojek_Clickstream_Internal_Health {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
@@ -61,6 +96,26 @@ struct Gojek_Clickstream_Internal_Health {
 
   /// Number of event batches tracked.
   var numberOfBatches: Int64 = 0
+
+  /// Tracks the error details for the event
+  var errorDetails: Gojek_Clickstream_Internal_ErrorDetails {
+    get {return _errorDetails ?? Gojek_Clickstream_Internal_ErrorDetails()}
+    set {_errorDetails = newValue}
+  }
+  /// Returns true if `errorDetails` has been explicitly set.
+  var hasErrorDetails: Bool {return self._errorDetails != nil}
+  /// Clears the value of `errorDetails`. Subsequent reads from it will return its default value.
+  mutating func clearErrorDetails() {self._errorDetails = nil}
+
+  /// Tracks the traces
+  var traceDetails: Gojek_Clickstream_Internal_TraceDetails {
+    get {return _traceDetails ?? Gojek_Clickstream_Internal_TraceDetails()}
+    set {_traceDetails = newValue}
+  }
+  /// Returns true if `traceDetails` has been explicitly set.
+  var hasTraceDetails: Bool {return self._traceDetails != nil}
+  /// Clears the value of `traceDetails`. Subsequent reads from it will return its default value.
+  mutating func clearTraceDetails() {self._traceDetails = nil}
 
   /// Note: Auto-filled by the ClickStream SDK, need not be set by the products for every event! If set, will be overridden.
   var eventTimestamp: SwiftProtobuf.Google_Protobuf_Timestamp {
@@ -98,6 +153,8 @@ struct Gojek_Clickstream_Internal_Health {
   init() {}
 
   fileprivate var _healthDetails: Gojek_Clickstream_Internal_HealthDetails? = nil
+  fileprivate var _errorDetails: Gojek_Clickstream_Internal_ErrorDetails? = nil
+  fileprivate var _traceDetails: Gojek_Clickstream_Internal_TraceDetails? = nil
   fileprivate var _eventTimestamp: SwiftProtobuf.Google_Protobuf_Timestamp? = nil
   fileprivate var _healthMeta: Gojek_Clickstream_Internal_HealthMeta? = nil
   fileprivate var _deviceTimestamp: SwiftProtobuf.Google_Protobuf_Timestamp? = nil
@@ -142,6 +199,70 @@ extension Gojek_Clickstream_Internal_HealthDetails: SwiftProtobuf.Message, Swift
   }
 }
 
+extension Gojek_Clickstream_Internal_ErrorDetails: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".ErrorDetails"
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "reason"),
+  ]
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      switch fieldNumber {
+      case 1: try decoder.decodeSingularStringField(value: &self.reason)
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.reason.isEmpty {
+      try visitor.visitSingularStringField(value: self.reason, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Gojek_Clickstream_Internal_ErrorDetails, rhs: Gojek_Clickstream_Internal_ErrorDetails) -> Bool {
+    if lhs.reason != rhs.reason {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Gojek_Clickstream_Internal_TraceDetails: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".TraceDetails"
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .standard(proto: "time_to_connection"),
+    2: .standard(proto: "error_details"),
+  ]
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      switch fieldNumber {
+      case 1: try decoder.decodeSingularStringField(value: &self.timeToConnection)
+      case 2: try decoder.decodeSingularMessageField(value: &self._errorDetails)
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.timeToConnection.isEmpty {
+      try visitor.visitSingularStringField(value: self.timeToConnection, fieldNumber: 1)
+    }
+    if let v = self._errorDetails {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Gojek_Clickstream_Internal_TraceDetails, rhs: Gojek_Clickstream_Internal_TraceDetails) -> Bool {
+    if lhs.timeToConnection != rhs.timeToConnection {return false}
+    if lhs._errorDetails != rhs._errorDetails {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
 extension Gojek_Clickstream_Internal_Health: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Health"
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
@@ -149,6 +270,8 @@ extension Gojek_Clickstream_Internal_Health: SwiftProtobuf.Message, SwiftProtobu
     2: .same(proto: "healthDetails"),
     3: .standard(proto: "number_of_events"),
     4: .standard(proto: "number_of_batches"),
+    5: .standard(proto: "error_details"),
+    6: .standard(proto: "trace_details"),
     101: .standard(proto: "event_timestamp"),
     103: .same(proto: "healthMeta"),
     104: .standard(proto: "device_timestamp"),
@@ -161,6 +284,8 @@ extension Gojek_Clickstream_Internal_Health: SwiftProtobuf.Message, SwiftProtobu
       case 2: try decoder.decodeSingularMessageField(value: &self._healthDetails)
       case 3: try decoder.decodeSingularInt64Field(value: &self.numberOfEvents)
       case 4: try decoder.decodeSingularInt64Field(value: &self.numberOfBatches)
+      case 5: try decoder.decodeSingularMessageField(value: &self._errorDetails)
+      case 6: try decoder.decodeSingularMessageField(value: &self._traceDetails)
       case 101: try decoder.decodeSingularMessageField(value: &self._eventTimestamp)
       case 103: try decoder.decodeSingularMessageField(value: &self._healthMeta)
       case 104: try decoder.decodeSingularMessageField(value: &self._deviceTimestamp)
@@ -182,6 +307,12 @@ extension Gojek_Clickstream_Internal_Health: SwiftProtobuf.Message, SwiftProtobu
     if self.numberOfBatches != 0 {
       try visitor.visitSingularInt64Field(value: self.numberOfBatches, fieldNumber: 4)
     }
+    if let v = self._errorDetails {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 5)
+    }
+    if let v = self._traceDetails {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 6)
+    }
     if let v = self._eventTimestamp {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 101)
     }
@@ -199,6 +330,8 @@ extension Gojek_Clickstream_Internal_Health: SwiftProtobuf.Message, SwiftProtobu
     if lhs._healthDetails != rhs._healthDetails {return false}
     if lhs.numberOfEvents != rhs.numberOfEvents {return false}
     if lhs.numberOfBatches != rhs.numberOfBatches {return false}
+    if lhs._errorDetails != rhs._errorDetails {return false}
+    if lhs._traceDetails != rhs._traceDetails {return false}
     if lhs._eventTimestamp != rhs._eventTimestamp {return false}
     if lhs._healthMeta != rhs._healthMeta {return false}
     if lhs._deviceTimestamp != rhs._deviceTimestamp {return false}
