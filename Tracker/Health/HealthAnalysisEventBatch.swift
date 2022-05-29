@@ -12,15 +12,15 @@ struct HealthAnalysisEventBatch: Codable, Equatable {
     private(set) var eventName: TrackerConstant.Events
     private(set) var count: Int
     private(set) var timeStamps: String
-    private(set) var eventGUIDs: String
-    private(set) var eventBatchGUIDs: String
+    private(set) var eventGUIDs: [String]
+    private(set) var eventBatchGUIDs: [String]
     private(set) var sessionID: String?
     private(set) var reason: String?
     
     init(eventName: TrackerConstant.Events,
          count: Int, timeStamps: String,
-         eventGUIDs: String,
-         eventBatchGUIDs: String,
+         eventGUIDs: [String],
+         eventBatchGUIDs: [String],
          reason: String?) {
         self.eventName = eventName
         self.count = count
@@ -34,28 +34,16 @@ struct HealthAnalysisEventBatch: Codable, Equatable {
 
 extension HealthAnalysisEventBatch: Notifiable {
     
-    func notify() {
-        var properties: [String: Any] = [TrackerConstant.clickstream_event_count: count,
-                                         TrackerConstant.clickstream_timestamp_list: timeStamps]
+    func notify() {        
+        let healthDTO = HealthTrackerDTO()
+        healthDTO.eventName = self.eventName.rawValue
+        healthDTO.sessionID = sessionID
+        healthDTO.failureReason = reason
+        healthDTO.eventGUIDs = self.eventGUIDs
+        healthDTO.eventBatchGUIDs = self.eventBatchGUIDs
         
-        if let sessionID = sessionID {
-            properties[TrackerConstant.clickstream_sessionId] = sessionID
-        }
+        healthDTO.eventCount = healthDTO.eventGUIDs?.count
         
-        if let reason = reason {
-            properties[TrackerConstant.clickstream_error_reason] = reason
-        }
-        
-        if !eventGUIDs.isEmpty {
-             properties[TrackerConstant.clickstream_event_guid_list] = eventGUIDs
-        }
-        
-        if !eventBatchGUIDs.isEmpty {
-             properties[TrackerConstant.clickstream_event_batch_guid_list] = eventBatchGUIDs
-        }
-        
-        let dict: [String: Any] = [TrackerConstant.eventName: eventName.rawValue,
-                                   TrackerConstant.eventProperties: properties]
-        NotificationCenter.default.post(name: TrackerConstant.DebugEventsNotification, object: dict)
+        NotificationCenter.default.post(name: TrackerConstant.DebugEventsNotification, object: healthDTO)
     }
 }

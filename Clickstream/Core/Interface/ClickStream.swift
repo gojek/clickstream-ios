@@ -160,6 +160,5 @@ extension Clickstream {
     public func getTracker() -> Tracker? {
         return Tracker.sharedInstance
     }
-    
 }
 #endif

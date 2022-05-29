@@ -30,18 +30,14 @@ Pod::Spec.new do |s|
   s.dependency    "ReachabilitySwift"
   s.dependency    "GRDB.swift", "5.12.0"
   s.dependency    "Starscream", "4.0.4"
-  s.default_subspec  = 'Lite'
+  s.default_subspec  = 'Core'
 
-  s.subspec 'Lite' do |lite|
-    # ss.source_files = 'GRDB/**/*.swift'
-    # ss.library = 'sqlite3'
+  s.subspec 'Core' do |core|
   end
 
   s.subspec 'Tracker' do |tracker|
     tracker.source_files = 'Tracker/**/*.swift'
-    tracker.xcconfig =  { 'OTHER_CFLAGS' => '$(inherited) -DTRACKER_ENABLED' }
-
-    # ss.library = 'sqlite3'
+    tracker.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) TRACKER_ENABLED' }
   end
 
 

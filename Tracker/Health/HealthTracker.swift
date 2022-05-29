@@ -8,8 +8,6 @@
 
 import Foundation
 
-//typealias HealthConstants = ClickstreamDebugConstants.Health
-
 final class HealthTracker {
     
     private let daoQueue = DispatchQueue(label: Constants.QueueIdentifiers.dao.rawValue,
@@ -96,35 +94,21 @@ final class HealthTracker {
                 
                 arrayOfAggreagatedEvents.forEach { (eventArray) in
                     if let eventName = eventArray.first?.eventName  {
-                        let chunks = eventArray.chunked(into: TrackerConstant.propertyLengthConstraint)
-                        for chunk in chunks {
-                            let eventTimeStamps = chunk.map { $0.timestamp }
+                            let eventTimeStamps = eventArray.map { $0.timestamp }
                             let eventTimeStampString = "\(eventTimeStamps.joined(separator: ", "))"
                             
-                            let eventBatchGUIDs: [String] = chunk.compactMap { $0.eventBatchGUID }
-                            let eventBatchGUIDsString = "\(eventBatchGUIDs.joined(separator: ", "))"
+                            let eventBatchGUIDs: [String] = eventArray.compactMap { $0.eventBatchGUID }
                             
-                            let eventGUIDs: [String] = chunk.compactMap { $0.eventGUID }
-                            var eventGUIDsString: String = ""
-                            if !eventGUIDs.isEmpty {
-                                eventGUIDsString = "\(eventGUIDs.joined(separator: ", "))"
-                            } else {
-                                let eventsStrings = chunk.compactMap {$0.events}
-                                for eventString in eventsStrings {
-                                    eventGUIDsString += eventString
-                                }
-                            }
+                            let eventGUIDs: [String] = eventArray.compactMap { $0.eventGUID }
                             
-                            let healthAnalysisEventBatch = HealthAnalysisEventBatch(eventName: eventName, count: chunk.count,
+                            let healthAnalysisEventBatch = HealthAnalysisEventBatch(eventName: eventName, count: eventArray.count,
                                                                                     timeStamps: eventTimeStampString,
-                                                                                    eventGUIDs: eventGUIDsString,
-                                                                                    eventBatchGUIDs: eventBatchGUIDsString,
-                                                                                    reason: chunk.first?.reason)
+                                                                                    eventGUIDs: eventGUIDs,
+                                                                                    eventBatchGUIDs: eventBatchGUIDs,
+                                                                                    reason: eventArray.first?.reason)
                             healthAnalysisEventBatch.notify()
-                        }
                     }
                 }
-//            }
         }        
     }
     

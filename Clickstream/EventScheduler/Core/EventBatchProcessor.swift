@@ -183,15 +183,7 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
 
 private extension DefaultEventBatchProcessor {
     
-    func flushObservabilityEvents() {
-        
-        if let events = Tracker.sharedInstance?.getEvents() {
-            for event in events {
-                print("event \(event)")
-            }
-        }
-        
-        
+    func flushObservabilityEvents() {        
         #if TRACKER_ENABLED
         if eventBatchCreator.canForward, let events = Tracker.sharedInstance?.getEvents(), !events.isEmpty {
             eventBatchCreator.forward(with: events)

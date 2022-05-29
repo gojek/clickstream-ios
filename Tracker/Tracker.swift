@@ -16,17 +16,13 @@ public protocol ClickstreamTrackerDataSource {
     func currentUserLocation() -> CSLocation?
 }
 
-protocol AnalysisEvent {
-    
-}
+protocol AnalysisEvent { }
 
 public final class Tracker {
     
     private(set) var healthTracker: HealthTracker
     
     static var sharedInstance: Tracker?
-    
-    internal var verbosityLevel: VerbosityLevel = .minimum
     
     // Holds the health tracking configs for the SDK
     internal static var healthTrackingConfigs: ClickstreamHealthConfigurations!
@@ -158,7 +154,7 @@ public final class Tracker {
                 $0.deviceTimestamp = Google_Protobuf_Timestamp(date: Date())
             }
             
-            if ClickstreamHealthConfigurations.logVerbose || key == .ClickstreamEventReceived {
+            if ClickstreamHealthConfigurations.logVerbose || key == .ClickstreamEventReceivedForDropRate {
                 let healthEventDetails = Gojek_Clickstream_Internal_HealthDetails.with {
                     $0.eventGuids = eventGuids
                     $0.eventBatchGuids = eventBatchGuids
@@ -209,9 +205,5 @@ public final class Tracker {
     /// - Parameter commonProperties: CSCommonProperties
     public func updateCommonProperties(commonProperties: CSCommonProperties) {
         self.commonProperties = commonProperties
-    }
-    
-    public func setVerbosity(verbosityLevel: VerbosityLevel) {
-        self.verbosityLevel = verbosityLevel
     }
 }

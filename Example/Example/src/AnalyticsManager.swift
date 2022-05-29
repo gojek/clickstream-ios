@@ -32,14 +32,17 @@ class AnalyticsManager {
                                                           constraints: constraints,
                                                           eventClassification: classification)
             
-            
-            
-            let configs = ClickstreamHealthConfigurations(minimumTrackedVersion: "0.1", trackedVia: .both)
-            let commonProperties = CSCommonProperties(customer: self.getCustomerInfo(), session: getSessionInfo(), app: getAppInfo())
-            self.clickstream?.setTracker(configs: configs, commonProperties: commonProperties, dataSource: self)
+            self.setClickstreamTracker()
         } catch  {
             print(error.localizedDescription)
         }
+    }
+    
+    /// Set Clickstream Health Tracker
+    private func setClickstreamTracker() {
+        let configs = ClickstreamHealthConfigurations(minimumTrackedVersion: "0.1", verbosityLevel: .maximum, trackedVia: .internal)
+        let commonProperties = CSCommonProperties(customer: self.getCustomerInfo(), session: getSessionInfo(), app: getAppInfo())
+        self.clickstream?.setTracker(configs: configs, commonProperties: commonProperties, dataSource: self)
     }
     
     private func getAppInfo() -> CSAppInfo {
@@ -85,11 +88,8 @@ extension AnalyticsManager: ClickstreamTrackerDataSource {
 
 extension AnalyticsManager {
     @objc private func handleClickStreamDebugNotification(_ notification: Notification) {
-        guard let object = notification.object as? [String: Any],
-            let eventName = object[TrackerConstant.eventName] as? String,
-            let properties = object[TrackerConstant.eventProperties] as? [String: Any] else {
-            return
+        if let object = notification.object as? HealthTrackerDTO {
+            print("\(object.eventName): \(object)")
         }
-        print("\(eventName): \(properties)")
     }
 }

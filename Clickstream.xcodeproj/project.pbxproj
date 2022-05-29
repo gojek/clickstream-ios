@@ -125,6 +125,8 @@
 		9A8E11452487533C000C544E /* EventProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A8E11442487533C000C544E /* EventProcessor.swift */; };
 		9A8E11472487A65F000C544E /* EventProcessorDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A8E11462487A65F000C544E /* EventProcessorDependencies.swift */; };
 		9AAFBAEB24754F0A009BFDFB /* SortedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2E4A422474E831002FC449 /* SortedArray.swift */; };
+		9ABA38602843FC1C000B14E7 /* HealthTrackerDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ABA385F2843FC1C000B14E7 /* HealthTrackerDTO.swift */; };
+		9ABA38612843FC1C000B14E7 /* HealthTrackerDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ABA385F2843FC1C000B14E7 /* HealthTrackerDTO.swift */; };
 		9AC2C4D6247E8D8800CDE82C /* DeviceStatusNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AC2C4D5247E8D8800CDE82C /* DeviceStatusNotifier.swift */; };
 		9AC2C4D92481138800CDE82C /* DeviceStatusNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AC2C4D5247E8D8800CDE82C /* DeviceStatusNotifier.swift */; };
 		9AC3D7A626BCEA1D002701FF /* ClickstreamEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AC3D7A526BCEA1D002701FF /* ClickstreamEvent.swift */; };
@@ -259,6 +261,7 @@
 		9AA23D1024AB2801001BE490 /* EventProcessorDependenciesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventProcessorDependenciesTests.swift; sourceTree = "<group>"; };
 		9AAFBAE924754CEF009BFDFB /* SortedArrayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortedArrayTests.swift; sourceTree = "<group>"; };
 		9AB88AA0251B00030092659B /* ClickStreamTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClickStreamTests.swift; sourceTree = "<group>"; };
+		9ABA385F2843FC1C000B14E7 /* HealthTrackerDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthTrackerDTO.swift; sourceTree = "<group>"; };
 		9AC2C4D5247E8D8800CDE82C /* DeviceStatusNotifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceStatusNotifier.swift; sourceTree = "<group>"; };
 		9AC3D7A526BCEA1D002701FF /* ClickstreamEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickstreamEvent.swift; sourceTree = "<group>"; };
 		9ACCD6B428080F57006BD993 /* NetworkManagerDependencies.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkManagerDependencies.swift; sourceTree = "<group>"; };
@@ -714,6 +717,7 @@
 				9A2B9EFA281FC57A009317C3 /* ClickStreamHealthConfigurations.swift */,
 				9A2B9EFF281FEFEF009317C3 /* CSCommonPropertiesDTO.swift */,
 				9A2B9EFE281FEFEF009317C3 /* CSLocationDTO.swift */,
+				9ABA385F2843FC1C000B14E7 /* HealthTrackerDTO.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -1013,6 +1017,7 @@
 				9A2B9EEA281FBF9E009317C3 /* AppVersionChecker.swift in Sources */,
 				65B8248034CA816A64778A73 /* EventRequest.pb.swift in Sources */,
 				0A2513DBC3A22E1EC696890B /* EventResponse.pb.swift in Sources */,
+				9ABA38602843FC1C000B14E7 /* HealthTrackerDTO.swift in Sources */,
 				4C1E4C99098332F58FB2E11D /* Event.pb.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1035,6 +1040,7 @@
 				9A2B9ED9281FBF9E009317C3 /* HealthAnalysisEvent.swift in Sources */,
 				68E6395A25F8D7A100BAF2BB /* DatabaseHandler.swift in Sources */,
 				68E19FE0247E9DC50074A790 /* ClickStreamEventClassification.swift in Sources */,
+				9ABA38612843FC1C000B14E7 /* HealthTrackerDTO.swift in Sources */,
 				68316329260CB2690095DBCA /* BatchSizeRegulatorMock.swift in Sources */,
 				68E19FE1247E9DCC0074A790 /* JSONStringDecoder.swift in Sources */,
 				9AC3D7A726BCEA1D002701FF /* ClickstreamEvent.swift in Sources */,
@@ -1255,7 +1261,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = RELEASE;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) TRACKER_ENABLED";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1329,7 +1335,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = INTEGRATION;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) TRACKER_ENABLED";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1397,7 +1403,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = PRODUCTION;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) TRACKER_ENABLED";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1466,7 +1472,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = ALPHA;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) TRACKER_ENABLED";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

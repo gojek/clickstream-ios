@@ -8,7 +8,7 @@
 
 import Foundation
 
-/// /// Defines the various log levels of the SDK.
+/// Defines the various log levels of the SDK.
 public enum VerbosityLevel {
     case minimum
     case maximum
