@@ -1,0 +1,14 @@
+CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/GRDB.swift"
+LIBRARY_SEARCH_PATHS = $(inherited) "${DT_TOOLCHAIN_DIR}/usr/lib/swift/${PLATFORM_NAME}" "${PODS_CONFIGURATION_BUILD_DIR}/GRDB.swift" "${PODS_CONFIGURATION_BUILD_DIR}/ReachabilitySwift" "${PODS_CONFIGURATION_BUILD_DIR}/Starscream" "${PODS_CONFIGURATION_BUILD_DIR}/SwiftProtobuf" /usr/lib/swift
+OTHER_CFLAGS = $(inherited) -fmodule-map-file="${PODS_CONFIGURATION_BUILD_DIR}/GRDB.swift/GRDB.modulemap" -fmodule-map-file="${PODS_CONFIGURATION_BUILD_DIR}/ReachabilitySwift/Reachability.modulemap" -fmodule-map-file="${PODS_CONFIGURATION_BUILD_DIR}/Starscream/Starscream.modulemap" -fmodule-map-file="${PODS_CONFIGURATION_BUILD_DIR}/SwiftProtobuf/SwiftProtobuf.modulemap"
+OTHER_LDFLAGS = $(inherited) -ObjC -l"GRDB.swift" -l"ReachabilitySwift" -l"Starscream" -l"SwiftProtobuf" -l"sqlite3" -framework "CoreTelephony" -framework "Foundation" -framework "SystemConfiguration"
+OTHER_SWIFT_FLAGS = $(inherited) -D COCOAPODS -Xcc -fmodule-map-file="${PODS_CONFIGURATION_BUILD_DIR}/GRDB.swift/GRDB.modulemap" -Xcc -fmodule-map-file="${PODS_CONFIGURATION_BUILD_DIR}/ReachabilitySwift/Reachability.modulemap" -Xcc -fmodule-map-file="${PODS_CONFIGURATION_BUILD_DIR}/Starscream/Starscream.modulemap" -Xcc -fmodule-map-file="${PODS_CONFIGURATION_BUILD_DIR}/SwiftProtobuf/SwiftProtobuf.modulemap"
+PODS_BUILD_DIR = ${BUILD_DIR}
+PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
+PODS_PODFILE_DIR_PATH = ${SRCROOT}/.
+PODS_ROOT = ${SRCROOT}/Pods
+PODS_XCFRAMEWORKS_BUILD_DIR = $(PODS_CONFIGURATION_BUILD_DIR)/XCFrameworkIntermediates
+SWIFT_INCLUDE_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/GRDB.swift" "${PODS_CONFIGURATION_BUILD_DIR}/ReachabilitySwift" "${PODS_CONFIGURATION_BUILD_DIR}/Starscream" "${PODS_CONFIGURATION_BUILD_DIR}/SwiftProtobuf"
+USE_RECURSIVE_SCRIPT_INPUTS_IN_SCRIPT_PHASES = YES
