@@ -50,10 +50,6 @@ extension Event: DatabasePersistable {
         }
     }
     
-    static var codableCacheKey: String {
-        return "realTime"
-    }
-    
     static var primaryKey: String {
         return "guid"
     }

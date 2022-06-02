@@ -9,15 +9,29 @@
 import Foundation
 
 struct HealthAnalysisEventBatch: Codable, Equatable {
-    private(set) var eventName: TrackerConstant.Events
+    
+    /// Health event name
+    private(set) var eventName: HealthEvents
+    
+    /// Number of health events being sent
     private(set) var count: Int
+    
+    /// List of timestamps of client app event
     private(set) var timeStamps: String
+    
+    /// List of GUIDs of client app event
     private(set) var eventGUIDs: [String]
+    
+    /// Batch GUID of client app event
     private(set) var eventBatchGUIDs: [String]
+    
+    /// Client app session ID
     private(set) var sessionID: String?
+    
+    /// Error reason like socket failure or JSON parsion error
     private(set) var reason: String?
     
-    init(eventName: TrackerConstant.Events,
+    init(eventName: HealthEvents,
          count: Int, timeStamps: String,
          eventGUIDs: [String],
          eventBatchGUIDs: [String],

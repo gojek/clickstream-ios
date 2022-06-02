@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '11.0'
   s.swift_version    = '5.0'
 
-  s.source_files  = 'Clickstream/**/*.swift', 'Clickstream/Shared/**/*.swift'
+  s.source_files  = 'Clickstream/**/*.swift'
   s.exclude_files = "Example"
   s.frameworks    = "UIKit", "Foundation", "CoreTelephony"
   

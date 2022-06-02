@@ -74,7 +74,7 @@ final class HealthTracker {
                 
                 var arrayOfAggreagatedEvents = [[HealthAnalysisEvent]]()
                 
-                for event in TrackerConstant.Events.allCases {
+                for event in HealthEvents.allCases {
                     let eventNameBasedAggregation = aggregatedEvents.filter { $0.eventName ==  event }
                     if eventNameBasedAggregation.isEmpty {
                         continue

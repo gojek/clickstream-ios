@@ -9,21 +9,41 @@
 import Foundation
 import GRDB
 
+/// Health event to track Drop Rate,  socket  & JSON parsion errors
 struct HealthAnalysisEvent: Codable, Equatable, AnalysisEvent {
     
+    /// Unique GUID of health event
     private(set) var guid: String
-    private(set) var eventName: TrackerConstant.Events
+
+    /// Health event name
+    private(set) var eventName: HealthEvents
+    
+    /// Defines how event will be flushed i.e. Instantly/Aggredated
     private(set) var eventType: TrackerConstant.EventType
+    
+    /// Timestamp for health event
     private(set) var timestamp: String
+    
+    /// Error reason like socket failure or JSON parsion error
     private(set) var reason: String?
+    
+    /// GUID of client app event
     private(set) var eventGUID: String?
+    
+    /// Batch GUID of client app event
     private(set) var eventBatchGUID: String?
+    
+    /// List of GUIDs of client app event
     private(set) var events: String?
+    
+    /// Client app session ID
     private(set) var sessionID: String?
-    // Needs to be kept optional, as the old SQL schema will not have this field.
+    
+    /// Needs to be kept optional, as the old SQL schema will not have this field.
+    /// Medium via which the health events will be tracked
     private(set) var trackedVia: String?
     
-    init?(eventName: TrackerConstant.Events,
+    init?(eventName: HealthEvents,
           events: String? = nil,
           eventGUID: String? = nil,
           eventBatchGUID: String? = nil,
@@ -105,10 +125,6 @@ extension HealthAnalysisEvent: DatabasePersistable {
         get {
             return "healthAnalysisEvent"
         }
-    }
-    
-    static var codableCacheKey: String {
-        return Constants.CacheIdentifiers.healthAnalytics.rawValue
     }
     
     static var primaryKey: String {

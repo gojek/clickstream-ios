@@ -45,12 +45,6 @@ enum Constants {
         case tracker = "com.gojek.clickstream.tracker"
     }
     
-    enum CacheIdentifiers: CacheIdentifier {
-        case retry = "com.clickstream.retryCache"
-        case healthAnalytics = "com.gojek.clickstream.healthAnalyticsCache"
-        case performanceAnalytics = "com.gojek.clickstream.performanceAnalyticsCache"
-    }
-    
     enum EventType: String, Codable {
         case instant = "instant"
         case realTime = "realTime"

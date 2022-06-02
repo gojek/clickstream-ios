@@ -174,7 +174,7 @@ extension DefaultRetryMechanism {
                             checkedSelf.removeFromCache(with: guid)
                             
                             if let eventType = eventRequest.eventType, !(eventType == .internalEvent) {
-                                checkedSelf.trackHealthAndPerformanceEvents(eventRequest: eventRequest)
+                                checkedSelf.trackHealthEvents(eventRequest: eventRequest)
                             }
                         }
                     } else {
@@ -382,7 +382,7 @@ extension DefaultRetryMechanism {
 
 extension DefaultRetryMechanism {
     
-    func trackHealthAndPerformanceEvents(eventRequest: EventRequest) {
+    func trackHealthEvents(eventRequest: EventRequest) {
         #if TRACKER_ENABLED
         if Tracker.debugMode {
             guard eventRequest.eventType != Constants.EventType.instant else { return }

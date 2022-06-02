@@ -19,6 +19,7 @@ public struct ClickstreamHealthConfigurations {
     // Enable tracking for following platform like CleverTap, ClickStream etc.
     private(set) var trackedVia: TrackedVia
     
+    /// Enable verbosity level of event properties
     private(set) var verbosityLevel: VerbosityLevel?
     
     public init(minimumTrackedVersion: String,
