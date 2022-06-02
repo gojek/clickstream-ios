@@ -49,7 +49,7 @@ enum FailureReason: String, Codable, CaseIterable {
 }
 
 public struct TrackerConstant {
-    public static let DebugEventsNotification = NSNotification.Name(rawValue: "ClickstreamDebugNotifications")
+    //TODO: Added Traces after merging Health tracking
     public static let TraceStartNotification = NSNotification.Name(rawValue: "ClickstreamTraceStartNotification")
     public static let TraceStopNotification = NSNotification.Name(rawValue: "ClickstreamTraceEventsNotification")
     

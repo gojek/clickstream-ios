@@ -96,7 +96,7 @@ extension DefaultNetworkBuilder {
         let eventGUIDs: [String] = eventBatch.events.compactMap { $0.guid }
         let eventGUIDsString = "\(eventGUIDs.joined(separator: ", "))"
         
-        let healthEvent = HealthAnalysisEvent(eventName:  TrackerConstant.Events.ClickstreamBatchSent,
+        let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamBatchSent,
                                               events: eventGUIDsString,
                                               eventBatchGUID: eventBatch.uuid)
         Tracker.sharedInstance?.record(event: healthEvent)

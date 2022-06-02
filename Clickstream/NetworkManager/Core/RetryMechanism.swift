@@ -54,13 +54,13 @@ final class DefaultRetryMechanism: Retryable {
         #if TRACKER_ENABLED
         if !isReachable && Tracker.debugMode {
             let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
-                                                  reason: TrackerConstant.EventReason.networkUnavailable.rawValue)
+                                                  reason: FailureReason.networkUnavailable.rawValue)
             Tracker.sharedInstance?.record(event: healthEvent)
         }
         
         if isOnLowPower && Tracker.debugMode {
             let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
-                                                  reason: TrackerConstant.EventReason.lowBattery.rawValue)
+                                                  reason: FailureReason.lowBattery.rawValue)
             Tracker.sharedInstance?.record(event: healthEvent)
         }
         #endif
@@ -195,10 +195,10 @@ extension DefaultRetryMechanism {
                                 if ClickstreamHealthConfigurations.logVerbose {
                                     healthEvent = HealthAnalysisEvent(eventName: .ClickstreamWriteToSocketFailed,
                                                                           eventBatchGUID: eventRequest.guid,
-                                                                          reason: TrackerConstant.EventReason.ParsingException.rawValue)
+                                                                          reason: FailureReason.ParsingException.rawValue)
                                 } else {
                                     healthEvent = HealthAnalysisEvent(eventName: .ClickstreamWriteToSocketFailed,
-                                                                          reason: TrackerConstant.EventReason.ParsingException.rawValue)
+                                                                          reason: FailureReason.ParsingException.rawValue)
                                 }
                                 Tracker.sharedInstance?.record(event: healthEvent)
                             }

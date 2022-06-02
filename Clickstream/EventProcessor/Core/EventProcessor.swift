@@ -55,7 +55,7 @@ final class DefaultEventProcessor: EventProcessor {
         
         #if TRACKER_ENABLED
         if Tracker.debugMode {
-            let _eventGuid = event.guid.appending("_\(typeOfEvent)")
+            let _eventGuid = event.guid.appending("_\(Tracker.healthTrackingConfigs.dropRateEventName)")
             let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventReceivedForDropRate, eventGUID: _eventGuid)
             Tracker.sharedInstance?.record(event: healthEvent)
         }

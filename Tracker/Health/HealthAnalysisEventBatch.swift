@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Used for tracking health events in aggregated form
 struct HealthAnalysisEventBatch: Codable, Equatable {
     
     /// Health event name
@@ -49,7 +50,7 @@ struct HealthAnalysisEventBatch: Codable, Equatable {
 extension HealthAnalysisEventBatch: Notifiable {
     
     func notify() {        
-        let healthDTO = HealthTrackerDTO()
+        var healthDTO = HealthTrackerDTO()
         healthDTO.eventName = self.eventName.rawValue
         healthDTO.sessionID = sessionID
         healthDTO.failureReason = reason
@@ -58,6 +59,7 @@ extension HealthAnalysisEventBatch: Notifiable {
         
         healthDTO.eventCount = healthDTO.eventGUIDs?.count
         
-        NotificationCenter.default.post(name: TrackerConstant.DebugEventsNotification, object: healthDTO)
+        // Send health event back to client app
+        Tracker.sharedInstance?.delegate.getHealthEvent(event: healthDTO)
     }
 }

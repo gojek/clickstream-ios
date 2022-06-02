@@ -84,7 +84,7 @@ struct HealthAnalysisEvent: Codable, Equatable, AnalysisEvent {
 extension HealthAnalysisEvent: Notifiable {
     
     func notify() {        
-        let healthDTO = HealthTrackerDTO()
+        var healthDTO = HealthTrackerDTO()
         healthDTO.eventName = eventName.rawValue
         healthDTO.sessionID = sessionID
         if let eventGUID = self.eventGUID {
@@ -99,7 +99,8 @@ extension HealthAnalysisEvent: Notifiable {
         healthDTO.failureReason = reason
         healthDTO.eventCount = healthDTO.eventGUIDs?.count
     
-        NotificationCenter.default.post(name: TrackerConstant.DebugEventsNotification, object: healthDTO)
+        // Send health event back to client app
+        Tracker.sharedInstance?.delegate.getHealthEvent(event: healthDTO)
     }
 }
 

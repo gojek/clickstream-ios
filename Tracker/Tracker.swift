@@ -9,7 +9,13 @@
 import Foundation
 import SwiftProtobuf
 
-public protocol ClickstreamTrackerDataSource {
+/// Conform to this delegate to receive health events at client app.
+public protocol TrackerDelegate: AnyObject {
+    func getHealthEvent(event: HealthTrackerDTO)
+}
+
+/// Conform to this data source to send the current user location details to Clcikstream SDK
+public protocol TrackerDataSource {
     
     /// Returns the current user location as `CSLocation` instance.
     /// - Returns: `CSLocation` instance.
@@ -39,11 +45,14 @@ public final class Tracker {
     private var appStateNotifier: AppStateNotifierService
     private let database: Database
     
+    /// ClickstreamDelegate.
+    internal private(set) var delegate: TrackerDelegate
+
     /// ClickStreamDataSource.
-    private var _dataSource: ClickstreamTrackerDataSource
+    private var _dataSource: TrackerDataSource
     
     /// readonly public accessor for dataSource.
-    public var dataSource: ClickstreamTrackerDataSource {
+    public var dataSource: TrackerDataSource {
         get {
             return _dataSource
         }
@@ -51,19 +60,20 @@ public final class Tracker {
     
     init(appStateNotifier: AppStateNotifierService,
          db: Database,
-         dataSource: ClickstreamTrackerDataSource) {
+         dataSource: TrackerDataSource, delegate: TrackerDelegate) {
         self.database = db
         self.appStateNotifier = appStateNotifier
         self.healthTracker = HealthTracker(performOnQueue: Tracker.queue,
                                            db: database)
         self._dataSource = dataSource
+        self.delegate = delegate
         self.observeAppStateChanges()
         self.flushOnAppUpgrade()
     }
     
     @discardableResult
-    static func initialise(dataSource: ClickstreamTrackerDataSource, commonProperties: CSCommonProperties,
-                                  healthTrackingConfigs: ClickstreamHealthConfigurations) -> Tracker? {
+    static func initialise(commonProperties: CSCommonProperties, healthTrackingConfigs: ClickstreamHealthConfigurations,
+                           dataSource: TrackerDataSource, delegate: TrackerDelegate) -> Tracker? {
         
         Tracker.healthTrackingConfigs = healthTrackingConfigs
         
@@ -81,7 +91,7 @@ public final class Tracker {
                 }
                 
                 sharedInstance = Tracker(appStateNotifier: DefaultAppStateNotifierService(with: queue),
-                                         db: db, dataSource: dataSource)
+                                         db: db, dataSource: dataSource, delegate: delegate)
                 sharedInstance?.commonProperties = commonProperties
                 return sharedInstance
             }
