@@ -133,11 +133,6 @@ extension HealthAnalysisEvent: DatabasePersistable {
     }
     
     static var tableMigrations: [(version: VersionIdentifier, alteration: (TableAlteration) -> Void)]? {
-
-        let addsTrackedVia: (TableAlteration) -> Void = { t in
-            t.add(column: "trackedVia", .text)
-        }
-        
-        return [("addsTrackedViaToHealthEvent", addsTrackedVia)]
+        return nil
     }
 }
