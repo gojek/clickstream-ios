@@ -70,6 +70,18 @@ extension DefaultNetworkBuilder {
                 }
                 
                 checkedSelf.retryMech.trackBatch(with: eventRequest)
+                #if EVENT_VISUALIZER_ENABLED
+                /// Update status of the event batch to sent to network
+                /// to check if the delegate is connected, if not no event should be sent to client
+                if let stateViewer = Clickstream._stateViewer {
+                    for event in eventBatch.events {
+                        /// Updating the event state to sent based on eventGuid.
+                        /// Also eventBatchID is also sent which would be used later to map these events and
+                        /// then update the state to acknowledged.
+                        stateViewer.updateStatus(providedEventGuid: event.guid, eventBatchID: eventBatch.uuid, state: .sent)
+                    }
+                }
+                #endif
                 completion?(nil)
             } catch {
                 print("There was an error from the Network builder. Description: \(error)",.critical)

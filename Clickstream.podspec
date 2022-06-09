@@ -40,5 +40,10 @@ Pod::Spec.new do |s|
     tracker.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) TRACKER_ENABLED' }
   end
 
+  s.subspec 'EventVisualizer' do |eventVisualizer|
+    eventVisualizer.source_files = 'EventVisualizer/**/*.swift'
+    eventVisualizer.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) EVENT_VISUALIZER_ENABLED' }
+  end
+
 
 end

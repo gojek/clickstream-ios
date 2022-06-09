@@ -33,20 +33,26 @@ class ClickstreamViewController: UIViewController {
     }
     
     @IBAction func sendEventToClickstream(_ sender: UIButton) {
-        self.analyticsManager.trackEvent(message: self.createUser())
+        let eventGuid = UUID().uuidString
+        self.analyticsManager.trackEvent(guid: eventGuid, message: self.createUser(eventGuid: eventGuid))
     }
     
     @IBAction func sendMultipleEventsToClickstream(_ sender: UIButton) {
         DispatchQueue.concurrentPerform(iterations: 10) { index in
-            self.analyticsManager.trackEvent(message: self.createUser())
+            let eventGuid = UUID().uuidString
+            self.analyticsManager.trackEvent(guid: eventGuid, message: self.createUser(eventGuid: eventGuid))
         }
+    }
+    
+    @IBAction func openEventVisualizer(_ sender: Any) {
+        self.analyticsManager.openEventVisualizer(onController: self)
     }
     
     /// Create User from field values
     /// - Returns: User
-    private func createUser() -> User {
+    private func createUser(eventGuid: String) -> User {
         let user = User.with {
-            $0.guid = Int32.random(in: 0..<1000)
+            $0.guid = eventGuid
             $0.name = self.textFieldName.text ?? ""
             $0.age = Int32("\(String(describing: self.textFieldAge.text))") ?? 0
             $0.gender = self.textFieldGender.text ?? ""

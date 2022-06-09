@@ -33,6 +33,9 @@ class AnalyticsManager {
                                                           eventClassification: classification)
             
             self.setClickstreamTracker()
+            #if EVENT_VISUALIZER_ENABLED
+            EventsHelper.shared.startCapturing()
+            #endif
         } catch  {
             print(error.localizedDescription)
         }
@@ -42,7 +45,7 @@ class AnalyticsManager {
     private func setClickstreamTracker() {
         let configs = ClickstreamHealthConfigurations(minimumTrackedVersion: "0.1", verbosityLevel: .maximum, trackedVia: .internal)
         let commonProperties = CSCommonProperties(customer: self.getCustomerInfo(), session: getSessionInfo(), app: getAppInfo())
-        self.clickstream?.setTracker(configs: configs, commonProperties: commonProperties, dataSource: self)
+//        self.clickstream?.setTracker(configs: configs, commonProperties: commonProperties, dataSource: self)
     }
     
     private func getAppInfo() -> CSAppInfo {
@@ -61,13 +64,13 @@ class AnalyticsManager {
     
     /// Track events using Clickstream
     /// - Parameter message: Proto that needs to be tracked
-    func trackEvent(message: Message) {
+    func trackEvent(guid: String, message: Message) {
         guard let clickstream = clickstream else {
             assertionFailure("Need to initialise clicksteam first before trying to send events!")
             return
         }
 
-        let eventDTO = ClickstreamEvent(guid: UUID().uuidString,
+        let eventDTO = ClickstreamEvent(guid: guid,
                                         timeStamp: Date(),
                                         message: message)
         clickstream.trackEvent(with: eventDTO)
@@ -77,6 +80,18 @@ class AnalyticsManager {
     func disconnect() {
         Clickstream.destroy()
         clickstream = nil
+    }
+    
+    func openEventVisualizer(onController: UIViewController) {
+        #if EVENT_VISUALIZER_ENABLED
+        let viewController = EventVisualizerLandingViewController()
+        viewController.hidesBottomBarWhenPushed = true
+        let navVC = UINavigationController(rootViewController: viewController)
+        navVC.modalPresentationStyle = .overCurrentContext
+        navVC.navigationBar.barTintColor = UIColor.white
+        navVC.navigationBar.tintColor = UIColor.black
+        onController.present(navVC, animated: true, completion: nil)
+        #endif
     }
 }
 

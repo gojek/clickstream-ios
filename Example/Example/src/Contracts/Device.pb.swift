@@ -6,7 +6,9 @@
 //
 // For information on using the generated types, please see the documentation:
 //   https://github.com/apple/swift-protobuf/
-
+#if EVENT_VISUALIZER_ENABLED
+import Clickstream
+#endif
 import Foundation
 import SwiftProtobuf
 
@@ -51,7 +53,9 @@ struct Device {
 
   init() {}
 }
-
+#if EVENT_VISUALIZER_ENABLED
+extension Device: CollectionMapper { }
+#endif
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 extension Device: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
