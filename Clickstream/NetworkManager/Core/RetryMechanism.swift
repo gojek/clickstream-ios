@@ -192,14 +192,9 @@ extension DefaultRetryMechanism {
                             #if TRACKER_ENABLED
                             if Tracker.debugMode {
                                 var healthEvent: HealthAnalysisEvent!
-                                if ClickstreamHealthConfigurations.logVerbose {
-                                    healthEvent = HealthAnalysisEvent(eventName: .ClickstreamWriteToSocketFailed,
-                                                                          eventBatchGUID: eventRequest.guid,
-                                                                          reason: FailureReason.ParsingException.rawValue)
-                                } else {
-                                    healthEvent = HealthAnalysisEvent(eventName: .ClickstreamWriteToSocketFailed,
-                                                                          reason: FailureReason.ParsingException.rawValue)
-                                }
+                                healthEvent = HealthAnalysisEvent(eventName: .ClickstreamWriteToSocketFailed,
+                                                                  eventBatchGUID: eventRequest.guid,
+                                                                  reason: FailureReason.ParsingException.rawValue)
                                 Tracker.sharedInstance?.record(event: healthEvent)
                             }
                             #endif

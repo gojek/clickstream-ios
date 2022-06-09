@@ -19,7 +19,7 @@ public struct HealthTrackerDTO {
     public internal(set) var failureReason: String?
     
     /// Time taken to connect to socket
-    public internal(set) var timeToConnection: Date?
+    public internal(set) var timeToConnection: String?
     
     /// List of GUIDs of client app event
     public internal(set) var eventGUIDs: [String]?

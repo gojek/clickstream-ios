@@ -43,11 +43,14 @@ struct HealthAnalysisEvent: Codable, Equatable, AnalysisEvent {
     /// Medium via which the health events will be tracked
     private(set) var trackedVia: String?
     
+    private(set) var timeToConnection: String?
+    
     init?(eventName: HealthEvents,
           events: String? = nil,
           eventGUID: String? = nil,
           eventBatchGUID: String? = nil,
-          reason: String? = nil) {
+          reason: String? = nil,
+          timeToConnection: String? = nil) {
         
         // Don't initialize if debugMode is off
         guard Tracker.debugMode  else {
@@ -64,12 +67,13 @@ struct HealthAnalysisEvent: Codable, Equatable, AnalysisEvent {
         self.events = events
         self.guid = UUID().uuidString
         self.sessionID = Tracker.sharedInstance?.commonProperties?.session.sessionId
+        self.timeToConnection = timeToConnection
         
         self.trackedVia = Tracker.healthTrackingConfigs.trackedVia.rawValue
     }
     
     private enum CodingKeys : String, CodingKey {
-        case guid,eventName,eventType,timestamp,reason,eventGUID,eventBatchGUID,events,sessionID,trackedVia
+        case guid,eventName,eventType,timestamp,reason,eventGUID,eventBatchGUID,events,sessionID,trackedVia, timeToConnection
     }
     
     static func == (lhs: HealthAnalysisEvent, rhs: HealthAnalysisEvent) -> Bool {
@@ -96,6 +100,7 @@ extension HealthAnalysisEvent: Notifiable {
         if let eventBatchGUID = self.eventBatchGUID {
             healthDTO.eventBatchGUIDs = [eventBatchGUID]
         }
+        healthDTO.timeToConnection = self.timeToConnection
         healthDTO.failureReason = reason
         healthDTO.eventCount = healthDTO.eventGUIDs?.count
     
@@ -133,6 +138,14 @@ extension HealthAnalysisEvent: DatabasePersistable {
     }
     
     static var tableMigrations: [(version: VersionIdentifier, alteration: (TableAlteration) -> Void)]? {
-        return nil
+        let addsTrackedVia: (TableAlteration) -> Void = { t in
+            t.add(column: "trackedVia", .text)
+        }
+        
+        let addsTimeToConnection: (TableAlteration) -> Void = { t in
+            t.add(column: "timeToConnection", .text)
+        }
+        
+        return [("addsTrackedViaToHealthEvent", addsTrackedVia), ("addsTimeToConnectionToHealthEvent", addsTimeToConnection)]        
     }
 }

@@ -77,9 +77,5 @@ public struct TrackerConstant {
         case aggregate = "aggregate"
     }
     
-    static let InstantEvents: [HealthEvents] = [.ClickstreamEventBatchTimeout, .ClickstreamConnectionSuccess]
-    static let AggregateEvents: [HealthEvents] = [.ClickstreamEventReceived, .ClickstreamBatchSent,
-                                                  .ClickstreamEventBatchTriggerFailed, .ClickstreamEventBatchSuccessAck,
-                                                  .ClickstreamEventBatchErrorResponse, .ClickstreamFlushOnBackground,
-                                                  .ClickstreamEventBatchCreated]
+    static let InstantEvents: [HealthEvents] = [.ClickstreamEventBatchTimeout, .ClickstreamConnectionSuccess, .ClickstreamConnectionFailure, .ClickstreamEventReceivedForDropRate, .ClickstreamEventBatchErrorResponse, .ClickstreamWriteToSocketFailed, .ClickstreamEventBatchTriggerFailed]
 }

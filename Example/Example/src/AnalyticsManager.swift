@@ -44,7 +44,7 @@ class AnalyticsManager {
         let sessionInfo = CSSessionInfo(sessionId: "1001")
         let appInfo = CSAppInfo(version: "1.1.0")
         let commonProperties = CSCommonProperties(customer: customerInfo, session: sessionInfo, app: appInfo)
-        let configs = ClickstreamHealthConfigurations(minimumTrackedVersion: "0.1", trackedVia: .both, dropRateEventName: User.protoMessageName)
+        let configs = ClickstreamHealthConfigurations(minimumTrackedVersion: "0.1", trackedVia: .internal)
         
         self.clickstream?.setTracker(configs: configs, commonProperties: commonProperties, dataSource: self, delegate: self)
     }

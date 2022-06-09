@@ -19,33 +19,24 @@ public struct ClickstreamHealthConfigurations {
     /// Enable tracking for following platform like CleverTap, ClickStream etc.
     private(set) var trackedVia: TrackedVia
     
-    /// Enable verbosity level of event properties
-    private(set) var verbosityLevel: VerbosityLevel?
-    
     /// Proto message name or any other string that will be used to distinguish drop rate health event.
     /// If you want to use a proto message name the you can directly call like this:- User.protoMessageName or CardEvent.protoMessageName
     private(set) var dropRateEventName: String
     
     public init(minimumTrackedVersion: String,
                 randomisingUserIdRemainders: [Int32]? = nil,
-                verbosityLevel: VerbosityLevel? = VerbosityLevel.minimum,
                 trackedVia: TrackedVia,
-                dropRateEventName: String) {
+                dropRateEventName: String? = nil) {
         
         self.minimumTrackedVersion = minimumTrackedVersion
         self.randomisingUserIdRemainders = randomisingUserIdRemainders
-        self.verbosityLevel = verbosityLevel
         self.trackedVia = trackedVia
-        self.dropRateEventName = dropRateEventName
-    }
-    
-    static var logVerbose: Bool {
-        return Tracker.healthTrackingConfigs?.verbosityLevel == .maximum
+        self.dropRateEventName = dropRateEventName ?? ""
     }
     
     func debugMode(userID: Int32, currentAppVersion: String) -> Bool {
         if minimumTrackedVersion.compare(currentAppVersion, options: .numeric) == .orderedAscending {
-            print("currentAppVersion is newer")
+            print("currentAppVersion is newer", .verbose)
             
             if let randomisingUserIdRemainders = self.randomisingUserIdRemainders {
                 let randomisingUserIDRemainder = userID % 10

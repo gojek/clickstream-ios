@@ -129,20 +129,74 @@ public final class Tracker {
         guard let eventsToBeFlushed = healthTracker.flushFunnelEvents() else { return nil }
         guard let commonProperties = commonProperties else { return nil }
         
-        let groupingDictionary = Dictionary(grouping: eventsToBeFlushed, by: { $0.eventName })
-        for (key, eventNameBasedAggregation) in groupingDictionary {
+        let metaData = Gojek_Clickstream_Internal_HealthMeta.with {
+            $0.device = commonProperties.device.proto
+            $0.customer = commonProperties.customer.proto
+            $0.session = commonProperties.session.proto
+            $0.app = commonProperties.app.proto
+            if let location =  location?.proto { // If the user's enabled the location only then send the location.
+                $0.location = location
+            }
+        }
+        
+        // Get instant health events
+        let instantEvents = eventsToBeFlushed.filter { $0.eventType == TrackerConstant.EventType.instant }
+        events.append(contentsOf: getInstantEvents(instantEvents: instantEvents, metaData: metaData))
+        
+        // Get aggregated health events
+        let aggregatedEvents = eventsToBeFlushed.filter { $0.eventType == TrackerConstant.EventType.aggregate }
+        events.append(contentsOf: getAggregatedEvents(aggregatedEvents: aggregatedEvents, metaData: metaData))
+        
+        return events
+    }
+    
+    private func getInstantEvents(instantEvents: [HealthAnalysisEvent], metaData: Gojek_Clickstream_Internal_HealthMeta) -> [Event] {
+        var events = [Event]()
+        for event in instantEvents {
+            let eventGuid = UUID().uuidString
             
-            let metaData = Gojek_Clickstream_Internal_HealthMeta.with {
-                $0.eventGuid = UUID().uuidString
-                $0.device = commonProperties.device.proto
-                $0.customer = commonProperties.customer.proto
-                $0.session = commonProperties.session.proto
-                $0.app = commonProperties.app.proto
-                if let location =  location?.proto { // If the user's enabled the location only then send the location.
-                    $0.location = location
+            let healthEvent = Gojek_Clickstream_Internal_Health.with {
+                $0.eventName = event.eventName.rawValue
+                $0.numberOfEvents = 1 // Since instant events are fired one at a time
+                $0.healthMeta = metaData
+                $0.healthMeta.eventGuid = eventGuid
+                
+                $0.healthDetails = Gojek_Clickstream_Internal_HealthDetails.with {
+                    if let eventGUID = event.eventGUID {
+                        $0.eventGuids = [eventGUID]
+                    }
+                    
+                    if let eventBatchGUID = event.eventBatchGUID {
+                        $0.eventBatchGuids = [eventBatchGUID]
+                    }
+                }
+                
+                if let timeToConnection = event.timeToConnection {
+                    $0.traceDetails = Gojek_Clickstream_Internal_TraceDetails.with {
+                        $0.timeToConnection = timeToConnection
+                        
+                        $0.errorDetails = Gojek_Clickstream_Internal_ErrorDetails.with {
+                            $0.reason = event.reason ?? ""
+                        }
+                    }
+                }
+                $0.errorDetails = Gojek_Clickstream_Internal_ErrorDetails.with {
+                    $0.reason = event.reason ?? ""
                 }
             }
             
+            if let event = constructEvent(healthEvent: healthEvent, eventGuid: eventGuid) {
+                events.append(event)
+            }
+        }
+        return events
+    }
+    
+    private func getAggregatedEvents(aggregatedEvents: [HealthAnalysisEvent], metaData: Gojek_Clickstream_Internal_HealthMeta) -> [Event] {
+        var events = [Event]()
+        let groupingDictionary = Dictionary(grouping: aggregatedEvents, by: { $0.eventName })
+        for (key, eventNameBasedAggregation) in groupingDictionary {
+            let eventGuid = UUID().uuidString
             var eventGuids = eventNameBasedAggregation.compactMap { $0.eventGUID }
             if eventGuids.isEmpty {
                 eventNameBasedAggregation.forEach {
@@ -158,38 +212,49 @@ public final class Tracker {
                 $0.numberOfEvents = Int64(eventGuids.count)
                 $0.numberOfBatches = Int64(eventBatchGuids.count)
                 $0.healthMeta = metaData
+                $0.healthMeta.eventGuid = eventGuid
+                
                 let currentTimestamp = Date()
                 $0.eventTimestamp = Google_Protobuf_Timestamp(date: currentTimestamp)
                 $0.eventName = key.rawValue
                 $0.deviceTimestamp = Google_Protobuf_Timestamp(date: Date())
             }
             
-            if ClickstreamHealthConfigurations.logVerbose || key == .ClickstreamEventReceivedForDropRate {
-                let healthEventDetails = Gojek_Clickstream_Internal_HealthDetails.with {
-                    $0.eventGuids = eventGuids
-                    $0.eventBatchGuids = eventBatchGuids
-                }
-                healthEvent.healthDetails = healthEventDetails
+            let healthEventDetails = Gojek_Clickstream_Internal_HealthDetails.with {
+                $0.eventGuids = eventGuids
+                $0.eventBatchGuids = eventBatchGuids
             }
+            healthEvent.healthDetails = healthEventDetails
             
-            do {
-                // Constructing the Gojek_Clickstream_De_Event
-                let eventProto = try Odpf_Raccoon_Event.with {
-                    $0.eventBytes = try healthEvent.serializedData()
-                    if let typeOfEvent = type(of: healthEvent).protoMessageName.components(separatedBy: ".").last {
-                        $0.type = typeOfEvent.lowercased()
-                    }
-                }
-                let event = try Event(guid: metaData.eventGuid,
-                                      timestamp: Date(),
-                                      type: TrackerConstant.HealthEventType,
-                                      eventProtoData: eventProto.serializedData())
+            if let event = constructEvent(healthEvent: healthEvent, eventGuid: eventGuid) {
                 events.append(event)
-            } catch {
-                return nil
             }
         }
         return events
+    }
+    
+    /// Construct event
+    /// - Parameters:
+    ///   - healthEvent: Gojek_Clickstream_Internal_Health
+    ///   - eventGuid: Health meta guid
+    /// - Returns: Event
+    private func constructEvent(healthEvent: Gojek_Clickstream_Internal_Health, eventGuid: String) -> Event? {
+        do {
+            // Constructing the Gojek_Clickstream_De_Event
+            let eventProto = try Odpf_Raccoon_Event.with {
+                $0.eventBytes = try healthEvent.serializedData()
+                if let typeOfEvent = type(of: healthEvent).protoMessageName.components(separatedBy: ".").last {
+                    $0.type = typeOfEvent.lowercased()
+                }
+            }
+            let event = try Event(guid: eventGuid,
+                                  timestamp: Date(),
+                                  type: TrackerConstant.HealthEventType,
+                                  eventProtoData: eventProto.serializedData())
+            return event
+        } catch {
+            return nil
+        }
     }
     
     /// Flushes health events, being tracked via Clickstream, in case of an app upgrade.

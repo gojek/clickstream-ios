@@ -25,6 +25,8 @@ final class DefaultSocketHandler: SocketHandler {
     private var writeCallback: ((Result<Data?, ConnectableError>) -> Void)?
     private let performQueue: SerialQueue
     private var isRetryInProgress: Bool = false
+    /// Records the time stamp for the last connection request made
+    private var lastConnectRequestTimestamp: Date?
     
     var isConnected: Bool {
         get {
@@ -72,6 +74,8 @@ final class DefaultSocketHandler: SocketHandler {
             return
         } else if initiate || DefaultSocketHandler.retries > 0 {
             if !open {
+                lastConnectRequestTimestamp = Date()
+                print("socket-connecting", .verbose)
                 connectionCallback?(.success(.connecting))
                 webSocket?.connect()
             }
@@ -146,7 +150,8 @@ extension DefaultSocketHandler {
                 checkedSelf.connectionCallback?(.success(.connected))
                 #if TRACKER_ENABLED
                 if Tracker.debugMode {
-                    let event = HealthAnalysisEvent(eventName: .ClickstreamConnectionSuccess)
+                    let timeInterval = Date().timeIntervalSince(checkedSelf.lastConnectRequestTimestamp ?? Date())
+                    let event = HealthAnalysisEvent(eventName: .ClickstreamConnectionSuccess, timeToConnection: ("\(timeInterval)"))
                     Tracker.sharedInstance?.record(event: event)
                 }
                 #endif
@@ -157,8 +162,7 @@ extension DefaultSocketHandler {
                 checkedSelf.stopPing()
                 #if TRACKER_ENABLED
                 if Tracker.debugMode {
-                    let event = HealthAnalysisEvent(eventName: .ClickstreamConnectionDropped, reason: error.description)
-                    Tracker.sharedInstance?.record(event: event)
+                    checkedSelf.trackHealthEvent(eventName: .ClickstreamConnectionDropped, code: code)
                 }
                 #endif
             case .text(let responseString):
@@ -175,8 +179,8 @@ extension DefaultSocketHandler {
                 checkedSelf.writeCallback?(.failure(.failed))
                 #if TRACKER_ENABLED
                 if Tracker.debugMode {
-                    let event = HealthAnalysisEvent(eventName: .ClickstreamConnectionFailure, reason: error?.localizedDescription)
-                    Tracker.sharedInstance?.record(event: event)
+                    let timeInterval = Date().timeIntervalSince(checkedSelf.lastConnectRequestTimestamp ?? Date())
+                    self?.trackHealthEvent(eventName: .ClickstreamConnectionFailure, error: error, timeToConnection: ("\(timeInterval)"))
                 }
                 #endif
                 
@@ -234,5 +238,34 @@ extension SocketHandler {
                 return 1
             }
         }
+    }
+}
+
+extension DefaultSocketHandler {
+    func trackHealthEvent(eventName: HealthEvents,
+                          error: Error? = nil, code: UInt16? = nil, timeToConnection: String? = nil) {
+       #if TRACKER_ENABLED
+        guard Tracker.debugMode else { return }
+        if let error = error, case HTTPUpgradeError.notAnUpgrade(let code) = error {
+            
+            if code == 401 {
+                let event = HealthAnalysisEvent(eventName: eventName,
+                                                reason: FailureReason.AuthenticationError.rawValue, timeToConnection: timeToConnection)
+                Tracker.sharedInstance?.record(event: event)
+            } else if code == 1008 {
+                let event = HealthAnalysisEvent(eventName: eventName,
+                                                reason: FailureReason.DuplicateID.rawValue, timeToConnection: timeToConnection)
+                Tracker.sharedInstance?.record(event: event)
+            } else {
+                let event = HealthAnalysisEvent(eventName: eventName,
+                                                reason: error.localizedDescription, timeToConnection: timeToConnection)
+                Tracker.sharedInstance?.record(event: event)
+            }
+        } else if code == 1008 {
+            let event = HealthAnalysisEvent(eventName: eventName,
+                                            reason: FailureReason.DuplicateID.rawValue, timeToConnection: timeToConnection)
+            Tracker.sharedInstance?.record(event: event)
+        }
+     #endif
     }
 }
