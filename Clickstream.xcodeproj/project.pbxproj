@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		0A2513DBC3A22E1EC696890B /* EventResponse.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D7E5F007334D9078557F80 /* EventResponse.pb.swift */; };
 		27F8F3FDDD0A0E2575BE02F4 /* EventRequest.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFEE2E0E60B8C5900083BFDF /* EventRequest.pb.swift */; };
-		2AD658AA1339D7967E8C3914 /* libPods-Clickstream.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EC5A0259815C9E7C489803AE /* libPods-Clickstream.a */; };
 		2B738E065354EAECC5F9AF61 /* EventResponse.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D7E5F007334D9078557F80 /* EventResponse.pb.swift */; };
 		4B589E754884A9C9AA8916F7 /* Event.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF51A056722A46F9A66F1381 /* Event.pb.swift */; };
 		4C1E4C99098332F58FB2E11D /* Event.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF51A056722A46F9A66F1381 /* Event.pb.swift */; };
@@ -152,7 +151,6 @@
 		9AF0C768280DECF000E39A12 /* NetworkBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E7BD8B246184310072549A /* NetworkBuilderTests.swift */; };
 		9AF4618A2508AE7F00B28C09 /* Reachability+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF461892508AE7F00B28C09 /* Reachability+Extension.swift */; };
 		9AF461972509222700B28C09 /* Reachability+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF461892508AE7F00B28C09 /* Reachability+Extension.swift */; };
-		A4B8EFFF40490E9C361AD969 /* libPods-ClickstreamTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 57AC8533B13A4CD7D70333F9 /* libPods-ClickstreamTests.a */; };
 		BDA08E9E2851F746007B0D46 /* RadioLabelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA08E8B2851F746007B0D46 /* RadioLabelTableViewCell.swift */; };
 		BDA08E9F2851F746007B0D46 /* RadioLabelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA08E8B2851F746007B0D46 /* RadioLabelTableViewCell.swift */; };
 		BDA08EA02851F746007B0D46 /* FilterTextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA08E8C2851F746007B0D46 /* FilterTextFieldTableViewCell.swift */; };
@@ -206,8 +204,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		57AC8533B13A4CD7D70333F9 /* libPods-ClickstreamTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ClickstreamTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		5C52BD16038A4B2515A40B27 /* Pods-ClickstreamTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.release.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.release.xcconfig"; sourceTree = "<group>"; };
 		6804B36D27660C2A00BA904D /* DispatchSourceTimer+RepeatingTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DispatchSourceTimer+RepeatingTimer.swift"; sourceTree = "<group>"; };
 		680BEE0424EBE32000F61C82 /* EventRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventRequest.swift; sourceTree = "<group>"; };
 		681420F524767F9A0001A2C4 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -258,9 +254,6 @@
 		68E7BD86246028CF0072549A /* SocketHandlerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketHandlerMock.swift; sourceTree = "<group>"; };
 		68E7BD89246034F90072549A /* NetworkServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkServiceTests.swift; sourceTree = "<group>"; };
 		68E7BD8B246184310072549A /* NetworkBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkBuilderTests.swift; sourceTree = "<group>"; };
-		6E9BB0D1462D699E9533EB03 /* Pods-Clickstream.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.release.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.release.xcconfig"; sourceTree = "<group>"; };
-		7461C1E2E3EF1E432DC48F2F /* Pods-Clickstream.alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.alpha.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.alpha.xcconfig"; sourceTree = "<group>"; };
-		8C7424A08A2965B0B125BE9B /* Pods-Clickstream.integration.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.integration.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.integration.xcconfig"; sourceTree = "<group>"; };
 		9A2B9EC9281FBF9D009317C3 /* HealthTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HealthTracker.swift; sourceTree = "<group>"; };
 		9A2B9ECA281FBF9D009317C3 /* HealthAnalysisEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HealthAnalysisEvent.swift; sourceTree = "<group>"; };
 		9A2B9ECB281FBF9D009317C3 /* HealthAnalysisEventBatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HealthAnalysisEventBatch.swift; sourceTree = "<group>"; };
@@ -295,8 +288,6 @@
 		9ACCD6B928081267006BD993 /* ClickStreamDependencies.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClickStreamDependencies.swift; sourceTree = "<group>"; };
 		9ACF41E724ADEC7000A10832 /* MockConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockConstants.swift; sourceTree = "<group>"; };
 		9AF461892508AE7F00B28C09 /* Reachability+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reachability+Extension.swift"; sourceTree = "<group>"; };
-		9F56F3619636F050BB631491 /* Pods-Clickstream.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.debug.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.debug.xcconfig"; sourceTree = "<group>"; };
-		A2C1B4E8C405C2F4FD85921F /* Pods-ClickstreamTests.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.production.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.production.xcconfig"; sourceTree = "<group>"; };
 		BDA08E8B2851F746007B0D46 /* RadioLabelTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadioLabelTableViewCell.swift; sourceTree = "<group>"; };
 		BDA08E8C2851F746007B0D46 /* FilterTextFieldTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterTextFieldTableViewCell.swift; sourceTree = "<group>"; };
 		BDA08E8D2851F746007B0D46 /* EventsListingTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventsListingTableViewCell.swift; sourceTree = "<group>"; };
@@ -311,14 +302,9 @@
 		BDA08E9B2851F746007B0D46 /* UITableViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITableViewExtensions.swift; sourceTree = "<group>"; };
 		BDA08E9C2851F746007B0D46 /* EventStateViewable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventStateViewable.swift; sourceTree = "<group>"; };
 		BDA08E9D2851F746007B0D46 /* CollectionMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionMapper.swift; sourceTree = "<group>"; };
-		C100DF2252A3EC3E511EFBCD /* Pods-Clickstream.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.production.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.production.xcconfig"; sourceTree = "<group>"; };
-		C1C0ABC3C4ED756177E7A6FC /* Pods-ClickstreamTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.debug.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C3D7E5F007334D9078557F80 /* EventResponse.pb.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EventResponse.pb.swift; sourceTree = "<group>"; };
 		CFEE2E0E60B8C5900083BFDF /* EventRequest.pb.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EventRequest.pb.swift; sourceTree = "<group>"; };
-		EB023D52C748AFB1BF9EB1D9 /* Pods-ClickstreamTests.integration.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.integration.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.integration.xcconfig"; sourceTree = "<group>"; };
-		EC5A0259815C9E7C489803AE /* libPods-Clickstream.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Clickstream.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF51A056722A46F9A66F1381 /* Event.pb.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Event.pb.swift; sourceTree = "<group>"; };
-		F8B3B2B02F7B9F08E992A3F4 /* Pods-ClickstreamTests.alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.alpha.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.alpha.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -326,7 +312,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2AD658AA1339D7967E8C3914 /* libPods-Clickstream.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -335,35 +320,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				68E7BD202456E6F10072549A /* libClickstream.a in Frameworks */,
-				A4B8EFFF40490E9C361AD969 /* libPods-ClickstreamTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		018A7513784ED5FD565FA8DD /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				EC5A0259815C9E7C489803AE /* libPods-Clickstream.a */,
-				57AC8533B13A4CD7D70333F9 /* libPods-ClickstreamTests.a */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		2E71FBE7FAE66AF83A297BB5 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				9F56F3619636F050BB631491 /* Pods-Clickstream.debug.xcconfig */,
-				8C7424A08A2965B0B125BE9B /* Pods-Clickstream.integration.xcconfig */,
-				6E9BB0D1462D699E9533EB03 /* Pods-Clickstream.release.xcconfig */,
-				7461C1E2E3EF1E432DC48F2F /* Pods-Clickstream.alpha.xcconfig */,
-				C100DF2252A3EC3E511EFBCD /* Pods-Clickstream.production.xcconfig */,
-				C1C0ABC3C4ED756177E7A6FC /* Pods-ClickstreamTests.debug.xcconfig */,
-				EB023D52C748AFB1BF9EB1D9 /* Pods-ClickstreamTests.integration.xcconfig */,
-				5C52BD16038A4B2515A40B27 /* Pods-ClickstreamTests.release.xcconfig */,
-				F8B3B2B02F7B9F08E992A3F4 /* Pods-ClickstreamTests.alpha.xcconfig */,
-				A2C1B4E8C405C2F4FD85921F /* Pods-ClickstreamTests.production.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -504,7 +469,6 @@
 				68E7BAE0244F08C00072549A /* Products */,
 				2E71FBE7FAE66AF83A297BB5 /* Pods */,
 				9AAFBB13247CBA15009BFDFB /* Recovered References */,
-				018A7513784ED5FD565FA8DD /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -988,7 +952,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 68E7BAE6244F08C00072549A /* Build configuration list for PBXNativeTarget "Clickstream" */;
 			buildPhases = (
-				D43F25E7D62EF5170D777EA3 /* [CP] Check Pods Manifest.lock */,
 				68E7BADB244F08C00072549A /* Sources */,
 				68E7BADC244F08C00072549A /* Frameworks */,
 				68E7BADD244F08C00072549A /* CopyFiles */,
@@ -1007,7 +970,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 68E7BD232456E6F10072549A /* Build configuration list for PBXNativeTarget "ClickstreamTests" */;
 			buildPhases = (
-				11F677BCA81A4E3A09C983F4 /* [CP] Check Pods Manifest.lock */,
 				68E7BD172456E6F10072549A /* Sources */,
 				68E7BD182456E6F10072549A /* Frameworks */,
 				68E7BD192456E6F10072549A /* Resources */,
@@ -1070,28 +1032,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		11F677BCA81A4E3A09C983F4 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ClickstreamTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		6830362224E283B6007CF4DD /* Linting */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1109,28 +1049,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "#if which swiftlint >/dev/null; then\n # swiftlint\n#else\n # echo \"warning: SwiftLint not installed, download from #https://github.com/realm/SwiftLint\"\n#fi\n";
-		};
-		D43F25E7D62EF5170D777EA3 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Clickstream-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1448,7 +1366,6 @@
 		};
 		68E7BAE7244F08C00072549A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9F56F3619636F050BB631491 /* Pods-Clickstream.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				OTHER_LDFLAGS = "-ObjC";
@@ -1462,7 +1379,6 @@
 		};
 		68E7BAE8244F08C00072549A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6E9BB0D1462D699E9533EB03 /* Pods-Clickstream.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				OTHER_LDFLAGS = "-ObjC";
@@ -1536,7 +1452,6 @@
 		};
 		68E7BB15245062B50072549A /* Integration */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8C7424A08A2965B0B125BE9B /* Pods-Clickstream.integration.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				ONLY_ACTIVE_ARCH = NO;
@@ -1606,7 +1521,6 @@
 		};
 		68E7BB17245062C80072549A /* Production */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C100DF2252A3EC3E511EFBCD /* Pods-Clickstream.production.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				OTHER_LDFLAGS = "-ObjC";
@@ -1676,7 +1590,6 @@
 		};
 		68E7BB19245062D20072549A /* Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7461C1E2E3EF1E432DC48F2F /* Pods-Clickstream.alpha.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				OTHER_LDFLAGS = "-ObjC";
@@ -1690,7 +1603,6 @@
 		};
 		68E7BD242456E6F10072549A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C1C0ABC3C4ED756177E7A6FC /* Pods-ClickstreamTests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
@@ -1711,7 +1623,6 @@
 		};
 		68E7BD252456E6F10072549A /* Integration */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EB023D52C748AFB1BF9EB1D9 /* Pods-ClickstreamTests.integration.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
@@ -1732,7 +1643,6 @@
 		};
 		68E7BD262456E6F10072549A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5C52BD16038A4B2515A40B27 /* Pods-ClickstreamTests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
@@ -1753,7 +1663,6 @@
 		};
 		68E7BD272456E6F10072549A /* Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F8B3B2B02F7B9F08E992A3F4 /* Pods-ClickstreamTests.alpha.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
@@ -1774,7 +1683,6 @@
 		};
 		68E7BD282456E6F10072549A /* Production */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A2C1B4E8C405C2F4FD85921F /* Pods-ClickstreamTests.production.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
