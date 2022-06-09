@@ -86,8 +86,8 @@ class AnalyticsManager {
         clickstream = nil
     }
     
+    #if EVENT_VISUALIZER_ENABLED
     func openEventVisualizer(onController: UIViewController) {
-        #if EVENT_VISUALIZER_ENABLED
         let viewController = EventVisualizerLandingViewController()
         viewController.hidesBottomBarWhenPushed = true
         let navVC = UINavigationController(rootViewController: viewController)
@@ -95,8 +95,8 @@ class AnalyticsManager {
         navVC.navigationBar.barTintColor = UIColor.white
         navVC.navigationBar.tintColor = UIColor.black
         onController.present(navVC, animated: true, completion: nil)
-        #endif
     }
+    #endif
 }
 
 extension AnalyticsManager: TrackerDataSource {
