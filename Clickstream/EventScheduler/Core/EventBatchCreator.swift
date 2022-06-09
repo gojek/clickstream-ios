@@ -48,8 +48,9 @@ extension DefaultEventBatchCreator {
     func forward(with events: [Event]) -> Bool {
         if canForward {
             let batch = EventBatch(uuid: UUID().uuidString, events: events)
-                        
             networkBuilder.trackBatch(batch, completion: nil)
+            
+            self.trackHealthEvents(batch: batch, events: events)         
             return true
         }
         return false
@@ -72,13 +73,15 @@ extension DefaultEventBatchCreator {
 
 
 extension DefaultEventBatchCreator {
-    func trackHealthAndPerformance(batch: EventBatch, events: [Event]) {
+    private func trackHealthEvents(batch: EventBatch, events: [Event]) {
         #if TRACKER_ENABLED
-        let eventGUIDs = batch.events.map { $0.guid }
-        let eventGUIDString = "\(eventGUIDs.joined(separator: ", "))"
-        let batchCreatedEvent = HealthAnalysisEvent(eventName:  .ClickstreamEventBatchCreated,
-                                                    events: eventGUIDString, eventBatchGUID: batch.uuid)
-        Tracker.sharedInstance?.record(event: batchCreatedEvent)
+        if events.first?.type != TrackerConstant.HealthEventType {
+            let eventGUIDs = batch.events.map { $0.guid }
+            let eventGUIDString = "\(eventGUIDs.joined(separator: ", "))"
+            let batchCreatedEvent = HealthAnalysisEvent(eventName:  .ClickstreamEventBatchCreated,
+                                                        events: eventGUIDString, eventBatchGUID: batch.uuid)
+            Tracker.sharedInstance?.record(event: batchCreatedEvent)
+        }
         #endif
     }
 }

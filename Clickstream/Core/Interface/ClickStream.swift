@@ -167,11 +167,11 @@ extension Clickstream {
     /// - Parameters:
     ///   - configs: ClickstreamHealthConfigurations
     ///   - commonProperties: CSCommonProperties
-    ///   - dataSource: ClickstreamTrackerDataSource
-    public func setTracker(configs: ClickstreamHealthConfigurations,
-                           commonProperties: CSCommonProperties,
-                           dataSource: ClickstreamTrackerDataSource) {
-        Tracker.initialise(dataSource: dataSource, commonProperties: commonProperties, healthTrackingConfigs: configs)
+    ///   - dataSource: TrackerDataSource
+    ///   - delegate: TrackerDelegate
+    public func setTracker(configs: ClickstreamHealthConfigurations, commonProperties: CSCommonProperties,
+                           dataSource: TrackerDataSource, delegate: TrackerDelegate) {
+        Tracker.initialise(commonProperties: commonProperties, healthTrackingConfigs: configs,dataSource: dataSource, delegate: delegate)
     }
     
     public func getTracker() -> Tracker? {

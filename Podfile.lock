@@ -1,9 +1,4 @@
 PODS:
-  - Clickstream (1.0.0):
-    - GRDB.swift (= 5.12.0)
-    - ReachabilitySwift
-    - Starscream (= 4.0.4)
-    - SwiftProtobuf (= 1.10.2)
   - GRDB.swift (5.12.0):
     - GRDB.swift/standard (= 5.12.0)
   - GRDB.swift/standard (5.12.0)
@@ -12,23 +7,24 @@ PODS:
   - SwiftProtobuf (1.10.2)
 
 DEPENDENCIES:
-  - Clickstream
+  - GRDB.swift (= 5.12.0)
+  - ReachabilitySwift
+  - Starscream (~> 4.0.4)
+  - SwiftProtobuf (~> 1.10.2)
 
 SPEC REPOS:
   trunk:
-    - Clickstream
     - GRDB.swift
     - ReachabilitySwift
     - Starscream
     - SwiftProtobuf
 
 SPEC CHECKSUMS:
-  Clickstream: 19abefed9e9c52b44b1f1f9814f01e6e4789cc8c
   GRDB.swift: f94b00ac11ab22597771b6a47211d1c44284395a
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
   SwiftProtobuf: bec1ae7d686ff73dd09d79866154f4970b891410
 
-PODFILE CHECKSUM: b285f975f1717c07c15547f3e58ad8fcb6301121
+PODFILE CHECKSUM: a939c63208d50515e9bd4e805c52efad33c023d5
 
 COCOAPODS: 1.11.2

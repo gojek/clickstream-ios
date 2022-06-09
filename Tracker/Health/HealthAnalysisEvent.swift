@@ -9,25 +9,48 @@
 import Foundation
 import GRDB
 
+/// Health event to track Drop Rate,  socket  & JSON parsion errors
 struct HealthAnalysisEvent: Codable, Equatable, AnalysisEvent {
     
+    /// Unique GUID of health event
     private(set) var guid: String
-    private(set) var eventName: TrackerConstant.Events
+
+    /// Health event name
+    private(set) var eventName: HealthEvents
+    
+    /// Defines how event will be flushed i.e. Instantly/Aggredated
     private(set) var eventType: TrackerConstant.EventType
+    
+    /// Timestamp for health event
     private(set) var timestamp: String
+    
+    /// Error reason like socket failure or JSON parsion error
     private(set) var reason: String?
+    
+    /// GUID of client app event
     private(set) var eventGUID: String?
+    
+    /// Batch GUID of client app event
     private(set) var eventBatchGUID: String?
+    
+    /// List of GUIDs of client app event
     private(set) var events: String?
+    
+    /// Client app session ID
     private(set) var sessionID: String?
-    // Needs to be kept optional, as the old SQL schema will not have this field.
+    
+    /// Needs to be kept optional, as the old SQL schema will not have this field.
+    /// Medium via which the health events will be tracked
     private(set) var trackedVia: String?
     
-    init?(eventName: TrackerConstant.Events,
+    private(set) var timeToConnection: String?
+    
+    init?(eventName: HealthEvents,
           events: String? = nil,
           eventGUID: String? = nil,
           eventBatchGUID: String? = nil,
-          reason: String? = nil) {
+          reason: String? = nil,
+          timeToConnection: String? = nil) {
         
         // Don't initialize if debugMode is off
         guard Tracker.debugMode  else {
@@ -44,12 +67,13 @@ struct HealthAnalysisEvent: Codable, Equatable, AnalysisEvent {
         self.events = events
         self.guid = UUID().uuidString
         self.sessionID = Tracker.sharedInstance?.commonProperties?.session.sessionId
+        self.timeToConnection = timeToConnection
         
         self.trackedVia = Tracker.healthTrackingConfigs.trackedVia.rawValue
     }
     
     private enum CodingKeys : String, CodingKey {
-        case guid,eventName,eventType,timestamp,reason,eventGUID,eventBatchGUID,events,sessionID,trackedVia
+        case guid,eventName,eventType,timestamp,reason,eventGUID,eventBatchGUID,events,sessionID,trackedVia, timeToConnection
     }
     
     static func == (lhs: HealthAnalysisEvent, rhs: HealthAnalysisEvent) -> Bool {
@@ -64,7 +88,7 @@ struct HealthAnalysisEvent: Codable, Equatable, AnalysisEvent {
 extension HealthAnalysisEvent: Notifiable {
     
     func notify() {        
-        let healthDTO = HealthTrackerDTO()
+        var healthDTO = HealthTrackerDTO()
         healthDTO.eventName = eventName.rawValue
         healthDTO.sessionID = sessionID
         if let eventGUID = self.eventGUID {
@@ -76,10 +100,12 @@ extension HealthAnalysisEvent: Notifiable {
         if let eventBatchGUID = self.eventBatchGUID {
             healthDTO.eventBatchGUIDs = [eventBatchGUID]
         }
+        healthDTO.timeToConnection = self.timeToConnection
         healthDTO.failureReason = reason
         healthDTO.eventCount = healthDTO.eventGUIDs?.count
     
-        NotificationCenter.default.post(name: TrackerConstant.DebugEventsNotification, object: healthDTO)
+        // Send health event back to client app
+        Tracker.sharedInstance?.delegate.getHealthEvent(event: healthDTO)
     }
 }
 
@@ -107,20 +133,19 @@ extension HealthAnalysisEvent: DatabasePersistable {
         }
     }
     
-    static var codableCacheKey: String {
-        return Constants.CacheIdentifiers.healthAnalytics.rawValue
-    }
-    
     static var primaryKey: String {
         return "guid"
     }
     
     static var tableMigrations: [(version: VersionIdentifier, alteration: (TableAlteration) -> Void)]? {
-
         let addsTrackedVia: (TableAlteration) -> Void = { t in
             t.add(column: "trackedVia", .text)
         }
         
-        return [("addsTrackedViaToHealthEvent", addsTrackedVia)]
+        let addsTimeToConnection: (TableAlteration) -> Void = { t in
+            t.add(column: "timeToConnection", .text)
+        }
+        
+        return [("addsTrackedViaToHealthEvent", addsTrackedVia), ("addsTimeToConnectionToHealthEvent", addsTimeToConnection)]        
     }
 }

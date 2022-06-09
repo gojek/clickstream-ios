@@ -8,16 +8,31 @@
 
 import Foundation
 
+/// Used for tracking health events in aggregated form
 struct HealthAnalysisEventBatch: Codable, Equatable {
-    private(set) var eventName: TrackerConstant.Events
+    
+    /// Health event name
+    private(set) var eventName: HealthEvents
+    
+    /// Number of health events being sent
     private(set) var count: Int
+    
+    /// List of timestamps of client app event
     private(set) var timeStamps: String
+    
+    /// List of GUIDs of client app event
     private(set) var eventGUIDs: [String]
+    
+    /// Batch GUID of client app event
     private(set) var eventBatchGUIDs: [String]
+    
+    /// Client app session ID
     private(set) var sessionID: String?
+    
+    /// Error reason like socket failure or JSON parsion error
     private(set) var reason: String?
     
-    init(eventName: TrackerConstant.Events,
+    init(eventName: HealthEvents,
          count: Int, timeStamps: String,
          eventGUIDs: [String],
          eventBatchGUIDs: [String],
@@ -35,7 +50,7 @@ struct HealthAnalysisEventBatch: Codable, Equatable {
 extension HealthAnalysisEventBatch: Notifiable {
     
     func notify() {        
-        let healthDTO = HealthTrackerDTO()
+        var healthDTO = HealthTrackerDTO()
         healthDTO.eventName = self.eventName.rawValue
         healthDTO.sessionID = sessionID
         healthDTO.failureReason = reason
@@ -44,6 +59,7 @@ extension HealthAnalysisEventBatch: Notifiable {
         
         healthDTO.eventCount = healthDTO.eventGUIDs?.count
         
-        NotificationCenter.default.post(name: TrackerConstant.DebugEventsNotification, object: healthDTO)
+        // Send health event back to client app
+        Tracker.sharedInstance?.delegate.getHealthEvent(event: healthDTO)
     }
 }

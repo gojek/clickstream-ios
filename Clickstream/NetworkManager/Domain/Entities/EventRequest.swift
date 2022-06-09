@@ -71,10 +71,6 @@ extension EventRequest: DatabasePersistable {
             return "eventRequest"
         }
     }
-
-    static var codableCacheKey: String {
-        return Constants.CacheIdentifiers.retry.rawValue
-    }
     
     static var primaryKey: String {
         return "guid"

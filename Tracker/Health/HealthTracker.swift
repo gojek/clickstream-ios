@@ -53,28 +53,14 @@ final class HealthTracker {
                 
                 let instantEvents = events.filter { $0.eventType.rawValue == TrackerConstant.EventType.instant.rawValue }
                 for instantEvent in instantEvents {
-                    if let events = instantEvent.events {
-                        let eventsArray = events.components(separatedBy: ", ")
-                        let chunks = eventsArray.chunked(into: TrackerConstant.propertyLengthConstraint)
-                        for chunk in chunks {
-                            let eventGUIDsString = "\(chunk.joined(separator: ", "))"
-                            let healthEvent = HealthAnalysisEvent(eventName: instantEvent.eventName,
-                                                                  events: eventGUIDsString,
-                                                                  eventGUID: instantEvent.eventGUID,
-                                                                  eventBatchGUID: instantEvent.eventBatchGUID,
-                                                                  reason: instantEvent.reason)
-                            healthEvent?.notify()
-                        }
-                    } else {
-                        instantEvent.notify()
-                    }
+                    instantEvent.notify()
                 }
                 
                 let aggregatedEvents = events.filter { $0.eventType == TrackerConstant.EventType.aggregate }
                 
                 var arrayOfAggreagatedEvents = [[HealthAnalysisEvent]]()
                 
-                for event in TrackerConstant.Events.allCases {
+                for event in HealthEvents.allCases {
                     let eventNameBasedAggregation = aggregatedEvents.filter { $0.eventName ==  event }
                     if eventNameBasedAggregation.isEmpty {
                         continue
