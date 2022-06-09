@@ -13,11 +13,12 @@ DEPENDENCIES:
   - SwiftProtobuf (~> 1.10.2)
 
 SPEC REPOS:
-  trunk:
-    - GRDB.swift
+  https://github.com/CocoaPods/Specs.git:
     - ReachabilitySwift
     - Starscream
     - SwiftProtobuf
+  trunk:
+    - GRDB.swift
 
 SPEC CHECKSUMS:
   GRDB.swift: f94b00ac11ab22597771b6a47211d1c44284395a
