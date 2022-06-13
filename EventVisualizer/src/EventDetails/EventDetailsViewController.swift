@@ -48,17 +48,18 @@ final class EventDetailsViewController: UIViewController {
             let label = UILabel()
             label.text = "Event Details"
             label.sizeToFit()
-            label.center = navView.center
+            label.center = CGPoint(x: navView.center.x, y: navView.center.y + 10)
             label.textAlignment = NSTextAlignment.center
 
             /// Create the image view
             let image = UIImageView()
-            image.image = UIImage(systemName: "wrench.and.screwdriver")
-            /// To maintain the image's aspect ratio:
+            
+            image.image = UIImage(named: "clickstream")
+            // To maintain the image's aspect ratio:
             if let actualImage = image.image {
-            let imageAspect = actualImage.size.width / actualImage.size.height
+                let imageAspect = actualImage.size.width / actualImage.size.height
                 /// Setting the image frame so that it's immediately before the text:
-                image.frame = CGRect(x: label.frame.origin.x - label.frame.size.height * imageAspect, y: label.frame.origin.y, width: label.frame.size.height * imageAspect, height: label.frame.size.height)
+                image.frame = CGRect(x: label.frame.origin.x, y: label.frame.origin.y - 20, width: label.frame.size.height * imageAspect, height: label.frame.size.height)
                 image.contentMode = UIView.ContentMode.scaleAspectFit
             }
 
@@ -69,7 +70,7 @@ final class EventDetailsViewController: UIViewController {
             self.navigationItem.titleView = navView
             navView.sizeToFit()
         } else {
-            title = "Event Detail"
+            title = "Event Details"
         }
     }
     

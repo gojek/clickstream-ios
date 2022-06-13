@@ -171,7 +171,6 @@
 		BDA08EAF2851F746007B0D46 /* EventDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA08E962851F746007B0D46 /* EventDetailsViewController.swift */; };
 		BDA08EB02851F746007B0D46 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA08E982851F746007B0D46 /* FilterViewController.swift */; };
 		BDA08EB12851F746007B0D46 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA08E982851F746007B0D46 /* FilterViewController.swift */; };
-		BDA08EB22851F746007B0D46 /* EventsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA08E9A2851F746007B0D46 /* EventsHelper.swift */; };
 		BDA08EB32851F746007B0D46 /* EventsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA08E9A2851F746007B0D46 /* EventsHelper.swift */; };
 		BDA08EB42851F746007B0D46 /* UITableViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA08E9B2851F746007B0D46 /* UITableViewExtensions.swift */; };
 		BDA08EB52851F746007B0D46 /* UITableViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA08E9B2851F746007B0D46 /* UITableViewExtensions.swift */; };
@@ -179,6 +178,7 @@
 		BDA08EB72851F746007B0D46 /* EventStateViewable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA08E9C2851F746007B0D46 /* EventStateViewable.swift */; };
 		BDA08EB82851F746007B0D46 /* CollectionMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA08E9D2851F746007B0D46 /* CollectionMapper.swift */; };
 		BDA08EB92851F746007B0D46 /* CollectionMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA08E9D2851F746007B0D46 /* CollectionMapper.swift */; };
+		BDBAB136285313C500E31716 /* EventsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA08E9A2851F746007B0D46 /* EventsHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -302,6 +302,7 @@
 		BDA08E9B2851F746007B0D46 /* UITableViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITableViewExtensions.swift; sourceTree = "<group>"; };
 		BDA08E9C2851F746007B0D46 /* EventStateViewable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventStateViewable.swift; sourceTree = "<group>"; };
 		BDA08E9D2851F746007B0D46 /* CollectionMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionMapper.swift; sourceTree = "<group>"; };
+		BDBAB1332853116900E31716 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C3D7E5F007334D9078557F80 /* EventResponse.pb.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EventResponse.pb.swift; sourceTree = "<group>"; };
 		CFEE2E0E60B8C5900083BFDF /* EventRequest.pb.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EventRequest.pb.swift; sourceTree = "<group>"; };
 		EF51A056722A46F9A66F1381 /* Event.pb.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Event.pb.swift; sourceTree = "<group>"; };
@@ -871,6 +872,7 @@
 		BDA08E882851F746007B0D46 /* EventVisualizer */ = {
 			isa = PBXGroup;
 			children = (
+				BDBAB1322853114500E31716 /* Resources */,
 				BDA08E892851F746007B0D46 /* src */,
 			);
 			path = EventVisualizer;
@@ -945,6 +947,14 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
+		BDBAB1322853114500E31716 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				BDBAB1332853116900E31716 /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -956,6 +966,7 @@
 				68E7BADC244F08C00072549A /* Frameworks */,
 				68E7BADD244F08C00072549A /* CopyFiles */,
 				6830362224E283B6007CF4DD /* Linting */,
+				BDBAB13A28533A5C00E31716 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -1023,6 +1034,13 @@
 
 /* Begin PBXResourcesBuildPhase section */
 		68E7BD192456E6F10072549A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BDBAB13A28533A5C00E31716 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1100,6 +1118,7 @@
 				9A2B9F00281FEFEF009317C3 /* CSLocationDTO.swift in Sources */,
 				68E19FE3247FB93C0074A790 /* EventWarehouser.swift in Sources */,
 				68E7BB2F2456B4A80072549A /* Requestable.swift in Sources */,
+				BDBAB136285313C500E31716 /* EventsHelper.swift in Sources */,
 				9A2B9F02281FEFEF009317C3 /* CSCommonPropertiesDTO.swift in Sources */,
 				68E7BAF3244F0C8F0072549A /* NetworkBuilder.swift in Sources */,
 				9A2B9EDE281FBF9E009317C3 /* Notifiable.swift in Sources */,
@@ -1117,7 +1136,6 @@
 				BDA08E9E2851F746007B0D46 /* RadioLabelTableViewCell.swift in Sources */,
 				9A2E4A432474E831002FC449 /* SortedArray.swift in Sources */,
 				6854351524F7A21800EFFD86 /* Logger.swift in Sources */,
-				BDA08EB22851F746007B0D46 /* EventsHelper.swift in Sources */,
 				686CD8EC26045FB7000ED8D8 /* DatabasePersistable.swift in Sources */,
 				687B2A2E246BB54E008F2805 /* EventBatchCreator.swift in Sources */,
 				687B2A31246BD728008F2805 /* EventSchedulerDependencies.swift in Sources */,
