@@ -101,6 +101,7 @@ extension DefaultNetworkBuilder {
     }
 }
 
+// MARK: - Track Clickstream health.
 extension DefaultNetworkBuilder {
     private func trackHealthEvents(eventBatch: EventBatch, eventBatchData: Data) {
         #if TRACKER_ENABLED

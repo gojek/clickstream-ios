@@ -103,9 +103,6 @@ public final class Clickstream {
     public func trackEvent(with event: ClickstreamEvent) {
         self.eventProcessor.createEvent(event: event)
     }
-}
-
-extension Clickstream {
     
     /// Initializes an instance of the API with the given configurations.
     /// Returns a new Clickstream instance API object. This allows you to create one instance only.
@@ -160,17 +157,20 @@ extension Clickstream {
     }
 }
 
+// MARK: - Code below here is support for the Clickstream's Health Tracking.
 #if TRACKER_ENABLED
 extension Clickstream {
     
-    /// initialise tracker
+    /// Initialise tracker
     /// - Parameters:
     ///   - configs: ClickstreamHealthConfigurations
     ///   - commonProperties: CSCommonProperties
     ///   - dataSource: TrackerDataSource
     ///   - delegate: TrackerDelegate
-    public func setTracker(configs: ClickstreamHealthConfigurations, commonProperties: CSCommonProperties,
-                           dataSource: TrackerDataSource, delegate: TrackerDelegate) {
+    public func setTracker(configs: ClickstreamHealthConfigurations,
+                           commonProperties: CSCommonProperties,
+                           dataSource: TrackerDataSource,
+                           delegate: TrackerDelegate) {
         Tracker.initialise(commonProperties: commonProperties, healthTrackingConfigs: configs,dataSource: dataSource, delegate: delegate)
     }
     

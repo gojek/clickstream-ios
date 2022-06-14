@@ -272,10 +272,6 @@ public final class Tracker {
         sharedInstance = nil
     }
     
-    public static func setCommonProperties(commonProperties: CSCommonProperties) {
-        sharedInstance?.commonProperties = commonProperties
-    }
-    
     /// Update common properties needed for Tracker
     /// - Parameter commonProperties: CSCommonProperties
     public func updateCommonProperties(commonProperties: CSCommonProperties) {
