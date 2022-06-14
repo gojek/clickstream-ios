@@ -53,8 +53,12 @@ final class DefaultEventProcessor: EventProcessor {
         
         guard let typeOfEvent = type(of: event.message).protoMessageName.components(separatedBy: ".").last?.lowercased() else { return nil }
         
+        guard let classification = classifier.getClassification(eventName: type(of: event.message).protoMessageName) else {
+            return nil
+        }
+        
         #if TRACKER_ENABLED
-        if Tracker.debugMode {
+        if Tracker.debugMode && classification != Constants.EventType.instant.rawValue {
             var _eventGuid = event.guid
             if !Tracker.healthTrackingConfigs.dropRateEventName.isEmpty {
                 _eventGuid = event.guid.appending("_\(Tracker.healthTrackingConfigs.dropRateEventName)")
@@ -65,10 +69,6 @@ final class DefaultEventProcessor: EventProcessor {
             Tracker.sharedInstance?.record(event: healthEvent)
         }
         #endif
-        
-        guard let classification = classifier.getClassification(eventName: type(of: event.message).protoMessageName) else {
-            return nil
-        }
         
         do {
             // Constructing the Odpf_Raccoon_Event

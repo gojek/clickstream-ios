@@ -151,7 +151,8 @@ extension DefaultSocketHandler {
                 #if TRACKER_ENABLED
                 if Tracker.debugMode {
                     let timeInterval = Date().timeIntervalSince(checkedSelf.lastConnectRequestTimestamp ?? Date())
-                    let event = HealthAnalysisEvent(eventName: .ClickstreamConnectionSuccess, timeToConnection: ("\(timeInterval)"))
+                    let event = HealthAnalysisEvent(eventName: .ClickstreamConnectionSuccess,
+                                                    timeToConnection: ("\(timeInterval)"))
                     Tracker.sharedInstance?.record(event: event)
                 }
                 #endif
@@ -241,6 +242,7 @@ extension SocketHandler {
     }
 }
 
+// MARK: - Track Clickstream health.
 extension DefaultSocketHandler {
     func trackHealthEvent(eventName: HealthEvents,
                           error: Error? = nil, code: UInt16? = nil, timeToConnection: String? = nil) {
