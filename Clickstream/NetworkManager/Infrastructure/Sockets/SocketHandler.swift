@@ -248,16 +248,21 @@ extension DefaultSocketHandler {
                           error: Error? = nil, code: UInt16? = nil, timeToConnection: String? = nil) {
        #if TRACKER_ENABLED
         guard Tracker.debugMode else { return }
-        if let error = error, case HTTPUpgradeError.notAnUpgrade(let code) = error {
-            
-            if code == 401 {
-                let event = HealthAnalysisEvent(eventName: eventName,
-                                                reason: FailureReason.AuthenticationError.rawValue, timeToConnection: timeToConnection)
-                Tracker.sharedInstance?.record(event: event)
-            } else if code == 1008 {
-                let event = HealthAnalysisEvent(eventName: eventName,
-                                                reason: FailureReason.DuplicateID.rawValue, timeToConnection: timeToConnection)
-                Tracker.sharedInstance?.record(event: event)
+        if let error = error {
+            if case HTTPUpgradeError.notAnUpgrade(let code) = error {
+                if code == 401 {
+                    let event = HealthAnalysisEvent(eventName: eventName,
+                                                    reason: FailureReason.AuthenticationError.rawValue, timeToConnection: timeToConnection)
+                    Tracker.sharedInstance?.record(event: event)
+                } else if code == 1008 {
+                    let event = HealthAnalysisEvent(eventName: eventName,
+                                                    reason: FailureReason.DuplicateID.rawValue, timeToConnection: timeToConnection)
+                    Tracker.sharedInstance?.record(event: event)
+                } else {
+                    let event = HealthAnalysisEvent(eventName: eventName,
+                                                    reason: error.localizedDescription, timeToConnection: timeToConnection)
+                    Tracker.sharedInstance?.record(event: event)
+                }
             } else {
                 let event = HealthAnalysisEvent(eventName: eventName,
                                                 reason: error.localizedDescription, timeToConnection: timeToConnection)
