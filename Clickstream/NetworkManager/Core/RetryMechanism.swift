@@ -385,8 +385,8 @@ extension DefaultRetryMechanism {
     }
 }
 
+// MARK: - Track Clickstream health.
 extension DefaultRetryMechanism {
-    
     func trackHealthEvents(eventRequest: EventRequest) {
         #if TRACKER_ENABLED
         if Tracker.debugMode {

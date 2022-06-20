@@ -52,20 +52,6 @@ class AnalyticsManager {
         self.clickstream?.setTracker(configs: configs, commonProperties: commonProperties, dataSource: self, delegate: self)
     }
     
-    private func getAppInfo() -> CSAppInfo {
-        return CSAppInfo(version: "1.0")
-    }
-    
-    private func getCustomerInfo() -> CSCustomerInfo {
-        let customerInfo = CSCustomerInfo(signedUpCountry: "India", email: "test@test.com", currentCountry: "91", identity: 105)
-        return customerInfo
-    }
-    
-    private func getSessionInfo() -> CSSessionInfo {
-        let sessionInfo = CSSessionInfo(sessionId: "1")
-        return sessionInfo
-    }
-    
     /// Track events using Clickstream
     /// - Parameter message: Proto that needs to be tracked
     func trackEvent(guid: String, message: Message) {

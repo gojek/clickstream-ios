@@ -141,7 +141,8 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
                     if Tracker.debugMode {
                         let eventGUIDs = eventsToBeFlushed.map { $0.guid }
                         let eventGUIDString = "\(eventGUIDs.joined(separator: ", "))"
-                        let healthAnalysisEvent = HealthAnalysisEvent(eventName: .ClickstreamFlushOnBackground, events: eventGUIDString)
+                        let healthAnalysisEvent = HealthAnalysisEvent(eventName: .ClickstreamFlushOnBackground,
+                                                                      events: eventGUIDString)
                         Tracker.sharedInstance?.record(event: healthAnalysisEvent)
                     }
                     #endif
