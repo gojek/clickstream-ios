@@ -32,14 +32,16 @@ final class EventsListViewModel: EventsListViewModelInput {
     
     func cellViewModel(for indexPath: IndexPath) -> EventsListingTableViewCell.ViewModel {
         
-        var eventTimeStap = ""
+        var eventTimeStap = "Event at \(indexPath.row) index"
         var state = ""
 
-        if let message = messages[indexPath.row] as? CollectionMapper,
-            let eventGuid = message.asDictionary["guid"],
-            let timestamp = message.asDictionary["_deviceTimestamp"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
-            eventTimeStap = "\(timestamp.date)"
-            state = EventsHelper.shared.getState(of: "\(eventGuid)")
+        if let message = messages[indexPath.row] as? CollectionMapper {
+            if let eventGuid = message.asDictionary["guid1"] {
+                state = EventsHelper.shared.getState(of: "\(eventGuid)")
+            }
+            if let timestamp = message.asDictionary["_deviceTimestamp"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
+                eventTimeStap = "\(timestamp.date)"
+            }
         }
     
         return EventsListingTableViewCell.ViewModel(
