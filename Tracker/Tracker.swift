@@ -112,7 +112,7 @@ public final class Tracker {
             switch stateNotification {
             case .willTerminate, .didEnterBackground:
                 if Tracker.healthTrackingConfigs.trackedVia == .external || Tracker.healthTrackingConfigs.trackedVia == .both {
-                    checkedSelf.healthTracker.flushErrorEvents()
+                    checkedSelf.healthTracker.sendHealthEventsToExternalParty()
                 }
             default:
                 break
@@ -120,7 +120,8 @@ public final class Tracker {
         }
     }
     
-    func getEvents() -> [Event]? {
+    /// Send health events to Clickstream
+    func sendHealthEventsToInternalParty() -> [Event]? {
         guard Tracker.healthTrackingConfigs.trackedVia == .internal || Tracker.healthTrackingConfigs.trackedVia == .both else { return nil }
            
         var events = [Event]()

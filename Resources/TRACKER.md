@@ -34,7 +34,7 @@ Holds the configurations for health tracking, these onfigurations helps in havin
 | minimumTrackedVersion |Track CS SDK health from minimum app version |String|-|
 | randomisingUserIdRemainders |Enable tracking for userId with following randomising remainder |[Int32]|[]|
 | trackedVia |Enable tracking via internal, external or both |TrackedVia|-|
-| verbosityLevel |Various verbosity levels |VerbosityLevel| VerbosityLevel.minimum|
+| dropRateEventName |To calculate drop rate for a particular proto event |String| null|
 
 
 
