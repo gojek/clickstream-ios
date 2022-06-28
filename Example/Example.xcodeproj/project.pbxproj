@@ -24,11 +24,7 @@
 
 /* Begin PBXFileReference section */
 		202F48543D1D2CA5DC16CAEF /* libPods-Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		318544BD13CBF7CEFB578235 /* Pods-ExampleUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExampleUITests.debug.xcconfig"; path = "Target Support Files/Pods-ExampleUITests/Pods-ExampleUITests.debug.xcconfig"; sourceTree = "<group>"; };
-		48E02C98287880E24060A260 /* Pods-ExampleUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExampleUITests.release.xcconfig"; path = "Target Support Files/Pods-ExampleUITests/Pods-ExampleUITests.release.xcconfig"; sourceTree = "<group>"; };
-		4AF685F47E936D201C947BFD /* Pods-ExampleTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExampleTests.debug.xcconfig"; path = "Target Support Files/Pods-ExampleTests/Pods-ExampleTests.debug.xcconfig"; sourceTree = "<group>"; };
 		4BB0C42F5929E859C4EA332F /* Pods-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.release.xcconfig"; path = "Target Support Files/Pods-Example/Pods-Example.release.xcconfig"; sourceTree = "<group>"; };
-		82AFE8627070F6F8B2EEA5F9 /* Pods-ClickStreamHost.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickStreamHost.debug.xcconfig"; path = "Target Support Files/Pods-ClickStreamHost/Pods-ClickStreamHost.debug.xcconfig"; sourceTree = "<group>"; };
 		9A266F9F27F56136000D6C36 /* ClickstreamViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickstreamViewController.swift; sourceTree = "<group>"; };
 		9A266FA327F6ACFB000D6C36 /* App.proto */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.protobuf; path = App.proto; sourceTree = "<group>"; };
 		9A266FA427F6ACFB000D6C36 /* User.proto */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.protobuf; path = User.proto; sourceTree = "<group>"; };
@@ -36,7 +32,6 @@
 		9A266FA927F6ADA9000D6C36 /* User.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.pb.swift; sourceTree = "<group>"; };
 		9A266FAA27F6ADA9000D6C36 /* Device.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Device.pb.swift; sourceTree = "<group>"; };
 		9A266FAB27F6ADA9000D6C36 /* App.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = App.pb.swift; sourceTree = "<group>"; };
-		9A8114EB0E960B6EEE70792A /* Pods-ClickStreamHostUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickStreamHostUITests.debug.xcconfig"; path = "Target Support Files/Pods-ClickStreamHostUITests/Pods-ClickStreamHostUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		9AA23CF2249C7589001BE490 /* AnalyticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsManager.swift; sourceTree = "<group>"; };
 		9AEA264C24924B340018931D /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9AEA264F24924B340018931D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -44,12 +39,7 @@
 		9AEA265824924B360018931D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9AEA265B24924B360018931D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9AEA265D24924B360018931D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		9F9D06F37319046974F530D6 /* Pods-ClickStreamHostTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickStreamHostTests.release.xcconfig"; path = "Target Support Files/Pods-ClickStreamHostTests/Pods-ClickStreamHostTests.release.xcconfig"; sourceTree = "<group>"; };
-		B312B4D498118BE205C39344 /* Pods-ClickStreamHostUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickStreamHostUITests.release.xcconfig"; path = "Target Support Files/Pods-ClickStreamHostUITests/Pods-ClickStreamHostUITests.release.xcconfig"; sourceTree = "<group>"; };
-		BE2825306976FEAA777D8E99 /* Pods-ClickStreamHostTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickStreamHostTests.debug.xcconfig"; path = "Target Support Files/Pods-ClickStreamHostTests/Pods-ClickStreamHostTests.debug.xcconfig"; sourceTree = "<group>"; };
-		C422B8F8C3D12E4796CBC538 /* Pods-ClickStreamHost.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickStreamHost.release.xcconfig"; path = "Target Support Files/Pods-ClickStreamHost/Pods-ClickStreamHost.release.xcconfig"; sourceTree = "<group>"; };
 		CDD9BE2452FB2F21C98C5E74 /* Pods-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.debug.xcconfig"; path = "Target Support Files/Pods-Example/Pods-Example.debug.xcconfig"; sourceTree = "<group>"; };
-		FAE028227A9E5AAA64FDE7A7 /* Pods-ExampleTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExampleTests.release.xcconfig"; path = "Target Support Files/Pods-ExampleTests/Pods-ExampleTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,18 +57,8 @@
 		1A29E502C341D01021F5DD6A /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				82AFE8627070F6F8B2EEA5F9 /* Pods-ClickStreamHost.debug.xcconfig */,
-				C422B8F8C3D12E4796CBC538 /* Pods-ClickStreamHost.release.xcconfig */,
-				9A8114EB0E960B6EEE70792A /* Pods-ClickStreamHostUITests.debug.xcconfig */,
-				B312B4D498118BE205C39344 /* Pods-ClickStreamHostUITests.release.xcconfig */,
-				BE2825306976FEAA777D8E99 /* Pods-ClickStreamHostTests.debug.xcconfig */,
-				9F9D06F37319046974F530D6 /* Pods-ClickStreamHostTests.release.xcconfig */,
 				CDD9BE2452FB2F21C98C5E74 /* Pods-Example.debug.xcconfig */,
 				4BB0C42F5929E859C4EA332F /* Pods-Example.release.xcconfig */,
-				4AF685F47E936D201C947BFD /* Pods-ExampleTests.debug.xcconfig */,
-				FAE028227A9E5AAA64FDE7A7 /* Pods-ExampleTests.release.xcconfig */,
-				318544BD13CBF7CEFB578235 /* Pods-ExampleUITests.debug.xcconfig */,
-				48E02C98287880E24060A260 /* Pods-ExampleUITests.release.xcconfig */,
 			);
 			name = Pods;
 			path = ../Pods;
@@ -447,9 +427,11 @@
 					"\"SystemConfiguration\"",
 					"-l\"Clickstream\"",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -Xcc -fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/GRDB.swift/GRDB.modulemap\" -Xcc -fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/ReachabilitySwift/Reachability.modulemap\" -Xcc -fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/Starscream/Starscream.modulemap\" -Xcc -fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/SwiftProtobuf/SwiftProtobuf.modulemap\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.clickstream.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) TRACKER_ENABLED";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -477,9 +459,11 @@
 					"\"SystemConfiguration\"",
 					"-l\"Clickstream\"",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -Xcc -fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/GRDB.swift/GRDB.modulemap\" -Xcc -fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/ReachabilitySwift/Reachability.modulemap\" -Xcc -fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/Starscream/Starscream.modulemap\" -Xcc -fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/SwiftProtobuf/SwiftProtobuf.modulemap\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.clickstream.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) TRACKER_ENABLED";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

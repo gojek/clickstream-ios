@@ -36,8 +36,6 @@
 		686CD8ED26045FB7000ED8D8 /* DatabasePersistable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686CD8EB26045FB7000ED8D8 /* DatabasePersistable.swift */; };
 		686CD8F326046026000ED8D8 /* TableDefinable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686CD8F226046026000ED8D8 /* TableDefinable.swift */; };
 		686CD8F426046026000ED8D8 /* TableDefinable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686CD8F226046026000ED8D8 /* TableDefinable.swift */; };
-		686CD8F82604606B000ED8D8 /* FileStorable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686CD8F72604606B000ED8D8 /* FileStorable.swift */; };
-		686CD8F92604606B000ED8D8 /* FileStorable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686CD8F72604606B000ED8D8 /* FileStorable.swift */; };
 		687B2A27246A7AE5008F2805 /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 687B2A26246A7AE5008F2805 /* NetworkReachability.swift */; };
 		687B2A28246AA72F008F2805 /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 687B2A26246A7AE5008F2805 /* NetworkReachability.swift */; };
 		687B2A2A246AA756008F2805 /* NetworkReachabilityMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 687B2A29246AA756008F2805 /* NetworkReachabilityMock.swift */; };
@@ -95,10 +93,36 @@
 		68E7BD83245F1DE90072549A /* NetworkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E7BAF2244F0C8F0072549A /* NetworkBuilder.swift */; };
 		68E7BD87246028CF0072549A /* SocketHandlerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E7BD86246028CF0072549A /* SocketHandlerMock.swift */; };
 		9A0573F7248F688000CA2744 /* EventClassifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A8E11492487C599000C544E /* EventClassifier.swift */; };
+		9A2B9ED6281FBF9E009317C3 /* HealthTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9EC9281FBF9D009317C3 /* HealthTracker.swift */; };
+		9A2B9ED7281FBF9E009317C3 /* HealthTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9EC9281FBF9D009317C3 /* HealthTracker.swift */; };
+		9A2B9ED8281FBF9E009317C3 /* HealthAnalysisEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9ECA281FBF9D009317C3 /* HealthAnalysisEvent.swift */; };
+		9A2B9ED9281FBF9E009317C3 /* HealthAnalysisEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9ECA281FBF9D009317C3 /* HealthAnalysisEvent.swift */; };
+		9A2B9EDA281FBF9E009317C3 /* HealthAnalysisEventBatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9ECB281FBF9D009317C3 /* HealthAnalysisEventBatch.swift */; };
+		9A2B9EDB281FBF9E009317C3 /* HealthAnalysisEventBatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9ECB281FBF9D009317C3 /* HealthAnalysisEventBatch.swift */; };
+		9A2B9EDE281FBF9E009317C3 /* Notifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9ECE281FBF9D009317C3 /* Notifiable.swift */; };
+		9A2B9EDF281FBF9E009317C3 /* Notifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9ECE281FBF9D009317C3 /* Notifiable.swift */; };
+		9A2B9EE9281FBF9E009317C3 /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9ED4281FBF9D009317C3 /* Tracker.swift */; };
+		9A2B9EEA281FBF9E009317C3 /* AppVersionChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9ED5281FBF9D009317C3 /* AppVersionChecker.swift */; };
+		9A2B9EEB281FBF9E009317C3 /* AppVersionChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9ED5281FBF9D009317C3 /* AppVersionChecker.swift */; };
+		9A2B9EED281FBFEF009317C3 /* TrackerConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9EEC281FBFEF009317C3 /* TrackerConstants.swift */; };
+		9A2B9EEE281FBFEF009317C3 /* TrackerConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9EEC281FBFEF009317C3 /* TrackerConstants.swift */; };
+		9A2B9EF6281FC44B009317C3 /* Health.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9EF4281FC44B009317C3 /* Health.pb.swift */; };
+		9A2B9EF7281FC44B009317C3 /* Health.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9EF4281FC44B009317C3 /* Health.pb.swift */; };
+		9A2B9EF8281FC44B009317C3 /* HealthMeta.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9EF5281FC44B009317C3 /* HealthMeta.pb.swift */; };
+		9A2B9EF9281FC44B009317C3 /* HealthMeta.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9EF5281FC44B009317C3 /* HealthMeta.pb.swift */; };
+		9A2B9EFB281FC57A009317C3 /* ClickStreamHealthConfigurations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9EFA281FC57A009317C3 /* ClickStreamHealthConfigurations.swift */; };
+		9A2B9EFC281FC57A009317C3 /* ClickStreamHealthConfigurations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9EFA281FC57A009317C3 /* ClickStreamHealthConfigurations.swift */; };
+		9A2B9F00281FEFEF009317C3 /* CSLocationDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9EFE281FEFEF009317C3 /* CSLocationDTO.swift */; };
+		9A2B9F01281FEFEF009317C3 /* CSLocationDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9EFE281FEFEF009317C3 /* CSLocationDTO.swift */; };
+		9A2B9F02281FEFEF009317C3 /* CSCommonPropertiesDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9EFF281FEFEF009317C3 /* CSCommonPropertiesDTO.swift */; };
+		9A2B9F03281FEFEF009317C3 /* CSCommonPropertiesDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9EFF281FEFEF009317C3 /* CSCommonPropertiesDTO.swift */; };
 		9A2E4A432474E831002FC449 /* SortedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2E4A422474E831002FC449 /* SortedArray.swift */; };
+		9A4F4F10285195A20096D62C /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B9ED4281FBF9D009317C3 /* Tracker.swift */; };
 		9A8E11452487533C000C544E /* EventProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A8E11442487533C000C544E /* EventProcessor.swift */; };
 		9A8E11472487A65F000C544E /* EventProcessorDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A8E11462487A65F000C544E /* EventProcessorDependencies.swift */; };
 		9AAFBAEB24754F0A009BFDFB /* SortedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2E4A422474E831002FC449 /* SortedArray.swift */; };
+		9ABA38602843FC1C000B14E7 /* HealthTrackerDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ABA385F2843FC1C000B14E7 /* HealthTrackerDTO.swift */; };
+		9ABA38612843FC1C000B14E7 /* HealthTrackerDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ABA385F2843FC1C000B14E7 /* HealthTrackerDTO.swift */; };
 		9AC2C4D6247E8D8800CDE82C /* DeviceStatusNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AC2C4D5247E8D8800CDE82C /* DeviceStatusNotifier.swift */; };
 		9AC2C4D92481138800CDE82C /* DeviceStatusNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AC2C4D5247E8D8800CDE82C /* DeviceStatusNotifier.swift */; };
 		9AC3D7A626BCEA1D002701FF /* ClickstreamEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AC3D7A526BCEA1D002701FF /* ClickstreamEvent.swift */; };
@@ -166,7 +190,6 @@
 		6867E5B12541BB5800EA3FEE /* KeepAliveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeepAliveService.swift; sourceTree = "<group>"; };
 		686CD8EB26045FB7000ED8D8 /* DatabasePersistable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabasePersistable.swift; sourceTree = "<group>"; };
 		686CD8F226046026000ED8D8 /* TableDefinable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableDefinable.swift; sourceTree = "<group>"; };
-		686CD8F72604606B000ED8D8 /* FileStorable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileStorable.swift; sourceTree = "<group>"; };
 		687B2A26246A7AE5008F2805 /* NetworkReachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkReachability.swift; sourceTree = "<group>"; };
 		687B2A29246AA756008F2805 /* NetworkReachabilityMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkReachabilityMock.swift; sourceTree = "<group>"; };
 		687B2A2D246BB54E008F2805 /* EventBatchCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBatchCreator.swift; sourceTree = "<group>"; };
@@ -203,6 +226,18 @@
 		68E7BD86246028CF0072549A /* SocketHandlerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketHandlerMock.swift; sourceTree = "<group>"; };
 		68E7BD89246034F90072549A /* NetworkServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkServiceTests.swift; sourceTree = "<group>"; };
 		68E7BD8B246184310072549A /* NetworkBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkBuilderTests.swift; sourceTree = "<group>"; };
+		9A2B9EC9281FBF9D009317C3 /* HealthTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HealthTracker.swift; sourceTree = "<group>"; };
+		9A2B9ECA281FBF9D009317C3 /* HealthAnalysisEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HealthAnalysisEvent.swift; sourceTree = "<group>"; };
+		9A2B9ECB281FBF9D009317C3 /* HealthAnalysisEventBatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HealthAnalysisEventBatch.swift; sourceTree = "<group>"; };
+		9A2B9ECE281FBF9D009317C3 /* Notifiable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notifiable.swift; sourceTree = "<group>"; };
+		9A2B9ED4281FBF9D009317C3 /* Tracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
+		9A2B9ED5281FBF9D009317C3 /* AppVersionChecker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppVersionChecker.swift; sourceTree = "<group>"; };
+		9A2B9EEC281FBFEF009317C3 /* TrackerConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerConstants.swift; sourceTree = "<group>"; };
+		9A2B9EF4281FC44B009317C3 /* Health.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Health.pb.swift; sourceTree = "<group>"; };
+		9A2B9EF5281FC44B009317C3 /* HealthMeta.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HealthMeta.pb.swift; sourceTree = "<group>"; };
+		9A2B9EFA281FC57A009317C3 /* ClickStreamHealthConfigurations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClickStreamHealthConfigurations.swift; sourceTree = "<group>"; };
+		9A2B9EFE281FEFEF009317C3 /* CSLocationDTO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSLocationDTO.swift; sourceTree = "<group>"; };
+		9A2B9EFF281FEFEF009317C3 /* CSCommonPropertiesDTO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSCommonPropertiesDTO.swift; sourceTree = "<group>"; };
 		9A2E4A422474E831002FC449 /* SortedArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortedArray.swift; sourceTree = "<group>"; };
 		9A8E11442487533C000C544E /* EventProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventProcessor.swift; sourceTree = "<group>"; };
 		9A8E11462487A65F000C544E /* EventProcessorDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventProcessorDependencies.swift; sourceTree = "<group>"; };
@@ -218,6 +253,7 @@
 		9AA23D1024AB2801001BE490 /* EventProcessorDependenciesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventProcessorDependenciesTests.swift; sourceTree = "<group>"; };
 		9AAFBAE924754CEF009BFDFB /* SortedArrayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortedArrayTests.swift; sourceTree = "<group>"; };
 		9AB88AA0251B00030092659B /* ClickStreamTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClickStreamTests.swift; sourceTree = "<group>"; };
+		9ABA385F2843FC1C000B14E7 /* HealthTrackerDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthTrackerDTO.swift; sourceTree = "<group>"; };
 		9AC2C4D5247E8D8800CDE82C /* DeviceStatusNotifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceStatusNotifier.swift; sourceTree = "<group>"; };
 		9AC3D7A526BCEA1D002701FF /* ClickstreamEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickstreamEvent.swift; sourceTree = "<group>"; };
 		9ACCD6B428080F57006BD993 /* NetworkManagerDependencies.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkManagerDependencies.swift; sourceTree = "<group>"; };
@@ -286,7 +322,6 @@
 			children = (
 				686CD8EB26045FB7000ED8D8 /* DatabasePersistable.swift */,
 				686CD8F226046026000ED8D8 /* TableDefinable.swift */,
-				686CD8F72604606B000ED8D8 /* FileStorable.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -385,6 +420,7 @@
 		68E7BAD6244F08C00072549A = {
 			isa = PBXGroup;
 			children = (
+				9A2B9EC7281FBBB9009317C3 /* Tracker */,
 				68E7BAE1244F08C00072549A /* Clickstream */,
 				68E7BD1C2456E6F10072549A /* ClickstreamTests */,
 				68E7BAE0244F08C00072549A /* Products */,
@@ -625,6 +661,58 @@
 			path = Data;
 			sourceTree = "<group>";
 		};
+		9A2B9EC7281FBBB9009317C3 /* Tracker */ = {
+			isa = PBXGroup;
+			children = (
+				9A4456F4282CBE44004DF1F8 /* Utilities */,
+				9A2B9EFD281FEFDE009317C3 /* Entities */,
+				9A2B9EF3281FC41A009317C3 /* HealthContracts */,
+				9A2B9EC8281FBF9D009317C3 /* Health */,
+				9A2B9ED4281FBF9D009317C3 /* Tracker.swift */,
+			);
+			path = Tracker;
+			sourceTree = "<group>";
+		};
+		9A2B9EC8281FBF9D009317C3 /* Health */ = {
+			isa = PBXGroup;
+			children = (
+				9A2B9EC9281FBF9D009317C3 /* HealthTracker.swift */,
+				9A2B9ECA281FBF9D009317C3 /* HealthAnalysisEvent.swift */,
+				9A2B9ECB281FBF9D009317C3 /* HealthAnalysisEventBatch.swift */,
+			);
+			path = Health;
+			sourceTree = "<group>";
+		};
+		9A2B9EF3281FC41A009317C3 /* HealthContracts */ = {
+			isa = PBXGroup;
+			children = (
+				9A2B9EF4281FC44B009317C3 /* Health.pb.swift */,
+				9A2B9EF5281FC44B009317C3 /* HealthMeta.pb.swift */,
+			);
+			path = HealthContracts;
+			sourceTree = "<group>";
+		};
+		9A2B9EFD281FEFDE009317C3 /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				9A2B9EFA281FC57A009317C3 /* ClickStreamHealthConfigurations.swift */,
+				9A2B9EFF281FEFEF009317C3 /* CSCommonPropertiesDTO.swift */,
+				9A2B9EFE281FEFEF009317C3 /* CSLocationDTO.swift */,
+				9ABA385F2843FC1C000B14E7 /* HealthTrackerDTO.swift */,
+			);
+			path = Entities;
+			sourceTree = "<group>";
+		};
+		9A4456F4282CBE44004DF1F8 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				9A2B9ED5281FBF9D009317C3 /* AppVersionChecker.swift */,
+				9A2B9ECE281FBF9D009317C3 /* Notifiable.swift */,
+				9A2B9EEC281FBFEF009317C3 /* TrackerConstants.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		9A8E11482487C57D000C544E /* Core */ = {
 			isa = PBXGroup;
 			children = (
@@ -859,14 +947,18 @@
 				68E7BD472459BF970072549A /* RetryMechanism.swift in Sources */,
 				9AC2C4D6247E8D8800CDE82C /* DeviceStatusNotifier.swift in Sources */,
 				68E7BB312456B4EE0072549A /* Connectable.swift in Sources */,
-				686CD8F82604606B000ED8D8 /* FileStorable.swift in Sources */,
 				68E7BD6A245ACE210072549A /* Event.swift in Sources */,
 				686CD8F326046026000ED8D8 /* TableDefinable.swift in Sources */,
+				9A4F4F10285195A20096D62C /* Tracker.swift in Sources */,
+				9A2B9EED281FBFEF009317C3 /* TrackerConstants.swift in Sources */,
+				9A2B9EDA281FBF9E009317C3 /* HealthAnalysisEventBatch.swift in Sources */,
 				9AC3D7A626BCEA1D002701FF /* ClickstreamEvent.swift in Sources */,
+				9A2B9EF8281FC44B009317C3 /* HealthMeta.pb.swift in Sources */,
 				6867E5B22541BB5800EA3FEE /* KeepAliveService.swift in Sources */,
 				9A0573F7248F688000CA2744 /* EventClassifier.swift in Sources */,
 				687B2A3D246DB095008F2805 /* AppStateNotifierService.swift in Sources */,
 				68E7BB0B244F5DDE0072549A /* NetworkConfiguration.swift in Sources */,
+				9A2B9EF6281FC44B009317C3 /* Health.pb.swift in Sources */,
 				68E7BB362456B64A0072549A /* Heartbeat.swift in Sources */,
 				68E7BD422459701D0072549A /* NetworkService.swift in Sources */,
 				68B78BA524BC5124002F5A60 /* DeviceInfo.swift in Sources */,
@@ -876,15 +968,21 @@
 				68E7BD6E245ACE210072549A /* EventBatch.swift in Sources */,
 				9A8E11472487A65F000C544E /* EventProcessorDependencies.swift in Sources */,
 				68E19FD7247E8E640074A790 /* ClickStreamEventClassification.swift in Sources */,
+				9A2B9F00281FEFEF009317C3 /* CSLocationDTO.swift in Sources */,
 				68E19FE3247FB93C0074A790 /* EventWarehouser.swift in Sources */,
 				68E7BB2F2456B4A80072549A /* Requestable.swift in Sources */,
+				9A2B9F02281FEFEF009317C3 /* CSCommonPropertiesDTO.swift in Sources */,
 				68E7BAF3244F0C8F0072549A /* NetworkBuilder.swift in Sources */,
+				9A2B9EDE281FBF9E009317C3 /* Notifiable.swift in Sources */,
 				6804B36E27660C2A00BA904D /* DispatchSourceTimer+RepeatingTimer.swift in Sources */,
 				688D02D427FC155A009E7081 /* Atomic.swift in Sources */,
+				9A2B9ED6281FBF9E009317C3 /* HealthTracker.swift in Sources */,
 				68E6395425F8D68C00BAF2BB /* DatabaseDAO.swift in Sources */,
 				68E7BD81245AE3CF0072549A /* ProtoConvertible.swift in Sources */,
+				9A2B9EFB281FC57A009317C3 /* ClickStreamHealthConfigurations.swift in Sources */,
 				9ACCD6B528080F57006BD993 /* NetworkManagerDependencies.swift in Sources */,
 				9A8E11452487533C000C544E /* EventProcessor.swift in Sources */,
+				9A2B9ED8281FBF9E009317C3 /* HealthAnalysisEvent.swift in Sources */,
 				9A2E4A432474E831002FC449 /* SortedArray.swift in Sources */,
 				6854351524F7A21800EFFD86 /* Logger.swift in Sources */,
 				686CD8EC26045FB7000ED8D8 /* DatabasePersistable.swift in Sources */,
@@ -893,8 +991,10 @@
 				9AF4618A2508AE7F00B28C09 /* Reachability+Extension.swift in Sources */,
 				68E6395925F8D7A100BAF2BB /* DatabaseHandler.swift in Sources */,
 				683E660C2600B2B500A255AD /* EventBatchSizeRegulator.swift in Sources */,
+				9A2B9EEA281FBF9E009317C3 /* AppVersionChecker.swift in Sources */,
 				65B8248034CA816A64778A73 /* EventRequest.pb.swift in Sources */,
 				0A2513DBC3A22E1EC696890B /* EventResponse.pb.swift in Sources */,
+				9ABA38602843FC1C000B14E7 /* HealthTrackerDTO.swift in Sources */,
 				4C1E4C99098332F58FB2E11D /* Event.pb.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -913,8 +1013,10 @@
 				683E660D2600B2B500A255AD /* EventBatchSizeRegulator.swift in Sources */,
 				68E6395525F8D68C00BAF2BB /* DatabaseDAO.swift in Sources */,
 				9AAFBAEB24754F0A009BFDFB /* SortedArray.swift in Sources */,
+				9A2B9ED9281FBF9E009317C3 /* HealthAnalysisEvent.swift in Sources */,
 				68E6395A25F8D7A100BAF2BB /* DatabaseHandler.swift in Sources */,
 				68E19FE0247E9DC50074A790 /* ClickStreamEventClassification.swift in Sources */,
+				9ABA38612843FC1C000B14E7 /* HealthTrackerDTO.swift in Sources */,
 				68316329260CB2690095DBCA /* BatchSizeRegulatorMock.swift in Sources */,
 				68E19FE1247E9DCC0074A790 /* JSONStringDecoder.swift in Sources */,
 				9AC3D7A726BCEA1D002701FF /* ClickstreamEvent.swift in Sources */,
@@ -923,6 +1025,7 @@
 				9AF0C767280DECEE00E39A12 /* NetworkServiceTests.swift in Sources */,
 				687B2A3B246D639B008F2805 /* SchedulerService.swift in Sources */,
 				680BEE0624EBE32000F61C82 /* EventRequest.swift in Sources */,
+				9A2B9EF9281FC44B009317C3 /* HealthMeta.pb.swift in Sources */,
 				9ACF41E824ADEC7000A10832 /* MockConstants.swift in Sources */,
 				68E7BD342456E7F40072549A /* Connectable.swift in Sources */,
 				6831AFDE248F7681004596CC /* EventClassifier.swift in Sources */,
@@ -931,8 +1034,10 @@
 				686CD8ED26045FB7000ED8D8 /* DatabasePersistable.swift in Sources */,
 				6831AFDB248F7668004596CC /* EventProcessor.swift in Sources */,
 				9ACCD6BB28081267006BD993 /* ClickStreamDependencies.swift in Sources */,
+				9A2B9EFC281FC57A009317C3 /* ClickStreamHealthConfigurations.swift in Sources */,
 				68E7BD6B245ACE210072549A /* Event.swift in Sources */,
 				68E7BD322456E7EF0072549A /* Heartbeat.swift in Sources */,
+				9A2B9EDF281FBF9E009317C3 /* Notifiable.swift in Sources */,
 				68E7BD87246028CF0072549A /* SocketHandlerMock.swift in Sources */,
 				9ACCD6B628080F57006BD993 /* NetworkManagerDependencies.swift in Sources */,
 				68E7BD372456E7FD0072549A /* NetworkConfiguration.swift in Sources */,
@@ -940,32 +1045,38 @@
 				9AF0C759280DEC9600E39A12 /* EventTests.swift in Sources */,
 				9AF0C761280DECDE00E39A12 /* EventBatchProcessorTests.swift in Sources */,
 				687B2A2F246BB54E008F2805 /* EventBatchCreator.swift in Sources */,
+				9A2B9EDB281FBF9E009317C3 /* HealthAnalysisEventBatch.swift in Sources */,
 				68316339260DC7D00095DBCA /* DatabaseMock.swift in Sources */,
 				9AF0C75F280DECD800E39A12 /* SchedulerServiceTests.swift in Sources */,
 				687B2A36246D1F3E008F2805 /* EventBatchProcessor.swift in Sources */,
 				68E7BD432459701E0072549A /* NetworkService.swift in Sources */,
 				687B2A2A246AA756008F2805 /* NetworkReachabilityMock.swift in Sources */,
+				9A2B9F01281FEFEF009317C3 /* CSLocationDTO.swift in Sources */,
 				687B2A28246AA72F008F2805 /* NetworkReachability.swift in Sources */,
 				9AF0C75E280DECD600E39A12 /* EventCreatorTests.swift in Sources */,
 				6831635F261218F90095DBCA /* RetryMechanismTests.swift in Sources */,
 				6831AFDF248F7687004596CC /* EventProcessorDependencies.swift in Sources */,
 				68E19FE4247FB93C0074A790 /* EventWarehouser.swift in Sources */,
 				9AF0C75A280DECBD00E39A12 /* EventBatchTests.swift in Sources */,
-				686CD8F92604606B000ED8D8 /* FileStorable.swift in Sources */,
+				9A2B9ED7281FBF9E009317C3 /* HealthTracker.swift in Sources */,
 				68E7BD67245ACE210072549A /* ClickStream.swift in Sources */,
 				68E7BD6F245ACE210072549A /* EventBatch.swift in Sources */,
 				9AF0C762280DECE100E39A12 /* EventWarehouserTests.swift in Sources */,
 				9AF0C765280DECE800E39A12 /* NetworkManagerDependenciesTests.swift in Sources */,
 				9AF0C75C280DECC200E39A12 /* EventProcessorTest.swift in Sources */,
+				9A2B9EE9281FBF9E009317C3 /* Tracker.swift in Sources */,
 				686CD8F426046026000ED8D8 /* TableDefinable.swift in Sources */,
 				6854351624F7A21800EFFD86 /* Logger.swift in Sources */,
+				9A2B9F03281FEFEF009317C3 /* CSCommonPropertiesDTO.swift in Sources */,
 				9AF0C75B280DECBF00E39A12 /* ClickStreamDependenciesTests.swift in Sources */,
 				9AF0C760280DECDC00E39A12 /* SortedArrayTests.swift in Sources */,
+				9A2B9EEE281FBFEF009317C3 /* TrackerConstants.swift in Sources */,
 				687B2A32246BD728008F2805 /* EventSchedulerDependencies.swift in Sources */,
 				688D02D527FC155A009E7081 /* Atomic.swift in Sources */,
 				68E7BD332456E7F20072549A /* Requestable.swift in Sources */,
 				68E19FB8247D42100074A790 /* DispatchQueue+Detection.swift in Sources */,
 				68E7BD82245AE3CF0072549A /* ProtoConvertible.swift in Sources */,
+				9A2B9EF7281FC44B009317C3 /* Health.pb.swift in Sources */,
 				687B2A3E246DB095008F2805 /* AppStateNotifierService.swift in Sources */,
 				9AF0C768280DECF000E39A12 /* NetworkBuilderTests.swift in Sources */,
 				68E7BD83245F1DE90072549A /* NetworkBuilder.swift in Sources */,
@@ -975,6 +1086,7 @@
 				9AF0C763280DECE300E39A12 /* EventSchedulerDependenciesTests.swift in Sources */,
 				4B589E754884A9C9AA8916F7 /* Event.pb.swift in Sources */,
 				9AF0C766280DECEB00E39A12 /* DeviceStatusNotifierTests.swift in Sources */,
+				9A2B9EEB281FBF9E009317C3 /* AppVersionChecker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1111,6 +1223,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) TRACKER_ENABLED";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1123,7 +1236,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = RELEASE;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) TRACKER_ENABLED";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1197,7 +1310,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = INTEGRATION;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) TRACKER_ENABLED";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1265,7 +1378,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = PRODUCTION;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) TRACKER_ENABLED";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1334,7 +1447,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = ALPHA;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) TRACKER_ENABLED";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

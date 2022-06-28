@@ -27,9 +27,6 @@ public final class Clickstream {
     /// Temporary handling. Will be replaced by an experimentation module within Clickstream.
     internal static var isInitialisedOnBackgroundQueue: Bool = false
     
-    /// Tells whether the debugMode is enabled or not.
-    internal static var debugMode: Bool = false
-    
     /// Holds the constraints for the sdk.
     internal static var constraints: ClickstreamConstraints = ClickstreamConstraints()
     
@@ -89,9 +86,6 @@ public final class Clickstream {
     public func trackEvent(with event: ClickstreamEvent) {
         self.eventProcessor.createEvent(event: event)
     }
-}
-
-extension Clickstream {
     
     /// Initializes an instance of the API with the given configurations.
     /// Returns a new Clickstream instance API object. This allows you to create one instance only.
@@ -145,3 +139,26 @@ extension Clickstream {
         return sharedInstance
     }
 }
+
+// MARK: - Code below here is support for the Clickstream's Health Tracking.
+#if TRACKER_ENABLED
+extension Clickstream {
+    
+    /// Initialise tracker
+    /// - Parameters:
+    ///   - configs: ClickstreamHealthConfigurations
+    ///   - commonProperties: CSCommonProperties
+    ///   - dataSource: TrackerDataSource
+    ///   - delegate: TrackerDelegate
+    public func setTracker(configs: ClickstreamHealthConfigurations,
+                           commonProperties: CSCommonProperties,
+                           dataSource: TrackerDataSource,
+                           delegate: TrackerDelegate) {
+        Tracker.initialise(commonProperties: commonProperties, healthTrackingConfigs: configs,dataSource: dataSource, delegate: delegate)
+    }
+    
+    public func getTracker() -> Tracker? {
+        return Tracker.sharedInstance
+    }
+}
+#endif
