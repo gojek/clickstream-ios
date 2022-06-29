@@ -186,7 +186,7 @@ private extension DefaultEventBatchProcessor {
     
     func flushObservabilityEvents() {        
         #if TRACKER_ENABLED
-        if eventBatchCreator.canForward, let events = Tracker.sharedInstance?.getEvents(), !events.isEmpty {
+        if eventBatchCreator.canForward, let events = Tracker.sharedInstance?.sendHealthEventsToInternalParty()(), !events.isEmpty {
             eventBatchCreator.forward(with: events)
         }
         #endif

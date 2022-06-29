@@ -37,7 +37,8 @@ final class HealthTracker {
         }
     }
     
-    func flushErrorEvents() {
+    /// Send health events to host/client app
+    func sendHealthEventsToExternalParty() {
         queue.async {
             let trackeVia: TrackedVia = Tracker.healthTrackingConfigs.trackedVia == .both ? .both : .external
             
@@ -50,52 +51,52 @@ final class HealthTracker {
             }
             
             guard !events.isEmpty else { return }
-                
-                let instantEvents = events.filter { $0.eventType.rawValue == TrackerConstant.EventType.instant.rawValue }
-                for instantEvent in instantEvents {
-                    instantEvent.notify()
+            
+            let instantEvents = events.filter { $0.eventType.rawValue == TrackerConstant.EventType.instant.rawValue }
+            for instantEvent in instantEvents {
+                instantEvent.notify()
+            }
+            
+            let aggregatedEvents = events.filter { $0.eventType == TrackerConstant.EventType.aggregate }
+            
+            var arrayOfAggreagatedEvents = [[HealthAnalysisEvent]]()
+            
+            for event in HealthEvents.allCases {
+                let eventNameBasedAggregation = aggregatedEvents.filter { $0.eventName ==  event }
+                if eventNameBasedAggregation.isEmpty {
+                    continue
                 }
                 
-                let aggregatedEvents = events.filter { $0.eventType == TrackerConstant.EventType.aggregate }
-                
-                var arrayOfAggreagatedEvents = [[HealthAnalysisEvent]]()
-                
-                for event in HealthEvents.allCases {
-                    let eventNameBasedAggregation = aggregatedEvents.filter { $0.eventName ==  event }
-                    if eventNameBasedAggregation.isEmpty {
-                        continue
-                    }
-
-                    let groupingDictionary = Dictionary(grouping: eventNameBasedAggregation, by: { $0.reason })
-                    for (_, eventReasonBasedAggregation) in groupingDictionary {
-                        if !eventReasonBasedAggregation.isEmpty {
-                            arrayOfAggreagatedEvents.append(eventReasonBasedAggregation)
-                        } else {
-                            if !arrayOfAggreagatedEvents.contains(eventNameBasedAggregation) {
-                                arrayOfAggreagatedEvents.append(eventNameBasedAggregation)
-                            }
+                let groupingDictionary = Dictionary(grouping: eventNameBasedAggregation, by: { $0.reason })
+                for (_, eventReasonBasedAggregation) in groupingDictionary {
+                    if !eventReasonBasedAggregation.isEmpty {
+                        arrayOfAggreagatedEvents.append(eventReasonBasedAggregation)
+                    } else {
+                        if !arrayOfAggreagatedEvents.contains(eventNameBasedAggregation) {
+                            arrayOfAggreagatedEvents.append(eventNameBasedAggregation)
                         }
                     }
                 }
-                
-                arrayOfAggreagatedEvents.forEach { (eventArray) in
-                    if let eventName = eventArray.first?.eventName  {
-                            let eventTimeStamps = eventArray.map { $0.timestamp }
-                            let eventTimeStampString = "\(eventTimeStamps.joined(separator: ", "))"
-                            
-                            let eventBatchGUIDs: [String] = eventArray.compactMap { $0.eventBatchGUID }
-                            
-                            let eventGUIDs: [String] = eventArray.compactMap { $0.eventGUID }
-                            
-                            let healthAnalysisEventBatch = HealthAnalysisEventBatch(eventName: eventName, count: eventArray.count,
-                                                                                    timeStamps: eventTimeStampString,
-                                                                                    eventGUIDs: eventGUIDs,
-                                                                                    eventBatchGUIDs: eventBatchGUIDs,
-                                                                                    reason: eventArray.first?.reason)
-                            healthAnalysisEventBatch.notify()
-                    }
+            }
+            
+            arrayOfAggreagatedEvents.forEach { (eventArray) in
+                if let eventName = eventArray.first?.eventName  {
+                    let eventTimeStamps = eventArray.map { $0.timestamp }
+                    let eventTimeStampString = "\(eventTimeStamps.joined(separator: ", "))"
+                    
+                    let eventBatchGUIDs: [String] = eventArray.compactMap { $0.eventBatchGUID }
+                    
+                    let eventGUIDs: [String] = eventArray.compactMap { $0.eventGUID }
+                    
+                    let healthAnalysisEventBatch = HealthAnalysisEventBatch(eventName: eventName, count: eventArray.count,
+                                                                            timeStamps: eventTimeStampString,
+                                                                            eventGUIDs: eventGUIDs,
+                                                                            eventBatchGUIDs: eventBatchGUIDs,
+                                                                            reason: eventArray.first?.reason)
+                    healthAnalysisEventBatch.notify()
                 }
-        }        
+            }
+        }
     }
     
     @discardableResult
