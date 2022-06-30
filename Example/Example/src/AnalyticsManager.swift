@@ -19,8 +19,8 @@ class AnalyticsManager {
         
         do {
             Clickstream.setLogLevel(.verbose)
-            let url = URL(string: "ws://mock.clickstream.com/events")!
-            let headers = ["Authorization": "Bearer dummy-token"]
+            let url = URL(string: "https://raccoon-integration.gojekapi.com/api/v1/events")!
+            let headers = ["Authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJhdWQiOlsiZ29qZWsiLCJtaWR0cmFucyIsImdvdmlldCIsImdvcGF5IiwiZ29wbGF5Il0sImRhdCI6eyJhY3RpdmUiOiJ0cnVlIiwiYmxhY2tsaXN0ZWQiOiJmYWxzZSIsImNvdW50cnlfY29kZSI6Iis5MSIsImNyZWF0ZWRfYXQiOiIyMDIyLTAyLTIzVDE1OjE1OjAwWiIsImVtYWlsIjoicmlzaGF2Lmd1cHRhQGdvamVrLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjoiZmFsc2UiLCJnb3BheV9hY2NvdW50X2lkIjoiMDEtYjg4NzA0MjFkMGI5NDhmYWJiODkyZDc2NjU0MWY4NWQtMjciLCJuYW1lIjoiUmlzaGF2IEd1cHRhIiwibnVtYmVyIjoiODk2MTY4MjE3MiIsInBob25lIjoiKzkxODk2MTY4MjE3MiIsInNpZ25lZF91cF9jb3VudHJ5IjoiSUQiLCJ3YWxsZXRfaWQiOiIyMjA1NDA5MTc1NzAxNjk3MjEifSwiZXhwIjoxNjU5MDY5OTQ1LCJpYXQiOjE2NTYzMDkxMDYsImlzcyI6ImdvaWQiLCJqdGkiOiI4MGFjNTg1MS0yZjI0LTQ0YTQtYWYzOS0zMGZkMjM3Y2YyMmUiLCJzY29wZXMiOltdLCJzaWQiOiJhZGVhOTQyZS04ZmY1LTQ4NzctYWZjNi1mNjk5OWI5M2MwZWUiLCJzdWIiOiJjNDNjZWM3YS0xNTgzLTRjYjgtOGMzMy00OWE1ZjJjOWMxMmEiLCJ1aWQiOiIyNDAzNDkwIiwidXR5cGUiOiJjdXN0b21lciJ9.XeKzv0RcIA8DgmOhx_O4xoYyrVifsy1MF3MpBPmUsU2MzdZd1mdNV3s76IVlJ63h-J4kra-PjsfGEk0uo5Mjy-R_2_XFKaSa2pNGbPkQAld4AwoAAgxryKJ4lj8Zzy7N0hnM3xSESWpgo9-Um7ci9vXxFL2iZPXF2cbYruyRtFk"]
             
             let networkConfigs = NetworkConfigurations(baseURL: url, headers: headers)
             

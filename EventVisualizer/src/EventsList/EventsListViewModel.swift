@@ -36,7 +36,7 @@ final class EventsListViewModel: EventsListViewModelInput {
         var state = ""
 
         if let message = messages[indexPath.row] as? CollectionMapper {
-            if let eventGuid = message.asDictionary["guid1"] {
+            if let eventGuid = message.asDictionary["guid"] {
                 state = EventsHelper.shared.getState(of: "\(eventGuid)")
             }
             if let timestamp = message.asDictionary["_deviceTimestamp"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
