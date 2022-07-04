@@ -19,7 +19,7 @@ final public class EventsHelper {
     public var eventsCaptured: [EventData] = []
     
     /// returns the state of the event given the eventGuid
-    func getState(of providedEventGuid: String) -> String {
+    public func getState(of providedEventGuid: String) -> String {
         if let foundIndex = indexOfEvent(with: providedEventGuid) {
             return EventsHelper.shared.eventsCaptured[foundIndex].state.description
         }
@@ -73,7 +73,10 @@ extension EventsHelper: EventStateViewable {
         for (index, message) in events.enumerated() {
             if let productComm = message as? CollectionMapper {
                 let flattenedDict = productComm.asDictionary
-                if let currentEventGuid = flattenedDict["guid"], "\(currentEventGuid)" == eventGuid {
+                if let currentEventGuid = flattenedDict[Constants.EventVisualizer.guid] as? String, currentEventGuid == eventGuid {
+                    return index
+                } else if let currentEventGuid = flattenedDict[Constants.EventVisualizer.storageGuid] as? String,
+                            currentEventGuid == eventGuid {
                     return index
                 }
             }

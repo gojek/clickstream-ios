@@ -217,8 +217,8 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
             if let protoComm = message as? CollectionMapper {
                 /// converting [Message] to [String: Any]
                 var messAsDict = protoComm.asDictionary
-                if let eventGuid = messAsDict["guid"] {
-                    messAsDict["state"] = EventsHelper.shared.getState(of: "\(eventGuid)")
+                if let eventGuid = messAsDict[Constants.EventVisualizer.guid] as? String {
+                    messAsDict["state"] = EventsHelper.shared.getState(of: eventGuid)
                 }
                 var isMessageConformingtoAllFilters = false
                 /// iterate over the filtered data entered by user and check which event contains these key-value pairs -> append event name of that event to filteredEventNames
@@ -229,7 +229,7 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
                         isMessageConformingtoAllFilters = false
                         break
                     }
-                    if let valueToUserKey = messAsDict[mappedProtoKey] as? String, valueToUserKey.lowercased().contains(userInputValue) {
+                    if "\(messAsDict[mappedProtoKey] ?? "")".lowercased().contains(userInputValue) {
                         isMessageConformingtoAllFilters = true
                     } else {
                         isMessageConformingtoAllFilters = false
@@ -247,7 +247,7 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
         let listOfKeys = message.map { $0.key }
         for key in listOfKeys {
             if key.lowercased().contains(userInputKey) {
-                if let val = message[key] as? String, val.lowercased().contains(userInputValue) {
+                if "\(message[key] ?? "")".lowercased().contains(userInputValue) {
                     return key
                 }
             }

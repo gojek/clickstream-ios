@@ -42,14 +42,26 @@ final class EventDetailsViewModel: EventDetailsModelInput {
         if let message = message as? CollectionMapper {
             selectedMessage = message.asDictionary
         }
-        if let eventGuid = selectedMessage?["guid"] {
-            selectedMessage?["state"] = EventsHelper.shared.getState(of: "\(eventGuid)")
+        if let eventGuid = selectedMessage?[Constants.EventVisualizer.guid] as? String {
+            selectedMessage?["state"] = EventsHelper.shared.getState(of: eventGuid)
         }
         /// sorting the events that needs to be shown to the user
         displayedMessage = selectedMessage?.sorted { $0.0 < $1.0 }
         /// removing the events which does not have a value
-        displayedMessage = displayedMessage?.filter { $0.1 as? String != "" && $0.1 as? String != nil }
-        if let timestamp = selectedMessage?["_eventTimestamp"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
+        displayedMessage = displayedMessage?.filter {
+            /// $0 provides a [String: Any] and $0.1 provides the value to the dictionary
+            /// checking if value is not empty, then filter it out.
+            let value = $0.1
+            return (value as? String != nil && value as? String != "") ||
+            (value is Bool) ||
+            (value as? Int32 != nil) ||
+            (value as? Int != nil) ||
+            (value as? Double != nil) ||
+            (value is NSArray) ||
+            /// checking if value is of enum type
+            Mirror(reflecting: value).displayStyle?.equals(displayCase: .enum) ?? false ? true : false
+        }
+        if let timestamp = selectedMessage?[Constants.EventVisualizer.eventTimestamp] as? SwiftProtobuf.Google_Protobuf_Timestamp {
             displayedMessage?.append(("eventTimestamp", "\(timestamp.date)"))
         }
     }
@@ -60,5 +72,11 @@ private extension Dictionary {
         get {
             return self[index(startIndex, offsetBy: ind)]
         }
+    }
+}
+
+private extension Mirror.DisplayStyle {
+    func equals(displayCase: Mirror.DisplayStyle) -> Bool {
+        return self == displayCase
     }
 }

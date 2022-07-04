@@ -179,3 +179,33 @@ extension Clickstream {
     }
 }
 #endif
+
+// MARK: - Code below here is support for the Clickstream's EventVisualizer.
+#if EVENT_VISUALIZER_ENABLED
+extension Clickstream {
+    
+    /// Initialise event visualizer state tracking
+    /// - Parameters:
+    ///   - guid:String
+    ///   - eventTimestamp:String
+    ///   - storageGuid:String
+    ///   - storageEventTimestamp:String
+    public func setEventVisualizerStateTracking(guid: String? = nil,
+                                                eventTimestamp: String? = nil,
+                                                storageGuid: String? = nil,
+                                                storageEventTimestamp: String? = nil) {
+        if let guid = guid {
+            Constants.EventVisualizer.guid = guid
+        }
+        if let eventTimestamp = eventTimestamp {
+            Constants.EventVisualizer.eventTimestamp = eventTimestamp
+        }
+        if let storageGuid = storageGuid {
+            Constants.EventVisualizer.storageGuid = storageGuid
+        }
+        if let storageEventTimestamp = storageEventTimestamp {
+            Constants.EventVisualizer.storageEventTimestamp = storageEventTimestamp
+        }
+    }
+}
+#endif

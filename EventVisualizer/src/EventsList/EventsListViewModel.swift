@@ -24,6 +24,11 @@ protocol EventsListViewModelInput: AnyObject {
     func didSelectRow(at indexPath: IndexPath) -> Message?
 }
 
+struct EventDisplayKeys {
+    let eventTimeStamp: String
+    let state: String
+}
+
 final class EventsListViewModel: EventsListViewModelInput {
     
     var messages: [Message] = []
@@ -31,24 +36,30 @@ final class EventsListViewModel: EventsListViewModelInput {
     var selectedEventName: String = ""
     
     func cellViewModel(for indexPath: IndexPath) -> EventsListingTableViewCell.ViewModel {
+        let values = getValues(index: indexPath)
         
-        var eventTimeStap = "Event at \(indexPath.row) index"
-        var state = ""
-
-        if let message = messages[indexPath.row] as? CollectionMapper {
-            if let eventGuid = message.asDictionary["guid"] {
-                state = EventsHelper.shared.getState(of: "\(eventGuid)")
-            }
-            if let timestamp = message.asDictionary["_deviceTimestamp"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
-                eventTimeStap = "\(timestamp.date)"
-            }
-        }
-    
         return EventsListingTableViewCell.ViewModel(
-            name: eventTimeStap,
-            changedConfigsCount: state,
+            name: values.eventTimeStamp,
+            changedConfigsCount: values.state,
             availableConfigsCount: ""
         )
+    }
+    
+    func getValues(index: IndexPath) -> EventDisplayKeys {
+        var eventTimeStamp = "Event at \(index.row) index"
+        var state = ""
+        if let message = messages[index.row] as? CollectionMapper {
+            if let eventGuid = message.asDictionary[Constants.EventVisualizer.guid] as? String,
+               let timestamp = message.asDictionary[Constants.EventVisualizer.eventTimestamp] as? SwiftProtobuf.Google_Protobuf_Timestamp {
+                eventTimeStamp = "\(timestamp.date)"
+                state = EventsHelper.shared.getState(of: eventGuid)
+            } else if let eventGuid = message.asDictionary[Constants.EventVisualizer.storageGuid] as? String,
+                      let timestamp = message.asDictionary[Constants.EventVisualizer.storageEventTimestamp] as? SwiftProtobuf.Google_Protobuf_Timestamp {
+                eventTimeStamp = "\(timestamp.date)"
+                state = EventsHelper.shared.getState(of: eventGuid)
+            }
+        }
+        return EventDisplayKeys(eventTimeStamp: eventTimeStamp, state: state)
     }
     
     var cellsCount: Int {
