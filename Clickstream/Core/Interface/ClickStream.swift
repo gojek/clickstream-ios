@@ -190,22 +190,10 @@ extension Clickstream {
     ///   - eventTimestamp:String
     ///   - storageGuid:String
     ///   - storageEventTimestamp:String
-    public func setEventVisualizerStateTracking(guid: String? = nil,
-                                                eventTimestamp: String? = nil,
-                                                storageGuid: String? = nil,
-                                                storageEventTimestamp: String? = nil) {
-        if let guid = guid {
-            Constants.EventVisualizer.guid = guid
-        }
-        if let eventTimestamp = eventTimestamp {
-            Constants.EventVisualizer.eventTimestamp = eventTimestamp
-        }
-        if let storageGuid = storageGuid {
-            Constants.EventVisualizer.storageGuid = storageGuid
-        }
-        if let storageEventTimestamp = storageEventTimestamp {
-            Constants.EventVisualizer.storageEventTimestamp = storageEventTimestamp
-        }
+    public func setEventVisualizerStateTracking(guid: String,
+                                                eventTimestamp: String) {
+        Constants.EventVisualizer.guid = guid
+        Constants.EventVisualizer.eventTimestamp = eventTimestamp
     }
 }
 #endif

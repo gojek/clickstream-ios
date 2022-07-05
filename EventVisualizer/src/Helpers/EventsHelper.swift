@@ -75,7 +75,7 @@ extension EventsHelper: EventStateViewable {
                 let flattenedDict = productComm.asDictionary
                 if let currentEventGuid = flattenedDict[Constants.EventVisualizer.guid] as? String, currentEventGuid == eventGuid {
                     return index
-                } else if let currentEventGuid = flattenedDict[Constants.EventVisualizer.storageGuid] as? String,
+                } else if let currentEventGuid = flattenedDict["storage.\(Constants.EventVisualizer.guid)"] as? String,
                             currentEventGuid == eventGuid {
                     return index
                 }

@@ -54,9 +54,6 @@ enum Constants {
     
     enum EventVisualizer {
         static var guid = "guid"
-        static var eventTimestamp = "_deviceTimestamp"
-        
-        static var storageGuid = "storage.guid"
-        static var storageEventTimestamp = "storage._deviceTimestamp"
+        static var eventTimestamp = "deviceTimestamp"
     }
 }

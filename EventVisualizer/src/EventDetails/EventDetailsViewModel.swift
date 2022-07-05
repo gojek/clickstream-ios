@@ -61,7 +61,7 @@ final class EventDetailsViewModel: EventDetailsModelInput {
             /// checking if value is of enum type
             Mirror(reflecting: value).displayStyle?.equals(displayCase: .enum) ?? false ? true : false
         }
-        if let timestamp = selectedMessage?[Constants.EventVisualizer.eventTimestamp] as? SwiftProtobuf.Google_Protobuf_Timestamp {
+        if let timestamp = selectedMessage?["_\(Constants.EventVisualizer.eventTimestamp)"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
             displayedMessage?.append(("eventTimestamp", "\(timestamp.date)"))
         }
     }

@@ -50,11 +50,11 @@ final class EventsListViewModel: EventsListViewModelInput {
         var state = ""
         if let message = messages[index.row] as? CollectionMapper {
             if let eventGuid = message.asDictionary[Constants.EventVisualizer.guid] as? String,
-               let timestamp = message.asDictionary[Constants.EventVisualizer.eventTimestamp] as? SwiftProtobuf.Google_Protobuf_Timestamp {
+               let timestamp = message.asDictionary["_\(Constants.EventVisualizer.eventTimestamp)"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
                 eventTimeStamp = "\(timestamp.date)"
                 state = EventsHelper.shared.getState(of: eventGuid)
-            } else if let eventGuid = message.asDictionary[Constants.EventVisualizer.storageGuid] as? String,
-                      let timestamp = message.asDictionary[Constants.EventVisualizer.storageEventTimestamp] as? SwiftProtobuf.Google_Protobuf_Timestamp {
+            } else if let eventGuid = message.asDictionary["storage.\(Constants.EventVisualizer.guid)"] as? String,
+                      let timestamp = message.asDictionary["storage.\(Constants.EventVisualizer.eventTimestamp)"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
                 eventTimeStamp = "\(timestamp.date)"
                 state = EventsHelper.shared.getState(of: eventGuid)
             }
