@@ -20,6 +20,7 @@
 		9AEA265724924B340018931D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9AEA265524924B340018931D /* Main.storyboard */; };
 		9AEA265924924B360018931D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9AEA265824924B360018931D /* Assets.xcassets */; };
 		9AEA265C24924B360018931D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9AEA265A24924B360018931D /* LaunchScreen.storyboard */; };
+		BD4E9D61285719CC0093D342 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD4E9D60285719CC0093D342 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +40,9 @@
 		9AEA265824924B360018931D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9AEA265B24924B360018931D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9AEA265D24924B360018931D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BD4E9D58285717050093D342 /* libClickstream.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libClickstream.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		BD4E9D5C2857186E0093D342 /* libClickstream.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libClickstream.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		BD4E9D60285719CC0093D342 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../EventVisualizer/Resources/Assets.xcassets; sourceTree = "<group>"; };
 		CDD9BE2452FB2F21C98C5E74 /* Pods-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.debug.xcconfig"; path = "Target Support Files/Pods-Example/Pods-Example.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -67,6 +71,8 @@
 		247AA4EBE83D740CCE3F5E60 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BD4E9D5C2857186E0093D342 /* libClickstream.a */,
+				BD4E9D58285717050093D342 /* libClickstream.a */,
 				202F48543D1D2CA5DC16CAEF /* libPods-Example.a */,
 			);
 			name = Frameworks;
@@ -117,6 +123,7 @@
 		9AEA264324924B340018931D = {
 			isa = PBXGroup;
 			children = (
+				BD4E9D60285719CC0093D342 /* Assets.xcassets */,
 				9AEA264E24924B340018931D /* Example */,
 				9AEA264D24924B340018931D /* Products */,
 				1A29E502C341D01021F5DD6A /* Pods */,
@@ -202,6 +209,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BD4E9D61285719CC0093D342 /* Assets.xcassets in Resources */,
 				9AEA265C24924B360018931D /* LaunchScreen.storyboard in Resources */,
 				9AEA265924924B360018931D /* Assets.xcassets in Resources */,
 				9AEA265724924B340018931D /* Main.storyboard in Resources */,
@@ -431,7 +439,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.clickstream.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) TRACKER_ENABLED";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) TRACKER_ENABLED EVENT_VISUALIZER_ENABLED";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -463,7 +471,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.clickstream.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) TRACKER_ENABLED";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) TRACKER_ENABLED EVENT_VISUALIZER_ENABLED";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

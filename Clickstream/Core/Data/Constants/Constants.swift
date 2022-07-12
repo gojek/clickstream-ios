@@ -51,4 +51,9 @@ enum Constants {
         case standard = "standard"
         case internalEvent = "internalEvent"
     }
+    
+    enum EventVisualizer {
+        static var guid = "guid"
+        static var eventTimestamp = "deviceTimestamp"
+    }
 }

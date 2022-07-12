@@ -36,6 +36,23 @@ public final class Clickstream {
     /// Clickstream shared instance.
     private static var sharedInstance: Clickstream?
     
+    #if EVENT_VISUALIZER_ENABLED
+    /// internal stored static variable which is a delegate
+    /// to sent the events to client for visualization.
+    /// If delegate is nil then no events are passed to client.
+    internal static var _stateViewer: EventStateViewable?
+    
+    /// computed public property which sets
+    /// and fetches the global `_stateViewer` variable
+    public var stateViewer: EventStateViewable? {
+        get {
+            return Clickstream._stateViewer
+        }
+        set {
+            Clickstream._stateViewer = newValue
+        }
+    }
+    #endif
     // MARK: - Building blocks of the SDK.
     private let networkBuilder: NetworkBuildable
     private let eventProcessor: EventProcessor
@@ -159,6 +176,24 @@ extension Clickstream {
     
     public func getTracker() -> Tracker? {
         return Tracker.sharedInstance
+    }
+}
+#endif
+
+// MARK: - Code below here is support for the Clickstream's EventVisualizer.
+#if EVENT_VISUALIZER_ENABLED
+extension Clickstream {
+    
+    /// Initialise event visualizer state tracking
+    /// - Parameters:
+    ///   - guid:String
+    ///   - eventTimestamp:String
+    ///   - storageGuid:String
+    ///   - storageEventTimestamp:String
+    public func setEventVisualizerStateTracking(guid: String,
+                                                eventTimestamp: String) {
+        Constants.EventVisualizer.guid = guid
+        Constants.EventVisualizer.eventTimestamp = eventTimestamp
     }
 }
 #endif

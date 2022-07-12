@@ -12,13 +12,13 @@
         <!--Clickstream Test App-->
         <scene sceneID="9oY-4f-Aj8">
             <objects>
-                <viewController id="WAz-PT-SgK" customClass="ClickstreamViewController" customModule="ClickStreamHost" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="WAz-PT-SgK" customClass="ClickstreamViewController" customModule="Example" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="J71-uG-45P">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FG4-Sz-acn">
-                                <rect key="frame" x="40" y="128" width="334" height="400"/>
+                                <rect key="frame" x="40" y="128" width="334" height="460"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="XOX-6k-50z">
                                         <rect key="frame" x="0.0" y="20" width="334" height="200"/>
@@ -105,16 +105,30 @@
                                             <action selector="sendMultipleEventsToClickstream:" destination="WAz-PT-SgK" eventType="touchUpInside" id="fIp-6U-x08"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2i5-0h-cxC">
+                                        <rect key="frame" x="104" y="418" width="126.5" height="31"/>
+                                        <color key="backgroundColor" systemColor="systemBlueColor"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Event Visualizer">
+                                            <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </buttonConfiguration>
+                                        <connections>
+                                            <action selector="openEventVisualizer:" destination="WAz-PT-SgK" eventType="touchUpInside" id="Diy-S0-TgM"/>
+                                            <action selector="sendMultipleEventsToClickstream:" destination="WAz-PT-SgK" eventType="touchUpInside" id="cEr-JS-D6x"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="ARl-2Q-i2U" secondAttribute="trailing" id="3At-NR-Ryc"/>
                                     <constraint firstItem="XOX-6k-50z" firstAttribute="top" secondItem="FG4-Sz-acn" secondAttribute="top" constant="20" id="4xl-3M-otA"/>
                                     <constraint firstItem="Aj0-23-zkl" firstAttribute="centerX" secondItem="g7j-BG-u2C" secondAttribute="centerX" id="7Ah-hx-4UP"/>
+                                    <constraint firstAttribute="height" constant="460" id="8t2-rW-sec"/>
                                     <constraint firstItem="XOX-6k-50z" firstAttribute="centerX" secondItem="FG4-Sz-acn" secondAttribute="centerX" id="ETv-lv-Bwc"/>
                                     <constraint firstItem="g7j-BG-u2C" firstAttribute="top" secondItem="ARl-2Q-i2U" secondAttribute="bottom" constant="30" id="IyJ-kq-ZUb"/>
-                                    <constraint firstAttribute="height" constant="400" id="MsK-gS-Uxb"/>
+                                    <constraint firstItem="2i5-0h-cxC" firstAttribute="top" secondItem="Aj0-23-zkl" secondAttribute="bottom" constant="18" id="PgL-C4-lmg"/>
                                     <constraint firstItem="XOX-6k-50z" firstAttribute="leading" secondItem="FG4-Sz-acn" secondAttribute="leading" id="WQE-lT-gJa"/>
+                                    <constraint firstItem="2i5-0h-cxC" firstAttribute="centerX" secondItem="Aj0-23-zkl" secondAttribute="centerX" id="ZLy-o1-5Mb"/>
                                     <constraint firstItem="g7j-BG-u2C" firstAttribute="centerX" secondItem="FG4-Sz-acn" secondAttribute="centerX" id="bUK-Uu-Ecy"/>
                                     <constraint firstItem="ARl-2Q-i2U" firstAttribute="top" secondItem="XOX-6k-50z" secondAttribute="bottom" constant="30" id="bYm-SF-fNk"/>
                                     <constraint firstAttribute="trailing" secondItem="XOX-6k-50z" secondAttribute="trailing" id="fb8-MO-Qbc"/>
@@ -142,7 +156,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GiH-k7-fwU" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1271" y="138"/>
+            <point key="canvasLocation" x="1269.5652173913045" y="137.94642857142856"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="1lb-O6-tyO">

@@ -176,6 +176,16 @@ extension DefaultRetryMechanism {
                             if let eventType = eventRequest.eventType, !(eventType == .internalEvent) {
                                 checkedSelf.trackHealthEvents(eventRequest: eventRequest)
                             }
+                            #if EVENT_VISUALIZER_ENABLED
+                            /// Update status of the event batch to acknowledged from network
+                            /// to check if the delegate is connected, if not no event should be sent to client
+                            if let stateViewer = Clickstream._stateViewer {
+                                /// Updating the event state to acknowledged based on eventBatchGuid.
+                                /// The eventBatchID passed in NetworkBuilder would be used to map events and
+                                /// then update the state respectively.
+                                stateViewer.updateStatus(eventBatchID: guid, state: .ackReceived)
+                            }
+                            #endif
                         }
                     } else {
                         if response.code == .maxConnectionLimitReached {
