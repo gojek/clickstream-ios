@@ -9,4 +9,4 @@
 import GRDB
 
 /// Any object conforming to this protocol can be persisted on the db.
-protocol DatabasePersistable: FetchableRecord, PersistableRecord, TableDefinable, FileStorable {}
+protocol DatabasePersistable: FetchableRecord, PersistableRecord, TableDefinable {}

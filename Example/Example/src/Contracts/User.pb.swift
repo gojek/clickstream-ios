@@ -6,7 +6,9 @@
 //
 // For information on using the generated types, please see the documentation:
 //   https://github.com/apple/swift-protobuf/
-
+#if EVENT_VISUALIZER_ENABLED
+import Clickstream
+#endif
 import Foundation
 import SwiftProtobuf
 
@@ -29,7 +31,7 @@ struct User {
 
   ///
   /// Unique identy of the user.
-  var guid: Int32 = 0
+  var guid: String = String()
 
   ///
   /// User's full name.
@@ -93,7 +95,9 @@ struct User {
   fileprivate var _device: Device? = nil
   fileprivate var _deviceTimestamp: SwiftProtobuf.Google_Protobuf_Timestamp? = nil
 }
-
+#if EVENT_VISUALIZER_ENABLED
+extension User: CollectionMapper { }
+#endif
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 extension User: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
@@ -113,7 +117,7 @@ extension User: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase,
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
       switch fieldNumber {
-      case 1: try decoder.decodeSingularInt32Field(value: &self.guid)
+      case 1: try decoder.decodeSingularStringField(value: &self.guid)
       case 2: try decoder.decodeSingularStringField(value: &self.name)
       case 3: try decoder.decodeSingularInt32Field(value: &self.age)
       case 4: try decoder.decodeSingularStringField(value: &self.gender)
@@ -128,8 +132,8 @@ extension User: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase,
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if self.guid != 0 {
-      try visitor.visitSingularInt32Field(value: self.guid, fieldNumber: 1)
+    if !self.guid.isEmpty {
+      try visitor.visitSingularStringField(value: self.guid, fieldNumber: 1)
     }
     if !self.name.isEmpty {
       try visitor.visitSingularStringField(value: self.name, fieldNumber: 2)

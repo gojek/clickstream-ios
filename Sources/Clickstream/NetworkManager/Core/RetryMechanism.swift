@@ -51,6 +51,19 @@ final class DefaultRetryMechanism: Retryable {
         let isConnected = networkService.isConnected
         let isOnLowPower = deviceStatus.isDeviceLowOnPower
         
+        #if TRACKER_ENABLED
+        if !isReachable && Tracker.debugMode {
+            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
+                                                  reason: FailureReason.networkUnavailable.rawValue)
+            Tracker.sharedInstance?.record(event: healthEvent)
+        }
+        
+        if isOnLowPower && Tracker.debugMode {
+            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
+                                                  reason: FailureReason.lowBattery.rawValue)
+            Tracker.sharedInstance?.record(event: healthEvent)
+        }
+        #endif
         return isReachable && isConnected && !isOnLowPower
     }
     
@@ -159,6 +172,20 @@ extension DefaultRetryMechanism {
                         if let guid = response.data["req_guid"] {
                             // remove the delivered batch from the cache.
                             checkedSelf.removeFromCache(with: guid)
+                            
+                            if let eventType = eventRequest.eventType, !(eventType == .internalEvent) {
+                                checkedSelf.trackHealthEvents(eventRequest: eventRequest)
+                            }
+                            #if EVENT_VISUALIZER_ENABLED
+                            /// Update status of the event batch to acknowledged from network
+                            /// to check if the delegate is connected, if not no event should be sent to client
+                            if let stateViewer = Clickstream._stateViewer {
+                                /// Updating the event state to acknowledged based on eventBatchGuid.
+                                /// The eventBatchID passed in NetworkBuilder would be used to map events and
+                                /// then update the state respectively.
+                                stateViewer.updateStatus(eventBatchID: guid, state: .ackReceived)
+                            }
+                            #endif
                         }
                     } else {
                         if response.code == .maxConnectionLimitReached {
@@ -172,10 +199,27 @@ extension DefaultRetryMechanism {
                         
                         if response.code == .badRequest {
                             print("Error: Parsing Exception for eventRequest guid \(eventRequest.guid)", .verbose)
+                            #if TRACKER_ENABLED
+                            if Tracker.debugMode {
+                                var healthEvent: HealthAnalysisEvent!
+                                healthEvent = HealthAnalysisEvent(eventName: .ClickstreamWriteToSocketFailed,
+                                                                  eventBatchGUID: eventRequest.guid,
+                                                                  reason: FailureReason.ParsingException.rawValue)
+                                Tracker.sharedInstance?.record(event: healthEvent)
+                            }
+                            #endif
                         }
                     }
                 case .failure(let error):
                     print("Error: \(error.localizedDescription) for eventRequest guid \(eventRequest.guid)", .verbose)
+                    #if TRACKER_ENABLED
+                    if Tracker.debugMode {
+                        let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchErrorResponse,
+                                                              eventBatchGUID: eventRequest.guid, // eventRequest.guid is the batch GUID
+                                                              reason: error.localizedDescription)
+                        Tracker.sharedInstance?.record(event: healthEvent)
+                    }
+                    #endif
                 }
             }
         }
@@ -269,6 +313,13 @@ extension DefaultRetryMechanism {
         if var fetchedEventRequest = persistence.fetchOne(eventRequest.guid) {
             if fetchedEventRequest.retriesMade >= Clickstream.constraints.maxRetriesPerBatch {
                 persistence.deleteOne(eventRequest.guid)
+                #if TRACKER_ENABLED
+                if Tracker.debugMode {
+                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTimeout,
+                                                          eventBatchGUID: fetchedEventRequest.guid)
+                    Tracker.sharedInstance?.record(event: healthEvent)
+                }
+                #endif
             } else {
                 fetchedEventRequest.bumpRetriesMade() // This will bump the retriesMade.
                 fetchedEventRequest.refreshCachingTimeStamp() // This will update the timestamp with the latest retry time.
@@ -331,5 +382,21 @@ extension DefaultRetryMechanism {
                 }
             }
         }
+    }
+}
+
+// MARK: - Track Clickstream health.
+extension DefaultRetryMechanism {
+    func trackHealthEvents(eventRequest: EventRequest) {
+        #if TRACKER_ENABLED
+        if Tracker.debugMode {
+            guard eventRequest.eventType != Constants.EventType.instant else { return }
+            
+            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchSuccessAck,
+                                                  eventBatchGUID: eventRequest.guid)
+            Tracker.sharedInstance?.record(event: healthEvent)
+            
+        }
+        #endif
     }
 }

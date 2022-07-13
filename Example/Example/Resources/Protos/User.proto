@@ -13,7 +13,7 @@ message User {
 	//
 	// Unique identy of the user.
 	//
-	int32 guid = 1;
+	string guid = 1;
 
 	//
 	// User's full name.

@@ -42,10 +42,7 @@ enum Constants {
         case dao = "com.clickstream.dao"
         case connectableAccess = "com.clickstream.connectableAccess"
         case atomicAccess = "com.clickstream.atomicAccess"
-    }
-    
-    enum CacheIdentifiers: CacheIdentifier {
-        case retry = "com.clickstream.retryCache"
+        case tracker = "com.gojek.clickstream.tracker"
     }
     
     enum EventType: String, Codable {
@@ -53,5 +50,10 @@ enum Constants {
         case realTime = "realTime"
         case standard = "standard"
         case internalEvent = "internalEvent"
+    }
+    
+    enum EventVisualizer {
+        static var guid = "guid"
+        static var eventTimestamp = "deviceTimestamp"
     }
 }

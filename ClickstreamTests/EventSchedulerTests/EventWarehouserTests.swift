@@ -21,7 +21,6 @@ class EventWarehouserTests: XCTestCase {
     override func setUp() {
         
         Clickstream.constraints = MockConstants.constraints
-        Clickstream.debugMode = true
     }
     
     func test_whenAnEventIsGiven_thenTheWarehouserMustStoreIt() {

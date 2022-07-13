@@ -64,9 +64,24 @@ extension DefaultNetworkBuilder {
                 
                 if eventBatch.events.first?.type == Constants.EventType.instant.rawValue {
                     eventRequest.eventType = .instant
+                } else {
+                    checkedSelf.trackHealthEvents(eventBatch: eventBatch,
+                                                          eventBatchData: data)
                 }
                 
                 checkedSelf.retryMech.trackBatch(with: eventRequest)
+                #if EVENT_VISUALIZER_ENABLED
+                /// Update status of the event batch to sent to network
+                /// to check if the delegate is connected, if not no event should be sent to client
+                if let stateViewer = Clickstream._stateViewer {
+                    for event in eventBatch.events {
+                        /// Updating the event state to sent based on eventGuid.
+                        /// Also eventBatchID is also sent which would be used later to map these events and
+                        /// then update the state to acknowledged.
+                        stateViewer.updateStatus(providedEventGuid: event.guid, eventBatchID: eventBatch.uuid, state: .sent)
+                    }
+                }
+                #endif
                 completion?(nil)
             } catch {
                 print("There was an error from the Network builder. Description: \(error)",.critical)
@@ -83,5 +98,21 @@ extension DefaultNetworkBuilder {
         performQueue.async { [weak self] in guard let checkedSelf = self else { return }
             checkedSelf.retryMech.stopTracking()
         }
+    }
+}
+
+// MARK: - Track Clickstream health.
+extension DefaultNetworkBuilder {
+    private func trackHealthEvents(eventBatch: EventBatch, eventBatchData: Data) {
+        #if TRACKER_ENABLED
+        guard Tracker.debugMode else { return }
+        let eventGUIDs: [String] = eventBatch.events.compactMap { $0.guid }
+        let eventGUIDsString = "\(eventGUIDs.joined(separator: ", "))"
+        
+        let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamBatchSent,
+                                              events: eventGUIDsString,
+                                              eventBatchGUID: eventBatch.uuid)
+        Tracker.sharedInstance?.record(event: healthEvent)
+        #endif
     }
 }

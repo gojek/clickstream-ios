@@ -22,7 +22,6 @@ class EventBatchProcessorTests: XCTestCase {
         standardEvent = Event(guid: "standard", timestamp: Date(), type: "standard", eventProtoData: Data())
         
         Clickstream.constraints = MockConstants.constraints
-        Clickstream.debugMode = true
     }
     
     func test_whenBatchSizeIsGiven_shouldForwardABatch() {
