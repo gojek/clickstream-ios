@@ -16,10 +16,10 @@ let package = Package(
             targets: ["Clickstream"]),
     ],
     dependencies: [
-        .package(name: "SwiftProtobuf", url: "https://github.com/apple/swift-protobuf.git", from: "1.6.0"),
+        .package(name: "SwiftProtobuf", url: "https://github.com/apple/swift-protobuf.git", .exact("1.10.2")),
         .package(name: "Reachability", url: "https://github.com/ashleymills/Reachability.swift", from: "5.0.0"),
-        .package(name: "GRDB", url: "https://github.com/groue/GRDB.swift.git", from: "5.12.0"),
-        .package(name: "Starscream", url: "https://github.com/daltoniam/Starscream.git", from: "4.0.0"),
+        .package(name: "GRDB", url: "https://github.com/groue/GRDB.swift.git", .exact("5.12.0")),
+        .package(name: "Starscream", url: "https://github.com/daltoniam/Starscream.git", .exact("4.0.4")),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.

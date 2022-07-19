@@ -35,7 +35,7 @@ public final class Clickstream {
     
     /// Clickstream shared instance.
     private static var sharedInstance: Clickstream?
-    
+    #if EVENT_VISUALIZER_ENABLED
     /// internal stored static variable which is a delegate
     /// to sent the events to client for visualization.
     /// If delegate is nil then no events are passed to client.
@@ -51,7 +51,7 @@ public final class Clickstream {
             Clickstream._stateViewer = newValue
         }
     }
-
+    #endif
     // MARK: - Building blocks of the SDK.
     private let networkBuilder: NetworkBuildable
     private let eventProcessor: EventProcessor

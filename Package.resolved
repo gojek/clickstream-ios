@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/groue/GRDB.swift.git",
         "state": {
           "branch": null,
-          "revision": "2ac5c773537622b1520fdde3efc1a216119359ff",
-          "version": "5.24.1"
+          "revision": "32b2923e890df320906e64cbd0faca22a8bfda14",
+          "version": "5.12.0"
         }
       },
       {
@@ -33,8 +33,8 @@
         "repositoryURL": "https://github.com/apple/swift-protobuf.git",
         "state": {
           "branch": null,
-          "revision": "e1499bc69b9040b29184f7f2996f7bab467c1639",
-          "version": "1.19.0"
+          "revision": "f33185acd089405d365982ccab2f58469052a545",
+          "version": "1.10.2"
         }
       }
     ]
