@@ -6,6 +6,7 @@
 //  Copyright © 2021 Gojek. All rights reserved.
 //
 
+import Foundation
 import GRDB
 
 protocol Database {

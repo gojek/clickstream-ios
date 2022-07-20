@@ -6,6 +6,7 @@
 //  Copyright © 2021 Gojek. All rights reserved.
 //
 
+@testable import Clickstream
 import Foundation
 
 final class BatchSizeRegulatorMock: BatchSizeRegulator {

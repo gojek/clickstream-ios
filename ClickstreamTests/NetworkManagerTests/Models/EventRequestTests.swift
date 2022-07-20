@@ -6,6 +6,7 @@
 //  Copyright © 2020 Gojek. All rights reserved.
 //
 
+@testable import Clickstream
 import XCTest
 import SwiftProtobuf
 
@@ -16,7 +17,7 @@ class EventRequestTests: XCTestCase {
         let expectation = self.expectation(description: "Updated time must be greater than original time")
         var originalTime: Google_Protobuf_Timestamp!
         
-        let eventRequestProto = Gojek_Clickstream_De_EventRequest.with {
+        let eventRequestProto = Odpf_Raccoon_EventRequest.with {
             $0.reqGuid = UUID().uuidString
             $0.sentTime = Google_Protobuf_Timestamp(date: Date())
             originalTime = $0.sentTime //recording the original time
@@ -27,7 +28,7 @@ class EventRequestTests: XCTestCase {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             try! sut.refreshBatchSentTimeStamp()
-            let deserialisedProto = try! Gojek_Clickstream_De_EventRequest(serializedData: sut.data!)
+            let deserialisedProto = try! Odpf_Raccoon_EventRequest(serializedData: sut.data!)
             XCTAssertLessThan(originalTime.seconds, deserialisedProto.sentTime.seconds)
             expectation.fulfill()
         }

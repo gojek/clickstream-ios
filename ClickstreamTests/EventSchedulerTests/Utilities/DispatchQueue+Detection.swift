@@ -6,6 +6,7 @@
 //  Copyright © 2020 Gojek. All rights reserved.
 //  Refered from: https://stackoverflow.com/a/60314121
 
+@testable import Clickstream
 import Foundation
 
 extension SerialQueue {
