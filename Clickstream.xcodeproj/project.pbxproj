@@ -145,7 +145,6 @@
 		BD8AF66D287ED1CC002DD402 /* TableDefinable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5E0287ED1CB002DD402 /* TableDefinable.swift */; };
 		BD8AF66E287ED1CC002DD402 /* DatabasePersistable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5E1287ED1CB002DD402 /* DatabasePersistable.swift */; };
 		BD8AF66F287ED1CC002DD402 /* DatabasePersistable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5E1287ED1CB002DD402 /* DatabasePersistable.swift */; };
-		BD8AF671287ED1CC002DD402 /* FileStorable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5E2287ED1CB002DD402 /* FileStorable.swift */; };
 		BD8AF672287ED1CC002DD402 /* EventClassifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5E5287ED1CB002DD402 /* EventClassifier.swift */; };
 		BD8AF673287ED1CC002DD402 /* EventClassifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5E5287ED1CB002DD402 /* EventClassifier.swift */; };
 		BD8AF674287ED1CC002DD402 /* EventProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5E6287ED1CB002DD402 /* EventProcessor.swift */; };
@@ -1257,7 +1256,6 @@
 				9AF0C760280DECDC00E39A12 /* SortedArrayTests.swift in Sources */,
 				BD8AF663287ED1CC002DD402 /* EventBatchSizeRegulator.swift in Sources */,
 				68E19FB8247D42100074A790 /* DispatchQueue+Detection.swift in Sources */,
-				BD8AF671287ED1CC002DD402 /* FileStorable.swift in Sources */,
 				BD8AF627287ED1CC002DD402 /* NetworkService.swift in Sources */,
 				9AF0C768280DECF000E39A12 /* NetworkBuilderTests.swift in Sources */,
 				9AF0C763280DECE300E39A12 /* EventSchedulerDependenciesTests.swift in Sources */,
