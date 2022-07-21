@@ -15,8 +15,8 @@ protocol NetworkServiceInputs {
     /// - Parameters:
     ///   - connectionStatusListener: A callback to listen to the change in the status.
     ///   - keepTrying: allow connectable to try reconnection exponentially
-    @discardableResult func initiateConnection(connectionStatusListener: ConnectionStatus?,
-                                               keepTrying: Bool) -> Connectable?
+    func initiateConnection(connectionStatusListener: ConnectionStatus?,
+                            keepTrying: Bool)
     
     /// Writes data to the given connectable and fires a completion event after the write is completed.
     /// - Parameters:
@@ -44,9 +44,16 @@ final class DefaultNetworkService<C: Connectable>: NetworkService {
     private let connectableAccessQueue = DispatchQueue(label: Constants.QueueIdentifiers.connectableAccess.rawValue,
                                                        attributes: .concurrent)
     
+    /// Queue on which the action for NetworkService needs to be performed.
     private let performQueue: SerialQueue
-    private let networkConfig: NetworkConfigurable
+    
+    /// The supplied url request
+    private var request: URLRequest
+    
+    /// The callback for connection status updates
     private var connectionCallback: ConnectionStatus?
+    
+    /// A connectable instance which the network service utilises to connect to associated network communication channel.
     private var connectable: Connectable?
     private var _connectable: Connectable? {
         get {
@@ -67,9 +74,9 @@ final class DefaultNetworkService<C: Connectable>: NetworkService {
     ///   - networkConfig: Network Configuration.
     ///   - endpoint: Endpoint to which the connectable needs to connect to.
     ///   - performOnQueue: A SerialQueue on which the networkService needs to be run.
-    init(with networkConfig: NetworkConfigurable,
+    init(with request: URLRequest,
          performOnQueue: SerialQueue) {
-        self.networkConfig = networkConfig
+        self.request = request
         self.performQueue = performOnQueue
     }
 }
@@ -77,20 +84,15 @@ final class DefaultNetworkService<C: Connectable>: NetworkService {
 extension DefaultNetworkService {
 
     func initiateConnection(connectionStatusListener: ConnectionStatus?,
-                            keepTrying: Bool = false) -> Connectable? {
-        guard _connectable == nil else { return self._connectable }
+                            keepTrying: Bool = false) {
         self.connectionCallback = connectionStatusListener
-        do {
-            let request = try networkConfig.urlRequest()
-            _connectable = C(request: request,
-                            keepTrying: keepTrying,
-                            performOnQueue: performQueue,
-                            connectionCallback: self.connectionCallback)
-            return _connectable
-        } catch {
-            connectionCallback?(.failure(ConnectableError.malformedPath))
-            return nil
+        if connectable == nil {
+            connectable = C(performOnQueue: performQueue)
         }
+        
+        connectable?.setup(request: request,
+                           keepTrying: true,
+                           connectionCallback: self.connectionCallback)
     }
     
     func write<T>(_ data: Data, completion: @escaping (Result<T, ConnectableError>) -> Void) where T : Message {
@@ -134,6 +136,6 @@ extension DefaultNetworkService {
 extension DefaultNetworkService {
     
     var isConnected: Bool {
-        _connectable?.isConnected ?? false
+        _connectable?.isConnected.value ?? false
     }
 }

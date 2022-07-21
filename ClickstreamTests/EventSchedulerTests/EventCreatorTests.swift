@@ -18,15 +18,15 @@ class EventCreatorTests: XCTestCase {
     
     func test_whenReachableMockService_shouldReturnCanForwardAsTrue() {
         //given
-        let config = NetworkConfigurations(baseURL: URL(string: "ws://mock.clickstream.com/events")!)
+        let urlRequest = URLRequest(url: URL(string: "ws://mock.clickstream.com/events")!)
         
-        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: networkQueue)
+        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: urlRequest, performOnQueue: networkQueue)
         let deviceStatus = DefaultDeviceStatus(performOnQueue: networkQueue)
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         let keepAliveService = DefaultKeepAliveService(with: schedulerQueueMock, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
 
         let retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: networkQueue, persistence: persistence,keepAliveService: keepAliveService)
-        let networkBuilder = DefaultNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: networkQueue)
+        let networkBuilder = DefaultNetworkBuilder(retryMech: retryMech, performOnQueue: networkQueue)
         //when
         let sut = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock)
         //then
@@ -37,15 +37,15 @@ class EventCreatorTests: XCTestCase {
     
     func test_whenNotReachableMockService_shouldReturnCanForwardAsFalse() {
         //given
-        let config = NetworkConfigurations(baseURL: URL(string: "ws://mock.clickstream.com/events")!)
+        let urlRequest = URLRequest(url: URL(string: "ws://mock.clickstream.com/events")!)
         
         let deviceStatus = DefaultDeviceStatus(performOnQueue: networkQueue)
-        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: networkQueue)
+        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: urlRequest, performOnQueue: networkQueue)
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         let keepAliveService = DefaultKeepAliveService(with: schedulerQueueMock, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
 
         let retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: false), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: networkQueue, persistence: persistence, keepAliveService: keepAliveService)
-        let networkBuilder = DefaultNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: networkQueue)
+        let networkBuilder = DefaultNetworkBuilder(retryMech: retryMech, performOnQueue: networkQueue)
         //when
         let sut = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock)
         //then
@@ -54,16 +54,16 @@ class EventCreatorTests: XCTestCase {
     
     func test_whenReachableMockService_shouldReturnTrue() {
         //given
-        let config = NetworkConfigurations(baseURL: URL(string: "ws://mock.clickstream.com/events")!)
+        let urlRequest = URLRequest(url: URL(string: "ws://mock.clickstream.com/events")!)
         
         let deviceStatus = DefaultDeviceStatus(performOnQueue: networkQueue)
         let event = Event(guid: "", timestamp: Date(), type: "realTime", eventProtoData: Data())
-        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: networkQueue)
+        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: urlRequest, performOnQueue: networkQueue)
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         let keepAliveService = DefaultKeepAliveService(with: schedulerQueueMock, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
 
         let retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: networkQueue, persistence: persistence, keepAliveService: keepAliveService)
-        let networkBuilder = DefaultNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: networkQueue)
+        let networkBuilder = DefaultNetworkBuilder(retryMech: retryMech, performOnQueue: networkQueue)
         //when
         let sut = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock)
         
@@ -75,16 +75,16 @@ class EventCreatorTests: XCTestCase {
     
     func test_whenNotReachableMockService_shouldReturnFalse() {
         //given
-        let config = NetworkConfigurations(baseURL: URL(string: "ws://mock.clickstream.com/events")!)
+        let urlRequest = URLRequest(url: URL(string: "ws://mock.clickstream.com/events")!)
         
         let event = Event(guid: "", timestamp: Date(), type: "realTime", eventProtoData: Data())
         let deviceStatus = DefaultDeviceStatus(performOnQueue: networkQueue)
-        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: networkQueue)
+        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: urlRequest, performOnQueue: networkQueue)
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         let keepAliveService = DefaultKeepAliveService(with: schedulerQueueMock, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
 
         let retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: false), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: networkQueue, persistence: persistence, keepAliveService: keepAliveService)
-        let networkBuilder = DefaultNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: networkQueue)
+        let networkBuilder = DefaultNetworkBuilder(retryMech: retryMech, performOnQueue: networkQueue)
         //when
         let sut = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock)
         

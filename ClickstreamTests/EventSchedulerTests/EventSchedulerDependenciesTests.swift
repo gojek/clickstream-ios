@@ -17,16 +17,16 @@ class EventSchedulerDependenciesTests: XCTestCase {
     
     func testInit() {
         // given
-        let config = NetworkConfigurations(baseURL: URL(string: "ws://mock.clickstream.com/events")!)
+        let urlRequest = URLRequest(url: URL(string: "ws://mock.clickstream.com/events")!)
         
-        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: mockQueue)
+        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: urlRequest, performOnQueue: mockQueue)
         let deviceStatus = DefaultDeviceStatus(performOnQueue: mockQueue)
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         let keepAliveService = DefaultKeepAliveService(with: mockQueue, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
         let retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: mockQueue, persistence: persistence, keepAliveService: keepAliveService)
         
-        let networkBuildable: NetworkBuildable = DefaultNetworkBuilder.init(networkConfigs: config, retryMech: retryMech, performOnQueue: mockQueue)
-
+        let networkBuildable: NetworkBuildable = DefaultNetworkBuilder.init(retryMech: retryMech, performOnQueue: mockQueue)
+        
         // when
         let schedulerDependencies = EventSchedulerDependencies(with: networkBuildable, db: database)
         

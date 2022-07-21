@@ -24,21 +24,20 @@ class EventWarehouserTests: XCTestCase {
     
     func test_whenAnEventIsGiven_thenTheWarehouserMustStoreIt() {
         //given
-        let config = NetworkConfigurations(baseURL: URL(string: "ws://mock.clickstream.com/events")!)
+        let urlRequest = URLRequest(url: URL(string: "ws://mock.clickstream.com/events")!)
         let expectation = self.expectation(description: "Should respond on the given queue")
-
         
         let prioritiesMock = [Priority(priority: 0, identifier: "realTime", maxBatchSize: 50000.0, maxTimeBetweenTwoBatches: 100),
                               Priority(priority: 1, identifier: "standard")]
 
         let persistence = DefaultDatabaseDAO<Event>(database: database, performOnQueue: dbQueueMock)
         
-        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
+        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: urlRequest, performOnQueue: .main)
         let keepAliveService = DefaultKeepAliveService(with: schedulerQueueMock, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
 
         let retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: DefaultDeviceStatus(performOnQueue: schedulerQueueMock), appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: schedulerQueueMock, persistence: DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock), keepAliveService: keepAliveService)
         
-        let networkBuilder = DefaultNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: schedulerQueueMock)
+        let networkBuilder = DefaultNetworkBuilder(retryMech: retryMech, performOnQueue: schedulerQueueMock)
         let eventBatchCreator = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock)
         let schedulerServiceMock = DefaultSchedulerService(with: prioritiesMock, performOnQueue: schedulerQueueMock)
         let batchSizeRegulatorMock = DefaultBatchSizeRegulator()

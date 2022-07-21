@@ -25,4 +25,5 @@ end
 target 'Example' do
   project 'Example/Example.xcodeproj'
   clickstream_pods
+  pod 'TrueTime'
 end

@@ -255,7 +255,7 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
         return nil
     }
     
-    /// Capturing events in ClickStream static dictionary with type of event as key and event message as value [proto: [Message]]
+    /// Capturing events in Clickstream static dictionary with type of event as key and event message as value [proto: [Message]]
     func processEvents() {
         var messageArray: [Message] = []
         messageArray = EventsHelper.shared.eventsCaptured.map { $0.msg }

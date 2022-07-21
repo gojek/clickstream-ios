@@ -256,6 +256,7 @@ extension DefaultRetryMechanism {
         guard terminationCountDown == nil else {
             return
         }
+        Clickstream.connectionState = .closing
         terminationCountDown = DispatchSource.makeTimerSource(flags: .strict, queue: performQueue)
         // This gives the breathing space for flushing the events.
         terminationCountDown?.schedule(deadline: .now() + Clickstream.constraints.connectionTerminationTimerWaitTime)

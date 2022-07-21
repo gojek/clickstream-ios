@@ -17,10 +17,10 @@ class EventProcessorDependenciesTests: XCTestCase {
     
     func testMakeEventProcessor() {
         // given
-        let config = NetworkConfigurations(baseURL: URL(string: "ws://mock.clickstream.com/events")!)
+        let urlRequest = URLRequest(url: URL(string: "ws://mock.clickstream.com/events")!)
         let prioritiesMock = [Priority(priority: 0, identifier: "realTime", maxBatchSize: 50000.0, maxTimeBetweenTwoBatches: 1)]
         
-        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: mockQueue)
+        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: urlRequest, performOnQueue: mockQueue)
         let deviceStatus = DefaultDeviceStatus(performOnQueue: mockQueue)
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         let eventPersistence = DefaultDatabaseDAO<Event>(database: database, performOnQueue: mockQueue)
@@ -28,7 +28,7 @@ class EventProcessorDependenciesTests: XCTestCase {
 
         let retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: mockQueue, persistence: persistence, keepAliveService: keepAliveService)
         
-        let networkBuilder: NetworkBuildable = DefaultNetworkBuilder.init(networkConfigs: config, retryMech: retryMech, performOnQueue: mockQueue)
+        let networkBuilder: NetworkBuildable = DefaultNetworkBuilder.init(retryMech: retryMech, performOnQueue: mockQueue)
         
         let eventBatchCreator = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: mockQueue)
         
