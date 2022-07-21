@@ -44,7 +44,7 @@
 		9AEA265D24924B360018931D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BD4E9D58285717050093D342 /* libClickstream.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libClickstream.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD4E9D5C2857186E0093D342 /* libClickstream.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libClickstream.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		BD4E9D60285719CC0093D342 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../EventVisualizer/Resources/Assets.xcassets; sourceTree = "<group>"; };
+		BD4E9D60285719CC0093D342 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Example/Resources/Assets.xcassets; sourceTree = "<group>"; };
 		CDD9BE2452FB2F21C98C5E74 /* Pods-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.debug.xcconfig"; path = "Target Support Files/Pods-Example/Pods-Example.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 

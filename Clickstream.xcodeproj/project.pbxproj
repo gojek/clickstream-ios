@@ -145,7 +145,6 @@
 		BD8AF66D287ED1CC002DD402 /* TableDefinable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5E0287ED1CB002DD402 /* TableDefinable.swift */; };
 		BD8AF66E287ED1CC002DD402 /* DatabasePersistable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5E1287ED1CB002DD402 /* DatabasePersistable.swift */; };
 		BD8AF66F287ED1CC002DD402 /* DatabasePersistable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5E1287ED1CB002DD402 /* DatabasePersistable.swift */; };
-		BD8AF670287ED1CC002DD402 /* FileStorable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5E2287ED1CB002DD402 /* FileStorable.swift */; };
 		BD8AF671287ED1CC002DD402 /* FileStorable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5E2287ED1CB002DD402 /* FileStorable.swift */; };
 		BD8AF672287ED1CC002DD402 /* EventClassifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5E5287ED1CB002DD402 /* EventClassifier.swift */; };
 		BD8AF673287ED1CC002DD402 /* EventClassifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5E5287ED1CB002DD402 /* EventClassifier.swift */; };
@@ -1125,7 +1124,6 @@
 				BD8AF658287ED1CC002DD402 /* EventBatchCreator.swift in Sources */,
 				BD8AF66A287ED1CC002DD402 /* DatabaseDAO.swift in Sources */,
 				BD8AF694287ED1CC002DD402 /* CollectionMapper.swift in Sources */,
-				BD8AF670287ED1CC002DD402 /* FileStorable.swift in Sources */,
 				BD8AF67E287ED1CC002DD402 /* EventsListingTableViewCell.swift in Sources */,
 				BD8AF646287ED1CC002DD402 /* JSONStringDecoder.swift in Sources */,
 				BD8AF688287ED1CC002DD402 /* EventDetailsViewModel.swift in Sources */,
