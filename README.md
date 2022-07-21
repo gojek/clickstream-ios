@@ -50,6 +50,13 @@ The word “Clickstream” is a trail of digital breadcrumbs left by users as th
 
     pod 'Clickstream'
 
+#### Swift Package Manager
+[SPM](https://swift.org/package-manager/) is a tool for automating the distribution of Swift code and is integrated into the swift compiler. Once you have your Swift package set up, adding Clickstream as a dependency is as easy as adding it to the dependencies value of your Package.swift.
+
+    dependencies: [
+        .package(url: "https://github.com/gojek/clickstream-ios.git", .upToNextMajor(from: "1.0.0"))
+    ]
+
 ## Usage
 
 ### Initialization

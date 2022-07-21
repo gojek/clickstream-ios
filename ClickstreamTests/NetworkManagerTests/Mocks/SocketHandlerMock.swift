@@ -6,6 +6,7 @@
 //  Copyright © 2020 Gojek. All rights reserved.
 //
 
+@testable import Clickstream
 import Foundation
 
 enum SocketConnectionState {

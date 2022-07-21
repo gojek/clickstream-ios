@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "Clickstream"
-  s.version          = "1.0.0"
+  s.version          = "1.0.2"
   s.summary          = "Real time Analytics SDK"
   s.description      = "Clickstream is an event agnostic, real-time data ingestion analytics SDK"
 
@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '11.0'
   s.swift_version    = '5.0'
 
-  s.source_files  = 'Clickstream/**/*.swift'
+  s.source_files  = 'Sources/Clickstream/**/*.swift'
   s.exclude_files = "Example"
   s.frameworks    = "UIKit", "Foundation", "CoreTelephony"
   
