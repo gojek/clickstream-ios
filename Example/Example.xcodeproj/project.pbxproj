@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6D0CC062E8D0238A223EE870 /* libPods-Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 202F48543D1D2CA5DC16CAEF /* libPods-Example.a */; };
+		9A2437F128897738009B3594 /* DefaultNTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2437F028897738009B3594 /* DefaultNTPClient.swift */; };
 		9A266FA027F56136000D6C36 /* ClickstreamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A266F9F27F56136000D6C36 /* ClickstreamViewController.swift */; };
 		9A266FA627F6ACFB000D6C36 /* App.proto in Sources */ = {isa = PBXBuildFile; fileRef = 9A266FA327F6ACFB000D6C36 /* App.proto */; };
 		9A266FA727F6ACFB000D6C36 /* User.proto in Sources */ = {isa = PBXBuildFile; fileRef = 9A266FA427F6ACFB000D6C36 /* User.proto */; };
@@ -26,6 +27,7 @@
 /* Begin PBXFileReference section */
 		202F48543D1D2CA5DC16CAEF /* libPods-Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BB0C42F5929E859C4EA332F /* Pods-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.release.xcconfig"; path = "Target Support Files/Pods-Example/Pods-Example.release.xcconfig"; sourceTree = "<group>"; };
+		9A2437F028897738009B3594 /* DefaultNTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultNTPClient.swift; sourceTree = "<group>"; };
 		9A266F9F27F56136000D6C36 /* ClickstreamViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickstreamViewController.swift; sourceTree = "<group>"; };
 		9A266FA327F6ACFB000D6C36 /* App.proto */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.protobuf; path = App.proto; sourceTree = "<group>"; };
 		9A266FA427F6ACFB000D6C36 /* User.proto */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.protobuf; path = User.proto; sourceTree = "<group>"; };
@@ -42,7 +44,7 @@
 		9AEA265D24924B360018931D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BD4E9D58285717050093D342 /* libClickstream.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libClickstream.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD4E9D5C2857186E0093D342 /* libClickstream.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libClickstream.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		BD4E9D60285719CC0093D342 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../EventVisualizer/Resources/Assets.xcassets; sourceTree = "<group>"; };
+		BD4E9D60285719CC0093D342 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Example/Resources/Assets.xcassets; sourceTree = "<group>"; };
 		CDD9BE2452FB2F21C98C5E74 /* Pods-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.debug.xcconfig"; path = "Target Support Files/Pods-Example/Pods-Example.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -95,6 +97,7 @@
 				9AEA264F24924B340018931D /* AppDelegate.swift */,
 				9AA23CF2249C7589001BE490 /* AnalyticsManager.swift */,
 				9A266F9F27F56136000D6C36 /* ClickstreamViewController.swift */,
+				9A2437F028897738009B3594 /* DefaultNTPClient.swift */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -266,6 +269,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9A266FA627F6ACFB000D6C36 /* App.proto in Sources */,
+				9A2437F128897738009B3594 /* DefaultNTPClient.swift in Sources */,
 				9AA23CF3249C7589001BE490 /* AnalyticsManager.swift in Sources */,
 				9A266FAF27F6ADA9000D6C36 /* Device.pb.swift in Sources */,
 				9AEA265024924B340018931D /* AppDelegate.swift in Sources */,

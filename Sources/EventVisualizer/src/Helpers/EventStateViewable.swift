@@ -1,6 +1,6 @@
 //
 //  EventStateViewable.swift
-//  ClickStream
+//  Clickstream
 //
 //  Created by Rishav Gupta on 31/03/22.
 //  Copyright © 2022 Gojek. All rights reserved.

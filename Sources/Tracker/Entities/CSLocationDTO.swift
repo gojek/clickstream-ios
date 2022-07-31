@@ -31,8 +31,8 @@ public struct CSLocation {
 }
 
 extension CSLocation: ProtoConvertible {
-    var proto: Gojek_Clickstream_Internal_HealthMeta.Location {
-        let location = Gojek_Clickstream_Internal_HealthMeta.Location.with {
+    var proto: Clickstream_Internal_HealthMeta.Location {
+        let location = Clickstream_Internal_HealthMeta.Location.with {
             $0.latitude = self.latitude
             $0.longitude = self.longitude
         }

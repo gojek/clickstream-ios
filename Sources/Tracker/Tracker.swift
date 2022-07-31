@@ -48,7 +48,7 @@ public final class Tracker {
     /// ClickstreamDelegate.
     internal private(set) var delegate: TrackerDelegate
 
-    /// ClickStreamDataSource.
+    /// ClickstreamDataSource.
     private var _dataSource: TrackerDataSource
     
     /// readonly public accessor for dataSource.
@@ -130,7 +130,7 @@ public final class Tracker {
         guard let eventsToBeFlushed = healthTracker.flushFunnelEvents() else { return nil }
         guard let commonProperties = commonProperties else { return nil }
         
-        let metaData = Gojek_Clickstream_Internal_HealthMeta.with {
+        let metaData = Clickstream_Internal_HealthMeta.with {
             $0.device = commonProperties.device.proto
             $0.customer = commonProperties.customer.proto
             $0.session = commonProperties.session.proto
@@ -151,18 +151,18 @@ public final class Tracker {
         return events
     }
     
-    private func getInstantEvents(instantEvents: [HealthAnalysisEvent], metaData: Gojek_Clickstream_Internal_HealthMeta) -> [Event] {
+    private func getInstantEvents(instantEvents: [HealthAnalysisEvent], metaData: Clickstream_Internal_HealthMeta) -> [Event] {
         var events = [Event]()
         for event in instantEvents {
             let eventGuid = UUID().uuidString
             
-            let healthEvent = Gojek_Clickstream_Internal_Health.with {
+            let healthEvent = Clickstream_Internal_Health.with {
                 $0.eventName = event.eventName.rawValue
                 $0.numberOfEvents = 1 // Since instant events are fired one at a time
                 $0.healthMeta = metaData
                 $0.healthMeta.eventGuid = eventGuid
                 
-                $0.healthDetails = Gojek_Clickstream_Internal_HealthDetails.with {
+                $0.healthDetails = Clickstream_Internal_HealthDetails.with {
                     if let eventGUID = event.eventGUID {
                         $0.eventGuids = [eventGUID]
                     }
@@ -173,15 +173,15 @@ public final class Tracker {
                 }
                 
                 if let timeToConnection = event.timeToConnection {
-                    $0.traceDetails = Gojek_Clickstream_Internal_TraceDetails.with {
+                    $0.traceDetails = Clickstream_Internal_TraceDetails.with {
                         $0.timeToConnection = timeToConnection
                         
-                        $0.errorDetails = Gojek_Clickstream_Internal_ErrorDetails.with {
+                        $0.errorDetails = Clickstream_Internal_ErrorDetails.with {
                             $0.reason = event.reason ?? ""
                         }
                     }
                 }
-                $0.errorDetails = Gojek_Clickstream_Internal_ErrorDetails.with {
+                $0.errorDetails = Clickstream_Internal_ErrorDetails.with {
                     $0.reason = event.reason ?? ""
                 }
             }
@@ -193,7 +193,7 @@ public final class Tracker {
         return events
     }
     
-    private func getAggregatedEvents(aggregatedEvents: [HealthAnalysisEvent], metaData: Gojek_Clickstream_Internal_HealthMeta) -> [Event] {
+    private func getAggregatedEvents(aggregatedEvents: [HealthAnalysisEvent], metaData: Clickstream_Internal_HealthMeta) -> [Event] {
         var events = [Event]()
         let groupingDictionary = Dictionary(grouping: aggregatedEvents, by: { $0.eventName })
         for (key, eventNameBasedAggregation) in groupingDictionary {
@@ -209,19 +209,19 @@ public final class Tracker {
             
             let eventBatchGuids = eventNameBasedAggregation.compactMap { $0.eventBatchGUID }
             
-            var healthEvent = Gojek_Clickstream_Internal_Health.with {
+            var healthEvent = Clickstream_Internal_Health.with {
                 $0.numberOfEvents = Int64(eventGuids.count)
                 $0.numberOfBatches = Int64(eventBatchGuids.count)
                 $0.healthMeta = metaData
                 $0.healthMeta.eventGuid = eventGuid
                 
-                let currentTimestamp = Date()
+                let currentTimestamp = Clickstream.currentNTPTimestamp ?? Date()
                 $0.eventTimestamp = Google_Protobuf_Timestamp(date: currentTimestamp)
                 $0.eventName = key.rawValue
                 $0.deviceTimestamp = Google_Protobuf_Timestamp(date: Date())
             }
             
-            let healthEventDetails = Gojek_Clickstream_Internal_HealthDetails.with {
+            let healthEventDetails = Clickstream_Internal_HealthDetails.with {
                 $0.eventGuids = eventGuids
                 $0.eventBatchGuids = eventBatchGuids
             }
@@ -236,12 +236,12 @@ public final class Tracker {
     
     /// Construct event
     /// - Parameters:
-    ///   - healthEvent: Gojek_Clickstream_Internal_Health
+    ///   - healthEvent: Clickstream_Internal_Health
     ///   - eventGuid: Health meta guid
     /// - Returns: Event
-    private func constructEvent(healthEvent: Gojek_Clickstream_Internal_Health, eventGuid: String) -> Event? {
+    private func constructEvent(healthEvent: Clickstream_Internal_Health, eventGuid: String) -> Event? {
         do {
-            // Constructing the Gojek_Clickstream_De_Event
+            // Constructing the Clickstream_De_Event
             let eventProto = try Odpf_Raccoon_Event.with {
                 $0.eventBytes = try healthEvent.serializedData()
                 if let typeOfEvent = type(of: healthEvent).protoMessageName.components(separatedBy: ".").last {
@@ -249,7 +249,7 @@ public final class Tracker {
                 }
             }
             let event = try Event(guid: eventGuid,
-                                  timestamp: Date(),
+                                  timestamp: Clickstream.currentNTPTimestamp ?? Date(),
                                   type: TrackerConstant.HealthEventType,
                                   eventProtoData: eventProto.serializedData())
             return event

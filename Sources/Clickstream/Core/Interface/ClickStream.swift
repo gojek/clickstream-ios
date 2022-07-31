@@ -8,8 +8,37 @@
 import Foundation
 import SwiftProtobuf
 
+/// Conform to this delegate to set NTP Time.
+public protocol ClickstreamDataSource: AnyObject {
+    
+    /// Returns NTP timestamp
+    /// - Returns: NTP Date() instance
+    func currentNTPTimestamp() -> Date?
+}
+
+public protocol ClickstreamDelegate: AnyObject {
+    
+    /// Provides Clickstream connection state changes
+    /// - Parameter state: Clickstream.ConnectionState
+    func onConnectionStateChanged(state: Clickstream.ConnectionState)
+}
+
 /// Primary class for integrating Clickstream.
 public final class Clickstream {
+    
+    /// States the various states of Clicstream connection
+    public enum ConnectionState {
+        // When the socket is trying to connect
+        case connecting
+        // When the socket is about to be closed. can be called when the app moves to backgroud
+        case closing
+        // When the socket connection is closed
+        case closed
+        // When the socket connection is fails
+        case failed
+        // When the socket connection gets connected
+        case connected
+    }
     
     public enum ClickstreamError: Error, LocalizedError {
         /// Clickstream could not be initialised.
@@ -35,6 +64,9 @@ public final class Clickstream {
     
     /// Clickstream shared instance.
     private static var sharedInstance: Clickstream?
+    
+    private var dependencies: DefaultClickstreamDependencies?
+    
     #if EVENT_VISUALIZER_ENABLED
     /// internal stored static variable which is a delegate
     /// to sent the events to client for visualization.
@@ -52,6 +84,28 @@ public final class Clickstream {
         }
     }
     #endif
+    
+    /// ClickstreamDelegate.
+    private weak var delegate: ClickstreamDelegate?
+    
+    /// ClickstreamDataSource.
+    private weak var _dataSource: ClickstreamDataSource?
+    
+    /// readonly public accessor for dataSource.
+    public weak var dataSource: ClickstreamDataSource? {
+        get {
+            return _dataSource
+        }
+    }
+    
+    /// Holds latest NTP date
+    internal static var currentNTPTimestamp: Date? {
+        get {
+            let timestamp = sharedInstance?._dataSource?.currentNTPTimestamp()
+            return timestamp
+        }
+    }
+    
     // MARK: - Building blocks of the SDK.
     private let networkBuilder: NetworkBuildable
     private let eventProcessor: EventProcessor
@@ -65,10 +119,14 @@ public final class Clickstream {
     ///   - dataSource: dataSource for Clickstream
     private init(networkBuilder: NetworkBuildable,
                  eventWarehouser: EventWarehouser,
-                 eventProcessor: EventProcessor) {
+                 eventProcessor: EventProcessor,
+                 dataSource: ClickstreamDataSource,
+                 delegate: ClickstreamDelegate? = nil) {
         self.networkBuilder = networkBuilder
         self.eventWarehouser = eventWarehouser
         self.eventProcessor = eventProcessor
+        self._dataSource = dataSource
+        self.delegate = delegate
     }
     
     /// Returns the shared Clickstream instance.
@@ -79,6 +137,13 @@ public final class Clickstream {
     
     public static func setLogLevel(_ level: Logger.LogLevel) {
         Logger.logLevel = level
+    }
+    
+    /// Provides whether clickstream is connected to the network or not
+    public var isClickstreamConnectedToNetwork: Bool {
+        get {
+            return dependencies?.isSocketConnected ?? false
+        }
     }
     
     /// Stops the Clickstream tracking.
@@ -111,9 +176,11 @@ public final class Clickstream {
     ///   - eventClassification: Clickstream event classification passed from the integrating app.
     /// - Returns: returns a Clickstream instance to keep throughout the project.
     ///            You can always get the instance by calling getInstance()
-    @discardableResult public static func initialise(networkConfiguration: NetworkConfigurations,
+    @discardableResult public static func initialise(request: URLRequest,
                                                      constraints: ClickstreamConstraints? = nil,
-                                                     eventClassification: ClickstreamEventClassification? = nil) throws -> Clickstream? {
+                                                     eventClassification: ClickstreamEventClassification? = nil,
+                                                     dataSource: ClickstreamDataSource,
+                                                     delegate: ClickstreamDelegate? = nil) throws -> Clickstream? {
         
         let semaphore = DispatchSemaphore(value: 1)
         defer {
@@ -140,10 +207,13 @@ public final class Clickstream {
             // All the dependency injections pertaining to the clickstream blocks happen here!
             // Load default dependencies.
             do {
-                let dependencies = try DefaultClickstreamDependencies(with: networkConfiguration)
+                let dependencies = try DefaultClickstreamDependencies(with: request)
                 sharedInstance = Clickstream(networkBuilder: dependencies.networkBuilder,
                                              eventWarehouser: dependencies.eventWarehouser,
-                                             eventProcessor: dependencies.eventProcessor)
+                                             eventProcessor: dependencies.eventProcessor,
+                                             dataSource: dataSource,
+                                             delegate: delegate)
+                sharedInstance?.dependencies = dependencies // saving a copy of dependencies
             } catch {
                 print("Cannot initialise Clickstream. Dependencies could not be initialised.",.critical)
                 // Relay the database error.
@@ -153,6 +223,12 @@ public final class Clickstream {
             return sharedInstance
         }
         return sharedInstance
+    }
+    
+    @AtomicConnectionState internal static var connectionState: Clickstream.ConnectionState {
+        didSet {
+            sharedInstance?.delegate?.onConnectionStateChanged(state: connectionState)
+        }
     }
 }
 
@@ -196,3 +272,13 @@ extension Clickstream {
     }
 }
 #endif
+
+@propertyWrapper
+struct AtomicConnectionState {
+    private let dispatchQueue = DispatchQueue(label: Constants.QueueIdentifiers.atomicAccess.rawValue, attributes: .concurrent)
+    private var state: Clickstream.ConnectionState = .closed
+    var wrappedValue: Clickstream.ConnectionState {
+        get { dispatchQueue.sync { state } }
+        set { dispatchQueue.sync(flags: .barrier) { state = newValue } }
+    }
+}

@@ -35,7 +35,6 @@ protocol NetworkBuildable: NetworkBuildableInputs, NetworkBuildableOutputs { }
 /// This is the class which the scheduler will communicate with in order to get the network related tasks done
 final class DefaultNetworkBuilder: NetworkBuildable {
     
-    private let networkConfigs: NetworkConfigurable
     private let retryMech: Retryable
     private let performQueue: SerialQueue
     
@@ -43,10 +42,8 @@ final class DefaultNetworkBuilder: NetworkBuildable {
         return retryMech.isAvailble
     }
     
-    init(networkConfigs: NetworkConfigurable,
-         retryMech: Retryable,
+    init(retryMech: Retryable,
          performOnQueue: SerialQueue) {
-        self.networkConfigs = networkConfigs
         self.retryMech = retryMech
         self.performQueue = performOnQueue
     }

@@ -42,11 +42,8 @@ protocol ConnectableInputs {
     
     /// Initializer
     /// - Parameters:
-    ///   - request: URLRequest which the connectable must connect to.
-    ///   - keepTrying: A control flag which tells the connectable to keep trying till the connection is not established.
     ///   - performOnQueue: A queue instance on which the tasks are performed.
-    ///   - connectionCallback: A callback to update about the connection status.
-    init(request: URLRequest, keepTrying: Bool, performOnQueue: SerialQueue, connectionCallback: ConnectionStatus?)
+    init(performOnQueue: SerialQueue)
     
     
     /// Writes data to the stream.
@@ -58,13 +55,20 @@ protocol ConnectableInputs {
     /// Disconnects the connection.
     func disconnect()
     
-    //    func connect(with request: URLRequest, _ completion: @escaping ((Result<[String: String]?, ConnectionError>) -> Void))
+    /// Sets up a connectable
+    /// - Parameters:
+    ///   - request: URLRequest which the connectable must connect to.
+    ///   - keepTrying: A control flag which tells the connectable to keep trying till the connection is not established.
+    ///   - connectionCallback: A callback to update about the connection status.
+    func setup(request: URLRequest,
+               keepTrying: Bool,
+               connectionCallback: ConnectionStatus?)
 }
 
 protocol ConnectableOutputs {
     
     /// Returns the connection state.
-    var isConnected: Bool { get }
+    var isConnected: Atomic<Bool> { get }
 }
 
 protocol Connectable: ConnectableInputs, ConnectableOutputs { }

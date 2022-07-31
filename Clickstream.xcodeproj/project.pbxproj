@@ -15,6 +15,10 @@
 		68E19FB8247D42100074A790 /* DispatchQueue+Detection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E19FB5247D42100074A790 /* DispatchQueue+Detection.swift */; };
 		68E7BD202456E6F10072549A /* libClickstream.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 68E7BADF244F08C00072549A /* libClickstream.a */; };
 		68E7BD87246028CF0072549A /* SocketHandlerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E7BD86246028CF0072549A /* SocketHandlerMock.swift */; };
+		9A2437F328898821009B3594 /* URLRequest+Equality.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2437F228898821009B3594 /* URLRequest+Equality.swift */; };
+		9A2437F428898821009B3594 /* URLRequest+Equality.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2437F228898821009B3594 /* URLRequest+Equality.swift */; };
+		9A2437F628898833009B3594 /* PerformanceTracer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2437F528898832009B3594 /* PerformanceTracer.swift */; };
+		9A2437F728898833009B3594 /* PerformanceTracer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2437F528898832009B3594 /* PerformanceTracer.swift */; };
 		9ACF41E824ADEC7000A10832 /* MockConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ACF41E724ADEC7000A10832 /* MockConstants.swift */; };
 		9AF0C758280DEC8C00E39A12 /* ClickStreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB88AA0251B00030092659B /* ClickStreamTests.swift */; };
 		9AF0C759280DEC9600E39A12 /* EventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA23CFA24A5978B001BE490 /* EventTests.swift */; };
@@ -65,8 +69,6 @@
 		BD8AF61D287ED1CC002DD402 /* RetryMechanism.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF59C287ED1CB002DD402 /* RetryMechanism.swift */; };
 		BD8AF61E287ED1CC002DD402 /* NetworkManagerDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF59E287ED1CB002DD402 /* NetworkManagerDependencies.swift */; };
 		BD8AF61F287ED1CC002DD402 /* NetworkManagerDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF59E287ED1CB002DD402 /* NetworkManagerDependencies.swift */; };
-		BD8AF620287ED1CC002DD402 /* Heartbeat.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5A1287ED1CB002DD402 /* Heartbeat.swift */; };
-		BD8AF621287ED1CC002DD402 /* Heartbeat.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5A1287ED1CB002DD402 /* Heartbeat.swift */; };
 		BD8AF622287ED1CC002DD402 /* SocketHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5A2287ED1CB002DD402 /* SocketHandler.swift */; };
 		BD8AF623287ED1CC002DD402 /* SocketHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5A2287ED1CB002DD402 /* SocketHandler.swift */; };
 		BD8AF624287ED1CC002DD402 /* Requestable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5A4287ED1CB002DD402 /* Requestable.swift */; };
@@ -75,8 +77,6 @@
 		BD8AF627287ED1CC002DD402 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5A5287ED1CB002DD402 /* NetworkService.swift */; };
 		BD8AF628287ED1CC002DD402 /* Connectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5A6287ED1CB002DD402 /* Connectable.swift */; };
 		BD8AF629287ED1CC002DD402 /* Connectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5A6287ED1CB002DD402 /* Connectable.swift */; };
-		BD8AF62A287ED1CC002DD402 /* NetworkConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5A7287ED1CB002DD402 /* NetworkConfiguration.swift */; };
-		BD8AF62B287ED1CC002DD402 /* NetworkConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5A7287ED1CB002DD402 /* NetworkConfiguration.swift */; };
 		BD8AF62C287ED1CC002DD402 /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5A9287ED1CB002DD402 /* Atomic.swift */; };
 		BD8AF62D287ED1CC002DD402 /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5A9287ED1CB002DD402 /* Atomic.swift */; };
 		BD8AF62E287ED1CC002DD402 /* DeviceStatusNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5AA287ED1CB002DD402 /* DeviceStatusNotifier.swift */; };
@@ -145,8 +145,6 @@
 		BD8AF66D287ED1CC002DD402 /* TableDefinable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5E0287ED1CB002DD402 /* TableDefinable.swift */; };
 		BD8AF66E287ED1CC002DD402 /* DatabasePersistable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5E1287ED1CB002DD402 /* DatabasePersistable.swift */; };
 		BD8AF66F287ED1CC002DD402 /* DatabasePersistable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5E1287ED1CB002DD402 /* DatabasePersistable.swift */; };
-		BD8AF670287ED1CC002DD402 /* FileStorable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5E2287ED1CB002DD402 /* FileStorable.swift */; };
-		BD8AF671287ED1CC002DD402 /* FileStorable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5E2287ED1CB002DD402 /* FileStorable.swift */; };
 		BD8AF672287ED1CC002DD402 /* EventClassifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5E5287ED1CB002DD402 /* EventClassifier.swift */; };
 		BD8AF673287ED1CC002DD402 /* EventClassifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5E5287ED1CB002DD402 /* EventClassifier.swift */; };
 		BD8AF674287ED1CC002DD402 /* EventProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5E6287ED1CB002DD402 /* EventProcessor.swift */; };
@@ -224,6 +222,8 @@
 		68E7BD86246028CF0072549A /* SocketHandlerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketHandlerMock.swift; sourceTree = "<group>"; };
 		68E7BD89246034F90072549A /* NetworkServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkServiceTests.swift; sourceTree = "<group>"; };
 		68E7BD8B246184310072549A /* NetworkBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkBuilderTests.swift; sourceTree = "<group>"; };
+		9A2437F228898821009B3594 /* URLRequest+Equality.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URLRequest+Equality.swift"; sourceTree = "<group>"; };
+		9A2437F528898832009B3594 /* PerformanceTracer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerformanceTracer.swift; sourceTree = "<group>"; };
 		9AA23CF524A33B4C001BE490 /* EventProcessorTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventProcessorTest.swift; sourceTree = "<group>"; };
 		9AA23CFA24A5978B001BE490 /* EventTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTests.swift; sourceTree = "<group>"; };
 		9AA23D0024A5A1A7001BE490 /* EventBatchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBatchTests.swift; sourceTree = "<group>"; };
@@ -252,12 +252,10 @@
 		BD8AF59B287ED1CB002DD402 /* NetworkBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkBuilder.swift; sourceTree = "<group>"; };
 		BD8AF59C287ED1CB002DD402 /* RetryMechanism.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RetryMechanism.swift; sourceTree = "<group>"; };
 		BD8AF59E287ED1CB002DD402 /* NetworkManagerDependencies.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkManagerDependencies.swift; sourceTree = "<group>"; };
-		BD8AF5A1287ED1CB002DD402 /* Heartbeat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Heartbeat.swift; sourceTree = "<group>"; };
 		BD8AF5A2287ED1CB002DD402 /* SocketHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketHandler.swift; sourceTree = "<group>"; };
 		BD8AF5A4287ED1CB002DD402 /* Requestable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Requestable.swift; sourceTree = "<group>"; };
 		BD8AF5A5287ED1CB002DD402 /* NetworkService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		BD8AF5A6287ED1CB002DD402 /* Connectable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Connectable.swift; sourceTree = "<group>"; };
-		BD8AF5A7287ED1CB002DD402 /* NetworkConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkConfiguration.swift; sourceTree = "<group>"; };
 		BD8AF5A9287ED1CB002DD402 /* Atomic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Atomic.swift; sourceTree = "<group>"; };
 		BD8AF5AA287ED1CB002DD402 /* DeviceStatusNotifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceStatusNotifier.swift; sourceTree = "<group>"; };
 		BD8AF5AB287ED1CB002DD402 /* NetworkReachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkReachability.swift; sourceTree = "<group>"; };
@@ -546,6 +544,7 @@
 		BD8AF58C287ED1CB002DD402 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				9A2437F528898832009B3594 /* PerformanceTracer.swift */,
 				BD8AF58D287ED1CB002DD402 /* TrackerConstants.swift */,
 				BD8AF58E287ED1CB002DD402 /* Notifiable.swift */,
 				BD8AF58F287ED1CB002DD402 /* AppVersionChecker.swift */,
@@ -627,7 +626,6 @@
 		BD8AF5A0287ED1CB002DD402 /* Sockets */ = {
 			isa = PBXGroup;
 			children = (
-				BD8AF5A1287ED1CB002DD402 /* Heartbeat.swift */,
 				BD8AF5A2287ED1CB002DD402 /* SocketHandler.swift */,
 			);
 			path = Sockets;
@@ -639,7 +637,6 @@
 				BD8AF5A4287ED1CB002DD402 /* Requestable.swift */,
 				BD8AF5A5287ED1CB002DD402 /* NetworkService.swift */,
 				BD8AF5A6287ED1CB002DD402 /* Connectable.swift */,
-				BD8AF5A7287ED1CB002DD402 /* NetworkConfiguration.swift */,
 			);
 			path = NetworkService;
 			sourceTree = "<group>";
@@ -647,6 +644,7 @@
 		BD8AF5A8287ED1CB002DD402 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				9A2437F228898821009B3594 /* URLRequest+Equality.swift */,
 				BD8AF5A9287ED1CB002DD402 /* Atomic.swift */,
 				BD8AF5AA287ED1CB002DD402 /* DeviceStatusNotifier.swift */,
 				BD8AF5AB287ED1CB002DD402 /* NetworkReachability.swift */,
@@ -1107,6 +1105,7 @@
 				BD8AF664287ED1CC002DD402 /* SchedulerService.swift in Sources */,
 				BD8AF68E287ED1CC002DD402 /* EventsHelper.swift in Sources */,
 				BD8AF68C287ED1CC002DD402 /* FilterViewController.swift in Sources */,
+				9A2437F328898821009B3594 /* URLRequest+Equality.swift in Sources */,
 				BD8AF65C287ED1CC002DD402 /* EventWarehouser.swift in Sources */,
 				BD8AF660287ED1CC002DD402 /* AppStateNotifierService.swift in Sources */,
 				BD8AF63C287ED1CC002DD402 /* ClickstreamDependencies.swift in Sources */,
@@ -1124,19 +1123,17 @@
 				BD8AF658287ED1CC002DD402 /* EventBatchCreator.swift in Sources */,
 				BD8AF66A287ED1CC002DD402 /* DatabaseDAO.swift in Sources */,
 				BD8AF694287ED1CC002DD402 /* CollectionMapper.swift in Sources */,
-				BD8AF62A287ED1CC002DD402 /* NetworkConfiguration.swift in Sources */,
-				BD8AF670287ED1CC002DD402 /* FileStorable.swift in Sources */,
 				BD8AF67E287ED1CC002DD402 /* EventsListingTableViewCell.swift in Sources */,
 				BD8AF646287ED1CC002DD402 /* JSONStringDecoder.swift in Sources */,
 				BD8AF688287ED1CC002DD402 /* EventDetailsViewModel.swift in Sources */,
 				BD8AF656287ED1CC002DD402 /* Event.pb.swift in Sources */,
-				BD8AF620287ED1CC002DD402 /* Heartbeat.swift in Sources */,
 				BD8AF690287ED1CC002DD402 /* UITableViewExtensions.swift in Sources */,
 				BD8AF626287ED1CC002DD402 /* NetworkService.swift in Sources */,
 				BD8AF602287ED1CB002DD402 /* HealthAnalysisEvent.swift in Sources */,
 				BD8AF634287ED1CC002DD402 /* KeepAliveService.swift in Sources */,
 				BD8AF668287ED1CC002DD402 /* DatabaseHandler.swift in Sources */,
 				BD8AF630287ED1CC002DD402 /* NetworkReachability.swift in Sources */,
+				9A2437F628898833009B3594 /* PerformanceTracer.swift in Sources */,
 				BD8AF682287ED1CC002DD402 /* EventVisualizerLandingViewController.swift in Sources */,
 				BD8AF61A287ED1CC002DD402 /* NetworkBuilder.swift in Sources */,
 				BD8AF60E287ED1CC002DD402 /* HealthMeta.pb.swift in Sources */,
@@ -1189,7 +1186,6 @@
 				BD8AF661287ED1CC002DD402 /* AppStateNotifierService.swift in Sources */,
 				9AF0C764280DECE500E39A12 /* AppStateNotifierServiceTests.swift in Sources */,
 				BD8AF61B287ED1CC002DD402 /* NetworkBuilder.swift in Sources */,
-				BD8AF62B287ED1CC002DD402 /* NetworkConfiguration.swift in Sources */,
 				BD8AF683287ED1CC002DD402 /* EventVisualizerLandingViewController.swift in Sources */,
 				BD8AF65F287ED1CC002DD402 /* EventBatchProcessor.swift in Sources */,
 				BD8AF625287ED1CC002DD402 /* Requestable.swift in Sources */,
@@ -1207,8 +1203,8 @@
 				BD8AF65D287ED1CC002DD402 /* EventWarehouser.swift in Sources */,
 				BD8AF609287ED1CB002DD402 /* TrackerConstants.swift in Sources */,
 				68E7BD87246028CF0072549A /* SocketHandlerMock.swift in Sources */,
+				9A2437F728898833009B3594 /* PerformanceTracer.swift in Sources */,
 				BD8AF67D287ED1CC002DD402 /* FilterTextFieldTableViewCell.swift in Sources */,
-				BD8AF621287ED1CC002DD402 /* Heartbeat.swift in Sources */,
 				9AF0C758280DEC8C00E39A12 /* ClickStreamTests.swift in Sources */,
 				BD8AF655287ED1CC002DD402 /* EventResponse.pb.swift in Sources */,
 				BD8AF619287ED1CC002DD402 /* CSCommonPropertiesDTO.swift in Sources */,
@@ -1229,6 +1225,7 @@
 				BD8AF62F287ED1CC002DD402 /* DeviceStatusNotifier.swift in Sources */,
 				BD8AF665287ED1CC002DD402 /* SchedulerService.swift in Sources */,
 				BD8AF615287ED1CC002DD402 /* ClickStreamHealthConfigurations.swift in Sources */,
+				9A2437F428898821009B3594 /* URLRequest+Equality.swift in Sources */,
 				BD8AF64D287ED1CC002DD402 /* Event.swift in Sources */,
 				BD8AF633287ED1CC002DD402 /* DispatchSourceTimer+RepeatingTimer.swift in Sources */,
 				BD8AF60B287ED1CB002DD402 /* Notifiable.swift in Sources */,
@@ -1259,7 +1256,6 @@
 				9AF0C760280DECDC00E39A12 /* SortedArrayTests.swift in Sources */,
 				BD8AF663287ED1CC002DD402 /* EventBatchSizeRegulator.swift in Sources */,
 				68E19FB8247D42100074A790 /* DispatchQueue+Detection.swift in Sources */,
-				BD8AF671287ED1CC002DD402 /* FileStorable.swift in Sources */,
 				BD8AF627287ED1CC002DD402 /* NetworkService.swift in Sources */,
 				9AF0C768280DECF000E39A12 /* NetworkBuilderTests.swift in Sources */,
 				9AF0C763280DECE300E39A12 /* EventSchedulerDependenciesTests.swift in Sources */,
