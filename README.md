@@ -61,21 +61,23 @@ The word “Clickstream” is a trail of digital breadcrumbs left by users as th
 
 ### Initialization
 
-        class SampleClass {
-        
-    	    private var clickstream: ClickStream?
-    	    
-    	    func initialiseClickstream() {
-			    let url = URL(string: "ws://mock.clickstream.com/events")!
-			    let headers = ["Authorization": "Bearer dummy-token"]
-			    let networkConfigs = NetworkConfigurations(baseURL: url, headers: headers)
-			    let constraints = ClickstreamConstraints(maxConnectionRetries: 5)
-			    let classification = ClickstreamEventClassification()
-			    self.clickstream = try? Clickstream.initialise(networkConfiguration: networkConfigs,
-			    constraints: constraints,
-			    eventClassification: classification)
-		    }
-	    }
+```swift
+class SampleClass {
+
+    private var clickstream: ClickStream?
+    
+    func initialiseClickstream() {
+        let url = URL(string: "ws://mock.clickstream.com/events")!
+        let headers = ["Authorization": "Bearer dummy-token"]
+        let networkConfigs = NetworkConfigurations(baseURL: url, headers: headers)
+        let constraints = ClickstreamConstraints(maxConnectionRetries: 5)
+        let classification = ClickstreamEventClassification()
+        self.clickstream = try? Clickstream.initialise(networkConfiguration: networkConfigs,
+        constraints: constraints,
+        eventClassification: classification)
+    }
+}
+```
 	    
 #### ClickstreamConstraints
 
@@ -122,14 +124,18 @@ Holds the Event classification for ClickStream.
 ### Push Event
 Pushes event to Clickstream SDK
 
-    private func trackClickstreamEvent(message: Message) {
-	    self.clickStream?.trackEvent(with: message)
-    }
+```swift
+private func trackClickstreamEvent(message: Message) {
+    self.clickStream?.trackEvent(with: message)
+}
+```
     
 ### Destroy Instance
 Destroy instance of Clickstream, for example can be called when user logs out of the app.
 
-    ClickStream.destroy()
+```swift
+ClickStream.destroy()
+```
 
 ## Contribute
 
@@ -142,27 +148,32 @@ Read our [CONTRIBUTING-GUIDE.md](https://github.com/gojekfarm/clickstream-ios/bl
 
 This project exists thanks to all the contributors.
 
+<a href="https://github.com/gojek/clickstream-ios/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=gojek/clickstream-ios" />
+</a>
+
 ## License
 
-    MIT License
-    
-    Copyright (c) 2022 GO-JEK Tech
-    
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-    
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
-    
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
+```
+MIT License
 
+Copyright (c) 2022 GO-JEK Tech
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
