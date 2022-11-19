@@ -9,15 +9,24 @@
 @testable import Clickstream
 import Foundation
 
+enum SocketConnectionState {
+    case successWithData
+    case successWithEmptyData
+    case successWithNonSerializedData
+    case failure
+}
+
 final class SocketHandlerMockSuccess: SocketHandler {
     
-    private let connectionCallback: ConnectionStatus?
+    private var connectionCallback: ConnectionStatus?
     
-    func sendPing(_ data: Data) { }
+    static var state: SocketConnectionState = .successWithData
     
-    func stopPing() { }
+    init(performOnQueue: SerialQueue) {
+        
+    }
     
-    init(request: URLRequest, keepTrying: Bool, performOnQueue: SerialQueue, connectionCallback: ConnectionStatus?) {
+    func setup(request: URLRequest, keepTrying: Bool, connectionCallback: ConnectionStatus?) {
         self.connectionCallback = connectionCallback
         SerialQueue.main.asyncAfter(deadline: .now() + 0.5) {
            connectionCallback?(.success(.connected))//change this. -AV
@@ -25,14 +34,23 @@ final class SocketHandlerMockSuccess: SocketHandler {
     }
     
     func write(_ data: Data, completion: @escaping ((Result<Data?, ConnectableError>) -> Void)) {
-        completion(.success(data))
+        switch SocketHandlerMockSuccess.state {
+        case .successWithData:
+            completion(.success(data))
+        case .successWithEmptyData:
+            completion(.success(nil))
+        case .successWithNonSerializedData:
+            completion(.success(data.dropFirst()))
+        case .failure:
+            completion(.failure(.networkError(NSError(domain:"", code:404, userInfo:nil))))
+        }
     }
     
     func disconnect() {
         connectionCallback?(.success(.disconnected))
     }
     
-    var isConnected: Bool {
-        true
+    var isConnected: Atomic<Bool> {
+        return Atomic(true)
     }
 }

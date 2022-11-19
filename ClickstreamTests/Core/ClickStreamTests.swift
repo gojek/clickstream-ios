@@ -14,13 +14,17 @@ class ClickstreamTests: XCTestCase {
 
     func testInitialiseClickstream() {
         // when
-        let accessToken = "dummy_token"
-        let headers = ["Authorization": "Bearer \(accessToken)"]
-        let url = URL(string: "ws://mock.clickstream.com/events")!
-        let networkConfigs = NetworkConfigurations(baseURL: url, headers: headers)
-        let clickStream = try! Clickstream.initialise(networkConfiguration: networkConfigs, constraints: MockConstants.constraints, eventClassification: MockConstants.eventClassification)
+        let dummyRequest = URLRequest(url: URL(string: "ws://mock.clickstream.com/events")!)
+        let clickStream = try! Clickstream.initialise(request: dummyRequest, constraints: MockConstants.constraints, eventClassification: MockConstants.eventClassification, dataSource: self)
         
         // then
         XCTAssertNotNil(clickStream)
+    }
+}
+
+extension ClickstreamTests: ClickstreamDataSource {
+    
+    func currentNTPTimestamp() -> Date? {
+        return Date()
     }
 }

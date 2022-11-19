@@ -13,7 +13,7 @@ import SwiftProtobuf
 class EventProcessorTest: XCTestCase {
 
     private let processorQueueMock = SerialQueue(label: "com.mock.gojek.clickstream.processor", qos: .utility)
-    private var config: NetworkConfigurations!
+    let urlRequest = URLRequest(url: URL(string: "ws://mock.clickstream.com/events")!)
     private var networkService: DefaultNetworkService<SocketHandlerMockSuccess>!
     private var retryMech: DefaultRetryMechanism!
     private var networkBuilder: DefaultNetworkBuilder!
@@ -33,15 +33,14 @@ class EventProcessorTest: XCTestCase {
     override func setUp() {
         //given
         /// Network builder
-        config = NetworkConfigurations(baseURL: URL(string: "ws://mock.clickstream.com/events")!)
-        networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
+        networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: urlRequest, performOnQueue: .main)
         persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         eventPersistence = DefaultDatabaseDAO<Event>(database: database, performOnQueue: dbQueueMock)
 
         keepAliveService = DefaultKeepAliveService(with: processorQueueMock, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
 
         retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: DefaultDeviceStatus(performOnQueue: processorQueueMock), appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: processorQueueMock, persistence: persistence, keepAliveService: keepAliveService)
-        networkBuilder = DefaultNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: processorQueueMock)
+        networkBuilder = DefaultNetworkBuilder(retryMech: retryMech, performOnQueue: processorQueueMock)
         
         /// Event Splitter
         prioritiesMock = [Priority(priority: 0, identifier: "realTime", maxBatchSize: 50000.0, maxTimeBetweenTwoBatches: 1)]
@@ -53,7 +52,6 @@ class EventProcessorTest: XCTestCase {
     }
 
     override func tearDown() {
-        config = nil
         networkService = nil
         retryMech = nil
         networkBuilder = nil

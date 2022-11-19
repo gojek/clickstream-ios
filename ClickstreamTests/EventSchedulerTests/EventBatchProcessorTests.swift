@@ -26,19 +26,19 @@ class EventBatchProcessorTests: XCTestCase {
     
     func test_whenBatchSizeIsGiven_shouldForwardABatch() {
         //given
-        let config = NetworkConfigurations(baseURL: URL(string: "ws://mock.clickstream.com/events")!)
+        let urlRequest = URLRequest(url: URL(string: "ws://mock.clickstream.com/events")!)
         let expectation = self.expectation(description: "Should respond on the given queue")
         
         let prioritiesMock = [Priority(priority: 0, identifier: "realTime", maxBatchSize: 50000.0, maxTimeBetweenTwoBatches: 1)]
 
-        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
+        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: urlRequest, performOnQueue: .main)
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         let eventPersistence = DefaultDatabaseDAO<Event>(database: database, performOnQueue: dbQueueMock)
         
         let keepAliveService = DefaultKeepAliveService(with: schedulerQueueMock, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
       
         let retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: DefaultDeviceStatus(performOnQueue: schedulerQueueMock), appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: schedulerQueueMock, persistence: persistence, keepAliveService: keepAliveService)
-        let networkBuilder = DefaultNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: schedulerQueueMock)
+        let networkBuilder = DefaultNetworkBuilder(retryMech: retryMech, performOnQueue: schedulerQueueMock)
         let eventBatchCreator = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock)
         let schedulerServiceMock = DefaultSchedulerService(with: prioritiesMock, performOnQueue: schedulerQueueMock)
         
@@ -69,13 +69,13 @@ class EventBatchProcessorTests: XCTestCase {
     
     func test_whenAppStateIsEnterBackground_thenAllEventsMustBeFlushed() {
         //given
-        let config = NetworkConfigurations(baseURL: URL(string: "ws://mock.clickstream.com/events")!)
+        let urlRequest = URLRequest(url: URL(string: "ws://mock.clickstream.com/events")!)
         let expectation = self.expectation(description: "All events must get flushed")
         
         let prioritiesMock = [Priority(priority: 0, identifier: "realTime", maxBatchSize: 5000.0, maxTimeBetweenTwoBatches: 10),
                               Priority(priority: 1, identifier: "standard", maxBatchSize: 5000.0)]
         
-        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
+        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: urlRequest, performOnQueue: .main)
         
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         let eventPersistence = DefaultDatabaseDAO<Event>(database: database, performOnQueue: dbQueueMock)
@@ -83,7 +83,7 @@ class EventBatchProcessorTests: XCTestCase {
         let keepAliveService = DefaultKeepAliveService(with: schedulerQueueMock, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
 
         let retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: DefaultDeviceStatus(performOnQueue: schedulerQueueMock), appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: schedulerQueueMock, persistence: persistence, keepAliveService: keepAliveService)
-        let networkBuilder = DefaultNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: schedulerQueueMock)
+        let networkBuilder = DefaultNetworkBuilder(retryMech: retryMech, performOnQueue: schedulerQueueMock)
         let eventBatchCreator = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock)
         let schedulerServiceMock = DefaultSchedulerService(with: prioritiesMock, performOnQueue: schedulerQueueMock)
         

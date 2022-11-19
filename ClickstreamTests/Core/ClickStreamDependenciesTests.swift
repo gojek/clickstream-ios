@@ -11,17 +11,14 @@ import XCTest
 
 class ClickstreamDependenciesTests: XCTestCase {
     
-    private var networkConfigurations: NetworkConfigurations!
+    private var mockRequest: URLRequest!
     private var constraints: ClickstreamConstraints!
     private var eventClassifier: ClickstreamEventClassification!
     private var prioritiesMock: [Priority]!
     
     override func setUp() {
         // given
-        let accessToken = "dummy_token"
-        let headers = ["Authorization": "Bearer \(accessToken)"]
-        let url = URL(string: "ws://mock.clickstream.com/events")!
-        self.networkConfigurations = NetworkConfigurations(baseURL: url, headers: headers)
+        mockRequest = URLRequest(url: URL(string: "ws://mock.clickstream.com/events")!)
         self.prioritiesMock = [Priority(priority: 0, identifier: "realTime", maxBatchSize: 50000.0, maxTimeBetweenTwoBatches: 1),
         Priority(priority: 1, identifier: "standard")]
         
@@ -32,7 +29,7 @@ class ClickstreamDependenciesTests: XCTestCase {
     }
     
     override func tearDown() {
-        self.networkConfigurations = nil
+        self.mockRequest = nil
         self.prioritiesMock = nil
         self.constraints = nil
         self.eventClassifier = nil
@@ -40,7 +37,7 @@ class ClickstreamDependenciesTests: XCTestCase {
     
     func testNetworkBuilder() {
         // when
-        let clickStreamDependencies = try! DefaultClickstreamDependencies(with: self.networkConfigurations)
+        let clickStreamDependencies = try! DefaultClickstreamDependencies(with: self.mockRequest)
         
         // then
         XCTAssertNotNil(clickStreamDependencies.networkBuilder)
@@ -48,7 +45,7 @@ class ClickstreamDependenciesTests: XCTestCase {
     
     func testEventWarehouser() {
         // when
-        let clickStreamDependencies = try! DefaultClickstreamDependencies(with: self.networkConfigurations)
+        let clickStreamDependencies = try! DefaultClickstreamDependencies(with: self.mockRequest)
         
         // then
         XCTAssertNotNil(clickStreamDependencies.eventWarehouser)
@@ -60,7 +57,7 @@ class ClickstreamDependenciesTests: XCTestCase {
         Clickstream.eventClassifier = MockConstants.eventClassification
         
         // when
-        let clickStreamDependencies = try! DefaultClickstreamDependencies(with: self.networkConfigurations)
+        let clickStreamDependencies = try! DefaultClickstreamDependencies(with: self.mockRequest)
         
         // then
         XCTAssertNotNil(clickStreamDependencies.eventProcessor)

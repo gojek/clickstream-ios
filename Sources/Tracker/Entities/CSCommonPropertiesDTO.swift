@@ -1,6 +1,6 @@
 //
 //  CSCommonProperties.swift
-//  ClickStream
+//  Clickstream
 //
 //  Created by Anirudh Vyas on 21/06/20.
 //  Copyright © 2020 Gojek. All rights reserved.
@@ -12,7 +12,7 @@ import UIKit
 
 /**
  Common properties which need to be sent along every event being sent. Container for all the common properties to be tracked.
- - important: Need not be set every time, set once and the SDK will attach it to every event being sent to `ClickStream` for tracking.
+ - important: Need not be set every time, set once and the SDK will attach it to every event being sent to `Clickstream` for tracking.
  */
 public struct CSCommonProperties {
     
@@ -41,7 +41,7 @@ public struct CSCommonProperties {
 
 /**
  Customer Info properties which need to be sent along every event being sent.
- - important: Need not be set every time, set once and the SDK will attach it to every event being sent to `ClickStream` for tracking.
+ - important: Need not be set every time, set once and the SDK will attach it to every event being sent to `Clickstream` for tracking.
  */
 public struct CSCustomerInfo {
     
@@ -72,8 +72,8 @@ public struct CSCustomerInfo {
 }
 
 extension CSCustomerInfo: ProtoConvertible {
-    var proto: Gojek_Clickstream_Internal_HealthMeta.Customer {
-        let customerInfo = Gojek_Clickstream_Internal_HealthMeta.Customer.with {
+    var proto: Clickstream_Internal_HealthMeta.Customer {
+        let customerInfo = Clickstream_Internal_HealthMeta.Customer.with {
             $0.signedUpCountry = signedUpCountry
             $0.currentCountry = currentCountry
             $0.email = email
@@ -85,7 +85,7 @@ extension CSCustomerInfo: ProtoConvertible {
 
 /**
  Session Info properties which need to be sent along every event being sent.
- - important: Need not be set every time, set once and the SDK will attach it to every event being sent to `ClickStream` for tracking.
+ - important: Need not be set every time, set once and the SDK will attach it to every event being sent to `Clickstream` for tracking.
  */
 public struct CSSessionInfo {
     
@@ -100,8 +100,8 @@ public struct CSSessionInfo {
 }
 
 extension CSSessionInfo: ProtoConvertible {
-    var proto: Gojek_Clickstream_Internal_HealthMeta.Session {
-        let sessionInfo = Gojek_Clickstream_Internal_HealthMeta.Session.with {
+    var proto: Clickstream_Internal_HealthMeta.Session {
+        let sessionInfo = Clickstream_Internal_HealthMeta.Session.with {
             $0.sessionID = sessionId
         }
         return sessionInfo
@@ -113,18 +113,18 @@ extension CSSessionInfo: ProtoConvertible {
  - important: Need not be set. Gets set internally.
  */
 struct CSDeviceInfo {
-    let operatingSystem = TrackerConstant.deviceOS
+    let operatingSystem = TrackerConstant.Strings.deviceOS
     let operatingSystemVersion = UIDevice.current.systemVersion
-    let deviceMake = TrackerConstant.deviceMake
+    let deviceMake = TrackerConstant.Strings.deviceMake
     let deviceModel = UIDevice.modelName
 }
 
 extension CSDeviceInfo: ProtoConvertible {
-    var proto: Gojek_Clickstream_Internal_HealthMeta.Device {
-        return Gojek_Clickstream_Internal_HealthMeta.Device.with {
-            $0.operatingSystem = TrackerConstant.deviceOS
+    var proto: Clickstream_Internal_HealthMeta.Device {
+        return Clickstream_Internal_HealthMeta.Device.with {
+            $0.operatingSystem = TrackerConstant.Strings.deviceOS
             $0.operatingSystemVersion = UIDevice.current.systemVersion
-            $0.deviceMake = TrackerConstant.deviceMake
+            $0.deviceMake = TrackerConstant.Strings.deviceMake
             $0.deviceModel = UIDevice.modelName
         }
     }
@@ -132,7 +132,7 @@ extension CSDeviceInfo: ProtoConvertible {
 
 /**
  App Info properties which need to be sent along every event being sent. Holds the appVersion.
- - important: Need not be set every time, set once and the SDK will attach it to every event being sent to `ClickStream` for tracking.
+ - important: Need not be set every time, set once and the SDK will attach it to every event being sent to `Clickstream` for tracking.
  */
 public struct CSAppInfo {
     
@@ -147,8 +147,8 @@ public struct CSAppInfo {
 }
 
 extension CSAppInfo: ProtoConvertible {
-    var proto: Gojek_Clickstream_Internal_HealthMeta.App {
-        return Gojek_Clickstream_Internal_HealthMeta.App.with {
+    var proto: Clickstream_Internal_HealthMeta.App {
+        return Clickstream_Internal_HealthMeta.App.with {
             $0.version = version
         }
     }

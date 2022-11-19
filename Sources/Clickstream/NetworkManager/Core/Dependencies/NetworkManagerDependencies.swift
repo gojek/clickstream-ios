@@ -10,13 +10,13 @@ import Foundation
 
 final class NetworkManagerDependencies {
     
+    private let request: URLRequest
     private let database: Database
-    private let networkConfigurations: NetworkConfigurations
     
-    init(with networkConfigurations: NetworkConfigurations,
+    init(with request: URLRequest,
          db: Database) {
         self.database = db
-        self.networkConfigurations = networkConfigurations
+        self.request = request
     }
     
     private let networkQueue = SerialQueue(label: Constants.QueueIdentifiers.network.rawValue, qos: .utility)
@@ -26,7 +26,7 @@ final class NetworkManagerDependencies {
                                        attributes: .concurrent)
 
     private lazy var networkService: DefaultNetworkService<DefaultSocketHandler> = {
-        return DefaultNetworkService<DefaultSocketHandler>(with: networkConfigurations, performOnQueue: networkQueue)
+        return DefaultNetworkService<DefaultSocketHandler>(with: request, performOnQueue: networkQueue)
     }()
     
     private lazy var reachability: NetworkReachability = {
@@ -71,6 +71,10 @@ final class NetworkManagerDependencies {
     }()
     
     func makeNetworkBuilder() -> NetworkBuildable {
-        return DefaultNetworkBuilder(networkConfigs: networkConfigurations, retryMech: retryMech, performOnQueue: networkQueue)
+        return DefaultNetworkBuilder(retryMech: retryMech, performOnQueue: networkQueue)
+    }
+    
+    var isSocketConnected: Bool {
+        networkService.isConnected
     }
 }

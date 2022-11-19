@@ -21,3 +21,11 @@ public struct ClickstreamEvent {
         self.message = message
     }
 }
+
+public extension ClickstreamEvent {
+    var messageName: String {
+        get {
+            type(of: message).protoMessageName
+        }
+    }
+}
