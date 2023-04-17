@@ -15,14 +15,11 @@ class NetworkManagerDependenciesTests: XCTestCase {
 
     func testMakeNetworkBuilder() throws {
         // given
-        let accessToken = "dummy_token"
-        let headers = ["Authorization": "Bearer \(accessToken)"]
-        let url = URL(string: "ws://mock.clickstream.com/events")!
-        Clickstream.constraints = MockConstants.constraints
-        Clickstream.eventClassifier = MockConstants.eventClassification
-        let networkConfigurations = NetworkConfigurations(baseURL: url, headers: headers)
+        let dummyRequest = URLRequest(url: URL(string: "dummy_url")!)
+        Clickstream.constraints = ClickstreamConstraints.getInstance(from: MockConstants.configurations)
+        Clickstream.eventClassifier = ClickstreamEventClassification.getInstance(from: MockConstants.eventClassification)
         // when
-        let networkManagerDependencies = NetworkManagerDependencies(with: networkConfigurations, db: database)
+        let networkManagerDependencies = NetworkManagerDependencies(with: dummyRequest, db: database)
         
         let networkBuilder: NetworkBuildable = networkManagerDependencies.makeNetworkBuilder()
         

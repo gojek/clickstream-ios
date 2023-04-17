@@ -45,6 +45,10 @@ final class DefaultRetryMechanism: Retryable {
     private var retryTimer: DispatchSourceTimer?
     private var keepAliveService: KeepAliveService
     
+    lazy var testMode: Bool = {
+        return ProcessInfo.processInfo.arguments.contains("testMode")
+    }()
+    
     var isAvailble: Bool {
         
         let isReachable = reachability.isAvailable
@@ -56,6 +60,24 @@ final class DefaultRetryMechanism: Retryable {
             let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
                                                   reason: FailureReason.networkUnavailable.rawValue)
             Tracker.sharedInstance?.record(event: healthEvent)
+        }
+        
+        if !isConnected && Tracker.debugMode {
+            if !isConnected && Tracker.debugMode {
+                if isOnLowPower {
+                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
+                                                          reason: FailureReason.lowBattery.rawValue)
+                    Tracker.sharedInstance?.record(event: healthEvent)
+                } else {
+                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
+                                                          reason: FailureReason.socket_not_open.rawValue)
+                    Tracker.sharedInstance?.record(event: healthEvent)
+                }
+            } else {
+                let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
+                                                      reason: FailureReason.socket_not_open.rawValue)
+                Tracker.sharedInstance?.record(event: healthEvent)
+            }
         }
         
         if isOnLowPower && Tracker.debugMode {
@@ -109,8 +131,16 @@ final class DefaultRetryMechanism: Retryable {
     private func observeNetworkConnectivity() {
         do {
             try reachability.startNotifier()
+            reachability.whenReachable = { [weak self] (_) in
+                guard let checkedSelf = self else { return }
+                checkedSelf.establishConnection()
+            }
+            reachability.whenUnreachable = { [weak self] (_) in
+                guard let checkedSelf = self else { return }
+                checkedSelf.terminateConnection()
+            }
         } catch {
-            print("Error: unable to start notifier \(error)", .verbose)
+            print("Unable to start notifier")
         }
     }
     
@@ -120,10 +150,10 @@ final class DefaultRetryMechanism: Retryable {
             guard let checkedSelf = self else { return }
             /* If network is not connected and the device was on low power,
                now device is on charging state so establish the connection */
-            if !checkedSelf.networkService.isConnected && isLowOnPower {
+            if !checkedSelf.networkService.isConnected && !isLowOnPower {
                 checkedSelf.establishConnection()
                 // If network is connected but device is on low power, terminate the connection
-            } else if checkedSelf.networkService.isConnected && !isLowOnPower {
+            } else if checkedSelf.networkService.isConnected && isLowOnPower {
                 checkedSelf.terminateConnection()
             }
         }
@@ -157,6 +187,7 @@ extension DefaultRetryMechanism {
     
     func trackBatch(with eventRequest: EventRequest) {
         // add the batch to the cache before sending the batch to the network.
+        let startTime = Date()  // Used to calculate batch latency
         // QoS-0 don't support the caching
         if let eventType = eventRequest.eventType, eventType != .instant {
             addToCache(with: eventRequest)
@@ -173,8 +204,9 @@ extension DefaultRetryMechanism {
                             // remove the delivered batch from the cache.
                             checkedSelf.removeFromCache(with: guid)
                             
+                            Clickstream.ackEvent = AckEventDetails(guid: guid, status: "Success")
                             if let eventType = eventRequest.eventType, !(eventType == .internalEvent) {
-                                checkedSelf.trackHealthEvents(eventRequest: eventRequest)
+                                checkedSelf.trackHealthAndPerformanceEvents(eventRequest: eventRequest, startTime: startTime)
                             }
                             #if EVENT_VISUALIZER_ENABLED
                             /// Update status of the event batch to acknowledged from network
@@ -185,19 +217,29 @@ extension DefaultRetryMechanism {
                                 /// then update the state respectively.
                                 stateViewer.updateStatus(eventBatchID: guid, state: .ackReceived)
                             }
+                            print("RetryMechanism, received response for batch with id: \(response.data)")
                             #endif
                         }
                     } else {
                         if response.code == .maxConnectionLimitReached {
+                            if Tracker.debugMode {
+                                let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamConnectionFailure,
+                                                                      reason: FailureReason.MAX_CONNECTION_LIMIT_REACHED.rawValue)
+                                Tracker.sharedInstance?.record(event: healthEvent)
+                            }
                             checkedSelf.terminateConnection()
                             checkedSelf.establishConnection()
+                            Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Max Connection Limit Reached")
                         }
                         
-                        if response.code == .maxUserLimitReached {
-                            print("Error: max user limit reached", .verbose)
+                        if response.code == .maxUserLimitReached && Tracker.debugMode {
+                           let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamConnectionFailure,
+                                                                 reason: FailureReason.MAX_USER_LIMIT_REACHED.rawValue)
+                            Tracker.sharedInstance?.record(event: healthEvent)
+                            Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Max User Limit Reached")
                         }
                         
-                        if response.code == .badRequest {
+                        if response.code == .badRequest && Tracker.debugMode {
                             print("Error: Parsing Exception for eventRequest guid \(eventRequest.guid)", .verbose)
                             #if TRACKER_ENABLED
                             if Tracker.debugMode {
@@ -206,6 +248,7 @@ extension DefaultRetryMechanism {
                                                                   eventBatchGUID: eventRequest.guid,
                                                                   reason: FailureReason.ParsingException.rawValue)
                                 Tracker.sharedInstance?.record(event: healthEvent)
+                                Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Bad Request")
                             }
                             #endif
                         }
@@ -220,6 +263,10 @@ extension DefaultRetryMechanism {
                         Tracker.sharedInstance?.record(event: healthEvent)
                     }
                     #endif
+                    Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "\(error)")
+                }
+                if self?.testMode ?? false {
+                    FileManagerOverride.writeToFile()
                 }
             }
         }
@@ -256,6 +303,7 @@ extension DefaultRetryMechanism {
         guard terminationCountDown == nil else {
             return
         }
+        Clickstream.connectionState = .closing
         terminationCountDown = DispatchSource.makeTimerSource(flags: .strict, queue: performQueue)
         // This gives the breathing space for flushing the events.
         terminationCountDown?.schedule(deadline: .now() + Clickstream.constraints.connectionTerminationTimerWaitTime)
@@ -266,19 +314,24 @@ extension DefaultRetryMechanism {
     }
     
     private func establishConnection(keepTrying: Bool = false) {
-//        return
         let semaphore = DispatchSemaphore(value: 1)
         defer {
             semaphore.signal()
         }
         semaphore.wait()
         
+        /// Resetting value of ClickStream.connectionState to .connected which had been changed
+        /// to .closing in line 261 when app was moving to background
+        if Clickstream.updateConnectionStatus && self.networkService.isConnected {
+            Clickstream.connectionState = .connected
+        }
+        
         if self.networkService.isConnected || !reachability.isAvailable {
             return
         }
         
         performQueue.async { [weak self] in guard let checkedSelf = self else { return }
-            checkedSelf.networkService.initiateConnection(connectionStatusListener: { [weak self] result in
+            checkedSelf.networkService.initiateConnection(connectionStatusListener: { result in
 
                 NotificationCenter.default.post(name: Constants.SocketConnectionNotification,
                                                 object: [Constants.Strings.didConnect: self?.networkService.isConnected])
@@ -400,3 +453,18 @@ extension DefaultRetryMechanism {
         #endif
     }
 }
+
+extension DefaultRetryMechanism {
+    
+    func trackHealthAndPerformanceEvents(eventRequest: EventRequest, startTime: Date) {
+        if Tracker.debugMode {
+            guard eventRequest.eventType != Constants.EventType.instant else { return }
+            
+            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchSuccessAck,
+                                                  eventBatchGUID: eventRequest.guid)
+            Tracker.sharedInstance?.record(event: healthEvent)
+            
+        }
+    }
+}
+

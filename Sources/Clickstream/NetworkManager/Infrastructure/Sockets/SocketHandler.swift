@@ -76,6 +76,7 @@ final class DefaultSocketHandler: SocketHandler {
             if !open {
                 lastConnectRequestTimestamp = Date()
                 print("socket-connecting", .verbose)
+                Clickstream.connectionState = .connecting
                 connectionCallback?(.success(.connecting))
                 webSocket?.connect()
             }
@@ -107,6 +108,7 @@ extension DefaultSocketHandler {
     
     func disconnect() {
         stopPing()
+        Clickstream.connectionState = .closed
         webSocket?.disconnect(closeCode: CloseCode.normal.rawValue)
     }
 }
@@ -144,6 +146,7 @@ extension DefaultSocketHandler {
             switch event {
             case .connected:
                 print("connected",.critical)
+                Clickstream.connectionState = .connected
                 checkedSelf.connected = true
                 checkedSelf.isRetryInProgress = false
                 checkedSelf.sendPing(Data())
@@ -159,6 +162,7 @@ extension DefaultSocketHandler {
             case .disconnected(let error, let code):
                 // DuplicateID Error
                 print("disconnected with error: \(error) errorCode: \(code)", .critical)
+                Clickstream.connectionState = .closed
                 checkedSelf.open = false
                 checkedSelf.stopPing()
                 #if TRACKER_ENABLED
@@ -191,6 +195,7 @@ extension DefaultSocketHandler {
                 print("pong", .verbose)
             case .cancelled:
                 print("cancelled", .verbose)
+                Clickstream.connectionState = .failed
                 checkedSelf.open = false
                 checkedSelf.connected = false
                 checkedSelf.stopPing()

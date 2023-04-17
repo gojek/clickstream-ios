@@ -9,7 +9,7 @@
 import Foundation
 
 /// Holds the constraints for clickstream.
-public struct ClickstreamConstraints {
+public struct ClickstreamConstraints: Decodable {
         
     /// Maximum number of retries for connection.
     private(set) var maxConnectionRetries: Int
@@ -47,31 +47,21 @@ public struct ClickstreamConstraints {
     // Connection retry duration
     private(set) var connectionRetryDuration: TimeInterval
     
-    /// Returns an instance of ClickstreamConstraints
-    public init(maxConnectionRetries: Int = 30, maxConnectionRetryInterval: TimeInterval = 30,
-                maxRetryIntervalPostPrematureDisconnection: TimeInterval = 30, maxRetriesPostPrematureDisconnection: Int = 10,
-                maxPingInterval: TimeInterval = 15, priorities: [Priority] = [Priority()],
-                flushOnBackground: Bool = true, connectionTerminationTimerWaitTime: TimeInterval = 8,
-                maxRequestAckTimeout: TimeInterval = 6, maxRetriesPerBatch: Int = 20,
-                maxRetryCacheSize: Int = 5000000, connectionRetryDuration: TimeInterval = 3) {
-        
-        self.maxConnectionRetries = maxConnectionRetries
-        self.maxConnectionRetryInterval = maxConnectionRetryInterval
-        self.maxRetryIntervalPostPrematureDisconnection = maxRetryIntervalPostPrematureDisconnection
-        self.maxRetriesPostPrematureDisconnection = maxRetriesPostPrematureDisconnection
-        self.maxPingInterval = maxPingInterval
-        self.priorities = priorities
-        self.flushOnBackground = flushOnBackground
-        self.connectionTerminationTimerWaitTime = connectionTerminationTimerWaitTime
-        self.maxRequestAckTimeout = maxRequestAckTimeout
-        self.maxRetriesPerBatch = maxRetriesPerBatch
-        self.maxRetryCacheSize = maxRetryCacheSize
-        self.connectionRetryDuration = connectionRetryDuration
+    /// This is flag which determines whether the contained events be flushed when the app is launched for the first time by the user
+    var flushOnAppLaunch: Bool
+    
+    /// This is flag which determines whether the contained events be sent when the device's battery is more that it
+    var minBatteryLevelPercent: Float
+    
+    /// Returns an instance of ClickStreamConstraints by decoding the json string.
+    /// - Parameter json: String that needs to be decoded.
+    static func getInstance(from json: String) -> ClickstreamConstraints? {
+        return JSONStringDecoder.decode(json: json, fallbackJson: Constants.Defaults.Configs.configurations)
     }
 }
 
 /// This struct will hold the priorities defined in the ClickstreamConstraints.
-public struct Priority {
+public struct Priority: Decodable {
     private(set) var priority: Int = 0
     private(set) var identifier: PriorityType = "realTime"
     private(set) var maxBatchSize: Double? = 50000

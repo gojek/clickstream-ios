@@ -21,7 +21,7 @@ class NetworkBuilderTests: XCTestCase {
     
     func test_whenSerialisableMockDataIsPassed_shouldNotThrowException() {
         //given
-        let config = NetworkConfigurations(baseURL: URL(string: "ws://mock.clickstream.com/events")!)
+        let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         
         let expectation = self.expectation(description: "Should not throw exception")
 
@@ -47,7 +47,7 @@ class NetworkBuilderTests: XCTestCase {
     
     func test_whenNetworkIsConnected_thenIsConnectedFlagMustBeSet() {
         //given
-        let config = NetworkConfigurations(baseURL: URL(string: "ws://mock.clickstream.com/events")!)
+        let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         let expectation = self.expectation(description: "Should return isAvailable flag as true")
         
         let mockQueue = SerialQueue(label: "com.mock.gojek.clickstream.network", qos: .utility)
@@ -74,7 +74,7 @@ class NetworkBuilderTests: XCTestCase {
     func test_whenNetworkIsConnectedAndAppMovesToBackground_thenIsConnectedFlagMustNotBeSet() {
         
         //given
-        let config = NetworkConfigurations(baseURL: URL(string: "ws://mock.clickstream.com/events")!)
+        let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         let expectation = self.expectation(description: "Should return isAvailable flag as false")
         
         let mockQueue = SerialQueue(label: "com.mock.gojek.clickstream.network", qos: .utility)

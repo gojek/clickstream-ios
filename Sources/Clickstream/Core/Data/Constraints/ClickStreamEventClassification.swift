@@ -9,7 +9,7 @@
 import Foundation
 
 /// Holds the Event classification for Clickstream.
-public struct ClickstreamEventClassification {
+public struct ClickstreamEventClassification: Decodable {
     
     /// Holds all the eventTypes
     private(set) var eventTypes: [EventClassifier]
@@ -20,7 +20,7 @@ public struct ClickstreamEventClassification {
         self.eventTypes = eventTypes
     }
     
-    public struct EventClassifier {
+    public struct EventClassifier: Decodable {
         
         /// To identify the events. And map between priorities and event names.
         private(set) var identifier: String
@@ -32,5 +32,11 @@ public struct ClickstreamEventClassification {
             self.identifier = identifier
             self.eventNames = eventNames
         }
+    }
+    
+    /// Returns an instance of ClickStreamEventClassification by decoding the json string.
+    /// - Parameter json: String that needs to be decoded.
+    static func getInstance(from json: String) -> ClickstreamEventClassification? {
+        return JSONStringDecoder.decode(json: json, fallbackJson: Constants.Defaults.Configs.eventClassification)
     }
 }

@@ -10,17 +10,67 @@
 import Foundation
 
 struct MockConstants {
+    static let configurations =
+        """
+        {
+          "maxConnectionRetries": 10,
+          "maxConnectionRetryInterval": 30,
+          "requestTimeOut": 20,
+          "maxPingInterval": 15,
+          "maxRetryIntervalPostPrematureDisconnection": 30,
+          "maxRetriesPostPrematureDisconnection": 10,
+          "flushOnBackground": true,
+          "connectionTerminationTimerWaitTime": 2,
+          "maxRequestAckTimeout": 6,
+          "maxRetriesPerBatch": 20,
+          "maxRetryCacheSize": 5000000,
+          "connectionRetryDuration": 3,
+          "flushOnAppLaunch": false,
+          "minBatteryLevelPercent": 10.0,
+          "priorities": [
+            {
+              "identifier": "realTime",
+              "priority": 0,
+              "maxBatchSize": 50000,
+              "maxTimeBetweenTwoBatches": 10,
+              "maxCacheSize": 5000000
+            },
+            {
+              "identifier": "standard",
+              "priority": 1,
+              "maxCacheSize": 1000000
+            }
+          ]
+        }
+        """
     
-    static let constraints: ClickstreamConstraints = {
-        let realTimePriority = Priority(priority: 0, identifier: "realTime", maxBatchSize: 50000, maxTimeBetweenTwoBatches: 10, maxCacheSize: 5000000)
-        let standardPriority = Priority(priority: 1, identifier: "standard", maxCacheSize: 1000000)
-        return ClickstreamConstraints(maxConnectionRetries: 10, maxConnectionRetryInterval: 30, maxRetryIntervalPostPrematureDisconnection: 30, maxRetriesPostPrematureDisconnection: 10, maxPingInterval: 15, priorities: [realTimePriority, standardPriority], flushOnBackground: true, connectionTerminationTimerWaitTime: 2, maxRequestAckTimeout: 6, maxRetriesPerBatch: 20, maxRetryCacheSize: 5000000, connectionRetryDuration: 3)
-    }()
     
-    static let eventClassification: ClickstreamEventClassification = {
-        let testRealtimeEvent = ClickstreamEventClassification.EventClassifier(identifier: "ClickstreamTestRealtime", eventNames: ["gojek.clickstream.products.events.AdCardEvent"])
-        let testStandardEvent = ClickstreamEventClassification.EventClassifier(identifier: "ClickstreamTestStandard", eventNames: ["GoChat", "GoPay"])
-        
-        return ClickstreamEventClassification(eventTypes: [testRealtimeEvent, testStandardEvent])
-    }()
+    static let eventClassification =
+        """
+        {
+          "eventTypes": [
+              {
+                "identifier": "ClickStreamTestRealtime",
+                "eventNames": [
+                    "gojek.clickstream.products.events.AdCardEvent"
+                  ]
+              },
+              {
+                "identifier": "ClickStreamTestStandard",
+                "eventNames": [
+                    "GoChat",
+                    "GoPay"
+                  ]
+              }
+            ]
+        }
+        """
+    
+    static let healthTrackingConfigurations = """
+    {
+        "minimumTrackedVersion":"4.18",
+        "randomisingUserIdRemainders":[5,6],
+        "destination":["CT"]
+    }
+    """
 }

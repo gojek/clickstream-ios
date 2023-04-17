@@ -45,41 +45,20 @@ public final class Tracker {
     private var appStateNotifier: AppStateNotifierService
     private let database: Database
     
-    /// ClickstreamDelegate.
-    internal private(set) var delegate: TrackerDelegate
-
-    /// ClickStreamDataSource.
-    private var _dataSource: TrackerDataSource
-    
-    /// readonly public accessor for dataSource.
-    public var dataSource: TrackerDataSource {
-        get {
-            return _dataSource
-        }
-    }
-    
     init(appStateNotifier: AppStateNotifierService,
-         db: Database,
-         dataSource: TrackerDataSource, delegate: TrackerDelegate) {
+         db: Database) {
         self.database = db
         self.appStateNotifier = appStateNotifier
         self.healthTracker = HealthTracker(performOnQueue: Tracker.queue,
                                            db: database)
-        self._dataSource = dataSource
-        self.delegate = delegate
+//        self.performanceTracker = PerformanceTracker(performOnQueue: Tracker.queue,
+//                                                     db: database)
         self.observeAppStateChanges()
         self.flushOnAppUpgrade()
     }
     
     @discardableResult
-    static func initialise(commonProperties: CSCommonProperties, healthTrackingConfigs: ClickstreamHealthConfigurations,
-                           dataSource: TrackerDataSource, delegate: TrackerDelegate) -> Tracker? {
-        
-        Tracker.healthTrackingConfigs = healthTrackingConfigs
-        
-        Tracker.debugMode = healthTrackingConfigs.debugMode(userID: commonProperties.customer.identity,
-                                                            currentAppVersion: commonProperties.app.version)
-        
+    static func initialise(appStateNotifier: AppStateNotifierService = DefaultAppStateNotifierService(with: queue)) -> Tracker? {
         if Tracker.debugMode {
             guard let instance = self.sharedInstance else {
                 // Create a separate db for health and perf events.
@@ -90,9 +69,8 @@ public final class Tracker {
                     return nil
                 }
                 
-                sharedInstance = Tracker(appStateNotifier: DefaultAppStateNotifierService(with: queue),
-                                         db: db, dataSource: dataSource, delegate: delegate)
-                sharedInstance?.commonProperties = commonProperties
+                sharedInstance = Tracker(appStateNotifier: appStateNotifier,
+                                         db: db)
                 return sharedInstance
             }
             return instance

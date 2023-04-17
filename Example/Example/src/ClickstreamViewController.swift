@@ -38,9 +38,31 @@ class ClickstreamViewController: UIViewController {
     }
     
     @IBAction func sendMultipleEventsToClickstream(_ sender: UIButton) {
-        DispatchQueue.concurrentPerform(iterations: 10) { index in
+        print("time in \(Date())")
+        DispatchQueue.concurrentPerform(iterations: Constants.clickCount) { index in
             let eventGuid = UUID().uuidString
             self.analyticsManager.trackEvent(guid: eventGuid, message: self.createUser(eventGuid: eventGuid))
+        }
+    }
+    
+    @IBAction func testMode(_ sender: Any) {
+        if let configs = Constants.testConfigs() {
+            if let configurationDict = configs["configuration"] as? [String: Any] {
+                do {
+                    let configurationJson = try JSONSerialization.data(withJSONObject: configurationDict, options: [])
+                    if let configurationString = String(data: configurationJson, encoding: .utf8) {
+                        Constants.configurations = configurationString
+                    }
+                } catch {
+                    print(error.localizedDescription)
+                }
+            }
+            if let testEmail = configs["email"] as? String {
+                Constants.email = testEmail
+            }
+            if let clickCount = configs["clickCount"] as? Int {
+                Constants.clickCount = clickCount
+            }
         }
     }
     

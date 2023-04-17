@@ -13,7 +13,7 @@ import SwiftProtobuf
 class EventProcessorTest: XCTestCase {
 
     private let processorQueueMock = SerialQueue(label: "com.mock.gojek.clickstream.processor", qos: .utility)
-    private var config: NetworkConfigurations!
+    private var config: DefaultNetworkConfiguration!
     private var networkService: DefaultNetworkService<SocketHandlerMockSuccess>!
     private var retryMech: DefaultRetryMechanism!
     private var networkBuilder: DefaultNetworkBuilder!
@@ -33,7 +33,7 @@ class EventProcessorTest: XCTestCase {
     override func setUp() {
         //given
         /// Network builder
-        config = NetworkConfigurations(baseURL: URL(string: "ws://mock.clickstream.com/events")!)
+        config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
         persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         eventPersistence = DefaultDatabaseDAO<Event>(database: database, performOnQueue: dbQueueMock)

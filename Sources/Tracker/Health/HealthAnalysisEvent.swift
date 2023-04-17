@@ -87,25 +87,32 @@ struct HealthAnalysisEvent: Codable, Equatable, AnalysisEvent {
 
 extension HealthAnalysisEvent: Notifiable {
     
-    func notify() {        
-        var healthDTO = HealthTrackerDTO()
-        healthDTO.eventName = eventName.rawValue
-        healthDTO.sessionID = sessionID
-        if let eventGUID = self.eventGUID {
-            healthDTO.eventGUIDs = [eventGUID]
-        } else if let events = events {
-            healthDTO.eventGUIDs = events.components(separatedBy: ",")
+    func notify() {
+        var properties: [String: Any] = [TrackerConstant.clickstream_timestamp: timestamp]
+        
+        if let eventGUID = eventGUID {
+            properties[TrackerConstant.clickstream_event_guid] = eventGUID
         }
         
-        if let eventBatchGUID = self.eventBatchGUID {
-            healthDTO.eventBatchGUIDs = [eventBatchGUID]
+        if let eventBatchGUID = eventBatchGUID {
+            properties[TrackerConstant.clickstream_event_batch_guid] = eventBatchGUID
         }
-        healthDTO.timeToConnection = self.timeToConnection
-        healthDTO.failureReason = reason
-        healthDTO.eventCount = healthDTO.eventGUIDs?.count
-    
-        // Send health event back to client app
-        Tracker.sharedInstance?.delegate.getHealthEvent(event: healthDTO)
+        
+        if let events = events {
+            properties[TrackerConstant.clickstream_event_guid_list] = events
+        }
+        
+        if let sessionID = sessionID {
+            properties[TrackerConstant.clickstream_sessionId] = sessionID
+        }
+        
+        if let reason = reason {
+            properties[TrackerConstant.clickstream_error_reason] = reason
+        }
+        
+        let dict: [String : Any] = [TrackerConstant.eventName: eventName.rawValue,
+                                    TrackerConstant.eventProperties: properties]
+        NotificationCenter.default.post(name: TrackerConstant.DebugEventsNotification, object: dict)
     }
 }
 

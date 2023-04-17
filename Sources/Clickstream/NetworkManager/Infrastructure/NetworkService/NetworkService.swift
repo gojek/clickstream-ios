@@ -80,17 +80,12 @@ extension DefaultNetworkService {
                             keepTrying: Bool = false) -> Connectable? {
         guard _connectable == nil else { return self._connectable }
         self.connectionCallback = connectionStatusListener
-        do {
-            let request = try networkConfig.urlRequest()
-            _connectable = C(request: request,
-                            keepTrying: keepTrying,
-                            performOnQueue: performQueue,
-                            connectionCallback: self.connectionCallback)
-            return _connectable
-        } catch {
-            connectionCallback?(.failure(ConnectableError.malformedPath))
-            return nil
-        }
+        let request = networkConfig.request
+        _connectable = C(request: request,
+                        keepTrying: false,
+                        performOnQueue: performQueue,
+                        connectionCallback: self.connectionCallback)
+        return _connectable
     }
     
     func write<T>(_ data: Data, completion: @escaping (Result<T, ConnectableError>) -> Void) where T : Message {

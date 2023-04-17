@@ -9,7 +9,7 @@
 import Foundation
 import SwiftProtobuf
 
-public protocol EventStateViewable {
+public protocol EventStateViewable: AnyObject {
     /// responsible for sending the events in struct EventData
     func sendEvent(_ event: EventData)
     

@@ -18,9 +18,14 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
     /// The database instance provide during initialisation as a dependency.
     private let database: Database
     
+    /// A migrator instance to migrate legacy data to the newer persistence stack.
+    private let migrator: Migration<Object>?
+    
     init(database: Database,
-         performOnQueue: SerialQueue) {
+         performOnQueue: SerialQueue,
+         migrator: Migration<Object>? = nil) {
         self.performQueue = performOnQueue
+        self.migrator = migrator
         self.database = database
         self.createTable()
     }
@@ -28,7 +33,11 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
     /// Responsible to create the table and initiate a legacy daga migration, if needed.
     private func createTable() {
         do {
-            try self.database.createTable(Object.self, {
+            try self.database.createTable(Object.self, { [weak self] in guard let checkedSelf = self else { return }
+                // Triggered only once! Allows time for table creation.
+                DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 2.0) {
+//                    checkedSelf.migrator?.migrate(DefaultPersistence<Object>(key: Object.codableCacheKey), checkedSelf)
+                }
             })
         } catch {
             print("Failed to create table in database with error:- \(error)", .verbose)

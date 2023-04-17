@@ -37,6 +37,13 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
     private let batchSizeRegulator: BatchSizeRegulator
     private let persistence: DefaultDatabaseDAO<Event>
     
+    /// Variable to make sure app is launched after being force closed/killed
+    private var hasFlushOnAppLaunchExecutedOnce: Bool = false
+    
+    #if DEBUG || INTEGRATION
+    private let debugger = try! Debugger(fileName: "DefaultEventBatchProcessor")
+    #endif
+    
     init(with eventBatchCreator: EventBatchCreator,
          schedulerService: SchedulerService,
          appStateNotifier: AppStateNotifierService,
@@ -59,16 +66,25 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
         self.startTimer()
         self.schedulerService.subscriber = { [weak self] (priority) in guard let checkedSelf = self else { return }
             if checkedSelf.eventBatchCreator.canForward {
-                if let maxBatchSize = priority.maxBatchSize {
-                    let numberOfEventsToBeFetched = checkedSelf.batchSizeRegulator.regulatedNumberOfItemsPerBatch(expectedBatchSize: maxBatchSize)
-                    if let events = checkedSelf.persistence.deleteWhere(Event.Columns.type,
-                                                                        value: priority.identifier,
-                                                                        n: numberOfEventsToBeFetched),
-                       !events.isEmpty {
-                        checkedSelf.eventBatchCreator.forward(with: events)
-                    }
-                } else {
+                /// Flush events when the app is launched for the first time
+                if Clickstream.constraints.flushOnAppLaunch && !checkedSelf.hasFlushOnAppLaunchExecutedOnce {
                     checkedSelf.flush(with: priority)
+                    checkedSelf.hasFlushOnAppLaunchExecutedOnce = true
+                } else {
+                    if let maxBatchSize = priority.maxBatchSize {
+                        let numberOfEventsToBeFetched = checkedSelf.batchSizeRegulator.regulatedNumberOfItemsPerBatch(expectedBatchSize: maxBatchSize)
+                        if let events = checkedSelf.persistence.deleteWhere(Event.Columns.type,
+                                                                            value: priority.identifier,
+                                                                            n: numberOfEventsToBeFetched),
+                           !events.isEmpty {
+                            #if DEBUG || INTEGRATION
+                            checkedSelf.debugger.write(events)
+                            #endif
+                            checkedSelf.eventBatchCreator.forward(with: events)
+                        }
+                    } else {
+                        checkedSelf.flush(with: priority)
+                    }
                 }
             }
         }
@@ -103,6 +119,14 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
         if eventBatchCreator.canForward,
             let events = persistence.deleteAll() {
             eventBatchCreator.forward(with:events)
+            
+            // Track health events only for Clickstream Flush On Foreground
+            if Tracker.debugMode && Clickstream.constraints.flushOnAppLaunch && !hasFlushOnAppLaunchExecutedOnce {
+                let eventGUIDs = events.map { $0.guid }
+                let eventGUIDString = "\(eventGUIDs.joined(separator: ", "))"
+                let healthAnalysisEvent = HealthAnalysisEvent(eventName: .ClickstreamFlushOnForeground, events: eventGUIDString)
+                Tracker.sharedInstance?.record(event: healthAnalysisEvent)
+            }
         }
     }
     

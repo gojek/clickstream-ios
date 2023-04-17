@@ -58,11 +58,14 @@ extension DefaultNetworkBuilder {
         
         performQueue.async { [weak self] in guard let checkedSelf = self else { return }
             do {
-                let data: Data = try eventBatch.proto.serializedData()                
+                let data: Data = try eventBatch.proto.serializedData()
+                print("NetworkBuilder, trackedBatch with id: \(eventBatch.uuid) and itemsCount: \(eventBatch.events.count)")
                 var eventRequest = EventRequest(guid: eventBatch.uuid,
                                                 data: data)
                 
-                if eventBatch.events.first?.type == Constants.EventType.instant.rawValue {
+                if eventBatch.events.first?.type == Constants.HealthEventType {
+                    eventRequest.eventType = .internalEvent
+                } else if eventBatch.events.first?.type == Constants.EventType.instant.rawValue {
                     eventRequest.eventType = .instant
                 } else {
                     checkedSelf.trackHealthEvents(eventBatch: eventBatch,

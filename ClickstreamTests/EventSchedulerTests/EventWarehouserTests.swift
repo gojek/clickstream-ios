@@ -20,12 +20,13 @@ class EventWarehouserTests: XCTestCase {
 
     override func setUp() {
         
-        Clickstream.constraints = MockConstants.constraints
+        Clickstream.constraints = ClickstreamConstraints.getInstance(from: MockConstants.configurations)
+        Tracker.debugMode = true
     }
     
     func test_whenAnEventIsGiven_thenTheWarehouserMustStoreIt() {
         //given
-        let config = NetworkConfigurations(baseURL: URL(string: "ws://mock.clickstream.com/events")!)
+        let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         let expectation = self.expectation(description: "Should respond on the given queue")
 
         

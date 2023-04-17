@@ -19,14 +19,15 @@ class RetryMechanismTests: XCTestCase {
     override func setUp() {
         self.prioritiesMock = [Priority(priority: 0, identifier: "realTime", maxBatchSize: 50000.0, maxTimeBetweenTwoBatches: 1),
         Priority(priority: 1, identifier: "standard")]
-        self.constraints = ClickstreamConstraints(maxConnectionRetries: 15, maxConnectionRetryInterval: 5, maxRetryIntervalPostPrematureDisconnection: 10, maxRetriesPostPrematureDisconnection: 20, maxPingInterval: 15, priorities: prioritiesMock, flushOnBackground: true, connectionTerminationTimerWaitTime: 2, maxRequestAckTimeout: 0.5, maxRetriesPerBatch: 2, maxRetryCacheSize: 100000, connectionRetryDuration: 3)
+        self.constraints = ClickstreamConstraints(maxConnectionRetries: 15, maxConnectionRetryInterval: 5, maxRetryIntervalPostPrematureDisconnection: 10, maxRetriesPostPrematureDisconnection: 20, maxPingInterval: 15, priorities: prioritiesMock, flushOnBackground: true, connectionTerminationTimerWaitTime: 2, maxRequestAckTimeout: 0.5, maxRetriesPerBatch: 2, maxRetryCacheSize: 100000, connectionRetryDuration: 3, flushOnAppLaunch: false, minBatteryLevelPercent: 10.0)
         Clickstream.constraints = constraints
-        Clickstream.eventClassifier = MockConstants.eventClassification
+        Clickstream.eventClassifier = ClickstreamEventClassification.getInstance(from: MockConstants.eventClassification)
+        Tracker.debugMode = true
     }
     
     func test_whenNetworkIsNotAvailable_thenRetryMechanismMustRetryFailedBatches() {
         //given
-        let config = NetworkConfigurations(baseURL: URL(string: "ws://mock.clickstream.com/events")!)
+        let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         let expectation = self.expectation(description: "The batch must be retried")
         
         let mockQueue = SerialQueue(label: "com.mock.gojek.clickstream.network", qos: .utility)
@@ -61,7 +62,7 @@ class RetryMechanismTests: XCTestCase {
     func test_whenTheMaxRetriesAreReached_thenTheBatchMustGetRemovedFromTheCache() {
         
         //given
-        let config = NetworkConfigurations(baseURL: URL(string: "ws://mock.clickstream.com/events")!)
+        let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         let expectation = self.expectation(description: "batch with exhausted retries must be removed")
         
         let mockQueue = SerialQueue(label: "com.mock.gojek.clickstream.network", qos: .utility)

@@ -21,6 +21,7 @@
 		9AEA265924924B360018931D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9AEA265824924B360018931D /* Assets.xcassets */; };
 		9AEA265C24924B360018931D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9AEA265A24924B360018931D /* LaunchScreen.storyboard */; };
 		BD4E9D61285719CC0093D342 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD4E9D60285719CC0093D342 /* Assets.xcassets */; };
+		BDDC8AE129E95D4B0024ED8C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDC8AE029E95D4B0024ED8C /* Constants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 		BD4E9D58285717050093D342 /* libClickstream.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libClickstream.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD4E9D5C2857186E0093D342 /* libClickstream.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libClickstream.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD4E9D60285719CC0093D342 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../EventVisualizer/Resources/Assets.xcassets; sourceTree = "<group>"; };
+		BDDC8AE029E95D4B0024ED8C /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		CDD9BE2452FB2F21C98C5E74 /* Pods-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.debug.xcconfig"; path = "Target Support Files/Pods-Example/Pods-Example.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -95,6 +97,7 @@
 				9AEA264F24924B340018931D /* AppDelegate.swift */,
 				9AA23CF2249C7589001BE490 /* AnalyticsManager.swift */,
 				9A266F9F27F56136000D6C36 /* ClickstreamViewController.swift */,
+				BDDC8AE029E95D4B0024ED8C /* Constants.swift */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -270,6 +273,7 @@
 				9A266FAF27F6ADA9000D6C36 /* Device.pb.swift in Sources */,
 				9AEA265024924B340018931D /* AppDelegate.swift in Sources */,
 				9A266FA727F6ACFB000D6C36 /* User.proto in Sources */,
+				BDDC8AE129E95D4B0024ED8C /* Constants.swift in Sources */,
 				9A266FB227F6ADA9000D6C36 /* App.pb.swift in Sources */,
 				9A266FA827F6ACFB000D6C36 /* Device.proto in Sources */,
 				9A266FA027F56136000D6C36 /* ClickstreamViewController.swift in Sources */,

@@ -18,7 +18,7 @@ class EventSchedulerDependenciesTests: XCTestCase {
     
     func testInit() {
         // given
-        let config = NetworkConfigurations(baseURL: URL(string: "ws://mock.clickstream.com/events")!)
+        let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         
         let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: mockQueue)
         let deviceStatus = DefaultDeviceStatus(performOnQueue: mockQueue)
