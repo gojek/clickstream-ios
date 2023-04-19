@@ -16,9 +16,6 @@ end
 
 target 'Clickstream' do
    clickstream_pods
-  # pod 'Clickstream', :git => 'https://github.com/gojek/clickstream-ios.git', :branch => 'task/update_SDK', :modular_headers => true
-  # pod 'Clickstream/EventVisualizer', :git => 'https://github.com/gojek/clickstream-ios.git', :branch => 'task/update_SDK', :modular_headers => true
-  # pod 'Clickstream/Tracker', :git => 'https://github.com/gojek/clickstream-ios.git', :branch => 'task/update_SDK', :modular_headers => true
 end
 
 target 'ClickstreamTests' do

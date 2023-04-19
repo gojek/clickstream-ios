@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FG4-Sz-acn">
-                                <rect key="frame" x="40" y="132" width="334" height="530"/>
+                                <rect key="frame" x="40" y="132" width="334" height="480"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="XOX-6k-50z">
                                         <rect key="frame" x="0.0" y="20" width="334" height="200"/>
@@ -117,37 +117,22 @@
                                             <action selector="sendMultipleEventsToClickstream:" destination="WAz-PT-SgK" eventType="touchUpInside" id="cEr-JS-D6x"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lyY-xr-dJI">
-                                        <rect key="frame" x="115" y="477.5" width="104" height="34.5"/>
-                                        <color key="backgroundColor" systemColor="systemBlueColor"/>
-                                        <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Test Mode">
-                                            <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </buttonConfiguration>
-                                        <connections>
-                                            <action selector="openEventVisualizer:" destination="WAz-PT-SgK" eventType="touchUpInside" id="gx4-Na-XCR"/>
-                                            <action selector="sendMultipleEventsToClickstream:" destination="WAz-PT-SgK" eventType="touchUpInside" id="rdG-gs-oyR"/>
-                                            <action selector="testMode:" destination="WAz-PT-SgK" eventType="touchUpInside" id="dCI-hx-7Go"/>
-                                        </connections>
-                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="ARl-2Q-i2U" secondAttribute="trailing" id="3At-NR-Ryc"/>
                                     <constraint firstItem="XOX-6k-50z" firstAttribute="top" secondItem="FG4-Sz-acn" secondAttribute="top" constant="20" id="4xl-3M-otA"/>
                                     <constraint firstItem="Aj0-23-zkl" firstAttribute="centerX" secondItem="g7j-BG-u2C" secondAttribute="centerX" id="7Ah-hx-4UP"/>
-                                    <constraint firstAttribute="height" constant="530" id="8t2-rW-sec"/>
+                                    <constraint firstAttribute="bottom" secondItem="2i5-0h-cxC" secondAttribute="bottom" constant="20.5" id="8hy-uq-P8Z"/>
+                                    <constraint firstAttribute="height" constant="480" id="8t2-rW-sec"/>
                                     <constraint firstItem="XOX-6k-50z" firstAttribute="centerX" secondItem="FG4-Sz-acn" secondAttribute="centerX" id="ETv-lv-Bwc"/>
                                     <constraint firstItem="g7j-BG-u2C" firstAttribute="top" secondItem="ARl-2Q-i2U" secondAttribute="bottom" constant="30" id="IyJ-kq-ZUb"/>
-                                    <constraint firstItem="lyY-xr-dJI" firstAttribute="top" secondItem="2i5-0h-cxC" secondAttribute="bottom" constant="18" id="Lzu-6y-GvH"/>
                                     <constraint firstItem="2i5-0h-cxC" firstAttribute="top" secondItem="Aj0-23-zkl" secondAttribute="bottom" constant="18" id="PgL-C4-lmg"/>
-                                    <constraint firstItem="lyY-xr-dJI" firstAttribute="centerX" secondItem="FG4-Sz-acn" secondAttribute="centerX" id="QQw-C6-cCs"/>
                                     <constraint firstItem="XOX-6k-50z" firstAttribute="leading" secondItem="FG4-Sz-acn" secondAttribute="leading" id="WQE-lT-gJa"/>
                                     <constraint firstItem="2i5-0h-cxC" firstAttribute="centerX" secondItem="Aj0-23-zkl" secondAttribute="centerX" id="ZLy-o1-5Mb"/>
                                     <constraint firstItem="g7j-BG-u2C" firstAttribute="centerX" secondItem="FG4-Sz-acn" secondAttribute="centerX" id="bUK-Uu-Ecy"/>
                                     <constraint firstItem="ARl-2Q-i2U" firstAttribute="top" secondItem="XOX-6k-50z" secondAttribute="bottom" constant="30" id="bYm-SF-fNk"/>
                                     <constraint firstAttribute="trailing" secondItem="XOX-6k-50z" secondAttribute="trailing" id="fb8-MO-Qbc"/>
-                                    <constraint firstAttribute="bottom" secondItem="lyY-xr-dJI" secondAttribute="bottom" constant="18" id="sb3-gQ-35z"/>
                                     <constraint firstItem="ARl-2Q-i2U" firstAttribute="leading" secondItem="FG4-Sz-acn" secondAttribute="leading" id="t5h-ro-jag"/>
                                     <constraint firstItem="Aj0-23-zkl" firstAttribute="top" secondItem="g7j-BG-u2C" secondAttribute="bottom" constant="18" id="tzd-5d-m2z"/>
                                 </constraints>

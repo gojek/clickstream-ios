@@ -45,27 +45,6 @@ class ClickstreamViewController: UIViewController {
         }
     }
     
-    @IBAction func testMode(_ sender: Any) {
-        if let configs = Constants.testConfigs() {
-            if let configurationDict = configs["configuration"] as? [String: Any] {
-                do {
-                    let configurationJson = try JSONSerialization.data(withJSONObject: configurationDict, options: [])
-                    if let configurationString = String(data: configurationJson, encoding: .utf8) {
-                        Constants.configurations = configurationString
-                    }
-                } catch {
-                    print(error.localizedDescription)
-                }
-            }
-            if let testEmail = configs["email"] as? String {
-                Constants.email = testEmail
-            }
-            if let clickCount = configs["clickCount"] as? Int {
-                Constants.clickCount = clickCount
-            }
-        }
-    }
-    
     @IBAction func openEventVisualizer(_ sender: Any) {
         self.analyticsManager.openEventVisualizer(onController: self)
     }
