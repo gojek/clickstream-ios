@@ -234,9 +234,9 @@ public final class Clickstream {
     /// - Returns: returns a Clickstream instance to keep throughout the project.
     ///            You can always get the instance by calling getInstance()
     @discardableResult public static func initialise(with request: URLRequest,
-                                                     configurations: JSONString,
-                                                     eventClassification: JSONString,
-                                                     healthTrackingConfigs: JSONString,
+                                                     configurations: ClickstreamConstraints,
+                                                     eventClassification: ClickstreamEventClassification,
+                                                     healthTrackingConfigs: ClickstreamHealthConfigurations,
                                                      dataSource: ClickStreamDataSource,
                                                      delegate: ClickstreamDelegate? = nil,
                                                      updateConnectionStatus: Bool = false,
@@ -249,21 +249,6 @@ public final class Clickstream {
         semaphore.wait()
         
         guard sharedInstance != nil else {
-            // Setting constraints to be used for the SDK.
-            guard let constraints = ClickstreamConstraints.getInstance(from: configurations) else {
-                print("Cannot initialise ClickStream. Check configuration and the fallback configs",.critical)
-                throw Clickstream.ClickstreamError.initialisation("Could not find configurations")
-            }
-            guard let eventClassifier = ClickstreamEventClassification.getInstance(from: eventClassification) else {
-                print("Cannot initialise ClickStream. Check event classification and the fallback configs",.critical)
-                throw Clickstream.ClickstreamError.initialisation("Could not find event classifications")
-            }
-            
-            if let healthTrackingConfigs = ClickstreamHealthConfigurations.getInstance(from: healthTrackingConfigs) {
-                Clickstream.healthTrackingConfigs = healthTrackingConfigs
-            } else {
-                print("Failed to fetch Health Configs, check health tracking configs and the fallback configs",.critical)
-            }
             
             // Assign the constraints.
             Clickstream.constraints = constraints

@@ -1,6 +1,6 @@
 //
 //  DatabaseDAO.swift
-//  Clickstream
+//  ClickStream
 //
 //  Created by Anirudh Vyas on 10/03/21.
 //  Copyright © 2021 Gojek. All rights reserved.
@@ -18,29 +18,19 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
     /// The database instance provide during initialisation as a dependency.
     private let database: Database
     
-    /// A migrator instance to migrate legacy data to the newer persistence stack.
-    private let migrator: Migration<Object>?
-    
     init(database: Database,
-         performOnQueue: SerialQueue,
-         migrator: Migration<Object>? = nil) {
+         performOnQueue: SerialQueue) {
         self.performQueue = performOnQueue
-        self.migrator = migrator
         self.database = database
         self.createTable()
     }
     
-    /// Responsible to create the table and initiate a legacy daga migration, if needed.
+    /// Responsible to create the table.
     private func createTable() {
         do {
-            try self.database.createTable(Object.self, { [weak self] in guard let checkedSelf = self else { return }
-                // Triggered only once! Allows time for table creation.
-                DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 2.0) {
-//                    checkedSelf.migrator?.migrate(DefaultPersistence<Object>(key: Object.codableCacheKey), checkedSelf)
-                }
-            })
+            try self.database.createTable(Object.self, { })
         } catch {
-            print("Failed to create table in database with error:- \(error)", .verbose)
+            print(error)
         }
     }
     
@@ -51,7 +41,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
             do {
                 try database.insert(object)
             } catch {
-                print("Failed inserting in database with error:- \(error)", .verbose)
+                print(error)
             }
         }
     }
@@ -63,7 +53,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
             do {
                 try database.update(object)
             } catch {
-                print("Failed updating in database with error:- \(error)", .verbose)
+                print(error)
             }
         }
     }
@@ -75,7 +65,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
             do {
                 return try database.fetchAll()
             } catch {
-                print("Failed to fetch all results:- \(error)", .verbose)
+                print(error)
                 return nil
             }
         }
@@ -89,7 +79,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
             do {
                 return try database.fetchFirst(n)
             } catch {
-                print("Failed to fetch first result:- \(error)", .verbose)
+                print(error)
                 return nil
             }
         }
@@ -118,7 +108,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
             do {
                 return try database.deleteAll()
             } catch {
-                print("Failed to delete all results:- \(error)", .verbose)
+                print(error)
                 return nil
             }
         }
@@ -133,7 +123,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
             do {
                 return try database.deleteOne(primaryKeyValue)
             } catch {
-                print("Failed to delete the result:- \(error)", .verbose)
+                print(error)
                 return nil
             }
         }
@@ -151,7 +141,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
             do {
                 return try database.deleteWhere(column, value: value, n: n)
             }  catch {
-                print("Failed to delete the result:- \(error)", .verbose)
+                print(error)
                 return nil
             }
         }
@@ -162,7 +152,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
             do {
                 return try database.doesTableExist(with: name)
             } catch {
-                print("Failed to fetch the table:- \(error)", .verbose)
+                print(error)
                 return false
             }
         }

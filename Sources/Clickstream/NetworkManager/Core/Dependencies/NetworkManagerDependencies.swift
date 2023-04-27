@@ -48,14 +48,9 @@ final class NetworkManagerDependencies {
         return DefaultAppStateNotifierService(with: networkQueue)
     }()
     
-    private lazy var migrator: Migration<EventRequest>? = {
-        return Migration()
-    }()
-    
     private lazy var defaultPersistence: DefaultDatabaseDAO<EventRequest> = {
         return DefaultDatabaseDAO<EventRequest>(database: database,
-                                                performOnQueue: daoQueue,
-                                                migrator: migrator)
+                                                performOnQueue: daoQueue)
     }()
     
     private lazy var keepAliveService: KeepAliveService = {

@@ -181,16 +181,8 @@
 		BD8AF695287ED1CC002DD402 /* CollectionMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF5FF287ED1CB002DD402 /* CollectionMapper.swift */; };
 		BDDC872229E6AF580024ED8C /* FileManagerOverride.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDC872129E6AF580024ED8C /* FileManagerOverride.swift */; };
 		BDDC872329E6AF580024ED8C /* FileManagerOverride.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDC872129E6AF580024ED8C /* FileManagerOverride.swift */; };
-		BDDC872529E6B54E0024ED8C /* Migration.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDC872429E6B54E0024ED8C /* Migration.swift */; };
-		BDDC872629E6B54E0024ED8C /* Migration.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDC872429E6B54E0024ED8C /* Migration.swift */; };
 		BDDC872829E6B57A0024ED8C /* FileStorable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDC872729E6B57A0024ED8C /* FileStorable.swift */; };
 		BDDC872929E6B57A0024ED8C /* FileStorable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDC872729E6B57A0024ED8C /* FileStorable.swift */; };
-		BDDC872B29E6B5CC0024ED8C /* CacheHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDC872A29E6B5CC0024ED8C /* CacheHandler.swift */; };
-		BDDC872C29E6B5CC0024ED8C /* CacheHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDC872A29E6B5CC0024ED8C /* CacheHandler.swift */; };
-		BDDC872F29E6B6310024ED8C /* CodableCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDC872E29E6B6310024ED8C /* CodableCache.swift */; };
-		BDDC873029E6B6310024ED8C /* CodableCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDC872E29E6B6310024ED8C /* CodableCache.swift */; };
-		BDDC873329E6B6D00024ED8C /* PersistentCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDC873229E6B6D00024ED8C /* PersistentCache.swift */; };
-		BDDC873429E6B6D00024ED8C /* PersistentCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDC873229E6B6D00024ED8C /* PersistentCache.swift */; };
 		BDDC873629E7D6AC0024ED8C /* EteExperiment.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDC873529E7D6AC0024ED8C /* EteExperiment.pb.swift */; };
 		BDDC873729E7D6AC0024ED8C /* EteExperiment.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDC873529E7D6AC0024ED8C /* EteExperiment.pb.swift */; };
 		BDDC873A29E7E8A70024ED8C /* Debugger.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDC873929E7E8A70024ED8C /* Debugger.swift */; };
@@ -334,11 +326,7 @@
 		BD8AF5FE287ED1CB002DD402 /* EventStateViewable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventStateViewable.swift; sourceTree = "<group>"; };
 		BD8AF5FF287ED1CB002DD402 /* CollectionMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionMapper.swift; sourceTree = "<group>"; };
 		BDDC872129E6AF580024ED8C /* FileManagerOverride.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerOverride.swift; sourceTree = "<group>"; };
-		BDDC872429E6B54E0024ED8C /* Migration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Migration.swift; sourceTree = "<group>"; };
 		BDDC872729E6B57A0024ED8C /* FileStorable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileStorable.swift; sourceTree = "<group>"; };
-		BDDC872A29E6B5CC0024ED8C /* CacheHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheHandler.swift; sourceTree = "<group>"; };
-		BDDC872E29E6B6310024ED8C /* CodableCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableCache.swift; sourceTree = "<group>"; };
-		BDDC873229E6B6D00024ED8C /* PersistentCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentCache.swift; sourceTree = "<group>"; };
 		BDDC873529E7D6AC0024ED8C /* EteExperiment.pb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EteExperiment.pb.swift; sourceTree = "<group>"; };
 		BDDC873929E7E8A70024ED8C /* Debugger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debugger.swift; sourceTree = "<group>"; };
 		E6A3C25FF474FD593A2063F0 /* Pods-Clickstream.alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.alpha.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.alpha.xcconfig"; sourceTree = "<group>"; };
@@ -622,7 +610,6 @@
 		BD8AF598287ED1CB002DD402 /* Clickstream */ = {
 			isa = PBXGroup;
 			children = (
-				BDDC872D29E6B6180024ED8C /* ThirdPartyLibraries */,
 				BD8AF599287ED1CB002DD402 /* NetworkManager */,
 				BD8AF5B4287ED1CB002DD402 /* Core */,
 				BD8AF5C9287ED1CB002DD402 /* Contracts */,
@@ -883,8 +870,6 @@
 			children = (
 				BD8AF5DB287ED1CB002DD402 /* Database */,
 				BD8AF5DD287ED1CB002DD402 /* DatabaseDAO.swift */,
-				BDDC872429E6B54E0024ED8C /* Migration.swift */,
-				BDDC872A29E6B5CC0024ED8C /* CacheHandler.swift */,
 			);
 			path = Persistence;
 			sourceTree = "<group>";
@@ -1025,23 +1010,6 @@
 				BDDC872129E6AF580024ED8C /* FileManagerOverride.swift */,
 			);
 			path = ETETestSuite;
-			sourceTree = "<group>";
-		};
-		BDDC872D29E6B6180024ED8C /* ThirdPartyLibraries */ = {
-			isa = PBXGroup;
-			children = (
-				BDDC873129E6B6C00024ED8C /* CodableCache */,
-			);
-			path = ThirdPartyLibraries;
-			sourceTree = "<group>";
-		};
-		BDDC873129E6B6C00024ED8C /* CodableCache */ = {
-			isa = PBXGroup;
-			children = (
-				BDDC872E29E6B6310024ED8C /* CodableCache.swift */,
-				BDDC873229E6B6D00024ED8C /* PersistentCache.swift */,
-			);
-			path = CodableCache;
 			sourceTree = "<group>";
 		};
 		BDDC873829E7E89B0024ED8C /* Debug */ = {
@@ -1229,7 +1197,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BDDC872B29E6B5CC0024ED8C /* CacheHandler.swift in Sources */,
 				BD8AF642287ED1CC002DD402 /* Constants.swift in Sources */,
 				BD8AF63E287ED1CC002DD402 /* ClickStreamConstraints.swift in Sources */,
 				BD8AF62E287ED1CC002DD402 /* DeviceStatusNotifier.swift in Sources */,
@@ -1239,7 +1206,6 @@
 				BD8AF67C287ED1CC002DD402 /* FilterTextFieldTableViewCell.swift in Sources */,
 				BD8AF616287ED1CC002DD402 /* HealthTrackerDTO.swift in Sources */,
 				BD8AF666287ED1CC002DD402 /* SortedArray.swift in Sources */,
-				BDDC872F29E6B6310024ED8C /* CodableCache.swift in Sources */,
 				BD8AF654287ED1CC002DD402 /* EventResponse.pb.swift in Sources */,
 				BD8AF66C287ED1CC002DD402 /* TableDefinable.swift in Sources */,
 				BD8AF640287ED1CC002DD402 /* ClickStreamEventClassification.swift in Sources */,
@@ -1250,7 +1216,6 @@
 				BD8AF660287ED1CC002DD402 /* AppStateNotifierService.swift in Sources */,
 				BD8AF63C287ED1CC002DD402 /* ClickstreamDependencies.swift in Sources */,
 				BD8AF63A287ED1CC002DD402 /* ClickStream.swift in Sources */,
-				BDDC872529E6B54E0024ED8C /* Migration.swift in Sources */,
 				BD8AF672287ED1CC002DD402 /* EventClassifier.swift in Sources */,
 				BD8AF638287ED1CC002DD402 /* EventRequest.swift in Sources */,
 				BD8AF614287ED1CC002DD402 /* ClickStreamHealthConfigurations.swift in Sources */,
@@ -1308,7 +1273,6 @@
 				BD8AF62C287ED1CC002DD402 /* Atomic.swift in Sources */,
 				BD8AF650287ED1CC002DD402 /* EventBatch.swift in Sources */,
 				BDDC873A29E7E8A70024ED8C /* Debugger.swift in Sources */,
-				BDDC873329E6B6D00024ED8C /* PersistentCache.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1336,7 +1300,6 @@
 				BD8AF62B287ED1CC002DD402 /* NetworkConfiguration.swift in Sources */,
 				BD8AF683287ED1CC002DD402 /* EventVisualizerLandingViewController.swift in Sources */,
 				BD8AF65F287ED1CC002DD402 /* EventBatchProcessor.swift in Sources */,
-				BDDC872629E6B54E0024ED8C /* Migration.swift in Sources */,
 				9AF0C767280DECEE00E39A12 /* NetworkServiceTests.swift in Sources */,
 				BD8AF603287ED1CB002DD402 /* HealthAnalysisEvent.swift in Sources */,
 				BD8AF61D287ED1CC002DD402 /* RetryMechanism.swift in Sources */,
@@ -1360,7 +1323,6 @@
 				BD8AF695287ED1CC002DD402 /* CollectionMapper.swift in Sources */,
 				9AF0C759280DEC9600E39A12 /* EventTests.swift in Sources */,
 				BD8AF60D287ED1CC002DD402 /* AppVersionChecker.swift in Sources */,
-				BDDC873429E6B6D00024ED8C /* PersistentCache.swift in Sources */,
 				BD8AF645287ED1CC002DD402 /* Reachability+Extension.swift in Sources */,
 				9AF0C761280DECDE00E39A12 /* EventBatchProcessorTests.swift in Sources */,
 				BD8AF629287ED1CC002DD402 /* Connectable.swift in Sources */,
@@ -1395,8 +1357,6 @@
 				9AF0C765280DECE800E39A12 /* NetworkManagerDependenciesTests.swift in Sources */,
 				BD8AF631287ED1CC002DD402 /* NetworkReachability.swift in Sources */,
 				BDDC873B29E7E8A70024ED8C /* Debugger.swift in Sources */,
-				BDDC873029E6B6310024ED8C /* CodableCache.swift in Sources */,
-				BDDC872C29E6B5CC0024ED8C /* CacheHandler.swift in Sources */,
 				BD8AF675287ED1CC002DD402 /* EventProcessor.swift in Sources */,
 				BD8AF681287ED1CC002DD402 /* EventVisualizerLandingViewModel.swift in Sources */,
 				BD8AF60F287ED1CC002DD402 /* HealthMeta.pb.swift in Sources */,

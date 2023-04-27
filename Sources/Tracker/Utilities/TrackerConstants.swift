@@ -48,10 +48,6 @@ enum FailureReason: String, Codable, CaseIterable {
     case networkUnavailable = "network_unavailable"
     case lowBattery = "low_battery"
     case socket_not_open = "socket_not_open"
-    
-    case token_not_found = "token_not_found"
-    case configs_not_found = "configs_not_found"
-    case feature_disabled = "feature_disabled"
 }
 
 public struct TrackerConstant {

@@ -38,7 +38,6 @@ class ClickstreamViewController: UIViewController {
     }
     
     @IBAction func sendMultipleEventsToClickstream(_ sender: UIButton) {
-        print("time in \(Date())")
         DispatchQueue.concurrentPerform(iterations: Constants.clickCount) { index in
             let eventGuid = UUID().uuidString
             self.analyticsManager.trackEvent(guid: eventGuid, message: self.createUser(eventGuid: eventGuid))

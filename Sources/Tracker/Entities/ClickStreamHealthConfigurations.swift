@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct ClickstreamHealthConfigurations: Decodable {
+public struct ClickstreamHealthConfigurations {
     
     /// Track CS SDK health from minimum app version
     private(set) var minimumTrackedVersion: String
@@ -28,22 +28,18 @@ public struct ClickstreamHealthConfigurations: Decodable {
     static var logVerbose: Bool {
         Clickstream.healthTrackingConfigs?.verbosityLevel?.lowercased() == "maximum"
     }
-    
-    /// Returns an instance of ClickStreamEventClassification by decoding the json string.
-    /// - Parameter json: String that needs to be decoded.
-    static func getInstance(from json: String) -> ClickstreamHealthConfigurations? {
-        return JSONStringDecoder.decode(json: json, fallbackJson: Constants.Defaults.Configs.healthTrackingConfigurations)
-    }
-    
-    public init(minimumTrackedVersion: String,
+
+    public init(minimumTrackedVersion: String = "",
                 randomisingUserIdRemainders: [Int32]? = nil,
-                trackedVia: TrackedVia,
-                dropRateEventName: String? = nil) {
+                trackedVia: TrackedVia = .both,
+                dropRateEventName: String? = nil,
+                verbosityLevel: String? = nil) {
         
         self.minimumTrackedVersion = minimumTrackedVersion
         self.randomisingUserIdRemainders = randomisingUserIdRemainders
         self.trackedVia = trackedVia
         self.dropRateEventName = dropRateEventName ?? ""
+        self.verbosityLevel = verbosityLevel
     }
     
     func debugMode(userID: Int32, currentAppVersion: String) -> Bool {
