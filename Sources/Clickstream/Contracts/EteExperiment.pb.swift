@@ -31,7 +31,7 @@ public struct Gojek_Clickstream_Products_Events_EteExperiment {
   /// Holds the eventName of the event
   public var eventName: String = String()
 
-  /// Note: Auto-filled by the ClickStream SDK, need not be set by the products for every event! If set, will be overridden.
+  /// Note: Auto-filled by the Clickstream SDK, need not be set by the products for every event! If set, will be overridden.
   public var eventTimestamp: SwiftProtobuf.Google_Protobuf_Timestamp {
     get {return _eventTimestamp ?? SwiftProtobuf.Google_Protobuf_Timestamp()}
     set {_eventTimestamp = newValue}
@@ -41,7 +41,7 @@ public struct Gojek_Clickstream_Products_Events_EteExperiment {
   /// Clears the value of `eventTimestamp`. Subsequent reads from it will return its default value.
   public mutating func clearEventTimestamp() {self._eventTimestamp = nil}
 
-  /// Note: Auto-filled by the ClickStream SDK, need not be set by the products for every event! If set, will be overridden.
+  /// Note: Auto-filled by the Clickstream SDK, need not be set by the products for every event! If set, will be overridden.
   public var deviceTimestamp: SwiftProtobuf.Google_Protobuf_Timestamp {
     get {return _deviceTimestamp ?? SwiftProtobuf.Google_Protobuf_Timestamp()}
     set {_deviceTimestamp = newValue}

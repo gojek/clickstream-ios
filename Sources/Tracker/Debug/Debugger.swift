@@ -1,6 +1,6 @@
 //
 //  Debugger.swift
-//  ClickStream
+//  Clickstream
 //
 //  Created by Anirudh Vyas on 18/03/21.
 //  Copyright © 2021 Gojek. All rights reserved.

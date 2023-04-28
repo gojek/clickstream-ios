@@ -53,8 +53,8 @@ class ClickstreamDependenciesTests: XCTestCase {
     
     func testEventProcessor() {
         // given
-        Clickstream.constraints = ClickstreamConstraints.getInstance(from: MockConstants.configurations)
-        Clickstream.eventClassifier = ClickstreamEventClassification.getInstance(from: MockConstants.eventClassification)
+        Clickstream.constraints = ClickstreamConstraints()
+        Clickstream.eventClassifier = ClickstreamEventClassification()
         
         // when
         let clickStreamDependencies = try! DefaultClickstreamDependencies(with: dummyRequest)

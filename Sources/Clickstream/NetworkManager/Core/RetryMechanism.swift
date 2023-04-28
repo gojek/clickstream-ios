@@ -204,7 +204,9 @@ extension DefaultRetryMechanism {
                             // remove the delivered batch from the cache.
                             checkedSelf.removeFromCache(with: guid)
                             
+                            #if EVENT_VISUALIZER_ENABLED
                             Clickstream.ackEvent = AckEventDetails(guid: guid, status: "Success")
+                            #endif
                             if let eventType = eventRequest.eventType, !(eventType == .internalEvent) {
                                 checkedSelf.trackHealthAndPerformanceEvents(eventRequest: eventRequest, startTime: startTime)
                             }
@@ -222,36 +224,43 @@ extension DefaultRetryMechanism {
                         }
                     } else {
                         if response.code == .maxConnectionLimitReached {
+                            #if TRACKER_ENABLED
                             if Tracker.debugMode {
                                 let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamConnectionFailure,
                                                                       reason: FailureReason.MAX_CONNECTION_LIMIT_REACHED.rawValue)
                                 Tracker.sharedInstance?.record(event: healthEvent)
                             }
+                            #endif
                             checkedSelf.terminateConnection()
                             checkedSelf.establishConnection()
+                            #if EVENT_VISUALIZER_ENABLED
                             Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Max Connection Limit Reached")
+                            #endif
                         }
-                        
+                        #if TRACKER_ENABLED
                         if response.code == .maxUserLimitReached && Tracker.debugMode {
                            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamConnectionFailure,
                                                                  reason: FailureReason.MAX_USER_LIMIT_REACHED.rawValue)
                             Tracker.sharedInstance?.record(event: healthEvent)
+                            #if EVENT_VISUALIZER_ENABLED
                             Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Max User Limit Reached")
+                            #endif
                         }
                         
                         if response.code == .badRequest && Tracker.debugMode {
                             print("Error: Parsing Exception for eventRequest guid \(eventRequest.guid)", .verbose)
-                            #if TRACKER_ENABLED
                             if Tracker.debugMode {
                                 var healthEvent: HealthAnalysisEvent!
                                 healthEvent = HealthAnalysisEvent(eventName: .ClickstreamWriteToSocketFailed,
                                                                   eventBatchGUID: eventRequest.guid,
                                                                   reason: FailureReason.ParsingException.rawValue)
                                 Tracker.sharedInstance?.record(event: healthEvent)
+                                #if EVENT_VISUALIZER_ENABLED
                                 Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Bad Request")
+                                #endif
                             }
-                            #endif
                         }
+                        #endif
                     }
                 case .failure(let error):
                     print("Error: \(error.localizedDescription) for eventRequest guid \(eventRequest.guid)", .verbose)
@@ -262,8 +271,10 @@ extension DefaultRetryMechanism {
                                                               reason: error.localizedDescription)
                         Tracker.sharedInstance?.record(event: healthEvent)
                     }
-                    #endif
+                    #if EVENT_VISUALIZER_ENABLED
                     Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "\(error)")
+                    #endif
+                    #endif
                 }
                 if self?.testMode ?? false {
                     FileManagerOverride.writeToFile()
@@ -320,7 +331,7 @@ extension DefaultRetryMechanism {
         }
         semaphore.wait()
         
-        /// Resetting value of ClickStream.connectionState to .connected which had been changed
+        /// Resetting value of Clickstream.connectionState to .connected which had been changed
         /// to .closing in line 261 when app was moving to background
         if Clickstream.updateConnectionStatus && self.networkService.isConnected {
             Clickstream.connectionState = .connected
@@ -457,6 +468,7 @@ extension DefaultRetryMechanism {
 extension DefaultRetryMechanism {
     
     func trackHealthAndPerformanceEvents(eventRequest: EventRequest, startTime: Date) {
+        #if TRACKER_ENABLED
         if Tracker.debugMode {
             guard eventRequest.eventType != Constants.EventType.instant else { return }
             
@@ -465,6 +477,7 @@ extension DefaultRetryMechanism {
             Tracker.sharedInstance?.record(event: healthEvent)
             
         }
+        #endif
     }
 }
 

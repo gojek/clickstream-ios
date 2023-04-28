@@ -40,7 +40,7 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
     /// Variable to make sure app is launched after being force closed/killed
     private var hasFlushOnAppLaunchExecutedOnce: Bool = false
     
-    #if DEBUG || INTEGRATION
+    #if TRACKER_ENABLED
     private let debugger = try! Debugger(fileName: "DefaultEventBatchProcessor")
     #endif
     
@@ -77,7 +77,7 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
                                                                             value: priority.identifier,
                                                                             n: numberOfEventsToBeFetched),
                            !events.isEmpty {
-                            #if DEBUG || INTEGRATION
+                            #if TRACKER_ENABLED
                             checkedSelf.debugger.write(events)
                             #endif
                             checkedSelf.eventBatchCreator.forward(with: events)
@@ -119,7 +119,7 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
         if eventBatchCreator.canForward,
             let events = persistence.deleteAll() {
             eventBatchCreator.forward(with:events)
-            
+            #if TRACKER_ENABLED
             // Track health events only for Clickstream Flush On Foreground
             if Tracker.debugMode && Clickstream.constraints.flushOnAppLaunch && !hasFlushOnAppLaunchExecutedOnce {
                 let eventGUIDs = events.map { $0.guid }
@@ -127,6 +127,7 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
                 let healthAnalysisEvent = HealthAnalysisEvent(eventName: .ClickstreamFlushOnForeground, events: eventGUIDString)
                 Tracker.sharedInstance?.record(event: healthAnalysisEvent)
             }
+            #endif
         }
     }
     
@@ -208,7 +209,7 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
 
 private extension DefaultEventBatchProcessor {
     
-    func flushObservabilityEvents() {        
+    func flushObservabilityEvents() {
         #if TRACKER_ENABLED
         if eventBatchCreator.canForward, let events = Tracker.sharedInstance?.sendHealthEventsToInternalParty(), !events.isEmpty {
             eventBatchCreator.forward(with: events)

@@ -1,6 +1,6 @@
 //
 //  FileManager.swift
-//  ClickStream
+//  Clickstream
 //
 //  Created by Rishav Gupta on 28/10/22.
 //  Copyright © 2022 Gojek. All rights reserved.
@@ -22,6 +22,7 @@ class FileManagerOverride {
     }
     
     static func writeToFile() {
+        #if EVENT_VISUALIZER_ENABLED
         let rowLine = "\(Clickstream.ackEvent?.guid ?? "GUID not captured") ,\(Clickstream.ackEvent?.status ?? "Status not captured") ,\(Date())\n"
         csvString = csvString.appending(rowLine)
         
@@ -45,5 +46,6 @@ class FileManagerOverride {
             }
             print(logFile)
         }
+        #endif
     }
 }

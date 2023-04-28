@@ -8,9 +8,6 @@
 
 import Foundation
 
-public typealias JSONString = String
-public typealias AccessToken = String
-
 typealias QueueIdentifier = String
 typealias CacheIdentifier = String
 typealias SerialQueue = DispatchQueue

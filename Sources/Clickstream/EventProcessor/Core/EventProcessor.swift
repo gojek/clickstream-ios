@@ -63,7 +63,7 @@ final class DefaultEventProcessor: EventProcessor {
         
         guard var typeOfEvent: String = event.eventName.components(separatedBy: ".").last?.lowercased() else { return nil }
         /// Check if appPrefix does not contain gojek
-        if Clickstream.appPrefix != "" && Clickstream.appPrefix != "gojek" {
+        if Clickstream.appPrefix != "" {
             typeOfEvent = Clickstream.appPrefix + "-" + typeOfEvent
         }
 

@@ -20,7 +20,7 @@ class EventWarehouserTests: XCTestCase {
 
     override func setUp() {
         
-        Clickstream.constraints = ClickstreamConstraints.getInstance(from: MockConstants.configurations)
+        Clickstream.constraints = ClickstreamConstraints()
         Tracker.debugMode = true
     }
     

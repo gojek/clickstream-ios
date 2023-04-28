@@ -249,9 +249,9 @@ extension SocketHandler {
 
 // MARK: - Track Clickstream health.
 extension DefaultSocketHandler {
+    #if TRACKER_ENABLED
     func trackHealthEvent(eventName: HealthEvents,
                           error: Error? = nil, code: UInt16? = nil, timeToConnection: String? = nil) {
-       #if TRACKER_ENABLED
         guard Tracker.debugMode else { return }
         if let error = error {
             if case HTTPUpgradeError.notAnUpgrade(let code) = error {
@@ -278,6 +278,6 @@ extension DefaultSocketHandler {
                                             reason: FailureReason.DuplicateID.rawValue, timeToConnection: timeToConnection)
             Tracker.sharedInstance?.record(event: event)
         }
-     #endif
     }
+    #endif
 }

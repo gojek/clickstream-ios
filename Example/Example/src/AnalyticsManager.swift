@@ -19,8 +19,7 @@ class AnalyticsManager {
         
         Clickstream.setLogLevel(.verbose)
         do {
-            let authToken = "" // Add Auth token here
-            let header = createHeader(with: authToken)
+            let header = createHeader()
             let request = self.urlRequest(headerParamaters: header)
             
             let configurations = ClickstreamConstraints(maxConnectionRetries: 5)
@@ -111,7 +110,7 @@ extension AnalyticsManager {
         return urlRequest
     }
     
-    private func createHeader(with bearer: String) -> [String: String] {
+    private func createHeader() -> [String: String] {
         let integrationApiKey = "" // Add API key here
         if let credentialsData = integrationApiKey.data(using: String.Encoding.utf8) {
             let base64CredentialsString = credentialsData.base64EncodedString()
@@ -119,12 +118,12 @@ extension AnalyticsManager {
             return ["Authorization": "Basic \(base64CredentialsString)",
                 "X-UniqueId": "\(UIDevice.current.identifierForVendor?.uuidString ?? "")"]
         } else {
-            return ["Authorization": "Bearer \(bearer)"]
+            return [:]
         }
     }
 }
 
-extension AnalyticsManager: ClickStreamDataSource {
+extension AnalyticsManager: ClickstreamDataSource {
     func currentNTPTimestamp() -> Date? {
         return Date()
     }

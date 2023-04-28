@@ -1,6 +1,6 @@
 //
 //  DatabaseDAO.swift
-//  ClickStream
+//  Clickstream
 //
 //  Created by Anirudh Vyas on 10/03/21.
 //  Copyright © 2021 Gojek. All rights reserved.

@@ -1,6 +1,6 @@
 //
-//  ClickStreamHealthConfigurations.swift
-//  ClickStream
+//  ClickstreamHealthConfigurations.swift
+//  Clickstream
 //
 //  Created by Abhijeet Mallick on 04/05/21.
 //  Copyright © 2021 Gojek. All rights reserved.
@@ -16,7 +16,7 @@ public struct ClickstreamHealthConfigurations {
     /// Enable tracking for userId with following randomising remainder
     private(set) var randomisingUserIdRemainders: [Int32]?
     
-    /// Enable tracking for following platform like CleverTap, ClickStream etc.
+    /// Enable tracking for following platform like CleverTap, Clickstream etc.
     private(set) var trackedVia: TrackedVia
     
     /// Proto message name or any other string that will be used to distinguish drop rate health event.
@@ -26,7 +26,10 @@ public struct ClickstreamHealthConfigurations {
     var verbosityLevel: String?
     
     static var logVerbose: Bool {
-        Clickstream.healthTrackingConfigs?.verbosityLevel?.lowercased() == "maximum"
+        #if TRACKER_ENABLED
+        return Clickstream.healthTrackingConfigs?.verbosityLevel?.lowercased() == "maximum"
+        #endif
+        return false
     }
 
     public init(minimumTrackedVersion: String = "",

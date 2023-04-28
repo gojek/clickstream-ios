@@ -9,11 +9,13 @@ import Foundation
 import SwiftProtobuf
 
 /// Conform to this delegate to send the current user location details and set NTP Time.
-public protocol ClickStreamDataSource: AnyObject {
+public protocol ClickstreamDataSource: AnyObject {
     
+    #if TRACKER_ENABLED
     /// Returns the current user location as `CSLocation` instance.
     /// - Returns: `CSLocation` instance.
     func currentUserLocation() -> CSLocation?
+    #endif
     
     /// Returns NTP timestamp
     /// - Returns: NTP Date() instance
@@ -23,7 +25,7 @@ public protocol ClickStreamDataSource: AnyObject {
 public protocol ClickstreamDelegate: AnyObject {
     
     /// Provides Clickstream connection state changes
-    /// - Parameter state: ClickStream.ConnectionState
+    /// - Parameter state: Clickstream.ConnectionState
     func onConnectionStateChanged(state: Clickstream.ConnectionState)
 }
 
@@ -62,8 +64,10 @@ public final class Clickstream {
     /// Holds the event classification for the sdk.
     internal static var eventClassifier: ClickstreamEventClassification!
     
+    #if TRACKER_ENABLED
     // Holds the health tracking configs for the SDK
     internal static var healthTrackingConfigs: ClickstreamHealthConfigurations?
+    #endif
     
     /// Holds latest NTP date
     internal static var currentNTPTimestamp: Date? {
@@ -102,16 +106,17 @@ public final class Clickstream {
         return Clickstream.connectionState
     }
     
-    /// ClickStreamDataSource.
-    private weak var _dataSource: ClickStreamDataSource?
+    /// ClickstreamDataSource.
+    private weak var _dataSource: ClickstreamDataSource?
     
     /// readonly public accessor for dataSource.
-    public weak var dataSource: ClickStreamDataSource? {
+    public weak var dataSource: ClickstreamDataSource? {
         get {
             return _dataSource
         }
     }
     
+    #if TRACKER_ENABLED
     /// CSCommonProperties
     private var _commonEventProperties: CSCommonProperties?
     
@@ -125,10 +130,12 @@ public final class Clickstream {
             self.setHealthTracker()
         }
     }
+    #endif
     
     /// ClickstreamDelegate.
     private weak var delegate: ClickstreamDelegate?
     
+    #if TRACKER_ENABLED
     private func setHealthTracker() {
         if let commonEventProperties = commonEventProperties,
            let healthTrackingConfigs = Clickstream.healthTrackingConfigs {
@@ -153,6 +160,7 @@ public final class Clickstream {
             return locationInfo
         }
     }
+    #endif
     
     // MARK: - Building blocks of the SDK.
     private let networkBuilder: NetworkBuildable
@@ -168,7 +176,7 @@ public final class Clickstream {
     private init(networkBuilder: NetworkBuildable,
                  eventWarehouser: EventWarehouser,
                  eventProcessor: EventProcessor,
-                 dataSource: ClickStreamDataSource,
+                 dataSource: ClickstreamDataSource,
                  delegate: ClickstreamDelegate? = nil) {
         self.networkBuilder = networkBuilder
         self.eventWarehouser = eventWarehouser
@@ -226,7 +234,7 @@ public final class Clickstream {
     /// - Parameters:
     ///   - networkConfiguration: Network Configurations needed for connecting socket
     ///   - constraints: Clickstream constraints passed from the integrating app.
-    ///   - dataSource: ClickStreamDataSource instance passed from the integrating app.
+    ///   - dataSource: ClickstreamDataSource instance passed from the integrating app.
     ///   - eventClassification: Clickstream event classification passed from the integrating app.
     ///   - request: URL request with secret code for the services to authenticate.
     ///   - appPrefix: Application name without any space or special characters that needs
@@ -237,7 +245,7 @@ public final class Clickstream {
                                                      configurations: ClickstreamConstraints,
                                                      eventClassification: ClickstreamEventClassification,
                                                      healthTrackingConfigs: ClickstreamHealthConfigurations,
-                                                     dataSource: ClickStreamDataSource,
+                                                     dataSource: ClickstreamDataSource,
                                                      delegate: ClickstreamDelegate? = nil,
                                                      updateConnectionStatus: Bool = false,
                                                      appPrefix: String) throws -> Clickstream? {

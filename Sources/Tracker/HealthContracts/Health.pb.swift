@@ -117,7 +117,7 @@ struct Gojek_Clickstream_Internal_Health {
   /// Clears the value of `traceDetails`. Subsequent reads from it will return its default value.
   mutating func clearTraceDetails() {self._traceDetails = nil}
 
-  /// Note: Auto-filled by the ClickStream SDK, need not be set by the products for every event! If set, will be overridden.
+  /// Note: Auto-filled by the Clickstream SDK, need not be set by the products for every event! If set, will be overridden.
   var eventTimestamp: SwiftProtobuf.Google_Protobuf_Timestamp {
     get {return _eventTimestamp ?? SwiftProtobuf.Google_Protobuf_Timestamp()}
     set {_eventTimestamp = newValue}
@@ -127,7 +127,7 @@ struct Gojek_Clickstream_Internal_Health {
   /// Clears the value of `eventTimestamp`. Subsequent reads from it will return its default value.
   mutating func clearEventTimestamp() {self._eventTimestamp = nil}
 
-  /// Note: Auto-filled by the ClickStream SDK, need not be set by the products for every event! If set, will be overridden.
+  /// Note: Auto-filled by the Clickstream SDK, need not be set by the products for every event! If set, will be overridden.
   /// gojek.clickstream.common.EventMeta meta = 102; // Deprecated, please use healthEventMeta.
   var healthMeta: Gojek_Clickstream_Internal_HealthMeta {
     get {return _healthMeta ?? Gojek_Clickstream_Internal_HealthMeta()}
@@ -138,7 +138,7 @@ struct Gojek_Clickstream_Internal_Health {
   /// Clears the value of `healthMeta`. Subsequent reads from it will return its default value.
   mutating func clearHealthMeta() {self._healthMeta = nil}
 
-  /// Note: Auto-filled by the ClickStream SDK, need not be set by the products for every event! If set, will be overridden.
+  /// Note: Auto-filled by the Clickstream SDK, need not be set by the products for every event! If set, will be overridden.
   var deviceTimestamp: SwiftProtobuf.Google_Protobuf_Timestamp {
     get {return _deviceTimestamp ?? SwiftProtobuf.Google_Protobuf_Timestamp()}
     set {_deviceTimestamp = newValue}
