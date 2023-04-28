@@ -15,7 +15,7 @@ class ClickstreamTests: XCTestCase {
     func testInitialiseClickstream() {
         // when
         let dummyRequest = URLRequest(url: URL(string: "dummy_url")!)
-        let clickStream = try! Clickstream.initialise(with: dummyRequest, configurations: ClickstreamConstraints(), eventClassification: ClickstreamEventClassification(), healthTrackingConfigs: ClickstreamHealthConfigurations(), dataSource: self, appPrefix: "")
+        let clickStream = try! Clickstream.initialise(with: dummyRequest, configurations: ClickstreamConstraints(), eventClassification: ClickstreamEventClassification(), dataSource: self, appPrefix: "")
         
         // then
         XCTAssertNotNil(clickStream)
@@ -24,7 +24,7 @@ class ClickstreamTests: XCTestCase {
     func testDataSource() {
         // when
         let dummyRequest = URLRequest(url: URL(string: "dummy_url")!)
-        let clickStream = try! Clickstream.initialise(with: dummyRequest, configurations: ClickstreamConstraints(), eventClassification: ClickstreamEventClassification(), healthTrackingConfigs: ClickstreamHealthConfigurations(), dataSource: self, appPrefix: "")
+        let clickStream = try! Clickstream.initialise(with: dummyRequest, configurations: ClickstreamConstraints(), eventClassification: ClickstreamEventClassification(), dataSource: self, appPrefix: "")
         
         // then
         XCTAssertNotNil(clickStream?.dataSource)

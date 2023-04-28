@@ -250,7 +250,20 @@ public final class Clickstream {
                                                      delegate: ClickstreamDelegate? = nil,
                                                      updateConnectionStatus: Bool = false,
                                                      appPrefix: String) throws -> Clickstream? {
-        
+        do {
+            return try initializeClickstream(
+                with: request,
+                configurations: configurations,
+                eventClassification: eventClassification,
+                dataSource: dataSource,
+                delegate: delegate,
+                updateConnectionStatus: updateConnectionStatus,
+                appPrefix: appPrefix)
+        } catch {
+            print("Cannot initialise Clickstream. Dependencies could not be initialised.",.critical)
+            // Relay the database error.
+            throw Clickstream.ClickstreamError.initialisation(error.localizedDescription)
+        }
     }
     #else
     @discardableResult public static func initialise(with request: URLRequest,
