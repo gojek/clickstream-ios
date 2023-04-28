@@ -241,6 +241,7 @@ public final class Clickstream {
     ///   to be passed from integrating app.
     /// - Returns: returns a Clickstream instance to keep throughout the project.
     ///            You can always get the instance by calling getInstance()
+    #if TRACKER_ENABLED
     @discardableResult public static func initialise(with request: URLRequest,
                                                      configurations: ClickstreamConstraints,
                                                      eventClassification: ClickstreamEventClassification,
@@ -250,6 +251,39 @@ public final class Clickstream {
                                                      updateConnectionStatus: Bool = false,
                                                      appPrefix: String) throws -> Clickstream? {
         
+    }
+    #else
+    @discardableResult public static func initialise(with request: URLRequest,
+                                                     configurations: ClickstreamConstraints,
+                                                     eventClassification: ClickstreamEventClassification,
+                                                     dataSource: ClickstreamDataSource,
+                                                     delegate: ClickstreamDelegate? = nil,
+                                                     updateConnectionStatus: Bool = false,
+                                                     appPrefix: String) throws -> Clickstream? {
+        do {
+            return try initializeClickstream(
+                with: request,
+                configurations: configurations,
+                eventClassification: eventClassification,
+                dataSource: dataSource,
+                delegate: delegate,
+                updateConnectionStatus: updateConnectionStatus,
+                appPrefix: appPrefix)
+        } catch {
+            print("Cannot initialise Clickstream. Dependencies could not be initialised.",.critical)
+            // Relay the database error.
+            throw Clickstream.ClickstreamError.initialisation(error.localizedDescription)
+        }
+    }
+    #endif
+    
+    static func initializeClickstream(with request: URLRequest,
+                                      configurations: ClickstreamConstraints,
+                                      eventClassification: ClickstreamEventClassification,
+                                      dataSource: ClickstreamDataSource,
+                                      delegate: ClickstreamDelegate? = nil,
+                                      updateConnectionStatus: Bool = false,
+                                      appPrefix: String) throws -> Clickstream? {
         let semaphore = DispatchSemaphore(value: 1)
         defer {
             semaphore.signal()
@@ -284,7 +318,6 @@ public final class Clickstream {
         }
         return sharedInstance
     }
-    
     
     @AtomicConnectionState internal static var connectionState: Clickstream.ConnectionState {
         didSet {
