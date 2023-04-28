@@ -45,9 +45,11 @@ final class DefaultRetryMechanism: Retryable {
     private var retryTimer: DispatchSourceTimer?
     private var keepAliveService: KeepAliveService
     
+    #if ETE_TEST_SUITE_ENABLED
     lazy var testMode: Bool = {
         return ProcessInfo.processInfo.arguments.contains("testMode")
     }()
+    #endif
     
     var isAvailble: Bool {
         
@@ -274,9 +276,11 @@ extension DefaultRetryMechanism {
                     #endif
                     #endif
                 }
+                #if ETE_TEST_SUITE_ENABLED
                 if self?.testMode ?? false {
                     FileManagerOverride.writeToFile()
                 }
+                #endif
             }
         }
     }
