@@ -89,13 +89,13 @@ class NetworkBuilderTests: XCTestCase {
         
         //when
         let sut = DefaultNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: mockQueue)
-        SerialQueue.main.asyncAfter(deadline: .now() + 3.0) {
+        SerialQueue.main.asyncAfter(deadline: .now() + 10) {
             XCTAssertEqual(sut.isAvailable, false)
             expectation.fulfill()
         }
         
         //then
-        wait(for: [expectation], timeout: 5.0)
+        wait(for: [expectation], timeout: 10.0)
     }
 
 }

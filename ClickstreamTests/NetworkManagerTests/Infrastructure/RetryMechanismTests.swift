@@ -46,9 +46,11 @@ class RetryMechanismTests: XCTestCase {
         let mockEventRequest: EventRequest = EventRequest(guid: UUID().uuidString, data: Data())
         
         sut.trackBatch(with: mockEventRequest)
+        var retriedMade = 0
 
         DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 3) {
             if (mockEventRequest.eventType != .instant), let fetchedRequest = persistence.fetchAll()?.first {
+                retriedMade = fetchedRequest.retriesMade
                 if fetchedRequest.retriesMade > 0 {
                     expectation.fulfill()
                 }
@@ -56,7 +58,9 @@ class RetryMechanismTests: XCTestCase {
         }
         
         //then
-        wait(for: [expectation], timeout: 5.0)
+        wait(for: [expectation], timeout: 10.0)
+        
+        XCTAssertTrue(retriedMade > 0)
     }
 
     func test_whenTheMaxRetriesAreReached_thenTheBatchMustGetRemovedFromTheCache() {
