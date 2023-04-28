@@ -87,8 +87,6 @@ public final class Clickstream {
     /// If delegate is nil then no events are passed to client.
     internal weak static var _stateViewer: EventStateViewable?
     
-    internal static var ackEvent: AckEventDetails?
-    
     /// computed public property which sets
     /// and fetches the global `_stateViewer` variable
     public var stateViewer: EventStateViewable? {
@@ -99,6 +97,9 @@ public final class Clickstream {
             Clickstream._stateViewer = newValue
         }
     }
+    #endif
+    #if ETE_TEST_SUITE_ENABLED
+    internal static var ackEvent: AckEventDetails?
     #endif
     
     /// Public property to get Clickstream connection state

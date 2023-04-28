@@ -204,7 +204,7 @@ extension DefaultRetryMechanism {
                             // remove the delivered batch from the cache.
                             checkedSelf.removeFromCache(with: guid)
                             
-                            #if EVENT_VISUALIZER_ENABLED
+                            #if ETE_TEST_SUITE_ENABLED
                             Clickstream.ackEvent = AckEventDetails(guid: guid, status: "Success")
                             #endif
                             if let eventType = eventRequest.eventType, !(eventType == .internalEvent) {
@@ -233,21 +233,21 @@ extension DefaultRetryMechanism {
                             #endif
                             checkedSelf.terminateConnection()
                             checkedSelf.establishConnection()
-                            #if EVENT_VISUALIZER_ENABLED
+                            #if ETE_TEST_SUITE_ENABLED
                             Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Max Connection Limit Reached")
                             #endif
                         }
                         #if TRACKER_ENABLED
-                        if response.code == .maxUserLimitReached && Tracker.debugMode {
+                        if response.code == .maxUserLimitReached {
                            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamConnectionFailure,
                                                                  reason: FailureReason.MAX_USER_LIMIT_REACHED.rawValue)
                             Tracker.sharedInstance?.record(event: healthEvent)
-                            #if EVENT_VISUALIZER_ENABLED
+                            #if ETE_TEST_SUITE_ENABLED
                             Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Max User Limit Reached")
                             #endif
                         }
                         
-                        if response.code == .badRequest && Tracker.debugMode {
+                        if response.code == .badRequest {
                             print("Error: Parsing Exception for eventRequest guid \(eventRequest.guid)", .verbose)
                             if Tracker.debugMode {
                                 var healthEvent: HealthAnalysisEvent!
@@ -255,7 +255,7 @@ extension DefaultRetryMechanism {
                                                                   eventBatchGUID: eventRequest.guid,
                                                                   reason: FailureReason.ParsingException.rawValue)
                                 Tracker.sharedInstance?.record(event: healthEvent)
-                                #if EVENT_VISUALIZER_ENABLED
+                                #if ETE_TEST_SUITE_ENABLED
                                 Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Bad Request")
                                 #endif
                             }
@@ -265,13 +265,11 @@ extension DefaultRetryMechanism {
                 case .failure(let error):
                     print("Error: \(error.localizedDescription) for eventRequest guid \(eventRequest.guid)", .verbose)
                     #if TRACKER_ENABLED
-                    if Tracker.debugMode {
-                        let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchErrorResponse,
-                                                              eventBatchGUID: eventRequest.guid, // eventRequest.guid is the batch GUID
-                                                              reason: error.localizedDescription)
-                        Tracker.sharedInstance?.record(event: healthEvent)
-                    }
-                    #if EVENT_VISUALIZER_ENABLED
+                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchErrorResponse,
+                                                          eventBatchGUID: eventRequest.guid, // eventRequest.guid is the batch GUID
+                                                          reason: error.localizedDescription)
+                    Tracker.sharedInstance?.record(event: healthEvent)
+                    #if ETE_TEST_SUITE_ENABLED
                     Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "\(error)")
                     #endif
                     #endif

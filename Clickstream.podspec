@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "Clickstream"
-  s.version          = "1.0.11"
+  s.version          = "1.0.12"
   s.summary          = "Real time Analytics SDK"
   s.description      = "Clickstream is an event agnostic, real-time data ingestion analytics SDK"
 
@@ -43,6 +43,11 @@ Pod::Spec.new do |s|
   s.subspec 'EventVisualizer' do |eventVisualizer|
     eventVisualizer.source_files = 'Sources/EventVisualizer/**/*.swift'
     eventVisualizer.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) EVENT_VISUALIZER_ENABLED' }
+  end
+
+  s.subspec 'ETETestSuite' do |eteTestSuite|
+    eteTestSuite.source_files = 'Sources/ETETestSuite/**/*.swift'
+    eteTestSuite.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) ETE_TEST_SUITE_ENABLED' }
   end
 
 end

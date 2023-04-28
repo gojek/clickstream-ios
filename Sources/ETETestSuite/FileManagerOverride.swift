@@ -22,7 +22,7 @@ class FileManagerOverride {
     }
     
     static func writeToFile() {
-        #if EVENT_VISUALIZER_ENABLED
+        #if ETE_TEST_SUITE_ENABLED
         let rowLine = "\(Clickstream.ackEvent?.guid ?? "GUID not captured") ,\(Clickstream.ackEvent?.status ?? "Status not captured") ,\(Date())\n"
         csvString = csvString.appending(rowLine)
         

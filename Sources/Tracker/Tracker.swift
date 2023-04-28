@@ -51,8 +51,6 @@ public final class Tracker {
         self.appStateNotifier = appStateNotifier
         self.healthTracker = HealthTracker(performOnQueue: Tracker.queue,
                                            db: database)
-//        self.performanceTracker = PerformanceTracker(performOnQueue: Tracker.queue,
-//                                                     db: database)
         self.observeAppStateChanges()
         self.flushOnAppUpgrade()
     }
