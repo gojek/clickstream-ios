@@ -49,17 +49,28 @@ struct HealthAnalysisEventBatch: Codable, Equatable {
 
 extension HealthAnalysisEventBatch: Notifiable {
     
-    func notify() {        
-        var healthDTO = HealthTrackerDTO()
-        healthDTO.eventName = self.eventName.rawValue
-        healthDTO.sessionID = sessionID
-        healthDTO.failureReason = reason
-        healthDTO.eventGUIDs = self.eventGUIDs
-        healthDTO.eventBatchGUIDs = self.eventBatchGUIDs
+    func notify() {
+        var properties: [String: Any] = [TrackerConstant.clickstream_event_count: count,
+                                         TrackerConstant.clickstream_timestamp_list: timeStamps]
         
-        healthDTO.eventCount = healthDTO.eventGUIDs?.count
+        if let sessionID = sessionID {
+            properties[TrackerConstant.clickstream_sessionId] = sessionID
+        }
         
-        // Send health event back to client app
-        Tracker.sharedInstance?.delegate.getHealthEvent(event: healthDTO)
+        if let reason = reason {
+            properties[TrackerConstant.clickstream_error_reason] = reason
+        }
+        
+        if !eventGUIDs.isEmpty {
+             properties[TrackerConstant.clickstream_event_guid_list] = eventGUIDs
+        }
+        
+        if !eventBatchGUIDs.isEmpty {
+             properties[TrackerConstant.clickstream_event_batch_guid_list] = eventBatchGUIDs
+        }
+        
+        let dict: [String: Any] = [TrackerConstant.eventName: eventName.rawValue,
+                                   TrackerConstant.eventProperties: properties]
+        NotificationCenter.default.post(name: TrackerConstant.DebugEventsNotification, object: dict)
     }
 }

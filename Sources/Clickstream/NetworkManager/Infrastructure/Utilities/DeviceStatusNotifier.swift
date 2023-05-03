@@ -86,7 +86,7 @@ final class DefaultDeviceStatus: DeviceStatus {
         
         //  If BatteryState is Unplugged/Unknown and BatteryLevel is below 10%
         self.isDeviceLowOnPower = (batteryState == .unplugged || batteryState == .unknown) &&
-            batteryLevelPercent < Constants.Defaults.minDeviceBatteryLevel
+        batteryLevelPercent < Clickstream.constraints.minBatteryLevelPercent
     }
     
     /// Start battery monitoring and add observer needed to track battery status changes

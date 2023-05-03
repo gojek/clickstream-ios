@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "Clickstream"
-  s.version          = "1.0.2"
+  s.version          = "1.0.12"
   s.summary          = "Real time Analytics SDK"
   s.description      = "Clickstream is an event agnostic, real-time data ingestion analytics SDK"
 
@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
   
   s.dependency    "SwiftProtobuf", "1.10.2"
   s.dependency    "ReachabilitySwift"
-  s.dependency    "GRDB.swift", "5.12.0"
+  s.dependency    "GRDB.swift", "6.7.0"
   s.dependency    "Starscream", "4.0.4"
   s.default_subspec  = 'Core'
 
@@ -36,13 +36,18 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'Tracker' do |tracker|
-    tracker.source_files = 'Tracker/**/*.swift'
+    tracker.source_files = 'Sources/Tracker/**/*.swift'
     tracker.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) TRACKER_ENABLED' }
   end
 
   s.subspec 'EventVisualizer' do |eventVisualizer|
-    eventVisualizer.source_files = 'EventVisualizer/**/*.swift'
+    eventVisualizer.source_files = 'Sources/EventVisualizer/**/*.swift'
     eventVisualizer.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) EVENT_VISUALIZER_ENABLED' }
+  end
+
+  s.subspec 'ETETestSuite' do |eteTestSuite|
+    eteTestSuite.source_files = 'Sources/ETETestSuite/**/*.swift'
+    eteTestSuite.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) ETE_TEST_SUITE_ENABLED' }
   end
 
 end

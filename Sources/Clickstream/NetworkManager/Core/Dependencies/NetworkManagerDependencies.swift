@@ -10,13 +10,13 @@ import Foundation
 
 final class NetworkManagerDependencies {
     
+    private var request: URLRequest
     private let database: Database
-    private let networkConfigurations: NetworkConfigurations
     
-    init(with networkConfigurations: NetworkConfigurations,
+    init(with request: URLRequest,
          db: Database) {
         self.database = db
-        self.networkConfigurations = networkConfigurations
+        self.request = request
     }
     
     private let networkQueue = SerialQueue(label: Constants.QueueIdentifiers.network.rawValue, qos: .utility)
@@ -24,13 +24,18 @@ final class NetworkManagerDependencies {
     private let daoQueue = DispatchQueue(label: Constants.QueueIdentifiers.dao.rawValue,
                                        qos: .utility,
                                        attributes: .concurrent)
+    
+    private func getNetworkConfig() -> DefaultNetworkConfiguration {
+        return DefaultNetworkConfiguration(request: request)
+    }
 
-    private lazy var networkService: DefaultNetworkService<DefaultSocketHandler> = {
-        return DefaultNetworkService<DefaultSocketHandler>(with: networkConfigurations, performOnQueue: networkQueue)
+    private lazy var networkService: NetworkService = {
+        return DefaultNetworkService<DefaultSocketHandler>(with: getNetworkConfig(),
+                                                               performOnQueue: networkQueue)
     }()
     
     private lazy var reachability: NetworkReachability = {
-        let reachability = try! DefaultNetworkReachability(with: networkQueue)
+        let reachability = DefaultNetworkReachability(with: networkQueue)
         return reachability
     }()
     
@@ -49,15 +54,9 @@ final class NetworkManagerDependencies {
     }()
     
     private lazy var keepAliveService: KeepAliveService = {
-        if Clickstream.isInitialisedOnBackgroundQueue {
-            return DefaultKeepAliveServiceWithSafeTimer(with: networkQueue,
-                                           duration: Clickstream.constraints.connectionRetryDuration,
-                                           reachability: reachability)
-        } else {
-            return DefaultKeepAliveService(with: networkQueue,
-                                           duration: Clickstream.constraints.connectionRetryDuration,
-                                           reachability: reachability)
-        }
+        return DefaultKeepAliveServiceWithSafeTimer(with: networkQueue,
+                                                    duration: Clickstream.constraints.connectionRetryDuration,
+                                                    reachability: reachability)
     }()
     
     private lazy var retryMech: Retryable = {
@@ -71,6 +70,10 @@ final class NetworkManagerDependencies {
     }()
     
     func makeNetworkBuilder() -> NetworkBuildable {
-        return DefaultNetworkBuilder(networkConfigs: networkConfigurations, retryMech: retryMech, performOnQueue: networkQueue)
+        return DefaultNetworkBuilder(networkConfigs: getNetworkConfig(), retryMech: retryMech, performOnQueue: networkQueue)
+    }
+    
+    var isSocketConnected: Bool {
+        networkService.isConnected
     }
 }

@@ -11,11 +11,11 @@ def clickstream_pods
   pod 'Starscream', '~> 4.0.4'
   pod 'SwiftProtobuf', '~> 1.10.2'
   pod 'ReachabilitySwift'
-  pod 'GRDB.swift', '5.12.0'
+  pod 'GRDB.swift', '6.7.0'
 end
 
 target 'Clickstream' do
-  clickstream_pods
+   clickstream_pods
 end
 
 target 'ClickstreamTests' do

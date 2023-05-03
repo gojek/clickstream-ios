@@ -9,7 +9,16 @@
 @testable import Clickstream
 import Foundation
 
+enum SocketConnectionState {
+    case successWithData
+    case successWithEmptyData
+    case successWithNonSerializedData
+    case failure
+}
+
 final class SocketHandlerMockSuccess: SocketHandler {
+    
+    static var state: SocketConnectionState = .successWithData
     
     private let connectionCallback: ConnectionStatus?
     
@@ -25,7 +34,16 @@ final class SocketHandlerMockSuccess: SocketHandler {
     }
     
     func write(_ data: Data, completion: @escaping ((Result<Data?, ConnectableError>) -> Void)) {
-        completion(.success(data))
+        switch SocketHandlerMockSuccess.state {
+        case .successWithData:
+            completion(.success(data))
+        case .successWithEmptyData:
+            completion(.success(nil))
+        case .successWithNonSerializedData:
+            completion(.success(data.dropFirst()))
+        case .failure:
+            completion(.failure(.networkError(NSError(domain:"", code:404, userInfo:nil))))
+        }
     }
     
     func disconnect() {

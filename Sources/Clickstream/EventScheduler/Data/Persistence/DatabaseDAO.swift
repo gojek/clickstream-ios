@@ -25,13 +25,12 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
         self.createTable()
     }
     
-    /// Responsible to create the table and initiate a legacy daga migration, if needed.
+    /// Responsible to create the table.
     private func createTable() {
         do {
-            try self.database.createTable(Object.self, {
-            })
+            try self.database.createTable(Object.self, { })
         } catch {
-            print("Failed to create table in database with error:- \(error)", .verbose)
+            print(error)
         }
     }
     
@@ -42,7 +41,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
             do {
                 try database.insert(object)
             } catch {
-                print("Failed inserting in database with error:- \(error)", .verbose)
+                print(error)
             }
         }
     }
@@ -54,7 +53,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
             do {
                 try database.update(object)
             } catch {
-                print("Failed updating in database with error:- \(error)", .verbose)
+                print(error)
             }
         }
     }
@@ -66,7 +65,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
             do {
                 return try database.fetchAll()
             } catch {
-                print("Failed to fetch all results:- \(error)", .verbose)
+                print(error)
                 return nil
             }
         }
@@ -80,7 +79,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
             do {
                 return try database.fetchFirst(n)
             } catch {
-                print("Failed to fetch first result:- \(error)", .verbose)
+                print(error)
                 return nil
             }
         }
@@ -109,7 +108,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
             do {
                 return try database.deleteAll()
             } catch {
-                print("Failed to delete all results:- \(error)", .verbose)
+                print(error)
                 return nil
             }
         }
@@ -124,7 +123,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
             do {
                 return try database.deleteOne(primaryKeyValue)
             } catch {
-                print("Failed to delete the result:- \(error)", .verbose)
+                print(error)
                 return nil
             }
         }
@@ -142,7 +141,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
             do {
                 return try database.deleteWhere(column, value: value, n: n)
             }  catch {
-                print("Failed to delete the result:- \(error)", .verbose)
+                print(error)
                 return nil
             }
         }
@@ -153,7 +152,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
             do {
                 return try database.doesTableExist(with: name)
             } catch {
-                print("Failed to fetch the table:- \(error)", .verbose)
+                print(error)
                 return false
             }
         }

@@ -32,29 +32,34 @@ final class DefaultNetworkReachability: NetworkReachability {
     var whenReachable: NetworkReachable?
     var whenUnreachable: NetworkUnreachable?
     
-    private let reachability: Reachability
+    private let reachability: Reachability?
     
-    init(with targetQueue: SerialQueue) throws {
+    init(with targetQueue: SerialQueue) {
         
-        reachability = try Reachability(queueQoS: .utility,
-                                        targetQueue: targetQueue,
-                                        notificationQueue: targetQueue)
-        reachability.whenReachable = { [weak self] _ in guard let checkedSelf = self else { return }
-            checkedSelf.triggerStatusUpdateCallbacks()
-        }
-        reachability.whenUnreachable = { [weak self] _ in guard let checkedSelf = self else { return }
-            checkedSelf.triggerStatusUpdateCallbacks()
+        do {
+            reachability = try Reachability(queueQoS: .utility,
+                                            targetQueue: targetQueue,
+                                            notificationQueue: targetQueue)
+            reachability?.whenReachable = { [weak self] _ in guard let checkedSelf = self else { return }
+                checkedSelf.triggerStatusUpdateCallbacks()
+            }
+            reachability?.whenUnreachable = { [weak self] _ in guard let checkedSelf = self else { return }
+                checkedSelf.triggerStatusUpdateCallbacks()
+            }
+        } catch (let error) {
+            reachability = nil
+            print(error)
         }
     }
     
     private func triggerStatusUpdateCallbacks() {
-        reachability.connection != .unavailable ? whenReachable?(self) : whenUnreachable?(self)
+        reachability?.connection != .unavailable ? whenReachable?(self) : whenUnreachable?(self)
     }
 }
 
 extension DefaultNetworkReachability {
     var isAvailable: Bool {
-        reachability.connection != .unavailable
+        reachability?.connection != .unavailable
     }
     
     func getNetworkType() -> NetworkType {
@@ -65,11 +70,11 @@ extension DefaultNetworkReachability {
 extension DefaultNetworkReachability {
     
     func startNotifier() throws {
-        try reachability.startNotifier()
+        try reachability?.startNotifier()
     }
     
     func stopNotifier() {
-        reachability.stopNotifier()
+        reachability?.stopNotifier()
     }
 }
 

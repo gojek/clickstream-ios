@@ -21,12 +21,13 @@ class EventBatchProcessorTests: XCTestCase {
         realTimeEvent = Event(guid: "realTime", timestamp: Date(), type: "realTime", eventProtoData: Data())
         standardEvent = Event(guid: "standard", timestamp: Date(), type: "standard", eventProtoData: Data())
         
-        Clickstream.constraints = MockConstants.constraints
+        Clickstream.constraints = ClickstreamConstraints()
+        Tracker.debugMode = true
     }
     
     func test_whenBatchSizeIsGiven_shouldForwardABatch() {
         //given
-        let config = NetworkConfigurations(baseURL: URL(string: "ws://mock.clickstream.com/events")!)
+        let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         let expectation = self.expectation(description: "Should respond on the given queue")
         
         let prioritiesMock = [Priority(priority: 0, identifier: "realTime", maxBatchSize: 50000.0, maxTimeBetweenTwoBatches: 1)]
@@ -69,7 +70,7 @@ class EventBatchProcessorTests: XCTestCase {
     
     func test_whenAppStateIsEnterBackground_thenAllEventsMustBeFlushed() {
         //given
-        let config = NetworkConfigurations(baseURL: URL(string: "ws://mock.clickstream.com/events")!)
+        let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         let expectation = self.expectation(description: "All events must get flushed")
         
         let prioritiesMock = [Priority(priority: 0, identifier: "realTime", maxBatchSize: 5000.0, maxTimeBetweenTwoBatches: 10),

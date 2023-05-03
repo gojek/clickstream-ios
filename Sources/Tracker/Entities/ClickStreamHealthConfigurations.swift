@@ -1,6 +1,6 @@
 //
-//  ClickStreamHealthConfigurations.swift
-//  ClickStream
+//  ClickstreamHealthConfigurations.swift
+//  Clickstream
 //
 //  Created by Abhijeet Mallick on 04/05/21.
 //  Copyright © 2021 Gojek. All rights reserved.
@@ -16,22 +16,33 @@ public struct ClickstreamHealthConfigurations {
     /// Enable tracking for userId with following randomising remainder
     private(set) var randomisingUserIdRemainders: [Int32]?
     
-    /// Enable tracking for following platform like CleverTap, ClickStream etc.
+    /// Enable tracking for following platform like CleverTap, Clickstream etc.
     private(set) var trackedVia: TrackedVia
     
     /// Proto message name or any other string that will be used to distinguish drop rate health event.
     /// If you want to use a proto message name the you can directly call like this:- User.protoMessageName or CardEvent.protoMessageName
     private(set) var dropRateEventName: String
     
-    public init(minimumTrackedVersion: String,
+    var verbosityLevel: String?
+    
+    static var logVerbose: Bool {
+        #if TRACKER_ENABLED
+        return Clickstream.healthTrackingConfigs?.verbosityLevel?.lowercased() == "maximum"
+        #endif
+        return false
+    }
+
+    public init(minimumTrackedVersion: String = "",
                 randomisingUserIdRemainders: [Int32]? = nil,
-                trackedVia: TrackedVia,
-                dropRateEventName: String? = nil) {
+                trackedVia: TrackedVia = .both,
+                dropRateEventName: String? = nil,
+                verbosityLevel: String? = nil) {
         
         self.minimumTrackedVersion = minimumTrackedVersion
         self.randomisingUserIdRemainders = randomisingUserIdRemainders
         self.trackedVia = trackedVia
         self.dropRateEventName = dropRateEventName ?? ""
+        self.verbosityLevel = verbosityLevel
     }
     
     func debugMode(userID: Int32, currentAppVersion: String) -> Bool {

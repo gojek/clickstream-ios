@@ -1,6 +1,6 @@
 //
 //  CSLocation.swift
-//  ClickStream
+//  Clickstream
 //
 //  Created by Anirudh Vyas on 21/06/20.
 //  Copyright © 2020 Gojek. All rights reserved.
@@ -11,7 +11,7 @@ import SwiftProtobuf
 
 /**
  Coordinates of the device, where the event has been generated.
- - important: This must be set using the `ClickStreamDataSource` only.
+ - important: This must be set using the `ClickstreamDataSource` only.
  */
 public struct CSLocation {
     

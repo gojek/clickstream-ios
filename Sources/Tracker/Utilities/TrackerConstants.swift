@@ -23,6 +23,7 @@ enum HealthEvents: String, Codable, CaseIterable {
     case ClickstreamBatchSent = "Clickstream Batch Sent" // Clickstream
     case ClickstreamEventBatchSuccessAck = "Clickstream Event Batch Success Ack" // Clickstream
     case ClickstreamFlushOnBackground = "Clickstream Flush On Background" // Clickstream
+    case ClickstreamFlushOnForeground = "Clickstream Flush On Foreground" // Clickstream
     
     case ClickstreamEventBatchTriggerFailed = "Clickstream Event Batch Trigger Failed"
     case ClickstreamWriteToSocketFailed = "Clickstream Write to Socket Failed"
@@ -46,10 +47,12 @@ enum FailureReason: String, Codable, CaseIterable {
     
     case networkUnavailable = "network_unavailable"
     case lowBattery = "low_battery"
+    case socket_not_open = "socket_not_open"
 }
 
 public struct TrackerConstant {
     //TODO: Added Traces after merging Health tracking
+    public static let DebugEventsNotification = NSNotification.Name(rawValue: "ClickstreamDebugNotifications")
     public static let TraceStartNotification = NSNotification.Name(rawValue: "ClickstreamTraceStartNotification")
     public static let TraceStopNotification = NSNotification.Name(rawValue: "ClickstreamTraceEventsNotification")
     

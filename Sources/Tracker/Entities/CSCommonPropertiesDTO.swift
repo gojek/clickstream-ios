@@ -1,6 +1,6 @@
 //
 //  CSCommonProperties.swift
-//  ClickStream
+//  Clickstream
 //
 //  Created by Anirudh Vyas on 21/06/20.
 //  Copyright © 2020 Gojek. All rights reserved.
@@ -12,7 +12,7 @@ import UIKit
 
 /**
  Common properties which need to be sent along every event being sent. Container for all the common properties to be tracked.
- - important: Need not be set every time, set once and the SDK will attach it to every event being sent to `ClickStream` for tracking.
+ - important: Need not be set every time, set once and the SDK will attach it to every event being sent to `Clickstream` for tracking.
  */
 public struct CSCommonProperties {
     
@@ -41,7 +41,7 @@ public struct CSCommonProperties {
 
 /**
  Customer Info properties which need to be sent along every event being sent.
- - important: Need not be set every time, set once and the SDK will attach it to every event being sent to `ClickStream` for tracking.
+ - important: Need not be set every time, set once and the SDK will attach it to every event being sent to `Clickstream` for tracking.
  */
 public struct CSCustomerInfo {
     
@@ -85,7 +85,7 @@ extension CSCustomerInfo: ProtoConvertible {
 
 /**
  Session Info properties which need to be sent along every event being sent.
- - important: Need not be set every time, set once and the SDK will attach it to every event being sent to `ClickStream` for tracking.
+ - important: Need not be set every time, set once and the SDK will attach it to every event being sent to `Clickstream` for tracking.
  */
 public struct CSSessionInfo {
     
@@ -132,7 +132,7 @@ extension CSDeviceInfo: ProtoConvertible {
 
 /**
  App Info properties which need to be sent along every event being sent. Holds the appVersion.
- - important: Need not be set every time, set once and the SDK will attach it to every event being sent to `ClickStream` for tracking.
+ - important: Need not be set every time, set once and the SDK will attach it to every event being sent to `Clickstream` for tracking.
  */
 public struct CSAppInfo {
     

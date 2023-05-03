@@ -47,13 +47,19 @@ public struct ClickstreamConstraints {
     // Connection retry duration
     private(set) var connectionRetryDuration: TimeInterval
     
+    /// This is flag which determines whether the contained events be flushed when the app is launched for the first time by the user
+    var flushOnAppLaunch: Bool
+    
+    /// This is flag which determines whether the contained events be sent when the device's battery is more that it
+    var minBatteryLevelPercent: Float
+    
     /// Returns an instance of ClickstreamConstraints
     public init(maxConnectionRetries: Int = 30, maxConnectionRetryInterval: TimeInterval = 30,
                 maxRetryIntervalPostPrematureDisconnection: TimeInterval = 30, maxRetriesPostPrematureDisconnection: Int = 10,
                 maxPingInterval: TimeInterval = 15, priorities: [Priority] = [Priority()],
                 flushOnBackground: Bool = true, connectionTerminationTimerWaitTime: TimeInterval = 8,
                 maxRequestAckTimeout: TimeInterval = 6, maxRetriesPerBatch: Int = 20,
-                maxRetryCacheSize: Int = 5000000, connectionRetryDuration: TimeInterval = 3) {
+                maxRetryCacheSize: Int = 5000000, connectionRetryDuration: TimeInterval = 3, flushOnAppLaunch: Bool = false, minBatteryLevelPercent: Float = 10) {
         
         self.maxConnectionRetries = maxConnectionRetries
         self.maxConnectionRetryInterval = maxConnectionRetryInterval
@@ -67,6 +73,8 @@ public struct ClickstreamConstraints {
         self.maxRetriesPerBatch = maxRetriesPerBatch
         self.maxRetryCacheSize = maxRetryCacheSize
         self.connectionRetryDuration = connectionRetryDuration
+        self.flushOnAppLaunch = flushOnAppLaunch
+        self.minBatteryLevelPercent = minBatteryLevelPercent
     }
 }
 

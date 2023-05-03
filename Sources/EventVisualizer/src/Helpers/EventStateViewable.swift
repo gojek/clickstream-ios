@@ -1,6 +1,6 @@
 //
 //  EventStateViewable.swift
-//  ClickStream
+//  Clickstream
 //
 //  Created by Rishav Gupta on 31/03/22.
 //  Copyright © 2022 Gojek. All rights reserved.
@@ -9,7 +9,7 @@
 import Foundation
 import SwiftProtobuf
 
-public protocol EventStateViewable {
+public protocol EventStateViewable: AnyObject {
     /// responsible for sending the events in struct EventData
     func sendEvent(_ event: EventData)
     

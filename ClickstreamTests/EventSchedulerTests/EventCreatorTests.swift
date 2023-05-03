@@ -19,7 +19,7 @@ class EventCreatorTests: XCTestCase {
     
     func test_whenReachableMockService_shouldReturnCanForwardAsTrue() {
         //given
-        let config = NetworkConfigurations(baseURL: URL(string: "ws://mock.clickstream.com/events")!)
+        let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         
         let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: networkQueue)
         let deviceStatus = DefaultDeviceStatus(performOnQueue: networkQueue)
@@ -38,7 +38,7 @@ class EventCreatorTests: XCTestCase {
     
     func test_whenNotReachableMockService_shouldReturnCanForwardAsFalse() {
         //given
-        let config = NetworkConfigurations(baseURL: URL(string: "ws://mock.clickstream.com/events")!)
+        let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         
         let deviceStatus = DefaultDeviceStatus(performOnQueue: networkQueue)
         let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: networkQueue)
@@ -55,7 +55,7 @@ class EventCreatorTests: XCTestCase {
     
     func test_whenReachableMockService_shouldReturnTrue() {
         //given
-        let config = NetworkConfigurations(baseURL: URL(string: "ws://mock.clickstream.com/events")!)
+        let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         
         let deviceStatus = DefaultDeviceStatus(performOnQueue: networkQueue)
         let event = Event(guid: "", timestamp: Date(), type: "realTime", eventProtoData: Data())
@@ -76,7 +76,7 @@ class EventCreatorTests: XCTestCase {
     
     func test_whenNotReachableMockService_shouldReturnFalse() {
         //given
-        let config = NetworkConfigurations(baseURL: URL(string: "ws://mock.clickstream.com/events")!)
+        let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         
         let event = Event(guid: "", timestamp: Date(), type: "realTime", eventProtoData: Data())
         let deviceStatus = DefaultDeviceStatus(performOnQueue: networkQueue)

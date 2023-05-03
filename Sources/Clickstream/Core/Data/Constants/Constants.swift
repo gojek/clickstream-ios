@@ -8,8 +8,6 @@
 
 import Foundation
 
-public typealias JSONString = String
-
 typealias QueueIdentifier = String
 typealias CacheIdentifier = String
 typealias SerialQueue = DispatchQueue
@@ -17,11 +15,18 @@ typealias SerialQueue = DispatchQueue
 enum Constants {
     
     static let SocketConnectionNotification = NSNotification.Name(rawValue: "SocketConnectionNotification")
+    static let HealthEventType = "healthEvent"
     
     // MARK: - Strings
     enum Strings {
         static var connectionError = "Connection"
+        static var deviceMake = "Apple"
+        static var deviceOS = "iOS"
         static var didConnect = "didConnect"
+        public static var status = "status"
+        public static var success = "success"
+        public static var failure = "failure"
+        public static var networkType = "networkType"
     }
     
     // MARK: - SDK Defaults
@@ -29,9 +34,6 @@ enum Constants {
         
         // MARK: - Coefficients
         static let coefficientOfConnectionRetries = 1.3
-        
-        // MARK: - Device battery level
-        static let minDeviceBatteryLevel: Float = 10.0
     }
     
     enum QueueIdentifiers: QueueIdentifier {
@@ -55,5 +57,11 @@ enum Constants {
     enum EventVisualizer {
         static var guid = "guid"
         static var eventTimestamp = "deviceTimestamp"
+    }
+    
+    enum CacheIdentifiers: CacheIdentifier {
+        case retry = "com.gojek.clickstream.retryCache"
+        case healthAnalytics = "com.gojek.clickstream.healthAnalyticsCache"
+        case performanceAnalytics = "com.gojek.clickstream.performanceAnalyticsCache"
     }
 }
