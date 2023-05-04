@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   
   s.author           = "Gojek"
-  s.source           = { :git => 'https://github.com/gojek/clickstream-ios.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/gojek/clickstream-ios.git', :tag => "1.1.0" }
 
   s.platform         = :ios
   s.ios.deployment_target = '11.0'
@@ -38,16 +38,19 @@ Pod::Spec.new do |s|
   s.subspec 'Tracker' do |tracker|
     tracker.source_files = 'Sources/Tracker/**/*.swift'
     tracker.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) TRACKER_ENABLED' }
+    tracker.dependency    "Core"
   end
 
   s.subspec 'EventVisualizer' do |eventVisualizer|
     eventVisualizer.source_files = 'Sources/EventVisualizer/**/*.swift'
     eventVisualizer.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) EVENT_VISUALIZER_ENABLED' }
+    eventVisualizer.dependency    "Core"
   end
 
   s.subspec 'ETETestSuite' do |eteTestSuite|
     eteTestSuite.source_files = 'Sources/ETETestSuite/**/*.swift'
     eteTestSuite.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) ETE_TEST_SUITE_ENABLED' }
+    eteTestSuite.dependency    "Core"
   end
 
 end
