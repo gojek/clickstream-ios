@@ -89,7 +89,7 @@ public final class Clickstream {
     
     /// computed public property which sets
     /// and fetches the global `_stateViewer` variable
-    public var stateViewer: EventStateViewable? {
+    public static var stateViewer: EventStateViewable? {
         get {
             return Clickstream._stateViewer
         }

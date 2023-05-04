@@ -22,44 +22,32 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '11.0'
   s.swift_version    = '5.0'
 
-  s.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
-  s.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
-  
+  s.source_files  = 'Sources/Clickstream/**/*.{h,m,swift}'
+  s.exclude_files = "Example"
+  s.frameworks    = "UIKit", "Foundation", "CoreTelephony"
+  s.dependency    "SwiftProtobuf", "1.10.2"
+  s.dependency    "ReachabilitySwift"
+  s.dependency    "GRDB.swift", "6.7.0"
+  s.dependency    "Starscream", "4.0.4"
   
   s.default_subspec  = 'Core'
 
   s.subspec 'Core' do |core|
-    core.source_files  = 'Sources/**/*.{h,m,swift}'
-    core.exclude_files = "Example"
-    core.frameworks    = "UIKit", "Foundation", "CoreTelephony"
-    core.dependency    "SwiftProtobuf", "1.10.2"
-    core.dependency    "ReachabilitySwift"
-    core.dependency    "GRDB.swift", "6.7.0"
-    core.dependency    "Starscream", "4.0.4"
   end
 
   s.subspec 'Tracker' do |tracker|
     tracker.source_files = 'Sources/**/*.{h,m,swift}'
     tracker.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) TRACKER_ENABLED' }
-    tracker.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
-    tracker.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
-    tracker.dependency    "Clickstream/Core"
   end
 
   s.subspec 'EventVisualizer' do |eventVisualizer|
     eventVisualizer.source_files = 'Sources/**/*.{h,m,swift}'
     eventVisualizer.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) EVENT_VISUALIZER_ENABLED' }
-    eventVisualizer.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
-    eventVisualizer.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
-    eventVisualizer.dependency    "Clickstream/Core"
   end
 
   s.subspec 'ETETestSuite' do |eteTestSuite|
     eteTestSuite.source_files = 'Sources/**/*.{h,m,swift}'
     eteTestSuite.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) ETE_TEST_SUITE_ENABLED' }
-    eteTestSuite.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
-    eteTestSuite.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
-    eteTestSuite.dependency    "Clickstream/Core"
   end
 
 end
