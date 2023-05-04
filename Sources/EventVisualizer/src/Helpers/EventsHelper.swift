@@ -27,11 +27,11 @@ final public class EventsHelper {
     }
     
     public func startCapturing() {
-        Clickstream.getInstance()?.stateViewer = self
+//        Clickstream.getInstance()?.stateViewer = self
     }
     
     public func stopCapturing() {
-        Clickstream.getInstance()?.stateViewer = nil
+//        Clickstream.getInstance()?.stateViewer = nil
     }
     public func clearData() {
         EventsHelper.shared.eventsCaptured = []
