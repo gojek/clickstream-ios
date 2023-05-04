@@ -37,16 +37,22 @@ Pod::Spec.new do |s|
 
   s.subspec 'Tracker' do |tracker|
     tracker.source_files = 'Sources/**/*.swift'
+    s.exclude_files = "Sources/EventVisualizer/**/*.swift"
+    s.exclude_files = "Sources/ETETestSuite/**/*.swift"
     tracker.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) TRACKER_ENABLED' }
   end
 
   s.subspec 'EventVisualizer' do |eventVisualizer|
     eventVisualizer.source_files = 'Sources/**/*.swift'
+    s.exclude_files = "Sources/Tracker/**/*.swift"
+    s.exclude_files = "Sources/ETETestSuite/**/*.swift"
     eventVisualizer.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) EVENT_VISUALIZER_ENABLED' }
   end
 
   s.subspec 'ETETestSuite' do |eteTestSuite|
     eteTestSuite.source_files = 'Sources/**/*.swift'
+    s.exclude_files = "Sources/Tracker/**/*.swift"
+    s.exclude_files = "Sources/EventVisualizer/**/*.swift"
     eteTestSuite.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) ETE_TEST_SUITE_ENABLED' }
   end
 
