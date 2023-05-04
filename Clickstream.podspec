@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "Clickstream"
-  s.version          = "1.1.0"
+  s.version          = "1.1.1"
   s.summary          = "Real time Analytics SDK"
   s.description      = "Clickstream is an event agnostic, real-time data ingestion analytics SDK"
 
@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   
   s.author           = "Gojek"
-  s.source           = { :git => 'https://github.com/gojek/clickstream-ios.git', :tag => "1.1.0" }
+  s.source           = { :git => 'https://github.com/gojek/clickstream-ios.git', :tag => s.version }
 
   s.platform         = :ios
   s.ios.deployment_target = '11.0'
