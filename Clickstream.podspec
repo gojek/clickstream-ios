@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "Clickstream"
-  s.version          = "1.0.12"
+  s.version          = "1.1.1"
   s.summary          = "Real time Analytics SDK"
   s.description      = "Clickstream is an event agnostic, real-time data ingestion analytics SDK"
 
@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   
   s.author           = "Gojek"
-  s.source           = { :git => 'https://github.com/gojek/clickstream-ios.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/gojek/clickstream-ios.git', :tag => s.version }
 
   s.platform         = :ios
   s.ios.deployment_target = '11.0'
@@ -25,28 +25,34 @@ Pod::Spec.new do |s|
   s.source_files  = 'Sources/Clickstream/**/*.swift'
   s.exclude_files = "Example"
   s.frameworks    = "UIKit", "Foundation", "CoreTelephony"
-  
   s.dependency    "SwiftProtobuf", "1.10.2"
   s.dependency    "ReachabilitySwift"
   s.dependency    "GRDB.swift", "6.7.0"
   s.dependency    "Starscream", "4.0.4"
+  
   s.default_subspec  = 'Core'
 
   s.subspec 'Core' do |core|
   end
 
   s.subspec 'Tracker' do |tracker|
-    tracker.source_files = 'Sources/Tracker/**/*.swift'
+    tracker.source_files = 'Sources/**/*.swift'
+    s.exclude_files = "Sources/EventVisualizer/**/*.swift"
+    s.exclude_files = "Sources/ETETestSuite/**/*.swift"
     tracker.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) TRACKER_ENABLED' }
   end
 
   s.subspec 'EventVisualizer' do |eventVisualizer|
-    eventVisualizer.source_files = 'Sources/EventVisualizer/**/*.swift'
+    eventVisualizer.source_files = 'Sources/**/*.swift'
+    s.exclude_files = "Sources/Tracker/**/*.swift"
+    s.exclude_files = "Sources/ETETestSuite/**/*.swift"
     eventVisualizer.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) EVENT_VISUALIZER_ENABLED' }
   end
 
   s.subspec 'ETETestSuite' do |eteTestSuite|
-    eteTestSuite.source_files = 'Sources/ETETestSuite/**/*.swift'
+    eteTestSuite.source_files = 'Sources/**/*.swift'
+    s.exclude_files = "Sources/Tracker/**/*.swift"
+    s.exclude_files = "Sources/EventVisualizer/**/*.swift"
     eteTestSuite.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) ETE_TEST_SUITE_ENABLED' }
   end
 
