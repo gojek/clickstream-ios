@@ -20,7 +20,7 @@ class RetryMechanismTests: XCTestCase {
         self.prioritiesMock = [Priority(priority: 0, identifier: "realTime", maxBatchSize: 50000.0, maxTimeBetweenTwoBatches: 1),
         Priority(priority: 1, identifier: "standard")]
         self.constraints = ClickstreamConstraints(maxConnectionRetries: 15, maxConnectionRetryInterval: 5, maxRetryIntervalPostPrematureDisconnection: 10, maxRetriesPostPrematureDisconnection: 20, maxPingInterval: 15, priorities: prioritiesMock, flushOnBackground: true, connectionTerminationTimerWaitTime: 2, maxRequestAckTimeout: 0.5, maxRetriesPerBatch: 2, maxRetryCacheSize: 100000, connectionRetryDuration: 3, flushOnAppLaunch: false, minBatteryLevelPercent: 10.0)
-        Clickstream.constraints = constraints
+        Clickstream.configurations = constraints
         Clickstream.eventClassifier = ClickstreamEventClassification()
         Tracker.debugMode = true
     }

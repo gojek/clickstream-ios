@@ -21,7 +21,7 @@ class EventBatchProcessorTests: XCTestCase {
         realTimeEvent = Event(guid: "realTime", timestamp: Date(), type: "realTime", eventProtoData: Data())
         standardEvent = Event(guid: "standard", timestamp: Date(), type: "standard", eventProtoData: Data())
         
-        Clickstream.constraints = ClickstreamConstraints()
+        Clickstream.configurations = ClickstreamConstraints()
         Tracker.debugMode = true
     }
     
