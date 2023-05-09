@@ -67,7 +67,7 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
         self.schedulerService.subscriber = { [weak self] (priority) in guard let checkedSelf = self else { return }
             if checkedSelf.eventBatchCreator.canForward {
                 /// Flush events when the app is launched for the first time
-                if Clickstream.constraints.flushOnAppLaunch && !checkedSelf.hasFlushOnAppLaunchExecutedOnce {
+                if Clickstream.configurations.flushOnAppLaunch && !checkedSelf.hasFlushOnAppLaunchExecutedOnce {
                     checkedSelf.flush(with: priority)
                     checkedSelf.hasFlushOnAppLaunchExecutedOnce = true
                 } else {
@@ -121,7 +121,7 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
             eventBatchCreator.forward(with:events)
             #if TRACKER_ENABLED
             // Track health events only for Clickstream Flush On Foreground
-            if Tracker.debugMode && Clickstream.constraints.flushOnAppLaunch && !hasFlushOnAppLaunchExecutedOnce {
+            if Tracker.debugMode && Clickstream.configurations.flushOnAppLaunch && !hasFlushOnAppLaunchExecutedOnce {
                 let eventGUIDs = events.map { $0.guid }
                 let eventGUIDString = "\(eventGUIDs.joined(separator: ", "))"
                 let healthAnalysisEvent = HealthAnalysisEvent(eventName: .ClickstreamFlushOnForeground, events: eventGUIDString)
@@ -134,7 +134,7 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
     /// flushing events. If `flushOnBackground` flag is set then flush.
     private func flushAll() {
         
-        if Clickstream.constraints.flushOnBackground {
+        if Clickstream.configurations.flushOnBackground {
             stopObservingNotifications()
             
             var shouldFlush = false

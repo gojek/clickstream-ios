@@ -55,7 +55,7 @@ final class NetworkManagerDependencies {
     
     private lazy var keepAliveService: KeepAliveService = {
         return DefaultKeepAliveServiceWithSafeTimer(with: networkQueue,
-                                                    duration: Clickstream.constraints.connectionRetryDuration,
+                                                    duration: Clickstream.configurations.connectionRetryDuration,
                                                     reachability: reachability)
     }()
     

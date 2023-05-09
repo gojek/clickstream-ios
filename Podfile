@@ -8,10 +8,10 @@ project 'Clickstream.xcodeproj'
 workspace 'Clickstream.xcworkspace'
 
 def clickstream_pods
-  pod 'Starscream', '~> 4.0.4'
-  pod 'SwiftProtobuf', '~> 1.10.2'
-  pod 'ReachabilitySwift'
-  pod 'GRDB.swift', '6.7.0'
+  pod 'Starscream', '~> 4.0'
+  pod 'SwiftProtobuf', '~> 1.10'
+  pod 'ReachabilitySwift', '~> 5.0'
+  pod 'GRDB.swift', '~> 5.12'
 end
 
 target 'Clickstream' do
