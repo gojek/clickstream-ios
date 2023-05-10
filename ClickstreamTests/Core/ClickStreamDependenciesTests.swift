@@ -53,7 +53,7 @@ class ClickstreamDependenciesTests: XCTestCase {
     
     func testEventProcessor() {
         // given
-        Clickstream.constraints = ClickstreamConstraints()
+        Clickstream.configurations = ClickstreamConstraints()
         Clickstream.eventClassifier = ClickstreamEventClassification()
         
         // when

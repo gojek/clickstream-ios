@@ -58,8 +58,8 @@ public final class Clickstream {
         }
     }
     
-    /// Holds the constraints for the sdk.
-    internal static var constraints: ClickstreamConstraints!
+    /// Holds the configurations for the sdk.
+    internal static var configurations: ClickstreamConstraints!
     
     /// Holds the event classification for the sdk.
     internal static var eventClassifier: ClickstreamEventClassification!
@@ -306,9 +306,9 @@ public final class Clickstream {
         
         guard sharedInstance != nil else {
             
-            // Assign the constraints.
-            Clickstream.constraints = constraints
-            Clickstream.eventClassifier = eventClassifier
+            // Assign the configurations.
+            Clickstream.configurations = configurations
+            Clickstream.eventClassifier = eventClassification
             Clickstream.updateConnectionStatus = updateConnectionStatus
             Clickstream.appPrefix = appPrefix.lowercased().replacingOccurrences(of: " ", with: "")
             

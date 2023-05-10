@@ -54,8 +54,8 @@ final class DefaultSocketHandler: SocketHandler {
         // Negotiate connection
         if keepTrying {
             negotiateConnection(initiate: true,
-                                maxInterval: Clickstream.constraints.maxConnectionRetryInterval,
-                                maxRetries: Clickstream.constraints.maxConnectionRetries)
+                                maxInterval: Clickstream.configurations.maxConnectionRetryInterval,
+                                maxRetries: Clickstream.configurations.maxConnectionRetries)
         } else {
             negotiateConnection(initiate: true)
         }
@@ -119,8 +119,8 @@ extension DefaultSocketHandler {
             return
         }
         pingTimer = DispatchSource.makeTimerSource(flags: .strict)
-        pingTimer?.schedule(deadline: .now() + Clickstream.constraints.maxPingInterval,
-                            repeating: Clickstream.constraints.maxPingInterval)
+        pingTimer?.schedule(deadline: .now() + Clickstream.configurations.maxPingInterval,
+                            repeating: Clickstream.configurations.maxPingInterval)
         pingTimer?.setEventHandler(handler: { [weak self] in
             self?.keepAlive(data)
         })

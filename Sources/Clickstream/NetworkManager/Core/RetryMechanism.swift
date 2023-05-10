@@ -319,7 +319,7 @@ extension DefaultRetryMechanism {
         Clickstream.connectionState = .closing
         terminationCountDown = DispatchSource.makeTimerSource(flags: .strict, queue: performQueue)
         // This gives the breathing space for flushing the events.
-        terminationCountDown?.schedule(deadline: .now() + Clickstream.constraints.connectionTerminationTimerWaitTime)
+        terminationCountDown?.schedule(deadline: .now() + Clickstream.configurations.connectionTerminationTimerWaitTime)
         terminationCountDown?.setEventHandler(handler: { [weak self] in guard let checkedSelf = self else { return }
             checkedSelf.terminateConnection()
         })
@@ -377,7 +377,7 @@ extension DefaultRetryMechanism {
     
     private func addToCache(with eventRequest: EventRequest) {
         if var fetchedEventRequest = persistence.fetchOne(eventRequest.guid) {
-            if fetchedEventRequest.retriesMade >= Clickstream.constraints.maxRetriesPerBatch {
+            if fetchedEventRequest.retriesMade >= Clickstream.configurations.maxRetriesPerBatch {
                 persistence.deleteOne(eventRequest.guid)
                 #if TRACKER_ENABLED
                 if Tracker.debugMode {
@@ -403,8 +403,8 @@ extension DefaultRetryMechanism {
     private func startObservingFailedBatches() {
         guard retryTimer == nil else { return }
         retryTimer = DispatchSource.makeTimerSource(flags: .strict, queue: performQueue)
-        retryTimer?.schedule(deadline: .now() + Clickstream.constraints.maxRequestAckTimeout,
-                             repeating: Clickstream.constraints.maxRequestAckTimeout)
+        retryTimer?.schedule(deadline: .now() + Clickstream.configurations.maxRequestAckTimeout,
+                             repeating: Clickstream.configurations.maxRequestAckTimeout)
         retryTimer?.setEventHandler(handler: { [weak self] in
             guard let checkedSelf = self else { return }
             checkedSelf.retryFailedBatches()
@@ -422,7 +422,7 @@ extension DefaultRetryMechanism {
         if let failedRequests = persistence.fetchAll(), !failedRequests.isEmpty {
             let date = Date()
             let timedOutRequests = failedRequests.filter {
-                (date.timeIntervalSince1970 - $0.timeStamp.timeIntervalSince1970) >= Clickstream.constraints.maxRequestAckTimeout
+                (date.timeIntervalSince1970 - $0.timeStamp.timeIntervalSince1970) >= Clickstream.configurations.maxRequestAckTimeout
             }
             
             // If no timedOut requests are found then do nothing and return.
@@ -430,7 +430,7 @@ extension DefaultRetryMechanism {
                 return
             }
             
-            let retryCoefficient = (Clickstream.constraints.maxRequestAckTimeout/Double(timedOutRequests.count))/2
+            let retryCoefficient = (Clickstream.configurations.maxRequestAckTimeout/Double(timedOutRequests.count))/2
             for (index,batch) in timedOutRequests.enumerated() {
                 var _batch = batch
                 performQueue.asyncAfter(deadline: .now() + (retryCoefficient * Double(index))) { [weak self] in

@@ -37,7 +37,7 @@ final class EventSchedulerDependencies {
                                        attributes: .concurrent)
     
     private lazy var schedulerService: SchedulerService = {
-        return DefaultSchedulerService(with: Clickstream.constraints.priorities, performOnQueue: schedulerQueue)
+        return DefaultSchedulerService(with: Clickstream.configurations.priorities, performOnQueue: schedulerQueue)
     }()
     
     private lazy var appStateNotifier: AppStateNotifierService = {
