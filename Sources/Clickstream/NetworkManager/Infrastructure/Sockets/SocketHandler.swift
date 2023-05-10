@@ -8,7 +8,6 @@
 
 import Foundation
 import Reachability
-import Starscream
 
 protocol SocketHandler: Connectable, HeartBeatable { }
 
@@ -211,6 +210,8 @@ extension DefaultSocketHandler {
                     checkedSelf.stopPing()
                     checkedSelf.retryConnection()
                 }
+            case .timedOut:
+                checkedSelf.open = false
             }
         }
     }
@@ -269,9 +270,7 @@ extension DefaultSocketHandler {
                     Tracker.sharedInstance?.record(event: event)
                 }
             } else {
-                let event = HealthAnalysisEvent(eventName: eventName,
-                                                reason: error.localizedDescription, timeToConnection: timeToConnection)
-                Tracker.sharedInstance?.record(event: event)
+                
             }
         } else if code == 1008 {
             let event = HealthAnalysisEvent(eventName: eventName,
