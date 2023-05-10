@@ -50,7 +50,7 @@ public class TCPTransport: Transport {
     }
     
     public func connect(url: URL, timeout: Double = 10, certificatePinning: CertificatePinning? = nil) {
-        guard let parts = url.getParts() else {
+        guard let parts = getPartss(hostCaller: url.host, portCaller: url.port, schemeCaller: url.scheme) else {
             delegate?.connectionChanged(state: .failed(TCPTransportError.invalidRequest))
             return
         }
@@ -82,6 +82,31 @@ public class TCPTransport: Transport {
         start()
     }
     
+    /// isTLSScheme returns true if the scheme is https or wss
+    func isTLSScheme(schemeCaller: String?) -> Bool {
+        guard let scheme = schemeCaller else {
+            return false
+        }
+        return HTTPWSHeader.defaultSSLSchemes.contains(scheme)
+    }
+    
+    /// getParts pulls host and port from the url.
+    func getPartss(hostCaller: String?, portCaller: Int?, schemeCaller: String?) -> URLParts? {
+        guard let host = hostCaller else {
+            return nil // no host, this isn't a valid url
+        }
+        let isTLS = isTLSScheme(schemeCaller: schemeCaller)
+        var port = portCaller ?? 0
+        if portCaller == nil {
+            if isTLS {
+                port = 443
+            } else {
+                port = 80
+            }
+        }
+        return URLParts(port: port, host: host, isTLS: isTLS)
+    }
+    
     public func disconnect() {
         isRunning = false
         connection?.cancel()
@@ -105,8 +130,17 @@ public class TCPTransport: Transport {
             switch newState {
             case .ready:
                 self?.delegate?.connectionChanged(state: .connected)
-            case .waiting:
-                self?.delegate?.connectionChanged(state: .waiting)
+            case .waiting(let error):
+                switch error {
+                case .posix(let errorCode):
+                    if(errorCode == .ETIMEDOUT) {
+                        self?.delegate?.connectionChanged(state: .timedOut)
+                    } else {
+                        self?.delegate?.connectionChanged(state: .waiting)
+                    }
+                default:
+                    self?.delegate?.connectionChanged(state: .waiting)
+                }
             case .cancelled:
                 self?.delegate?.connectionChanged(state: .cancelled)
             case .failed(let error):

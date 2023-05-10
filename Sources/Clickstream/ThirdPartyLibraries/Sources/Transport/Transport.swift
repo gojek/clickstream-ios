@@ -28,6 +28,7 @@ public enum ConnectionState {
     case connected
     case waiting
     case cancelled
+    case timedOut
     case failed(Error?)
     
     //the viability (connection status) of the connection has updated
@@ -42,11 +43,11 @@ public enum ConnectionState {
     case receive(Data)
 }
 
-public protocol TransportEventClient: class {
+public protocol TransportEventClient: AnyObject {
     func connectionChanged(state: ConnectionState)
 }
 
-public protocol Transport: class {
+public protocol Transport: AnyObject {
     func register(delegate: TransportEventClient)
     func connect(url: URL, timeout: Double, certificatePinning: CertificatePinning?)
     func disconnect()

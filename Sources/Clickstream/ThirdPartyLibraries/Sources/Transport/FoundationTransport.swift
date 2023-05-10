@@ -53,7 +53,7 @@ public class FoundationTransport: NSObject, Transport, StreamDelegate {
     }
     
     public func connect(url: URL, timeout: Double = 10, certificatePinning: CertificatePinning? = nil) {
-        guard let parts = url.getParts() else {
+        guard let parts = getPartss(hostCaller: url.host, portCaller: url.port, schemeCaller: url.scheme) else {
             delegate?.connectionChanged(state: .failed(FoundationTransportError.invalidRequest))
             return
         }
@@ -92,6 +92,31 @@ public class FoundationTransport: NSObject, Transport, StreamDelegate {
                 s.delegate?.connectionChanged(state: .failed(FoundationTransportError.timeout))
             }
         })
+    }
+    
+    /// isTLSScheme returns true if the scheme is https or wss
+    func isTLSScheme(schemeCaller: String?) -> Bool {
+        guard let scheme = schemeCaller else {
+            return false
+        }
+        return HTTPWSHeader.defaultSSLSchemes.contains(scheme)
+    }
+    
+    /// getParts pulls host and port from the url.
+    func getPartss(hostCaller: String?, portCaller: Int?, schemeCaller: String?) -> URLParts? {
+        guard let host = hostCaller else {
+            return nil // no host, this isn't a valid url
+        }
+        let isTLS = isTLSScheme(schemeCaller: schemeCaller)
+        var port = portCaller ?? 0
+        if portCaller == nil {
+            if isTLS {
+                port = 443
+            } else {
+                port = 80
+            }
+        }
+        return URLParts(port: port, host: host, isTLS: isTLS)
     }
     
     public func disconnect() {

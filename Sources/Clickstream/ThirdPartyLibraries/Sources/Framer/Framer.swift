@@ -71,7 +71,7 @@ public enum FrameEvent {
     case error(Error)
 }
 
-public protocol FramerEventClient: class {
+public protocol FramerEventClient: AnyObject {
     func frameProcessed(event: FrameEvent)
 }
 
@@ -170,7 +170,7 @@ public class WSFramer: Framer {
             return .failed(WSError(type: .protocolError, message: "control frames can't be fragmented", code: errCode))
         }
         
-        var offset = 2
+        var offset: Int = 2
     
         if isControlFrame && payloadLen > 125 {
             return .failed(WSError(type: .protocolError, message: "payload length is longer than allowed for a control frame", code: CloseCode.protocolError.rawValue))
@@ -187,7 +187,7 @@ public class WSFramer: Framer {
                     return .needsMoreData
                 }
                 let size = MemoryLayout<UInt16>.size
-                closeCode = pointer.readUint16(offset: offset)
+                closeCode = readUint16(pointer: pointer, offset: offset)
                 offset += size
                 dataLength -= UInt64(size)
                 if closeCode < 1000 || (closeCode > 1003 && closeCode < 1007) || (closeCode > 1013 && closeCode < 3000) {
@@ -201,14 +201,14 @@ public class WSFramer: Framer {
             if size + offset > pointer.count {
                 return .needsMoreData
             }
-            dataLength = pointer.readUint64(offset: offset)
+            dataLength = readUint64(pointer: pointer, offset: offset)
             offset += size
         } else if payloadLen == 126 {
             let size = MemoryLayout<UInt16>.size
             if size + offset > pointer.count {
                 return .needsMoreData
             }
-            dataLength = UInt64(pointer.readUint16(offset: offset))
+            dataLength = UInt64(readUint16(pointer: pointer, offset: offset))
             offset += size
         }
         
@@ -230,7 +230,7 @@ public class WSFramer: Framer {
             payload = Data()
         } else {
             if isServer {
-                payload = pointer.unmaskData(maskStart: maskStart, offset: offset, length: readDataLength)
+                payload = unmaskDataa(pointer: pointer, maskStart: maskStart, offset: offset, length: readDataLength)
             } else {
                 let end = offset + readDataLength
                 payload = Data(pointer[offset..<end])
@@ -240,6 +240,37 @@ public class WSFramer: Framer {
 
         let frame = Frame(isFin: isFin > 0, needsDecompression: needsDecompression, isMasked: isMasked > 0, opcode: opcode, payloadLength: dataLength, payload: payload, closeCode: closeCode)
         return .processedFrame(frame, offset)
+    }
+    
+    /**
+     Read a UInt16 from a buffer.
+     - parameter offset: is the offset index to start the read from (e.g. buffer[0], buffer[1], etc).
+     - returns: a UInt16 of the value from the buffer
+     */
+    func readUint16(pointer: [UInt8], offset: Int) -> UInt16 {
+        return (UInt16(pointer[offset + 0]) << 8) | UInt16(pointer[offset + 1])
+    }
+    
+    /**
+     Read a UInt64 from a buffer.
+     - parameter offset: is the offset index to start the read from (e.g. buffer[0], buffer[1], etc).
+     - returns: a UInt64 of the value from the buffer
+     */
+    func readUint64(pointer: [UInt8], offset: Int) -> UInt64 {
+        var value = UInt64(0)
+        for i in 0...7 {
+            value = (value << 8) | UInt64(pointer[offset + i])
+        }
+        return value
+    }
+    
+    func unmaskDataa(pointer: [UInt8], maskStart: Int, offset: Int, length: Int) -> Data {
+        var unmaskedBytes = [UInt8](repeating: 0, count: length)
+        let maskSize = MemoryLayout<UInt32>.size
+        for i in 0..<length {
+            unmaskedBytes[i] = UInt8(pointer[offset + i] ^ pointer[maskStart + (i % maskSize)])
+        }
+        return Data(unmaskedBytes)
     }
     
     public func createWriteFrame(opcode: FrameOpCode, payload: Data, isCompressed: Bool) -> Data {
@@ -290,45 +321,6 @@ public class WSFramer: Framer {
             }
         }
         return Data(pointer[0..<offset])
-    }
-}
-
-/// MARK: - functions for simpler array buffer reading and writing
-
-public protocol MyWSArrayType {}
-extension UInt8: MyWSArrayType {}
-
-public extension Array where Element: MyWSArrayType & UnsignedInteger {
-    
-    /**
-     Read a UInt16 from a buffer.
-     - parameter offset: is the offset index to start the read from (e.g. buffer[0], buffer[1], etc).
-     - returns: a UInt16 of the value from the buffer
-     */
-    func readUint16(offset: Int) -> UInt16 {
-        return (UInt16(self[offset + 0]) << 8) | UInt16(self[offset + 1])
-    }
-    
-    /**
-     Read a UInt64 from a buffer.
-     - parameter offset: is the offset index to start the read from (e.g. buffer[0], buffer[1], etc).
-     - returns: a UInt64 of the value from the buffer
-     */
-    func readUint64(offset: Int) -> UInt64 {
-        var value = UInt64(0)
-        for i in 0...7 {
-            value = (value << 8) | UInt64(self[offset + i])
-        }
-        return value
-    }
-    
-    func unmaskData(maskStart: Int, offset: Int, length: Int) -> Data {
-        var unmaskedBytes = [UInt8](repeating: 0, count: length)
-        let maskSize = MemoryLayout<UInt32>.size
-        for i in 0..<length {
-            unmaskedBytes[i] = UInt8(self[offset + i] ^ self[maskStart + (i % maskSize)])
-        }
-        return Data(unmaskedBytes)
     }
 }
 

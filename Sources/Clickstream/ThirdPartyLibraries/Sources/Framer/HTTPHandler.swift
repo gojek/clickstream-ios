@@ -49,7 +49,7 @@ public struct HTTPWSHeader {
     /// - Parameter secKeyName: the security key to use in the WebSocket request. https://tools.ietf.org/html/rfc6455#section-1.3
     /// - returns: A URLRequest request to be converted to data and sent to the server.
     public static func createUpgrade(request: URLRequest, supportsCompression: Bool, secKeyValue: String) -> URLRequest {
-        guard let url = request.url, let parts = url.getParts() else {
+        guard let url = request.url, let parts = getPartss(hostCaller: url.host, portCaller: url.port, schemeCaller: url.scheme) else {
             return request
         }
         
@@ -87,6 +87,31 @@ public struct HTTPWSHeader {
     public static func generateWebSocketKey() -> String {
         return Data((0..<16).map{ _ in UInt8.random(in: 97...122) }).base64EncodedString()
     }
+    
+    /// isTLSScheme returns true if the scheme is https or wss
+    static func isTLSScheme(schemeCaller: String?) -> Bool {
+        guard let scheme = schemeCaller else {
+            return false
+        }
+        return HTTPWSHeader.defaultSSLSchemes.contains(scheme)
+    }
+    
+    /// getParts pulls host and port from the url.
+    static func getPartss(hostCaller: String?, portCaller: Int?, schemeCaller: String?) -> URLParts? {
+        guard let host = hostCaller else {
+            return nil // no host, this isn't a valid url
+        }
+        let isTLS = isTLSScheme(schemeCaller: schemeCaller)
+        var port = portCaller ?? 0
+        if portCaller == nil {
+            if isTLS {
+                port = 443
+            } else {
+                port = 80
+            }
+        }
+        return URLParts(port: port, host: host, isTLS: isTLS)
+    }
 }
 
 public enum HTTPEvent {
@@ -94,7 +119,7 @@ public enum HTTPEvent {
     case failure(Error)
 }
 
-public protocol HTTPHandlerDelegate: class {
+public protocol HTTPHandlerDelegate: AnyObject {
     func didReceiveHTTP(event: HTTPEvent)
 }
 
@@ -104,7 +129,7 @@ public protocol HTTPHandler {
     func parse(data: Data) -> Int
 }
 
-public protocol HTTPServerDelegate: class {
+public protocol HTTPServerDelegate: AnyObject {
     func didReceive(event: HTTPEvent)
 }
 
@@ -118,31 +143,4 @@ public struct URLParts {
     let port: Int
     let host: String
     let isTLS: Bool
-}
-
-public extension URL {
-    /// isTLSScheme returns true if the scheme is https or wss
-    var isTLSScheme: Bool {
-        guard let scheme = self.scheme else {
-            return false
-        }
-        return HTTPWSHeader.defaultSSLSchemes.contains(scheme)
-    }
-    
-    /// getParts pulls host and port from the url.
-    func getParts() -> URLParts? {
-        guard let host = self.host else {
-            return nil // no host, this isn't a valid url
-        }
-        let isTLS = isTLSScheme
-        var port = self.port ?? 0
-        if self.port == nil {
-            if isTLS {
-                port = 443
-            } else {
-                port = 80
-            }
-        }
-        return URLParts(port: port, host: host, isTLS: isTLS)
-    }
 }

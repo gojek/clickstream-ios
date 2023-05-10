@@ -210,6 +210,8 @@ extension DefaultSocketHandler {
                     checkedSelf.stopPing()
                     checkedSelf.retryConnection()
                 }
+            case .timedOut:
+                checkedSelf.open = false
             }
         }
     }
