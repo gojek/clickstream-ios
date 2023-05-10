@@ -34,6 +34,46 @@
 		9AF0C766280DECEB00E39A12 /* DeviceStatusNotifierTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA23D0324A99DCE001BE490 /* DeviceStatusNotifierTests.swift */; };
 		9AF0C767280DECEE00E39A12 /* NetworkServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E7BD89246034F90072549A /* NetworkServiceTests.swift */; };
 		9AF0C768280DECF000E39A12 /* NetworkBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E7BD8B246184310072549A /* NetworkBuilderTests.swift */; };
+		BD5E7AD32A0B8688000F5678 /* Transport.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AB82A0B8688000F5678 /* Transport.swift */; };
+		BD5E7AD42A0B8688000F5678 /* Transport.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AB82A0B8688000F5678 /* Transport.swift */; };
+		BD5E7AD52A0B8688000F5678 /* FoundationTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AB92A0B8688000F5678 /* FoundationTransport.swift */; };
+		BD5E7AD62A0B8689000F5678 /* FoundationTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AB92A0B8688000F5678 /* FoundationTransport.swift */; };
+		BD5E7AD72A0B8689000F5678 /* TCPTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7ABA2A0B8688000F5678 /* TCPTransport.swift */; };
+		BD5E7AD82A0B8689000F5678 /* TCPTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7ABA2A0B8688000F5678 /* TCPTransport.swift */; };
+		BD5E7AD92A0B8689000F5678 /* Security.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7ABC2A0B8688000F5678 /* Security.swift */; };
+		BD5E7ADA2A0B8689000F5678 /* Security.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7ABC2A0B8688000F5678 /* Security.swift */; };
+		BD5E7ADB2A0B8689000F5678 /* FoundationSecurity.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7ABD2A0B8688000F5678 /* FoundationSecurity.swift */; };
+		BD5E7ADC2A0B8689000F5678 /* FoundationSecurity.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7ABD2A0B8688000F5678 /* FoundationSecurity.swift */; };
+		BD5E7ADD2A0B8689000F5678 /* Data+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7ABF2A0B8688000F5678 /* Data+Extensions.swift */; };
+		BD5E7ADE2A0B8689000F5678 /* Data+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7ABF2A0B8688000F5678 /* Data+Extensions.swift */; };
+		BD5E7ADF2A0B8689000F5678 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AC12A0B8688000F5678 /* Server.swift */; };
+		BD5E7AE02A0B8689000F5678 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AC12A0B8688000F5678 /* Server.swift */; };
+		BD5E7AE12A0B8689000F5678 /* WebSocketServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AC22A0B8688000F5678 /* WebSocketServer.swift */; };
+		BD5E7AE22A0B8689000F5678 /* WebSocketServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AC22A0B8688000F5678 /* WebSocketServer.swift */; };
+		BD5E7AE32A0B8689000F5678 /* FoundationHTTPHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AC42A0B8688000F5678 /* FoundationHTTPHandler.swift */; };
+		BD5E7AE42A0B8689000F5678 /* FoundationHTTPHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AC42A0B8688000F5678 /* FoundationHTTPHandler.swift */; };
+		BD5E7AE52A0B8689000F5678 /* HTTPHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AC52A0B8688000F5678 /* HTTPHandler.swift */; };
+		BD5E7AE62A0B8689000F5678 /* HTTPHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AC52A0B8688000F5678 /* HTTPHandler.swift */; };
+		BD5E7AE72A0B8689000F5678 /* FrameCollector.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AC62A0B8688000F5678 /* FrameCollector.swift */; };
+		BD5E7AE82A0B8689000F5678 /* FrameCollector.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AC62A0B8688000F5678 /* FrameCollector.swift */; };
+		BD5E7AE92A0B8689000F5678 /* StringHTTPHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AC72A0B8688000F5678 /* StringHTTPHandler.swift */; };
+		BD5E7AEA2A0B8689000F5678 /* StringHTTPHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AC72A0B8688000F5678 /* StringHTTPHandler.swift */; };
+		BD5E7AEB2A0B8689000F5678 /* FoundationHTTPServerHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AC82A0B8688000F5678 /* FoundationHTTPServerHandler.swift */; };
+		BD5E7AEC2A0B8689000F5678 /* FoundationHTTPServerHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AC82A0B8688000F5678 /* FoundationHTTPServerHandler.swift */; };
+		BD5E7AED2A0B8689000F5678 /* Framer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AC92A0B8688000F5678 /* Framer.swift */; };
+		BD5E7AEE2A0B8689000F5678 /* Framer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AC92A0B8688000F5678 /* Framer.swift */; };
+		BD5E7AEF2A0B8689000F5678 /* Compression.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7ACB2A0B8688000F5678 /* Compression.swift */; };
+		BD5E7AF02A0B8689000F5678 /* Compression.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7ACB2A0B8688000F5678 /* Compression.swift */; };
+		BD5E7AF12A0B8689000F5678 /* WSCompression.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7ACC2A0B8688000F5678 /* WSCompression.swift */; };
+		BD5E7AF22A0B8689000F5678 /* WSCompression.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7ACC2A0B8688000F5678 /* WSCompression.swift */; };
+		BD5E7AF32A0B8689000F5678 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7ACE2A0B8688000F5678 /* WebSocket.swift */; };
+		BD5E7AF42A0B8689000F5678 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7ACE2A0B8688000F5678 /* WebSocket.swift */; };
+		BD5E7AF52A0B8689000F5678 /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AD02A0B8688000F5678 /* Engine.swift */; };
+		BD5E7AF62A0B8689000F5678 /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AD02A0B8688000F5678 /* Engine.swift */; };
+		BD5E7AF72A0B8689000F5678 /* NativeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AD12A0B8688000F5678 /* NativeEngine.swift */; };
+		BD5E7AF82A0B8689000F5678 /* NativeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AD12A0B8688000F5678 /* NativeEngine.swift */; };
+		BD5E7AF92A0B8689000F5678 /* WSEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AD22A0B8688000F5678 /* WSEngine.swift */; };
+		BD5E7AFA2A0B8689000F5678 /* WSEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5E7AD22A0B8688000F5678 /* WSEngine.swift */; };
 		BD6BDB6829FBC1360006B04A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD6BDB3E29FBC1360006B04A /* Assets.xcassets */; };
 		BD6BDB6929FBC1360006B04A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD6BDB3E29FBC1360006B04A /* Assets.xcassets */; };
 		BD6BDB6A29FBC1360006B04A /* RadioLabelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD6BDB4129FBC1360006B04A /* RadioLabelTableViewCell.swift */; };
@@ -243,6 +283,26 @@
 		9AA23D1024AB2801001BE490 /* EventProcessorDependenciesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventProcessorDependenciesTests.swift; sourceTree = "<group>"; };
 		9AAFBAE924754CEF009BFDFB /* SortedArrayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortedArrayTests.swift; sourceTree = "<group>"; };
 		9AB88AA0251B00030092659B /* ClickStreamTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClickStreamTests.swift; sourceTree = "<group>"; };
+		BD5E7AB82A0B8688000F5678 /* Transport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transport.swift; sourceTree = "<group>"; };
+		BD5E7AB92A0B8688000F5678 /* FoundationTransport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoundationTransport.swift; sourceTree = "<group>"; };
+		BD5E7ABA2A0B8688000F5678 /* TCPTransport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPTransport.swift; sourceTree = "<group>"; };
+		BD5E7ABC2A0B8688000F5678 /* Security.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Security.swift; sourceTree = "<group>"; };
+		BD5E7ABD2A0B8688000F5678 /* FoundationSecurity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoundationSecurity.swift; sourceTree = "<group>"; };
+		BD5E7ABF2A0B8688000F5678 /* Data+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+Extensions.swift"; sourceTree = "<group>"; };
+		BD5E7AC12A0B8688000F5678 /* Server.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
+		BD5E7AC22A0B8688000F5678 /* WebSocketServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebSocketServer.swift; sourceTree = "<group>"; };
+		BD5E7AC42A0B8688000F5678 /* FoundationHTTPHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoundationHTTPHandler.swift; sourceTree = "<group>"; };
+		BD5E7AC52A0B8688000F5678 /* HTTPHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPHandler.swift; sourceTree = "<group>"; };
+		BD5E7AC62A0B8688000F5678 /* FrameCollector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrameCollector.swift; sourceTree = "<group>"; };
+		BD5E7AC72A0B8688000F5678 /* StringHTTPHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringHTTPHandler.swift; sourceTree = "<group>"; };
+		BD5E7AC82A0B8688000F5678 /* FoundationHTTPServerHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoundationHTTPServerHandler.swift; sourceTree = "<group>"; };
+		BD5E7AC92A0B8688000F5678 /* Framer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Framer.swift; sourceTree = "<group>"; };
+		BD5E7ACB2A0B8688000F5678 /* Compression.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Compression.swift; sourceTree = "<group>"; };
+		BD5E7ACC2A0B8688000F5678 /* WSCompression.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WSCompression.swift; sourceTree = "<group>"; };
+		BD5E7ACE2A0B8688000F5678 /* WebSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
+		BD5E7AD02A0B8688000F5678 /* Engine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Engine.swift; sourceTree = "<group>"; };
+		BD5E7AD12A0B8688000F5678 /* NativeEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeEngine.swift; sourceTree = "<group>"; };
+		BD5E7AD22A0B8688000F5678 /* WSEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WSEngine.swift; sourceTree = "<group>"; };
 		BD6BDB3E29FBC1360006B04A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BD6BDB4129FBC1360006B04A /* RadioLabelTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadioLabelTableViewCell.swift; sourceTree = "<group>"; };
 		BD6BDB4229FBC1360006B04A /* FilterTextFieldTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterTextFieldTableViewCell.swift; sourceTree = "<group>"; };
@@ -539,6 +599,105 @@
 			name = "Recovered References";
 			sourceTree = "<group>";
 		};
+		BD5E7AB52A0B85FE000F5678 /* ThirdPartyLibraries */ = {
+			isa = PBXGroup;
+			children = (
+				BD5E7AB62A0B8688000F5678 /* Sources */,
+			);
+			path = ThirdPartyLibraries;
+			sourceTree = "<group>";
+		};
+		BD5E7AB62A0B8688000F5678 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				BD5E7AB72A0B8688000F5678 /* Transport */,
+				BD5E7ABB2A0B8688000F5678 /* Security */,
+				BD5E7ABE2A0B8688000F5678 /* DataBytes */,
+				BD5E7AC02A0B8688000F5678 /* Server */,
+				BD5E7AC32A0B8688000F5678 /* Framer */,
+				BD5E7ACA2A0B8688000F5678 /* Compression */,
+				BD5E7ACD2A0B8688000F5678 /* Starscream */,
+				BD5E7ACF2A0B8688000F5678 /* Engine */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		BD5E7AB72A0B8688000F5678 /* Transport */ = {
+			isa = PBXGroup;
+			children = (
+				BD5E7AB82A0B8688000F5678 /* Transport.swift */,
+				BD5E7AB92A0B8688000F5678 /* FoundationTransport.swift */,
+				BD5E7ABA2A0B8688000F5678 /* TCPTransport.swift */,
+			);
+			path = Transport;
+			sourceTree = "<group>";
+		};
+		BD5E7ABB2A0B8688000F5678 /* Security */ = {
+			isa = PBXGroup;
+			children = (
+				BD5E7ABC2A0B8688000F5678 /* Security.swift */,
+				BD5E7ABD2A0B8688000F5678 /* FoundationSecurity.swift */,
+			);
+			path = Security;
+			sourceTree = "<group>";
+		};
+		BD5E7ABE2A0B8688000F5678 /* DataBytes */ = {
+			isa = PBXGroup;
+			children = (
+				BD5E7ABF2A0B8688000F5678 /* Data+Extensions.swift */,
+			);
+			path = DataBytes;
+			sourceTree = "<group>";
+		};
+		BD5E7AC02A0B8688000F5678 /* Server */ = {
+			isa = PBXGroup;
+			children = (
+				BD5E7AC12A0B8688000F5678 /* Server.swift */,
+				BD5E7AC22A0B8688000F5678 /* WebSocketServer.swift */,
+			);
+			path = Server;
+			sourceTree = "<group>";
+		};
+		BD5E7AC32A0B8688000F5678 /* Framer */ = {
+			isa = PBXGroup;
+			children = (
+				BD5E7AC42A0B8688000F5678 /* FoundationHTTPHandler.swift */,
+				BD5E7AC52A0B8688000F5678 /* HTTPHandler.swift */,
+				BD5E7AC62A0B8688000F5678 /* FrameCollector.swift */,
+				BD5E7AC72A0B8688000F5678 /* StringHTTPHandler.swift */,
+				BD5E7AC82A0B8688000F5678 /* FoundationHTTPServerHandler.swift */,
+				BD5E7AC92A0B8688000F5678 /* Framer.swift */,
+			);
+			path = Framer;
+			sourceTree = "<group>";
+		};
+		BD5E7ACA2A0B8688000F5678 /* Compression */ = {
+			isa = PBXGroup;
+			children = (
+				BD5E7ACB2A0B8688000F5678 /* Compression.swift */,
+				BD5E7ACC2A0B8688000F5678 /* WSCompression.swift */,
+			);
+			path = Compression;
+			sourceTree = "<group>";
+		};
+		BD5E7ACD2A0B8688000F5678 /* Starscream */ = {
+			isa = PBXGroup;
+			children = (
+				BD5E7ACE2A0B8688000F5678 /* WebSocket.swift */,
+			);
+			path = Starscream;
+			sourceTree = "<group>";
+		};
+		BD5E7ACF2A0B8688000F5678 /* Engine */ = {
+			isa = PBXGroup;
+			children = (
+				BD5E7AD02A0B8688000F5678 /* Engine.swift */,
+				BD5E7AD12A0B8688000F5678 /* NativeEngine.swift */,
+				BD5E7AD22A0B8688000F5678 /* WSEngine.swift */,
+			);
+			path = Engine;
+			sourceTree = "<group>";
+		};
 		BD6BDB3C29FBC1360006B04A /* EventVisualizer */ = {
 			isa = PBXGroup;
 			children = (
@@ -700,6 +859,7 @@
 		BD8AF598287ED1CB002DD402 /* Clickstream */ = {
 			isa = PBXGroup;
 			children = (
+				BD5E7AB52A0B85FE000F5678 /* ThirdPartyLibraries */,
 				BD8AF599287ED1CB002DD402 /* NetworkManager */,
 				BD8AF5B4287ED1CB002DD402 /* Core */,
 				BD8AF5C9287ED1CB002DD402 /* Contracts */,
@@ -1187,16 +1347,23 @@
 				BD8AF63E287ED1CC002DD402 /* ClickStreamConstraints.swift in Sources */,
 				BD6BDB7629FBC1360006B04A /* EventsListViewModel.swift in Sources */,
 				BD8AF62E287ED1CC002DD402 /* DeviceStatusNotifier.swift in Sources */,
+				BD5E7AD72A0B8689000F5678 /* TCPTransport.swift in Sources */,
 				BD8AF666287ED1CC002DD402 /* SortedArray.swift in Sources */,
 				BD6BDB7429FBC1360006B04A /* EventsListViewController.swift in Sources */,
 				BD8AF654287ED1CC002DD402 /* EventResponse.pb.swift in Sources */,
 				BD6BDB9829FBC1360006B04A /* CSLocationDTO.swift in Sources */,
+				BD5E7AF72A0B8689000F5678 /* NativeEngine.swift in Sources */,
 				BD8AF66C287ED1CC002DD402 /* TableDefinable.swift in Sources */,
 				BD8AF640287ED1CC002DD402 /* ClickStreamEventClassification.swift in Sources */,
+				BD5E7ADD2A0B8689000F5678 /* Data+Extensions.swift in Sources */,
+				BD5E7AF32A0B8689000F5678 /* WebSocket.swift in Sources */,
 				BD8AF664287ED1CC002DD402 /* SchedulerService.swift in Sources */,
 				BD8AF65C287ED1CC002DD402 /* EventWarehouser.swift in Sources */,
+				BD5E7AF52A0B8689000F5678 /* Engine.swift in Sources */,
+				BD5E7AE52A0B8689000F5678 /* HTTPHandler.swift in Sources */,
 				BD8AF660287ED1CC002DD402 /* AppStateNotifierService.swift in Sources */,
 				BD6BDB7029FBC1360006B04A /* EventVisualizerLandingViewModel.swift in Sources */,
+				BD5E7AD32A0B8688000F5678 /* Transport.swift in Sources */,
 				BD6BDB6A29FBC1360006B04A /* RadioLabelTableViewCell.swift in Sources */,
 				BD8AF63C287ED1CC002DD402 /* ClickstreamDependencies.swift in Sources */,
 				BD8AF63A287ED1CC002DD402 /* ClickStream.swift in Sources */,
@@ -1210,17 +1377,23 @@
 				BDDC873629E7D6AC0024ED8C /* EteExperiment.pb.swift in Sources */,
 				BD8AF66E287ED1CC002DD402 /* DatabasePersistable.swift in Sources */,
 				BD6BDB9C29FBC1360006B04A /* HealthTrackerDTO.swift in Sources */,
+				BD5E7AEB2A0B8689000F5678 /* FoundationHTTPServerHandler.swift in Sources */,
 				BD8AF658287ED1CC002DD402 /* EventBatchCreator.swift in Sources */,
 				BD8AF66A287ED1CC002DD402 /* DatabaseDAO.swift in Sources */,
 				BD8AF62A287ED1CC002DD402 /* NetworkConfiguration.swift in Sources */,
 				BD6BDB7E29FBC1360006B04A /* EventsHelper.swift in Sources */,
+				BD5E7ADB2A0B8689000F5678 /* FoundationSecurity.swift in Sources */,
 				BD6BDB8C29FBC1360006B04A /* Tracker.swift in Sources */,
 				BD8AF646287ED1CC002DD402 /* JSONStringDecoder.swift in Sources */,
 				BD8AF656287ED1CC002DD402 /* Event.pb.swift in Sources */,
 				BD6BDB8029FBC1360006B04A /* UITableViewExtensions.swift in Sources */,
+				BD5E7ADF2A0B8689000F5678 /* Server.swift in Sources */,
+				BD5E7AD52A0B8688000F5678 /* FoundationTransport.swift in Sources */,
 				BD8AF620287ED1CC002DD402 /* Heartbeat.swift in Sources */,
+				BD5E7AF92A0B8689000F5678 /* WSEngine.swift in Sources */,
 				BD8AF626287ED1CC002DD402 /* NetworkService.swift in Sources */,
 				BD6BDB9429FBC1360006B04A /* HealthMeta.pb.swift in Sources */,
+				BD5E7AE12A0B8689000F5678 /* WebSocketServer.swift in Sources */,
 				BD8AF634287ED1CC002DD402 /* KeepAliveService.swift in Sources */,
 				BD8AF668287ED1CC002DD402 /* DatabaseHandler.swift in Sources */,
 				BD8AF630287ED1CC002DD402 /* NetworkReachability.swift in Sources */,
@@ -1231,7 +1404,10 @@
 				BD6BDB7A29FBC1360006B04A /* EventDetailsViewController.swift in Sources */,
 				BD8AF648287ED1CC002DD402 /* Logger.swift in Sources */,
 				BD6BDBA029FBC1360006B04A /* Debugger.swift in Sources */,
+				BD5E7AED2A0B8689000F5678 /* Framer.swift in Sources */,
+				BD5E7AF12A0B8689000F5678 /* WSCompression.swift in Sources */,
 				BD6BDB9229FBC1360006B04A /* AppVersionChecker.swift in Sources */,
+				BD5E7AEF2A0B8689000F5678 /* Compression.swift in Sources */,
 				BD6BDB8629FBC1360006B04A /* HealthTracker.swift in Sources */,
 				BD6BDB8429FBC1360006B04A /* CollectionMapper.swift in Sources */,
 				BD8AF64A287ED1CC002DD402 /* DeviceInfo.swift in Sources */,
@@ -1241,11 +1417,14 @@
 				BD8AF652287ED1CC002DD402 /* EventRequest.pb.swift in Sources */,
 				BD6BDB8229FBC1360006B04A /* EventStateViewable.swift in Sources */,
 				BD6BDB6E29FBC1360006B04A /* EventsListingTableViewCell.swift in Sources */,
+				BD5E7AD92A0B8689000F5678 /* Security.swift in Sources */,
 				BD8AF622287ED1CC002DD402 /* SocketHandler.swift in Sources */,
 				BD8AF65E287ED1CC002DD402 /* EventBatchProcessor.swift in Sources */,
 				BD6BDB8829FBC1360006B04A /* HealthAnalysisEvent.swift in Sources */,
 				BD8AF674287ED1CC002DD402 /* EventProcessor.swift in Sources */,
+				BD5E7AE92A0B8689000F5678 /* StringHTTPHandler.swift in Sources */,
 				BD8AF632287ED1CC002DD402 /* DispatchSourceTimer+RepeatingTimer.swift in Sources */,
+				BD5E7AE72A0B8689000F5678 /* FrameCollector.swift in Sources */,
 				BD6BDB6C29FBC1360006B04A /* FilterTextFieldTableViewCell.swift in Sources */,
 				BD6BDB8A29FBC1360006B04A /* HealthAnalysisEventBatch.swift in Sources */,
 				BDDC872229E6AF580024ED8C /* FileManagerOverride.swift in Sources */,
@@ -1257,6 +1436,7 @@
 				BD8AF650287ED1CC002DD402 /* EventBatch.swift in Sources */,
 				BD6BDB8E29FBC1360006B04A /* TrackerConstants.swift in Sources */,
 				BD6BDB7829FBC1360006B04A /* EventDetailsViewModel.swift in Sources */,
+				BD5E7AE32A0B8689000F5678 /* FoundationHTTPHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1266,12 +1446,18 @@
 			files = (
 				9AF0C75D280DECC400E39A12 /* EventProcessorDependenciesTests.swift in Sources */,
 				BD8AF623287ED1CC002DD402 /* SocketHandler.swift in Sources */,
+				BD5E7AE62A0B8689000F5678 /* HTTPHandler.swift in Sources */,
+				BD5E7ADC2A0B8689000F5678 /* FoundationSecurity.swift in Sources */,
 				681EAB4124897822003AB41A /* AppStateNotifierMock.swift in Sources */,
+				BD5E7AD62A0B8689000F5678 /* FoundationTransport.swift in Sources */,
 				BD8AF639287ED1CC002DD402 /* EventRequest.swift in Sources */,
+				BD5E7AD82A0B8689000F5678 /* TCPTransport.swift in Sources */,
 				BD8AF62D287ED1CC002DD402 /* Atomic.swift in Sources */,
+				BD5E7AEE2A0B8689000F5678 /* Framer.swift in Sources */,
 				BD6BDB9F29FBC1360006B04A /* CSCommonPropertiesDTO.swift in Sources */,
 				BD8AF64B287ED1CC002DD402 /* DeviceInfo.swift in Sources */,
 				68316329260CB2690095DBCA /* BatchSizeRegulatorMock.swift in Sources */,
+				BD5E7AE42A0B8689000F5678 /* FoundationHTTPHandler.swift in Sources */,
 				BD8AF65B287ED1CC002DD402 /* EventSchedulerDependencies.swift in Sources */,
 				BD8AF661287ED1CC002DD402 /* AppStateNotifierService.swift in Sources */,
 				BD6BDB7729FBC1360006B04A /* EventsListViewModel.swift in Sources */,
@@ -1283,6 +1469,7 @@
 				BD8AF65F287ED1CC002DD402 /* EventBatchProcessor.swift in Sources */,
 				9AF0C767280DECEE00E39A12 /* NetworkServiceTests.swift in Sources */,
 				BD6BDB6F29FBC1360006B04A /* EventsListingTableViewCell.swift in Sources */,
+				BD5E7AEC2A0B8689000F5678 /* FoundationHTTPServerHandler.swift in Sources */,
 				BD8AF61D287ED1CC002DD402 /* RetryMechanism.swift in Sources */,
 				BD8AF63D287ED1CC002DD402 /* ClickstreamDependencies.swift in Sources */,
 				BD6BDB9B29FBC1360006B04A /* ClickStreamHealthConfigurations.swift in Sources */,
@@ -1291,6 +1478,7 @@
 				BD8AF637287ED1CC002DD402 /* ProtoConvertible.swift in Sources */,
 				BD6BDB8929FBC1360006B04A /* HealthAnalysisEvent.swift in Sources */,
 				BD8AF635287ED1CC002DD402 /* KeepAliveService.swift in Sources */,
+				BD5E7AD42A0B8688000F5678 /* Transport.swift in Sources */,
 				BD8AF65D287ED1CC002DD402 /* EventWarehouser.swift in Sources */,
 				68E7BD87246028CF0072549A /* SocketHandlerMock.swift in Sources */,
 				BD8AF621287ED1CC002DD402 /* Heartbeat.swift in Sources */,
@@ -1298,6 +1486,8 @@
 				BD8AF655287ED1CC002DD402 /* EventResponse.pb.swift in Sources */,
 				BD8AF651287ED1CC002DD402 /* EventBatch.swift in Sources */,
 				9AF0C759280DEC9600E39A12 /* EventTests.swift in Sources */,
+				BD5E7AE02A0B8689000F5678 /* Server.swift in Sources */,
+				BD5E7AE82A0B8689000F5678 /* FrameCollector.swift in Sources */,
 				BD8AF645287ED1CC002DD402 /* Reachability+Extension.swift in Sources */,
 				9AF0C761280DECDE00E39A12 /* EventBatchProcessorTests.swift in Sources */,
 				BD6BDB9129FBC1360006B04A /* Notifiable.swift in Sources */,
@@ -1308,7 +1498,9 @@
 				9AF0C75F280DECD800E39A12 /* SchedulerServiceTests.swift in Sources */,
 				BD6BDB9729FBC1360006B04A /* Health.pb.swift in Sources */,
 				BD6BDB7B29FBC1360006B04A /* EventDetailsViewController.swift in Sources */,
+				BD5E7AF02A0B8689000F5678 /* Compression.swift in Sources */,
 				BD6BDB8529FBC1360006B04A /* CollectionMapper.swift in Sources */,
+				BD5E7AE22A0B8689000F5678 /* WebSocketServer.swift in Sources */,
 				BD8AF61F287ED1CC002DD402 /* NetworkManagerDependencies.swift in Sources */,
 				BD6BDB7F29FBC1360006B04A /* EventsHelper.swift in Sources */,
 				BD8AF63B287ED1CC002DD402 /* ClickStream.swift in Sources */,
@@ -1317,6 +1509,7 @@
 				BD8AF62F287ED1CC002DD402 /* DeviceStatusNotifier.swift in Sources */,
 				BD6BDB9329FBC1360006B04A /* AppVersionChecker.swift in Sources */,
 				BD8AF665287ED1CC002DD402 /* SchedulerService.swift in Sources */,
+				BD5E7AF22A0B8689000F5678 /* WSCompression.swift in Sources */,
 				BD8AF64D287ED1CC002DD402 /* Event.swift in Sources */,
 				BD8AF633287ED1CC002DD402 /* DispatchSourceTimer+RepeatingTimer.swift in Sources */,
 				BD8AF647287ED1CC002DD402 /* JSONStringDecoder.swift in Sources */,
@@ -1324,11 +1517,15 @@
 				BD6BDB9D29FBC1360006B04A /* HealthTrackerDTO.swift in Sources */,
 				9AF0C75E280DECD600E39A12 /* EventCreatorTests.swift in Sources */,
 				6831635F261218F90095DBCA /* RetryMechanismTests.swift in Sources */,
+				BD5E7AF42A0B8689000F5678 /* WebSocket.swift in Sources */,
 				BD6BDB7D29FBC1360006B04A /* FilterViewController.swift in Sources */,
 				9AF0C75A280DECBD00E39A12 /* EventBatchTests.swift in Sources */,
 				9AF0C762280DECE100E39A12 /* EventWarehouserTests.swift in Sources */,
 				BD8AF667287ED1CC002DD402 /* SortedArray.swift in Sources */,
 				BD8AF659287ED1CC002DD402 /* EventBatchCreator.swift in Sources */,
+				BD5E7AF62A0B8689000F5678 /* Engine.swift in Sources */,
+				BD5E7AF82A0B8689000F5678 /* NativeEngine.swift in Sources */,
+				BD5E7AFA2A0B8689000F5678 /* WSEngine.swift in Sources */,
 				BD8AF63F287ED1CC002DD402 /* ClickStreamConstraints.swift in Sources */,
 				BD8AF641287ED1CC002DD402 /* ClickStreamEventClassification.swift in Sources */,
 				9AF0C765280DECE800E39A12 /* NetworkManagerDependenciesTests.swift in Sources */,
@@ -1350,14 +1547,17 @@
 				BD6BDB8329FBC1360006B04A /* EventStateViewable.swift in Sources */,
 				9AF0C760280DECDC00E39A12 /* SortedArrayTests.swift in Sources */,
 				BD6BDB9529FBC1360006B04A /* HealthMeta.pb.swift in Sources */,
+				BD5E7ADA2A0B8689000F5678 /* Security.swift in Sources */,
 				BD8AF663287ED1CC002DD402 /* EventBatchSizeRegulator.swift in Sources */,
 				BD6BDB7329FBC1360006B04A /* EventVisualizerLandingViewController.swift in Sources */,
 				68E19FB8247D42100074A790 /* DispatchQueue+Detection.swift in Sources */,
 				BD8AF627287ED1CC002DD402 /* NetworkService.swift in Sources */,
 				9AF0C768280DECF000E39A12 /* NetworkBuilderTests.swift in Sources */,
 				9AF0C763280DECE300E39A12 /* EventSchedulerDependenciesTests.swift in Sources */,
+				BD5E7AEA2A0B8689000F5678 /* StringHTTPHandler.swift in Sources */,
 				BDDC872329E6AF580024ED8C /* FileManagerOverride.swift in Sources */,
 				BD8AF64F287ED1CC002DD402 /* ClickstreamEvent.swift in Sources */,
+				BD5E7ADE2A0B8689000F5678 /* Data+Extensions.swift in Sources */,
 				BD6BDB8129FBC1360006B04A /* UITableViewExtensions.swift in Sources */,
 				BD8AF669287ED1CC002DD402 /* DatabaseHandler.swift in Sources */,
 				BD8AF653287ED1CC002DD402 /* EventRequest.pb.swift in Sources */,
