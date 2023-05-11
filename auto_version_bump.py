@@ -23,7 +23,7 @@ def podCommandEdit():
     lib_command = 'pod lib lint'
     pod_push_command = 'pod trunk push ' + podspec_file_name + ' --allow-warnings'
     git_add = 'git add .'
-    git_commit = 'git commit'
+    git_commit = 'git commit -m "Updating Clickstream.podspec version"'
     git_push = 'git push origin main'
 
 
@@ -93,6 +93,14 @@ def libLint():
     print("-------- waiting for pod lib lint checking ...... ---------")
     os.system(lib_command)
 
+
+def pushPodspec():
+	print("-------- waiting for pushing podspec file ...... ---------")
+	os.system(git_add)
+	os.system(git_commit)
+	os.system(git_push)
+
+
 def gitOperation():
     os.system('git add .')
     commit_desc = "version_" + new_tag
@@ -122,6 +130,7 @@ def podPush():
 
 updateVersion()
 podCommandEdit()
+pushPodspec()
 libLint()
 gitOperation()
 podPush()
