@@ -1,0 +1,6 @@
+module Pods_Clickstream {
+  umbrella header "Pods-Clickstream-umbrella.h"
+
+  export *
+  module * { export * }
+}

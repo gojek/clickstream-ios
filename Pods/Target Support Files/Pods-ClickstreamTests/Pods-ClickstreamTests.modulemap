@@ -1,0 +1,6 @@
+module Pods_ClickstreamTests {
+  umbrella header "Pods-ClickstreamTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
