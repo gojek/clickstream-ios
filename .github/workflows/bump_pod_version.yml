@@ -15,4 +15,5 @@ jobs:
     if: ${{ github.event.pull_request.merged }}
     runs-on: macos-latest
     steps:
-    - run: python3 auto_version_bump.py
+    - run: ls
+      #python3 auto_version_bump.py
