@@ -25,4 +25,4 @@ jobs:
           python-version: '3.9.6'
 
       - name: version bump
-        run: python3 ./../auto_version_bump.py
+        run: python3 auto_version_bump.py
