@@ -16,4 +16,3 @@ jobs:
     runs-on: macos-latest
     steps:
     - run: python3 auto_version_bump.py
-    
