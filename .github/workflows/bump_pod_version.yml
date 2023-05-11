@@ -1,0 +1,18 @@
+name: "Clickstream Bump Pod Version"
+
+on:
+  pull_request:
+    branches: 
+      - main
+    types: [closed]
+
+# Allows you to run this workflow manually from the Actions tab
+  # workflow_dispatch:
+
+jobs:
+  bump-pod-version:
+    name: "Version bump and push"
+    if: ${{ github.event.pull_request.merged }}
+    runs-on: macos-latest
+    steps:
+    - run: python3 auto_version_bump.py
