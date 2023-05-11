@@ -11,7 +11,7 @@ on:
 
 jobs:
   bump-pod-version:
-    name: "Version bump and push"
+    name: "Version bump and pushh"
     if: ${{ github.event.pull_request.merged }}
     runs-on: macos-latest
     steps:
