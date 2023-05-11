@@ -1,19 +1,8 @@
 import os, sys
 import fileinput
 
-# ======================  edit by yourself  ======================
-sources = [
-          #'https://github.com/YinTokey/Egen.git',
-          ]
-
 project_name = 'Clickstream'
 podspec_file_name = 'Clickstream.podspec'
-
-
-# ==================================================================
-
-
-
 
 new_tag = ""
 lib_command = ""
@@ -28,23 +17,8 @@ def podCommandEdit():
     global lib_command
     global pod_push_command
     source_suffix = 'https://github.com/CocoaPods/Specs.git --allow-warnings'
-    lib_command = 'pod lib lint --sources='
+    lib_command = 'pod lib lint'
     pod_push_command = 'pod repo push ' + project_name + ' ' + podspec_file_name
-    if len(sources) > 0:
-        # rely on  private sourece
-        pod_push_command += ' --sources='
-
-        for index,source in enumerate(sources):
-            lib_command += source
-            lib_command += ','
-            pod_push_command += source
-            pod_push_command += ','
-
-        lib_command += source_suffix
-        pod_push_command += source_suffix
-
-    else:
-        lib_command = 'pod lib lint'
 
 
 def updateVersion():
@@ -144,6 +118,6 @@ updateVersion()
 podCommandEdit()
 libLint()
 gitOperation()
-# podPush()
+podPush()
 
 
