@@ -116,7 +116,7 @@ struct CSDeviceInfo {
     let operatingSystem = TrackerConstant.deviceOS
     let operatingSystemVersion = UIDevice.current.systemVersion
     let deviceMake = TrackerConstant.deviceMake
-    let deviceModel = UIDevice.CsModelName
+    let deviceModel = UIDevice.csModelName
 }
 
 extension CSDeviceInfo: ProtoConvertible {
@@ -125,7 +125,7 @@ extension CSDeviceInfo: ProtoConvertible {
             $0.operatingSystem = TrackerConstant.deviceOS
             $0.operatingSystemVersion = UIDevice.current.systemVersion
             $0.deviceMake = TrackerConstant.deviceMake
-            $0.deviceModel = UIDevice.CsModelName
+            $0.deviceModel = UIDevice.csModelName
         }
     }
 }
