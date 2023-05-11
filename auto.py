@@ -6,19 +6,25 @@ podspec_file_name = 'Clickstream.podspec'
 
 new_tag = ""
 lib_command = ""
+git_add = ""
+git_commit = ""
+git_push = ""
 pod_push_command = ""
 spec_file_path = "./" + podspec_file_name
 find_version_flag = False
 
 
-
-
 def podCommandEdit():
     global lib_command
     global pod_push_command
-    source_suffix = 'https://github.com/CocoaPods/Specs.git --allow-warnings'
+    global git_add
+    global git_commit
+    global git_push
     lib_command = 'pod lib lint'
-    pod_push_command = 'pod repo push ' + project_name + ' ' + podspec_file_name
+    pod_push_command = 'pod trunk push ' + podspec_file_name + ' --allow-warnings'
+    git_add = 'git add .'
+    git_commit = 'git commit'
+    git_push = 'git push origin main'
 
 
 def updateVersion():
