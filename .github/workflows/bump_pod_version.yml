@@ -1,7 +1,7 @@
 name: "Clickstream Bump Pod Version"
 
 on:
-  pull_request:
+  push:
     branches: 
       - main
     types: [closed]
