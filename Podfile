@@ -3,6 +3,7 @@ platform :ios, '11.0'
  use_modular_headers!
 
 source 'https://cdn.cocoapods.org/'
+source 'https://github.com/CocoaPods/Specs.git'
 
 project 'Clickstream.xcodeproj'
 workspace 'Clickstream.xcworkspace'
