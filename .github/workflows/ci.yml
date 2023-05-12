@@ -20,6 +20,6 @@ jobs:
          ruby-version: 2.6.6 # omit if .ruby-version file exists in project, or replace with your team’s supported ruby version
          bundler-cache: true
 
-      # - name: Testing Clickstream
-      #   run: bundle exec fastlane unit_test
+      - name: Testing Clickstream
+        run: bundle exec fastlane unit_test
       
