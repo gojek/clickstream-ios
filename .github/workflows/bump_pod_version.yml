@@ -1,10 +1,10 @@
 name: "Clickstream Bump Pod Version"
 
-on:
-  push:
-    branches: 
-      - main
-    types: [closed]
+on: [push, workflow_dispatch]
+  # pull_request:
+  #   branches: 
+  #     - main
+  #   types: [closed]
 
 # Allows you to run this workflow manually from the Actions tab
   # workflow_dispatch:
