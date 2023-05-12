@@ -131,7 +131,7 @@ def podPush():
 
 # run commands
 
-
+print("--------- part 0 -------- ")
 updateVersion()
 podCommandEdit()
 pushPodspec()
