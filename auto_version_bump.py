@@ -30,7 +30,7 @@ def podCommandEdit():
 def updateVersion():
     
     os.system('git fetch origin main')
-    os.system('git merge origin main')
+    os.system('git push -f origin main')
 
     f = open(spec_file_path, 'r+')
     infos = f.readlines()
