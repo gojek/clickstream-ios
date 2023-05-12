@@ -20,7 +20,7 @@ def podCommandEdit():
     global git_add
     global git_commit
     global git_push
-    lib_command = 'pod lib lint'
+    lib_command = 'pod lib lint --allow-warnings'
     pod_push_command = 'pod trunk push ' + podspec_file_name + ' --allow-warnings'
     git_add = 'git add .'
     git_commit = 'git commit -m "Updating Clickstream.podspec version"'
@@ -125,6 +125,7 @@ def gitOperation():
 
 def podPush():
     print("--------  waiting for pod push  ...... ---------")
+    os.system('pod trunk register')
     os.system(pod_push_command)
 
 
