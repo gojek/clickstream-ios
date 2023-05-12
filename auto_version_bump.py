@@ -28,7 +28,6 @@ def podCommandEdit():
 
 
 def updateVersion():
-    os.system('pod repo remove trunk')
     os.system('git fetch origin main')
     os.system('git push -f origin main')
 
