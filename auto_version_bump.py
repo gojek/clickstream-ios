@@ -28,18 +28,15 @@ def podCommandEdit():
 
 
 def updateVersion():
-    os.system('pod repo remove trunk')
     os.system('git fetch origin main')
     os.system('git push -f origin main')
 
-    print("--------- part 1 -------- ")
     f = open(spec_file_path, 'r+')
     infos = f.readlines()
     f.seek(0, 0)
     file_data = ""
     new_line = ""
     global find_version_flag
-    print("--------- part 2 -------- ")
     for line in infos:
         if line.find(".version") != -1:
             if find_version_flag == False:
@@ -85,7 +82,6 @@ def updateVersion():
 
         file_data += line
 
-    print("--------- part 3 -------- ")
     with open(spec_file_path, 'w', ) as f1:
         f1.write(file_data)
 
@@ -133,7 +129,6 @@ def podPush():
 
 # run commands
 
-print("--------- part 0 -------- ")
 updateVersion()
 podCommandEdit()
 pushPodspec()
