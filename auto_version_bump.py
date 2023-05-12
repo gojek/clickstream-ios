@@ -126,7 +126,7 @@ def gitOperation():
 
 def podPush():
     print("--------  waiting for pod push  ...... ---------")
-    os.system('pod trunk register')
+    os.system('pod trunk register gupta.rishav2608@gmail.com RishavG96')
     os.system(pod_push_command)
 
 
