@@ -350,10 +350,12 @@ extension Clickstream {
     ///   - eventTimestamp:String
     ///   - storageGuid:String
     ///   - storageEventTimestamp:String
-    public func setEventVisualizerStateTracking(guid: String,
+    public func setEventVisualizerStateTracking(eventGuid: String,
                                                 eventTimestamp: String) {
-        Constants.EventVisualizer.guid = guid
+        Constants.EventVisualizer.eventGuid = eventGuid
+        Constants.EventVisualizer.guid = eventGuid
         Constants.EventVisualizer.eventTimestamp = eventTimestamp
+        Constants.EventVisualizer.deviceTimestamp = eventTimestamp
     }
 }
 #endif

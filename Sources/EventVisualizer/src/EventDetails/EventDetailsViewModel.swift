@@ -11,38 +11,66 @@ import SwiftProtobuf
 
 protocol EventDetailsModelInput: AnyObject {
     
-    var cellsCount: Int { get }
-    
     var selectedMessage: [String: Any]? { get set }
+    
+    var isSearchActive: Bool { get set }
+        
+    /// to store searched text
+    var searchText: String { get set }
+    
+    func cellsCount() -> Int
         
     func viewDidLoad(message: Message?)
     
-    func cellViewModel(for indexPath: IndexPath) -> EventsListingTableViewCell.ViewModel
+    func cellViewModel(for indexPath: IndexPath, with message: [(String, Any)]?) -> EventsListingTableViewCell.ViewModel
+    
+    func didSelectRow(at indexPath: IndexPath)
 }
 
 final class EventDetailsViewModel: EventDetailsModelInput {
     
     var selectedMessage: [String: Any]?
     var displayedMessage: [(String, Any)]?
+    var searchedMessage: [(String, Any)]?
     
-    func cellViewModel(for indexPath: IndexPath) -> EventsListingTableViewCell.ViewModel {
+    var isSearchActive: Bool = false
+    
+    var searchText: String = ""
+    
+    private var searchResult: [String] = []
+    
+    func cellViewModel(for indexPath: IndexPath, with message: [(String, Any)]?) -> EventsListingTableViewCell.ViewModel {
         
         return EventsListingTableViewCell.ViewModel(
-            name: displayedMessage?[indexPath.row].0 ?? "invalid key",
-            changedConfigsCount: "\(displayedMessage?[indexPath.row].1 ?? "invalid value")",
-            availableConfigsCount: ""
+            name: message?[indexPath.row].0 ?? "invalid key",
+            value: "\(message?[indexPath.row].1 ?? "invalid value")"
         )
     }
     
-    var cellsCount: Int {
-        displayedMessage?.count ?? 0
+    func cellsCount() -> Int {
+        if isSearchActive {
+            guard let displayedMessage = displayedMessage else { return 0 }
+            /// Filters messages which contain the key as the search Text where $0.0 refers to the first index of the tuple
+            let filteredKeys = displayedMessage.filter { $0.0.lowercased().contains(searchText.lowercased()) }
+            /// Storing the filteredKeys that would be used when the user clicks on the cell
+            if searchText == "" {
+                return displayedMessage.count
+            } else {
+                searchedMessage = filteredKeys
+                return filteredKeys.count
+            }
+        } else {
+            return displayedMessage?.count ?? 0
+        }
     }
     
     func viewDidLoad(message: Message?) {
         if let message = message as? CollectionMapper {
             selectedMessage = message.asDictionary
         }
-        if let eventGuid = selectedMessage?[Constants.EventVisualizer.guid] as? String {
+        if let eventGuid = selectedMessage?[Constants.EventVisualizer.eventGuid] as? String {
+            selectedMessage?["state"] = EventsHelper.shared.getState(of: eventGuid)
+        } else if let eventGuid = selectedMessage?[Constants.EventVisualizer.guid] as? String {
             selectedMessage?["state"] = EventsHelper.shared.getState(of: eventGuid)
         }
         /// sorting the events that needs to be shown to the user
@@ -55,6 +83,7 @@ final class EventDetailsViewModel: EventDetailsModelInput {
             return (value as? String != nil && value as? String != "") ||
             (value is Bool) ||
             (value as? Int32 != nil) ||
+            (value as? Int64 != nil) ||
             (value as? Int != nil) ||
             (value as? Double != nil) ||
             (value is NSArray) ||
@@ -63,6 +92,19 @@ final class EventDetailsViewModel: EventDetailsModelInput {
         }
         if let timestamp = selectedMessage?["_\(Constants.EventVisualizer.eventTimestamp)"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
             displayedMessage?.append(("eventTimestamp", "\(timestamp.date)"))
+        }
+    }
+    
+    ///  Action on selecting the row
+    /// - Parameter indexPath: indexPath of that cell
+    /// - Returns: returning tuple of (selected-event-name, message-array-of-events-with-that-event-name)
+    func didSelectRow(at indexPath: IndexPath) {
+        if isSearchActive {
+            let model = cellViewModel(for: indexPath, with: searchedMessage)
+            UIPasteboard.general.string = model.value
+        } else {
+            let model = cellViewModel(for: indexPath, with: displayedMessage)
+            UIPasteboard.general.string = model.value
         }
     }
 }

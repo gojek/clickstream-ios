@@ -15,7 +15,7 @@ protocol ViewModelApplicable {
     func apply(_ viewModel: ViewModel)
 }
 
-final class EventsListingTableViewCell: UITableViewCell, ReusableView, NibLoadableView {
+final class EventsListingTableViewCell: UITableViewCell, ReusableView {
     
     let nameLabel: UILabel = UILabel()
     private let changedConfigLabel: UILabel = UILabel()
@@ -72,15 +72,13 @@ final class EventsListingTableViewCell: UITableViewCell, ReusableView, NibLoadab
 extension EventsListingTableViewCell: ViewModelApplicable {
     func apply(_ viewModel: ViewModel) {
         nameLabel.text = viewModel.name
-        changedConfigLabel.text = viewModel.changedConfigsCount
-        allConfigLabel.text = "\(viewModel.availableConfigsCount)"
+        changedConfigLabel.text = viewModel.value
     }
 }
 
 extension EventsListingTableViewCell {
     struct ViewModel {
         let name: String
-        let changedConfigsCount: String
-        let availableConfigsCount: String
+        let value: String
     }
 }
