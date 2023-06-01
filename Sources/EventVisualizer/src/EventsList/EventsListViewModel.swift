@@ -40,21 +40,27 @@ final class EventsListViewModel: EventsListViewModelInput {
         
         return EventsListingTableViewCell.ViewModel(
             name: values.eventTimeStamp,
-            changedConfigsCount: values.state,
-            availableConfigsCount: ""
+            value: values.state
         )
     }
     
     func getValues(index: IndexPath) -> EventDisplayKeys {
-        var eventTimeStamp = "Event at \(index.row) index"
+        var eventTimeStamp = ""
         var state = ""
         if let message = messages[index.row] as? CollectionMapper {
-            if let eventGuid = message.asDictionary[Constants.EventVisualizer.guid] as? String,
-               let timestamp = message.asDictionary["_\(Constants.EventVisualizer.eventTimestamp)"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
+            if let eventGuid = message.asDictionary[Constants.EventVisualizer.eventGuid] as? String {
+                if let timestamp = message.asDictionary["_\(Constants.EventVisualizer.eventTimestamp)"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
+                    eventTimeStamp = "\(timestamp.date)"
+                } else if let timestamp = message.asDictionary["\(Constants.EventVisualizer.eventTimestamp)"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
+                    eventTimeStamp = "\(timestamp.date)"
+                }
+                state = EventsHelper.shared.getState(of: eventGuid)
+            } else if let eventGuid = message.asDictionary["storage.\(Constants.EventVisualizer.eventGuid)"] as? String,
+                      let timestamp = message.asDictionary["storage.\(Constants.EventVisualizer.eventTimestamp)"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
                 eventTimeStamp = "\(timestamp.date)"
                 state = EventsHelper.shared.getState(of: eventGuid)
-            } else if let eventGuid = message.asDictionary["storage.\(Constants.EventVisualizer.guid)"] as? String,
-                      let timestamp = message.asDictionary["storage.\(Constants.EventVisualizer.eventTimestamp)"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
+            } else if let eventGuid = message.asDictionary["\(Constants.EventVisualizer.guid)"] as? String,
+                      let timestamp = message.asDictionary["\(Constants.EventVisualizer.deviceTimestamp)"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
                 eventTimeStamp = "\(timestamp.date)"
                 state = EventsHelper.shared.getState(of: eventGuid)
             }
@@ -68,7 +74,8 @@ final class EventsListViewModel: EventsListViewModelInput {
     
     func viewDidLoad(messages: [Message]?, selectedEventName: String?) {
         if let messages = messages, let selectedEventName = selectedEventName {
-            self.messages = messages
+            /// Displaying the events making the most recent displayed on top
+            self.messages = messages.reversed()
             self.selectedEventName = selectedEventName
         }
     }

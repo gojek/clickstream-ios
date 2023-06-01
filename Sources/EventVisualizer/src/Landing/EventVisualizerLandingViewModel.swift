@@ -64,7 +64,7 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
     func cellViewModel(for indexPath: IndexPath) -> EventsListingTableViewCell.ViewModel {
         
         var eventName = ""
-        if isSearchActive {
+        if isSearchActive && searchText != "" {
             /// searchResult contain event names
             eventName = searchResult[indexPath.row]
         } else if filterResult.count > 0 {
@@ -86,6 +86,8 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
                 if let _message = eventDictInproto[messageInEvent]?.first as? CollectionMapper {
                     if let eName = _message.asDictionary["eventName"] as? String {
                         eventName = eName
+                    } else if let eName = _message.asDictionary["storage.eventName"] as? String {
+                        eventName = eName
                     }
                 }
             }
@@ -96,8 +98,7 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
         }
         return EventsListingTableViewCell.ViewModel(
                     name: eventName,
-                    changedConfigsCount: "",
-                    availableConfigsCount: ""
+                    value: ""
         )
     }
     
@@ -119,8 +120,12 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
             /// get all event names
             let events = eventInDict.map { $0.key }
             /// get all event names which contain the searchText
-            self.searchResult = events.filter { $0.lowercased().contains(searchText.lowercased()) }
-            return searchResult.count
+            if searchText == "" {
+                return events.count
+            } else {
+                self.searchResult = events.filter { $0.lowercased().contains(searchText.lowercased()) }
+                return searchResult.count
+            }
         } else if filterResult.count > 0 {
             /// get all values of proto keys which gives [[eventName: [Message]]] and then flatten it out to [eventName: [Message]]
             let eventInDict = eventsDict.map { $0.value }.flatMap { $0 }
@@ -150,19 +155,17 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
             ///  below building dict from [proto: [Message]] to [proto: [EventName: [Message]]]
             for event in eventsArray {
                 if let _event = event as? CollectionMapper {
+                    var messageKey = proto
                     if let eName = _event.asDictionary["eventName"] as? String {
-                        if let value = messageDict[eName] {
-                            messageDict[eName] = value + [event as Message]
-                        } else {
-                            messageDict[eName] = [event] as [Message]
-                        }
+                        messageKey = eName
+                    } else if let eName = _event.asDictionary["storage.eventName"] as? String {
+                        messageKey = eName
+                    }
+                    
+                    if let value = messageDict[messageKey] {
+                        messageDict[messageKey] = value + [event as Message]
                     } else {
-                        /// if event name is not present then show proto name
-                        if let value = messageDict[proto] {
-                            messageDict[proto] = value + [event as Message]
-                        } else {
-                            messageDict[proto] = [event] as [Message]
-                        }
+                        messageDict[messageKey] = [event] as [Message]
                     }
                 }
             }
@@ -217,7 +220,9 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
             if let protoComm = message as? CollectionMapper {
                 /// converting [Message] to [String: Any]
                 var messAsDict = protoComm.asDictionary
-                if let eventGuid = messAsDict[Constants.EventVisualizer.guid] as? String {
+                if let eventGuid = messAsDict[Constants.EventVisualizer.eventGuid] as? String {
+                    messAsDict["state"] = EventsHelper.shared.getState(of: eventGuid)
+                } else if let eventGuid = messAsDict[Constants.EventVisualizer.guid] as? String {
                     messAsDict["state"] = EventsHelper.shared.getState(of: eventGuid)
                 }
                 var isMessageConformingtoAllFilters = false
@@ -236,6 +241,8 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
                     }
                 }
                 if isMessageConformingtoAllFilters, let eventName = messAsDict["eventName"] as? String {
+                    filteredEventNames.append(eventName)
+                } else if isMessageConformingtoAllFilters, let eventName = messAsDict["storage.eventName"] as? String {
                     filteredEventNames.append(eventName)
                 }
             }

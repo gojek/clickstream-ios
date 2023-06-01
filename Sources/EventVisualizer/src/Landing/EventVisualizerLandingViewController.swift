@@ -62,24 +62,24 @@ final public class EventVisualizerLandingViewController: UIViewController {
             let label = UILabel()
             label.text = "Event Visualizer"
             label.sizeToFit()
-            label.center = CGPoint(x: navView.center.x, y: navView.center.y + 10)
+            label.center = navView.center
             label.textAlignment = NSTextAlignment.center
-
             /// Create the image view
             let image = UIImageView()
-            
-            image.image = UIImage(named: "clickstream")
+            image.image = UIImage(systemName: "wrench.and.screwdriver")
             // To maintain the image's aspect ratio:
             if let actualImage = image.image {
-                let imageAspect = actualImage.size.width / actualImage.size.height
+            let imageAspect = actualImage.size.width / actualImage.size.height
                 /// Setting the image frame so that it's immediately before the text:
-                image.frame = CGRect(x: label.frame.origin.x + 10, y: label.frame.origin.y - 20, width: label.frame.size.height * imageAspect, height: label.frame.size.height)
+                image.frame = CGRect(x: label.frame.origin.x - label.frame.size.height * imageAspect, y: label.frame.origin.y, width: label.frame.size.height * imageAspect, height: label.frame.size.height)
                 image.contentMode = UIView.ContentMode.scaleAspectFit
             }
-
+            let statusView = EventsHelper.shared.getCSConnectionStateView(title: label)
             /// Add both the label and image view to the navView
             navView.addSubview(label)
             navView.addSubview(image)
+            navView.addSubview(statusView.statusImage)
+            navView.addSubview(statusView.statusLabel)
             
             self.navigationItem.titleView = navView
             navView.sizeToFit()

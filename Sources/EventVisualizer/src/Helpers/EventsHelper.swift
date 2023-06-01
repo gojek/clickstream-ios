@@ -6,7 +6,13 @@
 //  Copyright © 2022 PT GoJek Indonesia. All rights reserved.
 //
 
+import UIKit
 import Foundation
+
+struct ClickstreamConnectionStatusView {
+    var statusLabel: UILabel
+    var statusImage: UIImageView
+}
 
 final public class EventsHelper {
     
@@ -17,6 +23,10 @@ final public class EventsHelper {
     
     /// used for capturing the events sent by Clickstream
     public var eventsCaptured: [EventData] = []
+    
+    public var clickstreamConnectionState: Clickstream.ConnectionState {
+        return Clickstream.getInstance()?.clickstreamConnectionState ?? .failed
+    }
     
     /// returns the state of the event given the eventGuid
     public func getState(of providedEventGuid: String) -> String {
@@ -39,6 +49,29 @@ final public class EventsHelper {
     }
     public func clearData() {
         EventsHelper.shared.eventsCaptured = []
+    }
+    
+    @available(iOS 13.0, *)
+    func getCSConnectionStateView(title: UILabel) -> ClickstreamConnectionStatusView {
+        let statusLabel = UILabel()
+        let stateImage = UIImageView()
+        if EventsHelper.shared.clickstreamConnectionState == .connected {
+            stateImage.image = UIImage(systemName: "wifi")
+            statusLabel.text = "Connected"
+        } else {
+            stateImage.image = UIImage(systemName: "wifi.slash")
+            statusLabel.text = "Not connected"
+        }
+        statusLabel.font = UIFont.systemFont(ofSize: 10)
+        statusLabel.sizeToFit()
+//            statusLabel.center = navView.center
+        statusLabel.textAlignment = NSTextAlignment.left
+        statusLabel.frame = CGRect(x: title.frame.origin.x, y: title.frame.maxY, width: title.frame.size.width, height: statusLabel.frame.size.height)
+
+        /// Setting the image frame so that it's immediately before the text:
+        stateImage.frame = CGRect(x: statusLabel.frame.minX - 20, y: statusLabel.frame.origin.y, width: 15, height: 15)
+        stateImage.contentMode = UIView.ContentMode.scaleAspectFit
+        return ClickstreamConnectionStatusView(statusLabel: statusLabel, statusImage: stateImage)
     }
 }
 
@@ -77,12 +110,15 @@ extension EventsHelper: EventStateViewable {
         for (index, message) in events.enumerated() {
             if let productComm = message as? CollectionMapper {
                 let flattenedDict = productComm.asDictionary
-                if let currentEventGuid = flattenedDict[Constants.EventVisualizer.guid] as? String, currentEventGuid == eventGuid {
+                if let currentEventGuid = flattenedDict[Constants.EventVisualizer.eventGuid] as? String, currentEventGuid == eventGuid {
                     return index
-                } else if let currentEventGuid = flattenedDict["storage.\(Constants.EventVisualizer.guid)"] as? String,
+                } else if let currentEventGuid = flattenedDict["storage.\(Constants.EventVisualizer.eventGuid)"] as? String,
                             currentEventGuid == eventGuid {
                     return index
-                }
+                } else if let currentEventGuid = flattenedDict[Constants.EventVisualizer.guid] as? String,
+                          currentEventGuid == eventGuid {
+                  return index
+              }
             }
         }
         return nil

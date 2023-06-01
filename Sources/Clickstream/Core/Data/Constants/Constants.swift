@@ -55,8 +55,10 @@ enum Constants {
     }
     
     enum EventVisualizer {
+        static var eventGuid = "meta.eventGuid"
         static var guid = "guid"
-        static var eventTimestamp = "deviceTimestamp"
+        static var eventTimestamp = "eventTimestamp"
+        static var deviceTimestamp = "_deviceTimestamp"
     }
     
     enum CacheIdentifiers: CacheIdentifier {
