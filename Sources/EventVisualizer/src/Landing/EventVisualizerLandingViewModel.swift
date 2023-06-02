@@ -64,9 +64,17 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
     func cellViewModel(for indexPath: IndexPath) -> EventsListingTableViewCell.ViewModel {
         
         var eventName = ""
-        if isSearchActive && searchText != "" {
+        if isSearchActive {
             /// searchResult contain event names
-            eventName = searchResult[indexPath.row]
+            if searchText == "" {
+                /// get all values of proto keys which gives [[eventName: [Message]]] and then flatten it out to [eventName: [Message]]
+                let eventInDict = eventsDict.map { $0.value }.flatMap { $0 }
+                /// get all event names
+                searchResult = eventInDict.map { $0.key }
+                eventName = searchResult[indexPath.row]
+            } else {
+                eventName = searchResult[indexPath.row]
+            }
         } else if filterResult.count > 0 {
             /// filterResult contain event names
             eventName = filterResult[indexPath.row]
@@ -156,10 +164,12 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
             for event in eventsArray {
                 if let _event = event as? CollectionMapper {
                     var messageKey = proto
-                    if let eName = _event.asDictionary["eventName"] as? String {
+                    if let eName = _event.asDictionary["eventName"] as? String, !eName.isEmpty {
                         messageKey = eName
-                    } else if let eName = _event.asDictionary["storage.eventName"] as? String {
+                    } else if let eName = _event.asDictionary["storage.eventName"] as? String, !eName.isEmpty {
                         messageKey = eName
+                    } else {
+                        messageKey = "The event has no name"
                     }
                     
                     if let value = messageDict[messageKey] {
