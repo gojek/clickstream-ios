@@ -44,7 +44,7 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
     
     var sectionCount: Int {
         /// if searching or filtering then there would be no section division
-        if isSearchActive || filterResult.count > 0 {
+        if (isSearchActive && searchText != "") || filterResult.count > 0 {
             return 1
         } else {
             return eventsDict.keys.count
@@ -103,7 +103,7 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
     }
     
     func headerTitle(section: Int) -> String {
-        if isSearchActive || filterResult.count > 0 {
+        if (isSearchActive && searchText != "") || filterResult.count > 0 {
             return ""
         } else {
             /// get all protos
@@ -114,18 +114,14 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
     }
     
     func cellsCount(section: Int) -> Int {
-        if isSearchActive {
+        if isSearchActive && searchText != "" {
             /// get all values of proto keys which gives [[eventName: [Message]]] and then flatten it out to [eventName: [Message]]
             let eventInDict = eventsDict.map { $0.value }.flatMap { $0 }
             /// get all event names
             let events = eventInDict.map { $0.key }
             /// get all event names which contain the searchText
-            if searchText == "" {
-                return events.count
-            } else {
-                self.searchResult = events.filter { $0.lowercased().contains(searchText.lowercased()) }
-                return searchResult.count
-            }
+            self.searchResult = events.filter { $0.lowercased().contains(searchText.lowercased()) }
+            return searchResult.count
         } else if filterResult.count > 0 {
             /// get all values of proto keys which gives [[eventName: [Message]]] and then flatten it out to [eventName: [Message]]
             let eventInDict = eventsDict.map { $0.value }.flatMap { $0 }
@@ -156,10 +152,12 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
             for event in eventsArray {
                 if let _event = event as? CollectionMapper {
                     var messageKey = proto
-                    if let eName = _event.asDictionary["eventName"] as? String {
+                    if let eName = _event.asDictionary["eventName"] as? String, !eName.isEmpty {
                         messageKey = eName
-                    } else if let eName = _event.asDictionary["storage.eventName"] as? String {
+                    } else if let eName = _event.asDictionary["storage.eventName"] as? String, !eName.isEmpty {
                         messageKey = eName
+                    } else {
+                        messageKey = proto
                     }
                     
                     if let value = messageDict[messageKey] {
@@ -177,7 +175,7 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
     /// - Parameter indexPath: indexPath of that cell
     /// - Returns: returning tuple of (selected-event-name, message-array-of-events-with-that-event-name)
     func didSelectRow(at indexPath: IndexPath) -> (selectedEventName: String, events: [Message])? {
-        if isSearchActive {
+        if isSearchActive && searchText != "" {
             /// get all values of proto keys which gives [[eventName: [Message]]] and then flatten it out to [eventName: [Message]]
             let eventInDict = eventsDict.map { $0.value }.flatMap { $0 }
             let eventSelected = searchResult[indexPath.row]
