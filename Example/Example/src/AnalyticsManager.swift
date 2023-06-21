@@ -24,23 +24,33 @@ class AnalyticsManager {
             
             let configurations = ClickstreamConstraints(maxConnectionRetries: 5)
             let classification = ClickstreamEventClassification()
-            let healthConfig = ClickstreamHealthConfigurations()
 
             self.clickstream = try Clickstream.initialise(
                 with: request ?? URLRequest(url: URL(string: "")!),
                 configurations: configurations,
                 eventClassification: classification,
-                healthTrackingConfigs: healthConfig,
-                dataSource: self,
                 appPrefix: ""
             )
         } catch  {
             print(error.localizedDescription)
         }
         
+        self.setClickstreamTracker()
+        
         #if EVENT_VISUALIZER_ENABLED
         EventsHelper.shared.startCapturing()
         #endif
+    }
+    
+    // Set Clickstream Health Tracker
+    private func setClickstreamTracker() {
+        
+        let customerInfo = CSCustomerInfo(signedUpCountry: "India", email: "test@test.com", currentCountry: "91", identity: 105)
+        let sessionInfo = CSSessionInfo(sessionId: "1001")
+        let appInfo = CSAppInfo(version: "1.1.0")
+        let commonProperties = CSCommonProperties(customer: customerInfo, session: sessionInfo, app: appInfo)
+        let configs = ClickstreamHealthConfigurations(minimumTrackedVersion: "0.1", trackedVia: .internal)
+        self.clickstream?.setTracker(configs: configs, commonProperties: commonProperties, dataSource: self, delegate: self)
     }
 
     /// Track events using Clickstream
@@ -87,6 +97,10 @@ extension AnalyticsManager: TrackerDataSource {
     func currentUserLocation() -> CSLocation? {
         return CSLocation(longitude: 0.0, latitude: 0.0)
     }
+    
+    func currentNTPTimestamp() -> Date? {
+        return Date()
+    }
 }
 
 extension AnalyticsManager: TrackerDelegate {
@@ -120,11 +134,5 @@ extension AnalyticsManager {
         } else {
             return [:]
         }
-    }
-}
-
-extension AnalyticsManager: ClickstreamDataSource {
-    func currentNTPTimestamp() -> Date? {
-        return Date()
     }
 }

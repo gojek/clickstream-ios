@@ -16,8 +16,8 @@ class NetworkManagerDependenciesTests: XCTestCase {
     func testMakeNetworkBuilder() throws {
         // given
         let dummyRequest = URLRequest(url: URL(string: "dummy_url")!)
-        Clickstream.configurations = ClickstreamConstraints()
-        Clickstream.eventClassifier = ClickstreamEventClassification()
+        Clickstream.configurations = MockConstants.constraints
+        Clickstream.eventClassifier = MockConstants.eventClassification
         // when
         let networkManagerDependencies = NetworkManagerDependencies(with: dummyRequest, db: database)
         

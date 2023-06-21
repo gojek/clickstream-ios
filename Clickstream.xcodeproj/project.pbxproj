@@ -15,6 +15,7 @@
 		68E19FB8247D42100074A790 /* DispatchQueue+Detection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E19FB5247D42100074A790 /* DispatchQueue+Detection.swift */; };
 		68E7BD202456E6F10072549A /* libClickstream.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 68E7BADF244F08C00072549A /* libClickstream.a */; };
 		68E7BD87246028CF0072549A /* SocketHandlerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E7BD86246028CF0072549A /* SocketHandlerMock.swift */; };
+		9A6AEC9C2A43835A000A1D1D /* MockConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A6AEC9B2A43835A000A1D1D /* MockConstants.swift */; };
 		9AF0C758280DEC8C00E39A12 /* ClickStreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB88AA0251B00030092659B /* ClickStreamTests.swift */; };
 		9AF0C759280DEC9600E39A12 /* EventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA23CFA24A5978B001BE490 /* EventTests.swift */; };
 		9AF0C75A280DECBD00E39A12 /* EventBatchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA23D0024A5A1A7001BE490 /* EventBatchTests.swift */; };
@@ -128,8 +129,6 @@
 		BD6BDB9D29FBC1360006B04A /* HealthTrackerDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD6BDB6429FBC1360006B04A /* HealthTrackerDTO.swift */; };
 		BD6BDB9E29FBC1360006B04A /* CSCommonPropertiesDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD6BDB6529FBC1360006B04A /* CSCommonPropertiesDTO.swift */; };
 		BD6BDB9F29FBC1360006B04A /* CSCommonPropertiesDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD6BDB6529FBC1360006B04A /* CSCommonPropertiesDTO.swift */; };
-		BD6BDBA029FBC1360006B04A /* Debugger.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD6BDB6729FBC1360006B04A /* Debugger.swift */; };
-		BD6BDBA129FBC1360006B04A /* Debugger.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD6BDB6729FBC1360006B04A /* Debugger.swift */; };
 		BD8AF61A287ED1CC002DD402 /* NetworkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF59B287ED1CB002DD402 /* NetworkBuilder.swift */; };
 		BD8AF61B287ED1CC002DD402 /* NetworkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF59B287ED1CB002DD402 /* NetworkBuilder.swift */; };
 		BD8AF61C287ED1CC002DD402 /* RetryMechanism.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8AF59C287ED1CB002DD402 /* RetryMechanism.swift */; };
@@ -265,6 +264,7 @@
 		68E7BD86246028CF0072549A /* SocketHandlerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketHandlerMock.swift; sourceTree = "<group>"; };
 		68E7BD89246034F90072549A /* NetworkServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkServiceTests.swift; sourceTree = "<group>"; };
 		68E7BD8B246184310072549A /* NetworkBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkBuilderTests.swift; sourceTree = "<group>"; };
+		9A6AEC9B2A43835A000A1D1D /* MockConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockConstants.swift; sourceTree = "<group>"; };
 		9AA23CF524A33B4C001BE490 /* EventProcessorTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventProcessorTest.swift; sourceTree = "<group>"; };
 		9AA23CFA24A5978B001BE490 /* EventTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTests.swift; sourceTree = "<group>"; };
 		9AA23D0024A5A1A7001BE490 /* EventBatchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBatchTests.swift; sourceTree = "<group>"; };
@@ -324,7 +324,6 @@
 		BD6BDB6329FBC1360006B04A /* ClickStreamHealthConfigurations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClickStreamHealthConfigurations.swift; sourceTree = "<group>"; };
 		BD6BDB6429FBC1360006B04A /* HealthTrackerDTO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HealthTrackerDTO.swift; sourceTree = "<group>"; };
 		BD6BDB6529FBC1360006B04A /* CSCommonPropertiesDTO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSCommonPropertiesDTO.swift; sourceTree = "<group>"; };
-		BD6BDB6729FBC1360006B04A /* Debugger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debugger.swift; sourceTree = "<group>"; };
 		BD8AF59B287ED1CB002DD402 /* NetworkBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkBuilder.swift; sourceTree = "<group>"; };
 		BD8AF59C287ED1CB002DD402 /* RetryMechanism.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RetryMechanism.swift; sourceTree = "<group>"; };
 		BD8AF59E287ED1CB002DD402 /* NetworkManagerDependencies.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkManagerDependencies.swift; sourceTree = "<group>"; };
@@ -480,6 +479,14 @@
 			path = Infrastructure;
 			sourceTree = "<group>";
 		};
+		9A6AEC9A2A438345000A1D1D /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				9A6AEC9B2A43835A000A1D1D /* MockConstants.swift */,
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
 		9AA23CF424A33AED001BE490 /* EventProcessorTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -492,6 +499,7 @@
 		9AA23CF824A59756001BE490 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				9A6AEC9A2A438345000A1D1D /* Mocks */,
 				9AB88AA0251B00030092659B /* ClickStreamTests.swift */,
 				9AA23CF924A59768001BE490 /* Entities */,
 				9AA23D0B24AA5536001BE490 /* ClickStreamDependenciesTests.swift */,
@@ -756,7 +764,6 @@
 				BD6BDB5A29FBC1360006B04A /* Utilities */,
 				BD6BDB5E29FBC1360006B04A /* HealthContracts */,
 				BD6BDB6129FBC1360006B04A /* Entities */,
-				BD6BDB6629FBC1360006B04A /* Debug */,
 			);
 			path = Tracker;
 			sourceTree = "<group>";
@@ -799,14 +806,6 @@
 				BD6BDB6529FBC1360006B04A /* CSCommonPropertiesDTO.swift */,
 			);
 			path = Entities;
-			sourceTree = "<group>";
-		};
-		BD6BDB6629FBC1360006B04A /* Debug */ = {
-			isa = PBXGroup;
-			children = (
-				BD6BDB6729FBC1360006B04A /* Debugger.swift */,
-			);
-			path = Debug;
 			sourceTree = "<group>";
 		};
 		BD8AF585287ED1CB002DD402 /* Sources */ = {
@@ -1321,7 +1320,6 @@
 				BD8AF636287ED1CC002DD402 /* ProtoConvertible.swift in Sources */,
 				BD6BDB7A29FBC1360006B04A /* EventDetailsViewController.swift in Sources */,
 				BD8AF648287ED1CC002DD402 /* Logger.swift in Sources */,
-				BD6BDBA029FBC1360006B04A /* Debugger.swift in Sources */,
 				BD5E7BEE2A0B94BF000F5678 /* Framer.swift in Sources */,
 				BD5E7BF22A0B94BF000F5678 /* WSCompression.swift in Sources */,
 				BD6BDB9229FBC1360006B04A /* AppVersionChecker.swift in Sources */,
@@ -1380,7 +1378,6 @@
 				BD8AF661287ED1CC002DD402 /* AppStateNotifierService.swift in Sources */,
 				BD6BDB7729FBC1360006B04A /* EventsListViewModel.swift in Sources */,
 				BD6BDB9929FBC1360006B04A /* CSLocationDTO.swift in Sources */,
-				BD6BDBA129FBC1360006B04A /* Debugger.swift in Sources */,
 				9AF0C764280DECE500E39A12 /* AppStateNotifierServiceTests.swift in Sources */,
 				BD8AF61B287ED1CC002DD402 /* NetworkBuilder.swift in Sources */,
 				BD8AF62B287ED1CC002DD402 /* NetworkConfiguration.swift in Sources */,
@@ -1407,6 +1404,7 @@
 				BD5E7BE12A0B94BF000F5678 /* Server.swift in Sources */,
 				BD5E7BE92A0B94BF000F5678 /* FrameCollector.swift in Sources */,
 				BD8AF645287ED1CC002DD402 /* Reachability+Extension.swift in Sources */,
+				9A6AEC9C2A43835A000A1D1D /* MockConstants.swift in Sources */,
 				9AF0C761280DECDE00E39A12 /* EventBatchProcessorTests.swift in Sources */,
 				BD6BDB9129FBC1360006B04A /* Notifiable.swift in Sources */,
 				BD8AF629287ED1CC002DD402 /* Connectable.swift in Sources */,

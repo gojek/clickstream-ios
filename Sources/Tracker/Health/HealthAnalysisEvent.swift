@@ -58,7 +58,7 @@ struct HealthAnalysisEvent: Codable, Equatable, AnalysisEvent {
         }
         
         self.eventName = eventName
-        let currentTimestamp = Date()
+        let currentTimestamp = Tracker.currentNTPTimestamp ?? Date()
         self.timestamp = "\(currentTimestamp)"
         self.reason = reason
         self.eventGUID = eventGUID

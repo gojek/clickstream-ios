@@ -59,7 +59,8 @@ public struct ClickstreamConstraints {
                 maxPingInterval: TimeInterval = 15, priorities: [Priority] = [Priority()],
                 flushOnBackground: Bool = true, connectionTerminationTimerWaitTime: TimeInterval = 8,
                 maxRequestAckTimeout: TimeInterval = 6, maxRetriesPerBatch: Int = 20,
-                maxRetryCacheSize: Int = 5000000, connectionRetryDuration: TimeInterval = 3, flushOnAppLaunch: Bool = false, minBatteryLevelPercent: Float = 10) {
+                maxRetryCacheSize: Int = 5000000, connectionRetryDuration: TimeInterval = 3,
+                flushOnAppLaunch: Bool = false, minBatteryLevelPercent: Float = 10) {
         
         self.maxConnectionRetries = maxConnectionRetries
         self.maxConnectionRetryInterval = maxConnectionRetryInterval

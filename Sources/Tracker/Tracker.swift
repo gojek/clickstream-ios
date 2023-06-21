@@ -20,6 +20,10 @@ public protocol TrackerDataSource {
     /// Returns the current user location as `CSLocation` instance.
     /// - Returns: `CSLocation` instance.
     func currentUserLocation() -> CSLocation?
+    
+    /// Returns NTP timestamp
+    /// - Returns: NTP Date() instance
+    func currentNTPTimestamp() -> Date?
 }
 
 protocol AnalysisEvent { }
@@ -45,18 +49,49 @@ public final class Tracker {
     private var appStateNotifier: AppStateNotifierService
     private let database: Database
     
+    /// TrackerDelegate.
+    internal private(set) var delegate: TrackerDelegate
+    
+    /// TrackerDataSource.
+    private var _dataSource: TrackerDataSource
+    
+    /// readonly public accessor for dataSource.
+    public var dataSource: TrackerDataSource {
+        get {
+            return _dataSource
+        }
+    }
+    
+    /// Holds latest NTP date
+    internal static var currentNTPTimestamp: Date? {
+        get {
+            let timestamp = sharedInstance?._dataSource.currentNTPTimestamp()
+            return timestamp
+        }
+    }
+    
     init(appStateNotifier: AppStateNotifierService,
-         db: Database) {
+             db: Database,
+         dataSource: TrackerDataSource, delegate: TrackerDelegate) {
         self.database = db
         self.appStateNotifier = appStateNotifier
         self.healthTracker = HealthTracker(performOnQueue: Tracker.queue,
                                            db: database)
+        self._dataSource = dataSource
+        self.delegate = delegate
         self.observeAppStateChanges()
         self.flushOnAppUpgrade()
     }
     
     @discardableResult
-    static func initialise(appStateNotifier: AppStateNotifierService = DefaultAppStateNotifierService(with: queue)) -> Tracker? {
+    static func initialise(commonProperties: CSCommonProperties, healthTrackingConfigs: ClickstreamHealthConfigurations,
+                           dataSource: TrackerDataSource, delegate: TrackerDelegate) -> Tracker? {
+        
+        Tracker.healthTrackingConfigs = healthTrackingConfigs
+        
+        Tracker.debugMode = healthTrackingConfigs.debugMode(userID: commonProperties.customer.identity,
+                                                            currentAppVersion: commonProperties.app.version)
+        
         if Tracker.debugMode {
             guard let instance = self.sharedInstance else {
                 // Create a separate db for health and perf events.
@@ -67,8 +102,8 @@ public final class Tracker {
                     return nil
                 }
                 
-                sharedInstance = Tracker(appStateNotifier: appStateNotifier,
-                                         db: db)
+                sharedInstance = Tracker(appStateNotifier: DefaultAppStateNotifierService(with: queue),
+                                         db: db, dataSource: dataSource, delegate: delegate)
                 return sharedInstance
             }
             return instance
@@ -137,6 +172,9 @@ public final class Tracker {
                 $0.numberOfEvents = 1 // Since instant events are fired one at a time
                 $0.healthMeta = metaData
                 $0.healthMeta.eventGuid = eventGuid
+                let currentTimestamp = Tracker.currentNTPTimestamp ?? Date()
+                $0.eventTimestamp = Google_Protobuf_Timestamp(date: currentTimestamp)
+                $0.deviceTimestamp = Google_Protobuf_Timestamp(date: Date())
                 
                 $0.healthDetails = Gojek_Clickstream_Internal_HealthDetails.with {
                     if let eventGUID = event.eventGUID {
@@ -191,7 +229,7 @@ public final class Tracker {
                 $0.healthMeta = metaData
                 $0.healthMeta.eventGuid = eventGuid
                 
-                let currentTimestamp = Date()
+                let currentTimestamp = Tracker.currentNTPTimestamp ?? Date()
                 $0.eventTimestamp = Google_Protobuf_Timestamp(date: currentTimestamp)
                 $0.eventName = key.rawValue
                 $0.deviceTimestamp = Google_Protobuf_Timestamp(date: Date())
