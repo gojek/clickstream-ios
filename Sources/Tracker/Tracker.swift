@@ -104,6 +104,7 @@ public final class Tracker {
                 
                 sharedInstance = Tracker(appStateNotifier: DefaultAppStateNotifierService(with: queue),
                                          db: db, dataSource: dataSource, delegate: delegate)
+                sharedInstance?.commonProperties = commonProperties
                 return sharedInstance
             }
             return instance
