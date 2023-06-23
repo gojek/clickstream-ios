@@ -8,20 +8,6 @@
 import Foundation
 import SwiftProtobuf
 
-/// Conform to this delegate to send the current user location details and set NTP Time.
-public protocol ClickstreamDataSource: AnyObject {
-    
-    #if TRACKER_ENABLED
-    /// Returns the current user location as `CSLocation` instance.
-    /// - Returns: `CSLocation` instance.
-    func currentUserLocation() -> CSLocation?
-    #endif
-    
-    /// Returns NTP timestamp
-    /// - Returns: NTP Date() instance
-    func currentNTPTimestamp() -> Date?
-}
-
 public protocol ClickstreamDelegate: AnyObject {
     
     /// Provides Clickstream connection state changes
@@ -59,23 +45,11 @@ public final class Clickstream {
     }
     
     /// Holds the configurations for the sdk.
-    internal static var configurations: ClickstreamConstraints!
+    internal static var configurations: ClickstreamConstraints = ClickstreamConstraints()
     
     /// Holds the event classification for the sdk.
-    internal static var eventClassifier: ClickstreamEventClassification!
-    
-    #if TRACKER_ENABLED
-    // Holds the health tracking configs for the SDK
-    internal static var healthTrackingConfigs: ClickstreamHealthConfigurations?
-    #endif
-    
-    /// Holds latest NTP date
-    internal static var currentNTPTimestamp: Date? {
-        get {
-            let timestamp = sharedInstance?._dataSource?.currentNTPTimestamp()
-            return timestamp
-        }
-    }
+    internal static var eventClassifier: ClickstreamEventClassification = ClickstreamEventClassification()
+
     
     /// Clickstream shared instance.
     private static var sharedInstance: Clickstream?
@@ -107,61 +81,8 @@ public final class Clickstream {
         return Clickstream.connectionState
     }
     
-    /// ClickstreamDataSource.
-    private weak var _dataSource: ClickstreamDataSource?
-    
-    /// readonly public accessor for dataSource.
-    public weak var dataSource: ClickstreamDataSource? {
-        get {
-            return _dataSource
-        }
-    }
-    
-    #if TRACKER_ENABLED
-    /// CSCommonProperties
-    private var _commonEventProperties: CSCommonProperties?
-    
-    /// readonly public accessor for CSCommonProperties.
-    public var commonEventProperties: CSCommonProperties? {
-        get {
-            return _commonEventProperties
-        } set {
-            _commonEventProperties = newValue
-            // Set Health Tracking based on userID/version
-            self.setHealthTracker()
-        }
-    }
-    #endif
-    
     /// ClickstreamDelegate.
     private weak var delegate: ClickstreamDelegate?
-    
-    #if TRACKER_ENABLED
-    private func setHealthTracker() {
-        if let commonEventProperties = commonEventProperties,
-           let healthTrackingConfigs = Clickstream.healthTrackingConfigs {
-            Tracker.debugMode = healthTrackingConfigs.debugMode(userID: commonEventProperties.customer.identity,
-                                                                    currentAppVersion: commonEventProperties.app.version)
-        }
-        
-        Tracker.initialise() // Initialise Tracker
-        
-        if Tracker.debugMode {
-            Tracker.sharedInstance?.commonProperties = commonEventProperties
-        }
-    }
-    
-    /// readonly internal accessor for location DTO.
-    private var location: CSLocation? {
-        get {
-            let locationInfo = _dataSource?.currentUserLocation()
-            if Tracker.debugMode {
-                Tracker.sharedInstance?.location = locationInfo
-            }
-            return locationInfo
-        }
-    }
-    #endif
     
     // MARK: - Building blocks of the SDK.
     private let networkBuilder: NetworkBuildable
@@ -177,18 +98,16 @@ public final class Clickstream {
     private init(networkBuilder: NetworkBuildable,
                  eventWarehouser: EventWarehouser,
                  eventProcessor: EventProcessor,
-                 dataSource: ClickstreamDataSource,
                  delegate: ClickstreamDelegate? = nil) {
         self.networkBuilder = networkBuilder
         self.eventWarehouser = eventWarehouser
         self.eventProcessor = eventProcessor
-        self._dataSource = dataSource
         self.delegate = delegate
     }
     
     static var updateConnectionStatus: Bool = false
     
-    /// Use this property to pass application namew without any space or special characters.
+    /// Use this property to pass application name without any space or special characters.
     static var appPrefix: String = ""
     
     /// Returns the shared Clickstream instance.
@@ -246,8 +165,6 @@ public final class Clickstream {
     @discardableResult public static func initialise(with request: URLRequest,
                                                      configurations: ClickstreamConstraints,
                                                      eventClassification: ClickstreamEventClassification,
-                                                     healthTrackingConfigs: ClickstreamHealthConfigurations,
-                                                     dataSource: ClickstreamDataSource,
                                                      delegate: ClickstreamDelegate? = nil,
                                                      updateConnectionStatus: Bool = false,
                                                      appPrefix: String) throws -> Clickstream? {
@@ -256,7 +173,6 @@ public final class Clickstream {
                 with: request,
                 configurations: configurations,
                 eventClassification: eventClassification,
-                dataSource: dataSource,
                 delegate: delegate,
                 updateConnectionStatus: updateConnectionStatus,
                 appPrefix: appPrefix)
@@ -270,7 +186,6 @@ public final class Clickstream {
     @discardableResult public static func initialise(with request: URLRequest,
                                                      configurations: ClickstreamConstraints,
                                                      eventClassification: ClickstreamEventClassification,
-                                                     dataSource: ClickstreamDataSource,
                                                      delegate: ClickstreamDelegate? = nil,
                                                      updateConnectionStatus: Bool = false,
                                                      appPrefix: String) throws -> Clickstream? {
@@ -279,7 +194,6 @@ public final class Clickstream {
                 with: request,
                 configurations: configurations,
                 eventClassification: eventClassification,
-                dataSource: dataSource,
                 delegate: delegate,
                 updateConnectionStatus: updateConnectionStatus,
                 appPrefix: appPrefix)
@@ -294,7 +208,6 @@ public final class Clickstream {
     static func initializeClickstream(with request: URLRequest,
                                       configurations: ClickstreamConstraints,
                                       eventClassification: ClickstreamEventClassification,
-                                      dataSource: ClickstreamDataSource,
                                       delegate: ClickstreamDelegate? = nil,
                                       updateConnectionStatus: Bool = false,
                                       appPrefix: String) throws -> Clickstream? {
@@ -319,7 +232,6 @@ public final class Clickstream {
                 sharedInstance = Clickstream(networkBuilder: dependencies.networkBuilder,
                                              eventWarehouser: dependencies.eventWarehouser,
                                              eventProcessor: dependencies.eventProcessor,
-                                             dataSource: dataSource,
                                              delegate: delegate)
                 sharedInstance?.dependencies = dependencies // saving a copy of dependencies
             } catch {
@@ -337,6 +249,16 @@ public final class Clickstream {
         didSet {
             sharedInstance?.delegate?.onConnectionStateChanged(state: connectionState)
         }
+    }
+}
+
+@propertyWrapper
+struct AtomicConnectionState {
+    private let dispatchQueue = DispatchQueue(label: Constants.QueueIdentifiers.atomicAccess.rawValue, attributes: .concurrent)
+    private var state: Clickstream.ConnectionState = .closed
+    var wrappedValue: Clickstream.ConnectionState {
+        get { dispatchQueue.sync { state } }
+        set { dispatchQueue.sync(flags: .barrier) { state = newValue } }
     }
 }
 
@@ -360,12 +282,25 @@ extension Clickstream {
 }
 #endif
 
-@propertyWrapper
-struct AtomicConnectionState {
-    private let dispatchQueue = DispatchQueue(label: Constants.QueueIdentifiers.atomicAccess.rawValue, attributes: .concurrent)
-    private var state: Clickstream.ConnectionState = .closed
-    var wrappedValue: Clickstream.ConnectionState {
-        get { dispatchQueue.sync { state } }
-        set { dispatchQueue.sync(flags: .barrier) { state = newValue } }
+// MARK: - Code below here is support for the Clickstream's Health Tracking.
+#if TRACKER_ENABLED
+extension Clickstream {
+    
+    /// Initialise tracker
+    /// - Parameters:
+    ///   - configs: ClickstreamHealthConfigurations
+    ///   - commonProperties: CSCommonProperties
+    ///   - dataSource: TrackerDataSource
+    ///   - delegate: TrackerDelegate
+    public func setTracker(configs: ClickstreamHealthConfigurations,
+                           commonProperties: CSCommonProperties,
+                           dataSource: TrackerDataSource,
+                           delegate: TrackerDelegate) {
+        Tracker.initialise(commonProperties: commonProperties, healthTrackingConfigs: configs, dataSource: dataSource, delegate: delegate)
+    }
+    
+    public func getTracker() -> Tracker? {
+        return Tracker.sharedInstance
     }
 }
+#endif

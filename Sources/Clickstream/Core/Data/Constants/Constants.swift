@@ -60,10 +60,4 @@ enum Constants {
         static var eventTimestamp = "eventTimestamp"
         static var deviceTimestamp = "_deviceTimestamp"
     }
-    
-    enum CacheIdentifiers: CacheIdentifier {
-        case retry = "com.gojek.clickstream.retryCache"
-        case healthAnalytics = "com.gojek.clickstream.healthAnalyticsCache"
-        case performanceAnalytics = "com.gojek.clickstream.performanceAnalyticsCache"
-    }
 }

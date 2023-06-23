@@ -26,10 +26,7 @@ public struct ClickstreamHealthConfigurations {
     var verbosityLevel: String?
     
     static var logVerbose: Bool {
-        #if TRACKER_ENABLED
-        return Clickstream.healthTrackingConfigs?.verbosityLevel?.lowercased() == "maximum"
-        #endif
-        return false
+        return Tracker.healthTrackingConfigs?.verbosityLevel?.lowercased() == "maximum"
     }
 
     public init(minimumTrackedVersion: String = "",

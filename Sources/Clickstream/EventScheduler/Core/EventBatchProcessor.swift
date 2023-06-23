@@ -40,10 +40,6 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
     /// Variable to make sure app is launched after being force closed/killed
     private var hasFlushOnAppLaunchExecutedOnce: Bool = false
     
-    #if TRACKER_ENABLED
-    private let debugger = try! Debugger(fileName: "DefaultEventBatchProcessor")
-    #endif
-    
     init(with eventBatchCreator: EventBatchCreator,
          schedulerService: SchedulerService,
          appStateNotifier: AppStateNotifierService,
@@ -77,9 +73,6 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
                                                                             value: priority.identifier,
                                                                             n: numberOfEventsToBeFetched),
                            !events.isEmpty {
-                            #if TRACKER_ENABLED
-                            checkedSelf.debugger.write(events)
-                            #endif
                             checkedSelf.eventBatchCreator.forward(with: events)
                         }
                     } else {
