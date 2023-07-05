@@ -35,23 +35,17 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'Tracker' do |tracker|
-    tracker.source_files = 'Sources/**/*.swift'
-    tracker.exclude_files = "Sources/EventVisualizer/**/*.swift"
-    tracker.exclude_files = "Sources/ETETestSuite/**/*.swift"
+    tracker.source_files = 'Sources/Tracker/**/*.swift'
     tracker.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) TRACKER_ENABLED' }
   end
 
   s.subspec 'EventVisualizer' do |eventVisualizer|
-    eventVisualizer.source_files = 'Sources/**/*.swift'
-    eventVisualizer.exclude_files = "Sources/Tracker/**/*.swift"
-    eventVisualizer.exclude_files = "Sources/ETETestSuite/**/*.swift"
+    eventVisualizer.source_files = 'Sources/EventVisualizer/**/*.swift'
     eventVisualizer.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) EVENT_VISUALIZER_ENABLED' }
   end
 
   s.subspec 'ETETestSuite' do |eteTestSuite|
-    eteTestSuite.source_files = 'Sources/**/*.swift'
-    eteTestSuite.exclude_files = "Sources/Tracker/**/*.swift"
-    eteTestSuite.exclude_files = "Sources/EventVisualizer/**/*.swift"
+    eteTestSuite.source_files = 'Sources/ETETestSuite/**/*.swift'
     eteTestSuite.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) ETE_TEST_SUITE_ENABLED' }
   end
 
