@@ -22,8 +22,9 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '11.0'
   s.swift_version    = '5.0'
 
-  s.source_files  = 'Sources/Clickstream/**/*.swift'
+  s.source_files  = 'Sources/**/*.swift'
   s.exclude_files = "Example"
+  s.exclude_files = "Sources/ETETestSuite/**/*.swift"
   s.frameworks    = "UIKit", "Foundation", "CoreTelephony"
   s.dependency    "SwiftProtobuf", "~> 1.10"
   s.dependency    "ReachabilitySwift", "~> 5.0"
@@ -35,17 +36,14 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'Tracker' do |tracker|
-    tracker.source_files = 'Sources/Tracker/**/*.swift'
     tracker.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) TRACKER_ENABLED' }
   end
 
   s.subspec 'EventVisualizer' do |eventVisualizer|
-    eventVisualizer.source_files = 'Sources/EventVisualizer/**/*.swift'
     eventVisualizer.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) EVENT_VISUALIZER_ENABLED' }
   end
 
   s.subspec 'ETETestSuite' do |eteTestSuite|
-    eteTestSuite.source_files = 'Sources/ETETestSuite/**/*.swift'
     eteTestSuite.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) ETE_TEST_SUITE_ENABLED' }
   end
 
