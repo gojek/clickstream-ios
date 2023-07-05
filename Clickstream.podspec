@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "Clickstream"
-  s.version          = "1.1.21"
+  s.version          = "1.1.22"
   s.summary          = "Real time Analytics SDK"
   s.description      = "Clickstream is an event agnostic, real-time data ingestion analytics SDK"
 
