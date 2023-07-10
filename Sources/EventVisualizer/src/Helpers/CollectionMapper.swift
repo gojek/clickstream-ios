@@ -41,7 +41,7 @@ public extension CollectionMapper {
     func flattenRec(output: inout [String: Any], keyPath: String, value: Any) {
         if let dict = value as? [String: Any] {
             dict.forEach { key, value in
-                let calculatedKey = "\(keyPath).\(key)".replacingOccurrences(of: "_", with: "")
+                let calculatedKey = "\(keyPath).\(key)".replacingOccurrences(of: "_", with: "").replacingOccurrences(of: "storage.", with: "")
                 flattenRec(output: &output, keyPath: calculatedKey, value: value)
             }
         } else {
