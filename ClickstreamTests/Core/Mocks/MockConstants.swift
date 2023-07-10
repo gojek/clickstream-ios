@@ -6,7 +6,7 @@
 //  Copyright © 2023 Gojek. All rights reserved.
 //
 
-@testable import Clickstream
+@testable import ClickstreamLib
 import Foundation
 
 struct MockConstants {

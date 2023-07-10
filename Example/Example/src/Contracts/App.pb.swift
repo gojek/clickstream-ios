@@ -7,7 +7,7 @@
 // For information on using the generated types, please see the documentation:
 //   https://github.com/apple/swift-protobuf/
 #if EVENT_VISUALIZER_ENABLED
-import Clickstream
+import ClickstreamLib
 #endif
 import Foundation
 import SwiftProtobuf

@@ -6,7 +6,7 @@
 //  Copyright © 2020 Gojek. All rights reserved.
 //
 
-@testable import Clickstream
+@testable import ClickstreamLib
 import Foundation
 
 final class AppStateNotifierMock: AppStateNotifierService {
