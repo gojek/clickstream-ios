@@ -47,13 +47,11 @@ class RepeatingTimer {
     deinit {
         timer.setEventHandler {}
         timer.cancel()
-        if !Clickstream.timerCrashFixFlag {
-            /*
-             If the timer is suspended, calling cancel without resuming
-             triggers a crash. This is documented here https://forums.developer.apple.com/thread/15902
-             */
-            resume()
-        }
+        /*
+         If the timer is suspended, calling cancel without resuming
+         triggers a crash. This is documented here https://forums.developer.apple.com/thread/15902
+         */
+        resume()
         eventHandler = nil
     }
 

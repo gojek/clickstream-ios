@@ -107,8 +107,6 @@ public final class Clickstream {
     
     static var updateConnectionStatus: Bool = false
     
-    static var timerCrashFixFlag: Bool = false
-    
     /// Use this property to pass application name without any space or special characters.
     static var appPrefix: String = ""
     
@@ -169,7 +167,6 @@ public final class Clickstream {
                                                      eventClassification: ClickstreamEventClassification,
                                                      delegate: ClickstreamDelegate? = nil,
                                                      updateConnectionStatus: Bool = false,
-                                                     timerCrashFixFlag: Bool = false,
                                                      appPrefix: String) throws -> Clickstream? {
         do {
             return try initializeClickstream(
@@ -230,7 +227,6 @@ public final class Clickstream {
             Clickstream.configurations = configurations
             Clickstream.eventClassifier = eventClassification
             Clickstream.updateConnectionStatus = updateConnectionStatus
-            Clickstream.timerCrashFixFlag = timerCrashFixFlag
             Clickstream.appPrefix = appPrefix.lowercased().replacingOccurrences(of: " ", with: "")
             
             // All the dependency injections pertaining to the clickstream blocks happen here!
