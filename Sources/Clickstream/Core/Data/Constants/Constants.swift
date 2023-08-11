@@ -55,6 +55,7 @@ enum Constants {
     }
     
     enum EventVisualizer {
+        static var eventID = "eventGuid"
         static var eventGuid = "meta.eventGuid"
         static var guid = "guid"
         static var eventTimestamp = "eventTimestamp"
