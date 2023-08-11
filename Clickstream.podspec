@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
   s.frameworks    = "UIKit", "Foundation", "CoreTelephony"
   s.dependency    "SwiftProtobuf", "~> 1.10"
   s.dependency    "ReachabilitySwift", "~> 5.0"
-  s.dependency    "GRDB.swift", "~> 6.7"
+  s.dependency    "GRDB.swift", "~> 5.12"
   
   s.default_subspec  = 'Core'
 
