@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		429F57EB05B7B9767E4FBEB8 /* libPods-ClickstreamTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C5A50D5EEE74EC5CE6F31417 /* libPods-ClickstreamTests.a */; };
 		681EAB4124897822003AB41A /* AppStateNotifierMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681EAB4024897822003AB41A /* AppStateNotifierMock.swift */; };
 		68316329260CB2690095DBCA /* BatchSizeRegulatorMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68316328260CB2690095DBCA /* BatchSizeRegulatorMock.swift */; };
 		68316339260DC7D00095DBCA /* DatabaseMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68316338260DC7D00095DBCA /* DatabaseMock.swift */; };
@@ -15,6 +16,7 @@
 		68E19FB8247D42100074A790 /* DispatchQueue+Detection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E19FB5247D42100074A790 /* DispatchQueue+Detection.swift */; };
 		68E7BD202456E6F10072549A /* libClickstream.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 68E7BADF244F08C00072549A /* libClickstream.a */; };
 		68E7BD87246028CF0072549A /* SocketHandlerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E7BD86246028CF0072549A /* SocketHandlerMock.swift */; };
+		776FB180FBCCF6F1083C8F0C /* libPods-Clickstream.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5BC5D97C095B9D0054EC400D /* libPods-Clickstream.a */; };
 		9A6AEC9C2A43835A000A1D1D /* MockConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A6AEC9B2A43835A000A1D1D /* MockConstants.swift */; };
 		9AF0C758280DEC8C00E39A12 /* ClickStreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB88AA0251B00030092659B /* ClickStreamTests.swift */; };
 		9AF0C759280DEC9600E39A12 /* EventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA23CFA24A5978B001BE490 /* EventTests.swift */; };
@@ -248,6 +250,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		04252D67FB0278299E2FDC30 /* Pods-Clickstream.alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.alpha.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.alpha.xcconfig"; sourceTree = "<group>"; };
+		0AA3C834AAFEDB8835179BF7 /* Pods-Clickstream.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.production.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.production.xcconfig"; sourceTree = "<group>"; };
+		14C57E0428553930EACEE79D /* Pods-ClickstreamTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.release.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.release.xcconfig"; sourceTree = "<group>"; };
+		37E2225185EEF760D774E0AE /* Pods-ClickstreamTests.alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.alpha.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.alpha.xcconfig"; sourceTree = "<group>"; };
+		5BC5D97C095B9D0054EC400D /* libPods-Clickstream.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Clickstream.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5C9335AA157B6E707D7E99E8 /* Pods-Clickstream.integration.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.integration.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.integration.xcconfig"; sourceTree = "<group>"; };
+		6471E3E992919BA25A347CE4 /* Pods-ClickstreamTests.integration.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.integration.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.integration.xcconfig"; sourceTree = "<group>"; };
 		681EAB3E248972E6003AB41A /* EventBatchProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EventBatchProcessorTests.swift; path = ClickStreamTests/EventSchedulerTests/EventBatchProcessorTests.swift; sourceTree = SOURCE_ROOT; };
 		681EAB4024897822003AB41A /* AppStateNotifierMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateNotifierMock.swift; sourceTree = "<group>"; };
 		68316328260CB2690095DBCA /* BatchSizeRegulatorMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchSizeRegulatorMock.swift; sourceTree = "<group>"; };
@@ -264,6 +273,7 @@
 		68E7BD86246028CF0072549A /* SocketHandlerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketHandlerMock.swift; sourceTree = "<group>"; };
 		68E7BD89246034F90072549A /* NetworkServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkServiceTests.swift; sourceTree = "<group>"; };
 		68E7BD8B246184310072549A /* NetworkBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkBuilderTests.swift; sourceTree = "<group>"; };
+		696B576506B4C1E20CE8B908 /* Pods-ClickstreamTests.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.production.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.production.xcconfig"; sourceTree = "<group>"; };
 		9A6AEC9B2A43835A000A1D1D /* MockConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockConstants.swift; sourceTree = "<group>"; };
 		9AA23CF524A33B4C001BE490 /* EventProcessorTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventProcessorTest.swift; sourceTree = "<group>"; };
 		9AA23CFA24A5978B001BE490 /* EventTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTests.swift; sourceTree = "<group>"; };
@@ -276,6 +286,7 @@
 		9AA23D1024AB2801001BE490 /* EventProcessorDependenciesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventProcessorDependenciesTests.swift; sourceTree = "<group>"; };
 		9AAFBAE924754CEF009BFDFB /* SortedArrayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortedArrayTests.swift; sourceTree = "<group>"; };
 		9AB88AA0251B00030092659B /* ClickStreamTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClickStreamTests.swift; sourceTree = "<group>"; };
+		AF29B3EF8D5B71798729864E /* Pods-Clickstream.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.debug.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.debug.xcconfig"; sourceTree = "<group>"; };
 		BD5E7BB92A0B94BF000F5678 /* Transport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transport.swift; sourceTree = "<group>"; };
 		BD5E7BBA2A0B94BF000F5678 /* FoundationTransport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoundationTransport.swift; sourceTree = "<group>"; };
 		BD5E7BBB2A0B94BF000F5678 /* TCPTransport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPTransport.swift; sourceTree = "<group>"; };
@@ -371,6 +382,9 @@
 		BD8AF5E7287ED1CB002DD402 /* EventProcessorDependencies.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventProcessorDependencies.swift; sourceTree = "<group>"; };
 		BDDC872129E6AF580024ED8C /* FileManagerOverride.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerOverride.swift; sourceTree = "<group>"; };
 		BDDC873529E7D6AC0024ED8C /* EteExperiment.pb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EteExperiment.pb.swift; sourceTree = "<group>"; };
+		C5A50D5EEE74EC5CE6F31417 /* libPods-ClickstreamTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ClickstreamTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DE0C4C478AC0C0E88C390867 /* Pods-Clickstream.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.release.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.release.xcconfig"; sourceTree = "<group>"; };
+		EE645A32C97AE1ED64CCC01D /* Pods-ClickstreamTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.debug.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -378,6 +392,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				776FB180FBCCF6F1083C8F0C /* libPods-Clickstream.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -386,6 +401,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				68E7BD202456E6F10072549A /* libClickstream.a in Frameworks */,
+				429F57EB05B7B9767E4FBEB8 /* libPods-ClickstreamTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -395,6 +411,16 @@
 		2E71FBE7FAE66AF83A297BB5 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
+				AF29B3EF8D5B71798729864E /* Pods-Clickstream.debug.xcconfig */,
+				5C9335AA157B6E707D7E99E8 /* Pods-Clickstream.integration.xcconfig */,
+				DE0C4C478AC0C0E88C390867 /* Pods-Clickstream.release.xcconfig */,
+				04252D67FB0278299E2FDC30 /* Pods-Clickstream.alpha.xcconfig */,
+				0AA3C834AAFEDB8835179BF7 /* Pods-Clickstream.production.xcconfig */,
+				EE645A32C97AE1ED64CCC01D /* Pods-ClickstreamTests.debug.xcconfig */,
+				6471E3E992919BA25A347CE4 /* Pods-ClickstreamTests.integration.xcconfig */,
+				14C57E0428553930EACEE79D /* Pods-ClickstreamTests.release.xcconfig */,
+				37E2225185EEF760D774E0AE /* Pods-ClickstreamTests.alpha.xcconfig */,
+				696B576506B4C1E20CE8B908 /* Pods-ClickstreamTests.production.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -425,6 +451,7 @@
 				68E7BAE0244F08C00072549A /* Products */,
 				2E71FBE7FAE66AF83A297BB5 /* Pods */,
 				9AAFBB13247CBA15009BFDFB /* Recovered References */,
+				B80782C0E50280B49B2F256C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -569,6 +596,15 @@
 			children = (
 			);
 			name = "Recovered References";
+			sourceTree = "<group>";
+		};
+		B80782C0E50280B49B2F256C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5BC5D97C095B9D0054EC400D /* libPods-Clickstream.a */,
+				C5A50D5EEE74EC5CE6F31417 /* libPods-ClickstreamTests.a */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		BD5E7AB52A0B85FE000F5678 /* ThirdPartyLibraries */ = {
@@ -1144,6 +1180,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 68E7BAE6244F08C00072549A /* Build configuration list for PBXNativeTarget "Clickstream" */;
 			buildPhases = (
+				633B9DF0D1E344ED850A89EF /* [CP] Check Pods Manifest.lock */,
 				68E7BADB244F08C00072549A /* Sources */,
 				68E7BADC244F08C00072549A /* Frameworks */,
 				68E7BADD244F08C00072549A /* CopyFiles */,
@@ -1163,6 +1200,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 68E7BD232456E6F10072549A /* Build configuration list for PBXNativeTarget "ClickstreamTests" */;
 			buildPhases = (
+				28C5F968600D64A4CCE3C51C /* [CP] Check Pods Manifest.lock */,
 				68E7BD172456E6F10072549A /* Sources */,
 				68E7BD182456E6F10072549A /* Frameworks */,
 				68E7BD192456E6F10072549A /* Resources */,
@@ -1234,6 +1272,50 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		28C5F968600D64A4CCE3C51C /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ClickstreamTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		633B9DF0D1E344ED850A89EF /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Clickstream-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		6830362224E283B6007CF4DD /* Linting */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1610,6 +1692,7 @@
 		};
 		68E7BAE7244F08C00072549A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AF29B3EF8D5B71798729864E /* Pods-Clickstream.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				OTHER_LDFLAGS = "-ObjC";
@@ -1623,6 +1706,7 @@
 		};
 		68E7BAE8244F08C00072549A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DE0C4C478AC0C0E88C390867 /* Pods-Clickstream.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				OTHER_LDFLAGS = "-ObjC";
@@ -1696,6 +1780,7 @@
 		};
 		68E7BB15245062B50072549A /* Integration */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5C9335AA157B6E707D7E99E8 /* Pods-Clickstream.integration.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				ONLY_ACTIVE_ARCH = NO;
@@ -1765,6 +1850,7 @@
 		};
 		68E7BB17245062C80072549A /* Production */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0AA3C834AAFEDB8835179BF7 /* Pods-Clickstream.production.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				OTHER_LDFLAGS = "-ObjC";
@@ -1834,6 +1920,7 @@
 		};
 		68E7BB19245062D20072549A /* Alpha */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 04252D67FB0278299E2FDC30 /* Pods-Clickstream.alpha.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				OTHER_LDFLAGS = "-ObjC";
@@ -1847,6 +1934,7 @@
 		};
 		68E7BD242456E6F10072549A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EE645A32C97AE1ED64CCC01D /* Pods-ClickstreamTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Manual;
@@ -1869,6 +1957,7 @@
 		};
 		68E7BD252456E6F10072549A /* Integration */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6471E3E992919BA25A347CE4 /* Pods-ClickstreamTests.integration.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Manual;
@@ -1891,6 +1980,7 @@
 		};
 		68E7BD262456E6F10072549A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 14C57E0428553930EACEE79D /* Pods-ClickstreamTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Manual;
@@ -1913,6 +2003,7 @@
 		};
 		68E7BD272456E6F10072549A /* Alpha */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 37E2225185EEF760D774E0AE /* Pods-ClickstreamTests.alpha.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Manual;
@@ -1935,6 +2026,7 @@
 		};
 		68E7BD282456E6F10072549A /* Production */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 696B576506B4C1E20CE8B908 /* Pods-ClickstreamTests.production.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Manual;
