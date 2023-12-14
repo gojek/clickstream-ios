@@ -91,7 +91,9 @@ extension EventsHelper: EventStateViewable {
     ///   - eventBatch: this is the eventBatchGuid for a particular event batch
     ///   - state: this is the state in which the event is in
     public func updateStatus(providedEventGuid: String? = nil, eventBatchID eventBatch: String? = nil, state: EventState) {
-        if let providedEventGuid = providedEventGuid, let foundIndex = indexOfEvent(with: providedEventGuid) {
+        if let providedEventGuid = providedEventGuid,
+            let foundIndex = indexOfEvent(with: providedEventGuid),
+            foundIndex < EventsHelper.shared.eventsCaptured.count {
             
             EventsHelper.shared.eventsCaptured[foundIndex].state = state
             if let eventBatch = eventBatch {
@@ -100,7 +102,9 @@ extension EventsHelper: EventStateViewable {
         } else if let eventBatch = eventBatch {
             let foundIndexs = indexOfEventBatch(with: eventBatch)
             for eventIndex in foundIndexs {
-                EventsHelper.shared.eventsCaptured[eventIndex].state = state
+                if eventIndex < EventsHelper.shared.eventsCaptured.count {
+                    EventsHelper.shared.eventsCaptured[eventIndex].state = state
+                }
             }
         }
     }
