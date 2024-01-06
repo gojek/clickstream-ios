@@ -58,6 +58,6 @@ enum Constants {
         static var eventGuid = "meta.eventGuid"
         static var guid = "guid"
         static var eventTimestamp = "eventTimestamp"
-        static var deviceTimestamp = "_deviceTimestamp"
+        static var deviceTimestamp = "deviceTimestamp"
     }
 }
