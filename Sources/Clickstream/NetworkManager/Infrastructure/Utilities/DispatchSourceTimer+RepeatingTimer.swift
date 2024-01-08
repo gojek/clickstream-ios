@@ -14,7 +14,13 @@ import Foundation
 /// already resumed (noted by https://github.com/SiftScience/sift-ios/issues/52)
 class RepeatingTimer {
     
-    let timeInterval: TimeInterval
+    static let shared = RepeatingTimer()
+
+    var timeInterval: TimeInterval = 0
+
+    private var suspensionCount = 0
+    
+    private init() { }
     
     init(timeInterval: TimeInterval) {
         self.timeInterval = timeInterval
@@ -53,19 +59,33 @@ class RepeatingTimer {
         if state.value == .resumed {
             return
         }
+        suspensionCount -= 1
         state.mutate { state in
             state = .resumed
         }
-        timer.resume()
+        if Clickstream.timerCrashFixFlag {
+            if suspensionCount > 0 {
+                self.timer.resume()
+            }
+        } else {
+            timer.resume()
+        }
     }
 
     func suspend() {
         if state.value == .suspended {
             return
         }
+        suspensionCount += 1
         state.mutate { state in
             state = .suspended
         }
-        timer.suspend()
+        if Clickstream.timerCrashFixFlag {
+            if suspensionCount > 0 {
+                timer.suspend()
+            }
+        } else {
+            timer.suspend()
+        }
     }
 }

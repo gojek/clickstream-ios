@@ -8,6 +8,7 @@
 
 import Foundation
 import SwiftProtobuf
+import UIKit
 
 protocol EventDetailsModelInput: AnyObject {
     
