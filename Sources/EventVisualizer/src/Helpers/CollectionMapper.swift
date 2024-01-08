@@ -9,9 +9,6 @@
 import Foundation
 import SwiftProtobuf
 
-// Added to show all timestamps related fields in EventVisualiser details screen.
-extension SwiftProtobuf.Google_Protobuf_Timestamp: CollectionMapper { }
-
 public protocol CollectionMapper {
     var asDictionary: [String: Any] { get }
 }
