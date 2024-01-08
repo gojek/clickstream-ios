@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "68E7BADE244F08C00072549A"
-               BuildableName = "libClickstream.a"
-               BlueprintName = "Clickstream"
-               ReferencedContainer = "container:Clickstream.xcodeproj">
+               BuildableName = "libClickstreamLib.a"
+               BlueprintName = "ClickstreamLib"
+               ReferencedContainer = "container:ClickstreamLib.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,7 +35,7 @@
                BlueprintIdentifier = "68E7BD1A2456E6F10072549A"
                BuildableName = "ClickstreamTests.xctest"
                BlueprintName = "ClickstreamTests"
-               ReferencedContainer = "container:Clickstream.xcodeproj">
+               ReferencedContainer = "container:ClickstreamLib.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -61,9 +61,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "68E7BADE244F08C00072549A"
-            BuildableName = "libClickstream.a"
-            BlueprintName = "Clickstream"
-            ReferencedContainer = "container:Clickstream.xcodeproj">
+            BuildableName = "libClickstreamLib.a"
+            BlueprintName = "ClickstreamLib"
+            ReferencedContainer = "container:ClickstreamLib.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

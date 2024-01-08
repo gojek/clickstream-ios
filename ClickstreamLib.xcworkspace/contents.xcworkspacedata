@@ -2,12 +2,15 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:Clickstream.xcodeproj">
+      location = "group:/Users/rishavgupta/Desktop/clickstream-ios/ClickstreamLib.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Example/Example.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:ClickstreamLib.xcodeproj">
    </FileRef>
 </Workspace>

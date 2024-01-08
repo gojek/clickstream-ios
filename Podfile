@@ -5,8 +5,8 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '11.0'
  use_modular_headers!
 
-project 'Clickstream.xcodeproj'
-workspace 'Clickstream.xcworkspace'
+project 'ClickstreamLib.xcodeproj'
+workspace 'ClickstreamLib.xcworkspace'
 
 def clickstream_pods
   pod 'SwiftProtobuf', '~> 1.10'
@@ -14,7 +14,7 @@ def clickstream_pods
   pod 'GRDB.swift', '~> 6.7'
 end
 
-target 'Clickstream' do
+target 'ClickstreamLib' do
    clickstream_pods
 end
 

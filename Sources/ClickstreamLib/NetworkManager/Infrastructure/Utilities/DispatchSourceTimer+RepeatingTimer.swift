@@ -13,11 +13,11 @@ import Foundation
 /// crashes that occur from calling resume multiple times on a timer that is
 /// already resumed (noted by https://github.com/SiftScience/sift-ios/issues/52)
 class RepeatingTimer {
-    
+
     static let shared = RepeatingTimer()
-
+    
     var timeInterval: TimeInterval = 0
-
+    
     private var suspensionCount = 0
     
     private init() { }

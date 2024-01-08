@@ -6,7 +6,7 @@
 //  Copyright © 2020 Gojek. All rights reserved.
 //
 
-@testable import Clickstream
+@testable import ClickstreamLib
 import XCTest
 
 class KeepAliveServiceTests: XCTestCase {
@@ -39,7 +39,6 @@ class KeepAliveServiceTests: XCTestCase {
         //when
         sut.start {
             callbackCount += 1
-            print(callbackCount)
         }
         
         mockQueue.asyncAfter(deadline: .now() + 4.5) {
