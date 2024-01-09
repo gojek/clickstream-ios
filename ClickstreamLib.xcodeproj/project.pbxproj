@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5C1616100CDF1C5B4A265F03 /* libPods-ClickstreamLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A19DCBDB3A0EBFB527262A8 /* libPods-ClickstreamLib.a */; };
 		68E7BD202456E6F10072549A /* libClickstreamLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 68E7BADF244F08C00072549A /* libClickstreamLib.a */; };
+		6E2A2FF5A4C4820DF0F31C3C /* libPods-ClickstreamTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0900D4ED17E642E4DA1234F8 /* libPods-ClickstreamTests.a */; };
 		BD6BDB6829FBC1360006B04A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD6BDB3E29FBC1360006B04A /* Assets.xcassets */; };
 		BD6BDB6929FBC1360006B04A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD6BDB3E29FBC1360006B04A /* Assets.xcassets */; };
 		BD6BDB6A29FBC1360006B04A /* RadioLabelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD6BDB4129FBC1360006B04A /* RadioLabelTableViewCell.swift */; };
@@ -251,8 +253,20 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0900D4ED17E642E4DA1234F8 /* libPods-ClickstreamTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ClickstreamTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E89089CF6FF061500E7C7DC /* Pods-ClickstreamLib.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamLib.debug.xcconfig"; path = "Target Support Files/Pods-ClickstreamLib/Pods-ClickstreamLib.debug.xcconfig"; sourceTree = "<group>"; };
+		3F2AFBAF5784EF40DEFD78DD /* Pods-ClickstreamTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.release.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.release.xcconfig"; sourceTree = "<group>"; };
+		4A21BE293CE76A6536BAD044 /* Pods-ClickstreamLib.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamLib.release.xcconfig"; path = "Target Support Files/Pods-ClickstreamLib/Pods-ClickstreamLib.release.xcconfig"; sourceTree = "<group>"; };
+		5F13A1F04B78213DC5E4995A /* Pods-ClickstreamLib.alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamLib.alpha.xcconfig"; path = "Target Support Files/Pods-ClickstreamLib/Pods-ClickstreamLib.alpha.xcconfig"; sourceTree = "<group>"; };
+		64EC00981DF4B0D69ADB558C /* Pods-ClickstreamLib.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamLib.production.xcconfig"; path = "Target Support Files/Pods-ClickstreamLib/Pods-ClickstreamLib.production.xcconfig"; sourceTree = "<group>"; };
 		68E7BADF244F08C00072549A /* libClickstreamLib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libClickstreamLib.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		68E7BD1B2456E6F10072549A /* ClickstreamTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClickstreamTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		88F9204101C5E8D41805FD1A /* Pods-ClickstreamTests.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.production.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.production.xcconfig"; sourceTree = "<group>"; };
+		97173CFFF6833EC6EF76541D /* Pods-ClickstreamLib.integration.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamLib.integration.xcconfig"; path = "Target Support Files/Pods-ClickstreamLib/Pods-ClickstreamLib.integration.xcconfig"; sourceTree = "<group>"; };
+		9A19DCBDB3A0EBFB527262A8 /* libPods-ClickstreamLib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ClickstreamLib.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9D31FA91B32979CBBA2C3849 /* Pods-ClickstreamTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.debug.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.debug.xcconfig"; sourceTree = "<group>"; };
+		A870FFC059A664D0DF0292E5 /* Pods-ClickstreamTests.alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.alpha.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.alpha.xcconfig"; sourceTree = "<group>"; };
+		A8F29FD3E426DD04C26B8560 /* Pods-ClickstreamTests.integration.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.integration.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.integration.xcconfig"; sourceTree = "<group>"; };
 		BD6BDB3E29FBC1360006B04A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BD6BDB4129FBC1360006B04A /* RadioLabelTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadioLabelTableViewCell.swift; sourceTree = "<group>"; };
 		BD6BDB4229FBC1360006B04A /* FilterTextFieldTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterTextFieldTableViewCell.swift; sourceTree = "<group>"; };
@@ -384,6 +398,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C1616100CDF1C5B4A265F03 /* libPods-ClickstreamLib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -392,6 +407,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				68E7BD202456E6F10072549A /* libClickstreamLib.a in Frameworks */,
+				6E2A2FF5A4C4820DF0F31C3C /* libPods-ClickstreamTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -401,6 +417,16 @@
 		2E71FBE7FAE66AF83A297BB5 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
+				1E89089CF6FF061500E7C7DC /* Pods-ClickstreamLib.debug.xcconfig */,
+				97173CFFF6833EC6EF76541D /* Pods-ClickstreamLib.integration.xcconfig */,
+				4A21BE293CE76A6536BAD044 /* Pods-ClickstreamLib.release.xcconfig */,
+				5F13A1F04B78213DC5E4995A /* Pods-ClickstreamLib.alpha.xcconfig */,
+				64EC00981DF4B0D69ADB558C /* Pods-ClickstreamLib.production.xcconfig */,
+				9D31FA91B32979CBBA2C3849 /* Pods-ClickstreamTests.debug.xcconfig */,
+				A8F29FD3E426DD04C26B8560 /* Pods-ClickstreamTests.integration.xcconfig */,
+				3F2AFBAF5784EF40DEFD78DD /* Pods-ClickstreamTests.release.xcconfig */,
+				A870FFC059A664D0DF0292E5 /* Pods-ClickstreamTests.alpha.xcconfig */,
+				88F9204101C5E8D41805FD1A /* Pods-ClickstreamTests.production.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -413,6 +439,7 @@
 				68E7BAE0244F08C00072549A /* Products */,
 				2E71FBE7FAE66AF83A297BB5 /* Pods */,
 				9AAFBB13247CBA15009BFDFB /* Recovered References */,
+				FB2A02FC6F309C114517B6F5 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1154,6 +1181,15 @@
 			path = Core;
 			sourceTree = "<group>";
 		};
+		FB2A02FC6F309C114517B6F5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9A19DCBDB3A0EBFB527262A8 /* libPods-ClickstreamLib.a */,
+				0900D4ED17E642E4DA1234F8 /* libPods-ClickstreamTests.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1161,6 +1197,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 68E7BAE6244F08C00072549A /* Build configuration list for PBXNativeTarget "ClickstreamLib" */;
 			buildPhases = (
+				C0136F3A5E3C473BDBCF7D78 /* [CP] Check Pods Manifest.lock */,
 				68E7BADB244F08C00072549A /* Sources */,
 				68E7BADC244F08C00072549A /* Frameworks */,
 				68E7BADD244F08C00072549A /* CopyFiles */,
@@ -1180,6 +1217,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 68E7BD232456E6F10072549A /* Build configuration list for PBXNativeTarget "ClickstreamTests" */;
 			buildPhases = (
+				0737F26BE8B9A6B567D7D80E /* [CP] Check Pods Manifest.lock */,
 				68E7BD172456E6F10072549A /* Sources */,
 				68E7BD182456E6F10072549A /* Frameworks */,
 				68E7BD192456E6F10072549A /* Resources */,
@@ -1251,6 +1289,28 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		0737F26BE8B9A6B567D7D80E /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ClickstreamTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		6830362224E283B6007CF4DD /* Linting */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1268,6 +1328,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "#if which swiftlint >/dev/null; then\n # swiftlint\n#else\n # echo \"warning: SwiftLint not installed, download from #https://github.com/realm/SwiftLint\"\n#fi\n";
+		};
+		C0136F3A5E3C473BDBCF7D78 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ClickstreamLib-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1630,6 +1712,7 @@
 		};
 		68E7BAE7244F08C00072549A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1E89089CF6FF061500E7C7DC /* Pods-ClickstreamLib.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				OTHER_LDFLAGS = "-ObjC";
@@ -1643,6 +1726,7 @@
 		};
 		68E7BAE8244F08C00072549A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4A21BE293CE76A6536BAD044 /* Pods-ClickstreamLib.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				OTHER_LDFLAGS = "-ObjC";
@@ -1716,6 +1800,7 @@
 		};
 		68E7BB15245062B50072549A /* Integration */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 97173CFFF6833EC6EF76541D /* Pods-ClickstreamLib.integration.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				ONLY_ACTIVE_ARCH = NO;
@@ -1785,6 +1870,7 @@
 		};
 		68E7BB17245062C80072549A /* Production */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 64EC00981DF4B0D69ADB558C /* Pods-ClickstreamLib.production.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				OTHER_LDFLAGS = "-ObjC";
@@ -1854,6 +1940,7 @@
 		};
 		68E7BB19245062D20072549A /* Alpha */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5F13A1F04B78213DC5E4995A /* Pods-ClickstreamLib.alpha.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				OTHER_LDFLAGS = "-ObjC";
@@ -1867,6 +1954,7 @@
 		};
 		68E7BD242456E6F10072549A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9D31FA91B32979CBBA2C3849 /* Pods-ClickstreamTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Manual;
@@ -1889,6 +1977,7 @@
 		};
 		68E7BD252456E6F10072549A /* Integration */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A8F29FD3E426DD04C26B8560 /* Pods-ClickstreamTests.integration.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Manual;
@@ -1911,6 +2000,7 @@
 		};
 		68E7BD262456E6F10072549A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3F2AFBAF5784EF40DEFD78DD /* Pods-ClickstreamTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Manual;
@@ -1933,6 +2023,7 @@
 		};
 		68E7BD272456E6F10072549A /* Alpha */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A870FFC059A664D0DF0292E5 /* Pods-ClickstreamTests.alpha.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Manual;
@@ -1955,6 +2046,7 @@
 		};
 		68E7BD282456E6F10072549A /* Production */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 88F9204101C5E8D41805FD1A /* Pods-ClickstreamTests.production.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Manual;

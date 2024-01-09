@@ -178,6 +178,7 @@ public final class Clickstream {
                 eventClassification: eventClassification,
                 delegate: delegate,
                 updateConnectionStatus: updateConnectionStatus,
+                timerCrashFixFlag: timerCrashFixFlag,
                 appPrefix: appPrefix)
         } catch {
             print("Cannot initialise Clickstream. Dependencies could not be initialised.",.critical)
@@ -191,6 +192,7 @@ public final class Clickstream {
                                                      eventClassification: ClickstreamEventClassification,
                                                      delegate: ClickstreamDelegate? = nil,
                                                      updateConnectionStatus: Bool = false,
+                                                     timerCrashFixFlag: Bool = false,
                                                      appPrefix: String) throws -> Clickstream? {
         do {
             return try initializeClickstream(
@@ -199,6 +201,7 @@ public final class Clickstream {
                 eventClassification: eventClassification,
                 delegate: delegate,
                 updateConnectionStatus: updateConnectionStatus,
+                timerCrashFixFlag: timerCrashFixFlag,
                 appPrefix: appPrefix)
         } catch {
             print("Cannot initialise Clickstream. Dependencies could not be initialised.",.critical)
@@ -213,6 +216,7 @@ public final class Clickstream {
                                       eventClassification: ClickstreamEventClassification,
                                       delegate: ClickstreamDelegate? = nil,
                                       updateConnectionStatus: Bool = false,
+                                      timerCrashFixFlag: Bool = false,
                                       appPrefix: String) throws -> Clickstream? {
         let semaphore = DispatchSemaphore(value: 1)
         defer {

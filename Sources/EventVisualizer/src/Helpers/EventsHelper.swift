@@ -117,12 +117,15 @@ extension EventsHelper: EventStateViewable {
                 if let currentEventGuid = flattenedDict[Constants.EventVisualizer.eventGuid] as? String, currentEventGuid == eventGuid {
                     return index
                 } else if let currentEventGuid = flattenedDict["storage.\(Constants.EventVisualizer.eventGuid)"] as? String,
-                            currentEventGuid == eventGuid {
+                          currentEventGuid == eventGuid {
                     return index
                 } else if let currentEventGuid = flattenedDict[Constants.EventVisualizer.guid] as? String,
                           currentEventGuid == eventGuid {
-                  return index
-              }
+                    return index
+                } else if let currentEventGuid = flattenedDict["storage.meta.storage.\(Constants.EventVisualizer.eventGID)"] as? String,
+                          currentEventGuid == eventGuid {
+                    return index
+                }
             }
         }
         return nil

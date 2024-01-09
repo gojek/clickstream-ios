@@ -49,18 +49,22 @@ final class EventsListViewModel: EventsListViewModelInput {
         var state = ""
         if let message = messages[index.row] as? CollectionMapper {
             if let eventGuid = message.asDictionary[Constants.EventVisualizer.eventGuid] as? String {
-                if let timestamp = message.asDictionary["_\(Constants.EventVisualizer.eventTimestamp)"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
-                    eventTimeStamp = "\(timestamp.date)"
-                } else if let timestamp = message.asDictionary["\(Constants.EventVisualizer.eventTimestamp)"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
-                    eventTimeStamp = "\(timestamp.date)"
+                if let timestamp = message.asDictionary["_\(Constants.EventVisualizer.eventTimestamp)"] as? Date {
+                    eventTimeStamp = "\(timestamp)"
+                } else if let timestamp = message.asDictionary["\(Constants.EventVisualizer.eventTimestamp)"] as? Date {
+                    eventTimeStamp = "\(timestamp)"
                 }
                 state = EventsHelper.shared.getState(of: eventGuid)
             } else if let eventGuid = message.asDictionary["storage.\(Constants.EventVisualizer.eventGuid)"] as? String,
-                      let timestamp = message.asDictionary["storage.\(Constants.EventVisualizer.eventTimestamp)"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
-                eventTimeStamp = "\(timestamp.date)"
+                      let timestamp = message.asDictionary["storage.\(Constants.EventVisualizer.eventTimestamp)"] as? Date {
+                eventTimeStamp = "\(timestamp)"
                 state = EventsHelper.shared.getState(of: eventGuid)
             } else if let eventGuid = message.asDictionary["\(Constants.EventVisualizer.guid)"] as? String,
-                      let timestamp = message.asDictionary["\(Constants.EventVisualizer.deviceTimestamp)"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
+                      let timestamp = message.asDictionary["\(Constants.EventVisualizer.deviceTimestamp)"] as? Date {
+                eventTimeStamp = "\(timestamp)"
+                state = EventsHelper.shared.getState(of: eventGuid)
+            } else if let eventGuid = message.asDictionary["storage.meta.storage.\(Constants.EventVisualizer.eventGID)"] as? String,
+                      let timestamp = message.asDictionary["storage.\(Constants.EventVisualizer.eventTimestamp)"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
                 eventTimeStamp = "\(timestamp.date)"
                 state = EventsHelper.shared.getState(of: eventGuid)
             }
