@@ -26,3 +26,9 @@ target 'Example' do
   project 'Example/Example.xcodeproj'
   clickstream_pods
 end
+
+target 'Example-ObjC' do
+  project 'Example-ObjC/Example-ObjC.xcodeproj'
+  pod 'Clickstream', :git => 'https://github.com/gojek/clickstream-ios.git', :branch => 'main'
+  pod 'Protobuf', :git => 'https://github.com/protocolbuffers/protobuf.git'
+end

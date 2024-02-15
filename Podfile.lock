@@ -1,12 +1,24 @@
 PODS:
+  - Clickstream (2.0.14):
+    - Clickstream/Core (= 2.0.14)
+    - GRDB.swift (~> 6.7)
+    - ReachabilitySwift (~> 5.0)
+    - SwiftProtobuf (~> 1.10)
+  - Clickstream/Core (2.0.14):
+    - GRDB.swift (~> 6.7)
+    - ReachabilitySwift (~> 5.0)
+    - SwiftProtobuf (~> 1.10)
   - GRDB.swift (6.14.0):
     - GRDB.swift/standard (= 6.14.0)
   - GRDB.swift/standard (6.14.0)
+  - Protobuf (3.27.0)
   - ReachabilitySwift (5.0.0)
   - SwiftProtobuf (1.21.0)
 
 DEPENDENCIES:
+  - Clickstream (from `https://github.com/gojek/clickstream-ios.git`, branch `main`)
   - GRDB.swift (~> 6.7)
+  - Protobuf (from `https://github.com/protocolbuffers/protobuf.git`)
   - ReachabilitySwift (~> 5.0)
   - SwiftProtobuf (~> 1.10)
 
@@ -17,11 +29,28 @@ SPEC REPOS:
     - ReachabilitySwift
     - SwiftProtobuf
 
+EXTERNAL SOURCES:
+  Clickstream:
+    :branch: main
+    :git: https://github.com/gojek/clickstream-ios.git
+  Protobuf:
+    :git: https://github.com/protocolbuffers/protobuf.git
+
+CHECKOUT OPTIONS:
+  Clickstream:
+    :commit: 50852537e6e8460887d2c06a3d74c490e03f5cd1
+    :git: https://github.com/gojek/clickstream-ios.git
+  Protobuf:
+    :commit: 0ce48b30b5c925fc2e30fa2d8f234fc9e3611276
+    :git: https://github.com/protocolbuffers/protobuf.git
+
 SPEC CHECKSUMS:
+  Clickstream: 9ced55f9162ca1618abcadf2e1e7592029a84526
   GRDB.swift: d31072a99e8d3d9f5410f1a938018ccb51b881e2
+  Protobuf: b097f40d117406c94d1cf4550444eeb351bf5650
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   SwiftProtobuf: afced68785854575756db965e9da52bbf3dc45e7
 
-PODFILE CHECKSUM: 2c97fb10dcb1fcd309b15a9c7e84ddc137998638
+PODFILE CHECKSUM: 99609f9193c7f91af71099ea5ef38f7f7ebb2c86
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.15.2
