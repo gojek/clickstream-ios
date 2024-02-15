@@ -25,12 +25,8 @@
     NSLog(@"trackEventToClickstream");
     AnalyticsManager *analyticsManager = [AnalyticsManager new] ;
     [analyticsManager initialiseClickstream];
-    NSDictionary *dict = @{ @"Authorization" : @"Basic ", @"X-UniqueId" : [[UIDevice currentDevice] identifierForVendor].UUIDString};
     
-    NSString *guid = [[NSUUID UUID]UUIDString];
-    NSDate *currentDate = [NSDate date];
-    
-    
+    NSString *guid = [[NSUUID UUID]UUIDString];   
     
     Device *device = [Device new];
     device.operatingSystem = @"iOS";
