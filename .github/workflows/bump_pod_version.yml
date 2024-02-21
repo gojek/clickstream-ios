@@ -4,6 +4,7 @@ on:
   pull_request:
     branches: 
       - main
+      - rename_sdk
     types: [closed]
 
 # Allows you to run this workflow manually from the Actions tab
