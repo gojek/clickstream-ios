@@ -27,7 +27,7 @@ Pod::Spec.new do |s|
   s.exclude_files = "Sources/ETETestSuite/**/*.swift"
   s.frameworks    = "UIKit", "Foundation", "CoreTelephony"
   s.dependency    "SwiftProtobuf", "~> 1.10"
-  s.dependency    "ReachabilitySwift", "~> 5.0"
+  s.dependency    "ReachabilitySwift", '>= 5.0.0'
   s.dependency    "GRDB.swift", "~> 6.7"
   
   s.default_subspec  = 'Core'
