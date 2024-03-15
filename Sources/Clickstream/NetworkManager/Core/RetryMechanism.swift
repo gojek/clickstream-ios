@@ -106,10 +106,10 @@ final class DefaultRetryMechanism: Retryable {
         self.persistence = persistence
         self.keepAliveService = keepAliveService
         
+        self.observeNetworkConnectivity()
         self.establishConnection()
         self.observeDeviceStatus()
         self.observeAppStateChanges()
-        self.observeNetworkConnectivity()
         self.keepConnectionAlive()
     }
     
@@ -132,7 +132,6 @@ final class DefaultRetryMechanism: Retryable {
         
     private func observeNetworkConnectivity() {
         do {
-            try reachability.startNotifier()
             reachability.whenReachable = { [weak self] (_) in
                 guard let checkedSelf = self else { return }
                 checkedSelf.establishConnection()
@@ -141,6 +140,7 @@ final class DefaultRetryMechanism: Retryable {
                 guard let checkedSelf = self else { return }
                 checkedSelf.terminateConnection()
             }
+            try reachability.startNotifier()
         } catch {
             print("Unable to start notifier")
         }
