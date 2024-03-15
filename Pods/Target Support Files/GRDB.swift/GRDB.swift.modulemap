@@ -1,0 +1,6 @@
+module GRDB {
+  umbrella header "GRDB.swift-umbrella.h"
+
+  export *
+  module * { export * }
+}
