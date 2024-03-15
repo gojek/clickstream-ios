@@ -6,9 +6,7 @@
 //
 // For information on using the generated types, please see the documentation:
 //   https://github.com/apple/swift-protobuf/
-#if EVENT_VISUALIZER_ENABLED
-import Clickstream
-#endif
+
 import Foundation
 import SwiftProtobuf
 
@@ -95,9 +93,7 @@ struct User {
   fileprivate var _device: Device? = nil
   fileprivate var _deviceTimestamp: SwiftProtobuf.Google_Protobuf_Timestamp? = nil
 }
-#if EVENT_VISUALIZER_ENABLED
-extension User: CollectionMapper { }
-#endif
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 extension User: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
