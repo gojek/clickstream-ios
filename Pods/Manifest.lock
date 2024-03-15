@@ -7,7 +7,7 @@ PODS:
 
 DEPENDENCIES:
   - GRDB.swift (~> 6.7)
-  - ReachabilitySwift (~> 5.0)
+  - ReachabilitySwift (>= 5.0.0)
   - SwiftProtobuf (~> 1.10)
 
 SPEC REPOS:
@@ -22,6 +22,6 @@ SPEC CHECKSUMS:
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   SwiftProtobuf: afced68785854575756db965e9da52bbf3dc45e7
 
-PODFILE CHECKSUM: 2c97fb10dcb1fcd309b15a9c7e84ddc137998638
+PODFILE CHECKSUM: f24f9da678cf7c77fd3275d27f766a88682ecadf
 
 COCOAPODS: 1.15.2
