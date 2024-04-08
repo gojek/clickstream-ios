@@ -12,7 +12,6 @@
 		98CDAC393665EEC635D0C690 /* libPods-Clickstream.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E561B35C0082DAE47E3BDE1 /* libPods-Clickstream.a */; };
 		9A0BBA882BC3A59300F7DC01 /* URLRequest+Equality.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0BBA872BC3A59300F7DC01 /* URLRequest+Equality.swift */; };
 		9A0BBA892BC3A59300F7DC01 /* URLRequest+Equality.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0BBA872BC3A59300F7DC01 /* URLRequest+Equality.swift */; };
-		9A0BBA8A2BC3C98000F7DC01 /* SortedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467EA2A5BD72000BFA976 /* SortedArray.swift */; };
 		9A0BBA8D2BC3CA5500F7DC01 /* PerformanceTracer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0BBA8C2BC3CA5500F7DC01 /* PerformanceTracer.swift */; };
 		9A0BBA8E2BC3CA5500F7DC01 /* PerformanceTracer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0BBA8C2BC3CA5500F7DC01 /* PerformanceTracer.swift */; };
 		BD6BDB6829FBC1360006B04A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD6BDB3E29FBC1360006B04A /* Assets.xcassets */; };
@@ -86,7 +85,6 @@
 		BDE467792A5BD24500BFA976 /* AppStateNotifierServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467522A5BD24500BFA976 /* AppStateNotifierServiceTests.swift */; };
 		BDE4677A2A5BD24500BFA976 /* DispatchQueue+Detection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467542A5BD24500BFA976 /* DispatchQueue+Detection.swift */; };
 		BDE4677B2A5BD24500BFA976 /* SchedulerServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467552A5BD24500BFA976 /* SchedulerServiceTests.swift */; };
-		BDE4677C2A5BD24500BFA976 /* SortedArrayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467562A5BD24500BFA976 /* SortedArrayTests.swift */; };
 		BDE4677D2A5BD24500BFA976 /* EventWarehouserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467572A5BD24500BFA976 /* EventWarehouserTests.swift */; };
 		BDE4677E2A5BD24500BFA976 /* DatabaseDAOTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE4675A2A5BD24500BFA976 /* DatabaseDAOTests.swift */; };
 		BDE4677F2A5BD24500BFA976 /* EventCreatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE4675B2A5BD24500BFA976 /* EventCreatorTests.swift */; };
@@ -177,7 +175,6 @@
 		BDE4686A2A5BD72000BFA976 /* EventBatchSizeRegulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467E82A5BD72000BFA976 /* EventBatchSizeRegulator.swift */; };
 		BDE4686B2A5BD72000BFA976 /* SchedulerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467E92A5BD72000BFA976 /* SchedulerService.swift */; };
 		BDE4686C2A5BD72000BFA976 /* SchedulerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467E92A5BD72000BFA976 /* SchedulerService.swift */; };
-		BDE4686E2A5BD72000BFA976 /* SortedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467EA2A5BD72000BFA976 /* SortedArray.swift */; };
 		BDE4686F2A5BD72000BFA976 /* DatabaseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467EE2A5BD72000BFA976 /* DatabaseHandler.swift */; };
 		BDE468702A5BD72000BFA976 /* DatabaseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467EE2A5BD72000BFA976 /* DatabaseHandler.swift */; };
 		BDE468712A5BD72000BFA976 /* DatabaseDAO.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467EF2A5BD72000BFA976 /* DatabaseDAO.swift */; };
@@ -271,7 +268,6 @@
 		BDE467522A5BD24500BFA976 /* AppStateNotifierServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStateNotifierServiceTests.swift; sourceTree = "<group>"; };
 		BDE467542A5BD24500BFA976 /* DispatchQueue+Detection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DispatchQueue+Detection.swift"; sourceTree = "<group>"; };
 		BDE467552A5BD24500BFA976 /* SchedulerServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchedulerServiceTests.swift; sourceTree = "<group>"; };
-		BDE467562A5BD24500BFA976 /* SortedArrayTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SortedArrayTests.swift; sourceTree = "<group>"; };
 		BDE467572A5BD24500BFA976 /* EventWarehouserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventWarehouserTests.swift; sourceTree = "<group>"; };
 		BDE4675A2A5BD24500BFA976 /* DatabaseDAOTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseDAOTests.swift; sourceTree = "<group>"; };
 		BDE4675B2A5BD24500BFA976 /* EventCreatorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventCreatorTests.swift; sourceTree = "<group>"; };
@@ -325,7 +321,6 @@
 		BDE467E72A5BD72000BFA976 /* AppStateNotifierService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStateNotifierService.swift; sourceTree = "<group>"; };
 		BDE467E82A5BD72000BFA976 /* EventBatchSizeRegulator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventBatchSizeRegulator.swift; sourceTree = "<group>"; };
 		BDE467E92A5BD72000BFA976 /* SchedulerService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchedulerService.swift; sourceTree = "<group>"; };
-		BDE467EA2A5BD72000BFA976 /* SortedArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SortedArray.swift; sourceTree = "<group>"; };
 		BDE467EE2A5BD72000BFA976 /* DatabaseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseHandler.swift; sourceTree = "<group>"; };
 		BDE467EF2A5BD72000BFA976 /* DatabaseDAO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseDAO.swift; sourceTree = "<group>"; };
 		BDE467F22A5BD72000BFA976 /* TableDefinable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableDefinable.swift; sourceTree = "<group>"; };
@@ -620,7 +615,6 @@
 				BDE467522A5BD24500BFA976 /* AppStateNotifierServiceTests.swift */,
 				BDE467532A5BD24500BFA976 /* Utilities */,
 				BDE467552A5BD24500BFA976 /* SchedulerServiceTests.swift */,
-				BDE467562A5BD24500BFA976 /* SortedArrayTests.swift */,
 				BDE467572A5BD24500BFA976 /* EventWarehouserTests.swift */,
 				BDE467582A5BD24500BFA976 /* Data */,
 				BDE4675B2A5BD24500BFA976 /* EventCreatorTests.swift */,
@@ -972,7 +966,6 @@
 				BDE467E72A5BD72000BFA976 /* AppStateNotifierService.swift */,
 				BDE467E82A5BD72000BFA976 /* EventBatchSizeRegulator.swift */,
 				BDE467E92A5BD72000BFA976 /* SchedulerService.swift */,
-				BDE467EA2A5BD72000BFA976 /* SortedArray.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -1282,7 +1275,6 @@
 				BDE4686B2A5BD72000BFA976 /* SchedulerService.swift in Sources */,
 				BDE468032A5BD72000BFA976 /* NetworkService.swift in Sources */,
 				BDE468072A5BD72000BFA976 /* NetworkConfiguration.swift in Sources */,
-				9A0BBA8A2BC3C98000F7DC01 /* SortedArray.swift in Sources */,
 				BDE4686F2A5BD72000BFA976 /* DatabaseHandler.swift in Sources */,
 				BDE468632A5BD72000BFA976 /* EventWarehouser.swift in Sources */,
 				BDE468052A5BD72000BFA976 /* Connectable.swift in Sources */,
@@ -1340,7 +1332,6 @@
 				BDE467852A5BD24500BFA976 /* NetworkManagerDependenciesTests.swift in Sources */,
 				BDE467822A5BD24500BFA976 /* EventProcessorDependenciesTests.swift in Sources */,
 				BDE467872A5BD24500BFA976 /* KeepAliveServiceTests.swift in Sources */,
-				BDE4686E2A5BD72000BFA976 /* SortedArray.swift in Sources */,
 				BDE468162A5BD72000BFA976 /* EventRequest.swift in Sources */,
 				BD6BDB8929FBC1360006B04A /* HealthAnalysisEvent.swift in Sources */,
 				BDE467782A5BD24500BFA976 /* EventSchedulerDependenciesTests.swift in Sources */,
@@ -1367,7 +1358,6 @@
 				BDE468142A5BD72000BFA976 /* ProtoConvertible.swift in Sources */,
 				BDE468282A5BD72000BFA976 /* DeviceInfo.swift in Sources */,
 				BDE4677B2A5BD24500BFA976 /* SchedulerServiceTests.swift in Sources */,
-				BDE4677C2A5BD24500BFA976 /* SortedArrayTests.swift in Sources */,
 				BDE468602A5BD72000BFA976 /* EventBatchCreator.swift in Sources */,
 				BDE468202A5BD72000BFA976 /* Constants.swift in Sources */,
 				BDE467712A5BD24500BFA976 /* ClickStreamDependenciesTests.swift in Sources */,
