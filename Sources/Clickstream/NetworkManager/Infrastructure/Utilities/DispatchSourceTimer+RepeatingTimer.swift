@@ -15,9 +15,7 @@ import Foundation
 class RepeatingTimer {
 
     static let shared = RepeatingTimer()
-    
     var timeInterval: TimeInterval = 0
-    
     private var suspensionCount = 0
     
     private init() { }

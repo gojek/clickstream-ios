@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import ClickstreamLib
+import Clickstream
 import SwiftProtobuf
 
 class AnalyticsManager {

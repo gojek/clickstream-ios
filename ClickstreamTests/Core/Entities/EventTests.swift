@@ -6,7 +6,7 @@
 //  Copyright © 2020 Gojek. All rights reserved.
 //
 
-@testable import ClickstreamLib
+@testable import Clickstream
 import XCTest
 
 class EventTests: XCTestCase {

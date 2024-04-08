@@ -6,7 +6,7 @@
 //  Copyright © 2021 Gojek. All rights reserved.
 //
 
-@testable import ClickstreamLib
+@testable import Clickstream
 import XCTest
 
 class RetryMechanismTests: XCTestCase {

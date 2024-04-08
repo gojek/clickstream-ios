@@ -441,7 +441,7 @@
 					"\"CoreTelephony\"",
 					"-framework",
 					"\"SystemConfiguration\"",
-					"-l\"ClickstreamLib\"",
+					"-l\"Clickstream\"",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -Xcc -fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/GRDB.swift/GRDB.modulemap\" -Xcc -fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/ReachabilitySwift/Reachability.modulemap\" -Xcc -fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/SwiftProtobuf/SwiftProtobuf.modulemap\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.clickstream.example;
@@ -473,7 +473,7 @@
 					"\"CoreTelephony\"",
 					"-framework",
 					"\"SystemConfiguration\"",
-					"-l\"ClickstreamLib\"",
+					"-l\"Clickstream\"",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -Xcc -fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/GRDB.swift/GRDB.modulemap\" -Xcc -fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/ReachabilitySwift/Reachability.modulemap\" -Xcc -fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/SwiftProtobuf/SwiftProtobuf.modulemap\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.clickstream.example;

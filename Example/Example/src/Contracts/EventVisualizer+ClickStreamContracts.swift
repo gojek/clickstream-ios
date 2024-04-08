@@ -10,7 +10,7 @@ import Foundation
 import SwiftProtobuf
 
 #if EVENT_VISUALIZER_ENABLED
-import ClickstreamLib
+import Clickstream
 
 extension User: CollectionMapper { }
 extension Device: CollectionMapper { }
