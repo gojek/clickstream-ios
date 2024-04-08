@@ -9,8 +9,8 @@ project 'ClickstreamLib.xcodeproj'
 workspace 'ClickstreamLib.xcworkspace'
 
 def clickstream_pods
-  pod 'SwiftProtobuf', '~> 1.21.0'
-  pod 'ReachabilitySwift', '~> 5.0'
+  pod 'SwiftProtobuf', '~> 1.10'
+  pod 'ReachabilitySwift', '>= 5.0.0'
   pod 'GRDB.swift', '~> 6.7'
 end
 
