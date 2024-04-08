@@ -83,7 +83,11 @@ final class DefaultKeepAliveServiceWithSafeTimer: KeepAliveService {
     
     func start(with subscriber: @escaping KeepAliveCallback) {
         stop()
-        timer?.resume()
+        if Clickstream.timerCrashFixFlag {
+            timer?.suspend()
+        } else {
+            timer?.resume()
+        }
         self.subscriber = subscriber
     }
     
@@ -114,6 +118,10 @@ final class DefaultKeepAliveServiceWithSafeTimer: KeepAliveService {
     }
     
     func stop() {
-        timer?.suspend()
+        if Clickstream.timerCrashFixFlag {
+            timer?.resume()
+        } else {
+            timer?.suspend()
+        }
     }
 }
