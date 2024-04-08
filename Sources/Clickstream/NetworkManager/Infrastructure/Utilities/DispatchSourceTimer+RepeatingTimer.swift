@@ -16,7 +16,6 @@ class RepeatingTimer {
 
     static let shared = RepeatingTimer()
     var timeInterval: TimeInterval = 0
-    private var suspensionCount = 0
     
     private init() { }
     
@@ -24,9 +23,10 @@ class RepeatingTimer {
         self.timeInterval = timeInterval
     }
     
-    private lazy var timer: DispatchSourceTimer = {
+    private lazy var timer: DispatchSourceTimer = { [weak self] in
         let t = DispatchSource.makeTimerSource()
-        t.schedule(deadline: .now() + self.timeInterval, repeating: self.timeInterval)
+        guard let checkedSelf = self else { return t }
+        t.schedule(deadline: .now() + (checkedSelf.timeInterval), repeating: checkedSelf.timeInterval)
         t.setEventHandler(handler: { [weak self] in
             self?.eventHandler?()
         })
@@ -36,11 +36,12 @@ class RepeatingTimer {
     var eventHandler: (() -> Void)?
 
     private enum State {
+        case notInitialized
         case suspended
         case resumed
     }
 
-    private var state: Atomic<State> = Atomic(.suspended)
+    private var state: Atomic<State> = Clickstream.timerCrashFixFlag ? Atomic(.notInitialized) : Atomic(.suspended)
 
     deinit {
         timer.setEventHandler {}
@@ -53,37 +54,30 @@ class RepeatingTimer {
         eventHandler = nil
     }
 
+    // decrements an internal suspension count.
     func resume() {
-        if state.value == .resumed {
-            return
+        if Clickstream.timerCrashFixFlag {
+            if state.value == .resumed || state.value == .notInitialized {
+                return
+            }
+        } else {
+            if state.value == .resumed {
+                return
+            }
         }
-        suspensionCount -= 1
         state.mutate { state in
             state = .resumed
         }
-        if Clickstream.timerCrashFixFlag {
-            if suspensionCount > 0 {
-                self.timer.resume()
-            }
-        } else {
-            timer.resume()
-        }
+        timer.resume()
     }
 
     func suspend() {
         if state.value == .suspended {
             return
         }
-        suspensionCount += 1
         state.mutate { state in
             state = .suspended
         }
-        if Clickstream.timerCrashFixFlag {
-            if suspensionCount > 0 {
-                timer.suspend()
-            }
-        } else {
-            timer.suspend()
-        }
+        timer.suspend()
     }
 }
