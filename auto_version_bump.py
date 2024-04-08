@@ -1,8 +1,8 @@
 import os, sys
 import fileinput
 
-project_name = 'Clickstream'
-podspec_file_name = 'Clickstream.podspec'
+project_name = 'ClickstreamLib'
+podspec_file_name = 'ClickstreamLib.podspec'
 
 new_tag = ""
 lib_command = ""
@@ -23,7 +23,7 @@ def podCommandEdit():
     lib_command = 'pod lib lint --allow-warnings'
     pod_push_command = 'pod trunk push ' + podspec_file_name + ' --allow-warnings'
     git_add = 'git add .'
-    git_commit = 'git commit -m "Updating Clickstream.podspec version"'
+    git_commit = 'git commit -m "Updating ClickstreamLib.podspec version"'
     git_push = 'git push origin main'
 
 
