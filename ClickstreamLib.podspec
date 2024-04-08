@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "ClickstreamLib"
-  s.version          = "2.0.14"
+  s.version          = "2.0.23"
   s.summary          = "Real time Analytics SDK"
   s.description      = "Clickstream is an event agnostic, real-time data ingestion analytics SDK"
 
@@ -26,7 +26,7 @@ Pod::Spec.new do |s|
   s.exclude_files = "Example"
   s.exclude_files = "Sources/ETETestSuite/**/*.swift"
   s.frameworks    = "UIKit", "Foundation", "CoreTelephony"
-  s.dependency    "SwiftProtobuf", "~> 1.10"
+  s.dependency    "SwiftProtobuf", "~> 1.21.0"
   s.dependency    "ReachabilitySwift", "~> 5.0"
   s.dependency    "GRDB.swift", "~> 6.7"
   
