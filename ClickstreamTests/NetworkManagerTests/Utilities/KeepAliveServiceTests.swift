@@ -39,7 +39,6 @@ class KeepAliveServiceTests: XCTestCase {
         //when
         sut.start {
             callbackCount += 1
-            print(callbackCount)
         }
         
         mockQueue.asyncAfter(deadline: .now() + 4.5) {

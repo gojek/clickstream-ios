@@ -89,10 +89,9 @@ final class EventDetailsViewModel: EventDetailsModelInput {
             (value as? Double != nil) ||
             (value is NSArray) ||
             /// checking if value is of enum type
-            Mirror(reflecting: value).displayStyle?.equals(displayCase: .enum) ?? false ? true : false
-        }
-        if let timestamp = selectedMessage?["_\(Constants.EventVisualizer.eventTimestamp)"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
-            displayedMessage?.append(("eventTimestamp", "\(timestamp.date)"))
+            Mirror(reflecting: value).displayStyle?.equals(displayCase: .enum) ?? false ? true : false ||
+            // checking if value is of Date type for showing SwiftProtobuf.Google_Protobuf_Timestamp.Date field's value in EV details screen
+            (value is Date)
         }
     }
     

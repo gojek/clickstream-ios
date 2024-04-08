@@ -15,6 +15,7 @@
 		9A266FAC27F6ADA9000D6C36 /* User.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A266FA927F6ADA9000D6C36 /* User.pb.swift */; };
 		9A266FAF27F6ADA9000D6C36 /* Device.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A266FAA27F6ADA9000D6C36 /* Device.pb.swift */; };
 		9A266FB227F6ADA9000D6C36 /* App.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A266FAB27F6ADA9000D6C36 /* App.pb.swift */; };
+		9A65B31F2B4BAEBB00730CE9 /* EventVisualizer+ClickStreamContracts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A65B31E2B4BAEBB00730CE9 /* EventVisualizer+ClickStreamContracts.swift */; };
 		9AA23CF3249C7589001BE490 /* AnalyticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA23CF2249C7589001BE490 /* AnalyticsManager.swift */; };
 		9AEA265024924B340018931D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AEA264F24924B340018931D /* AppDelegate.swift */; };
 		9AEA265724924B340018931D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9AEA265524924B340018931D /* Main.storyboard */; };
@@ -34,6 +35,7 @@
 		9A266FA927F6ADA9000D6C36 /* User.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.pb.swift; sourceTree = "<group>"; };
 		9A266FAA27F6ADA9000D6C36 /* Device.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Device.pb.swift; sourceTree = "<group>"; };
 		9A266FAB27F6ADA9000D6C36 /* App.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = App.pb.swift; sourceTree = "<group>"; };
+		9A65B31E2B4BAEBB00730CE9 /* EventVisualizer+ClickStreamContracts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventVisualizer+ClickStreamContracts.swift"; sourceTree = "<group>"; };
 		9AA23CF2249C7589001BE490 /* AnalyticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsManager.swift; sourceTree = "<group>"; };
 		9AEA264C24924B340018931D /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9AEA264F24924B340018931D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -119,6 +121,7 @@
 				9A266FAB27F6ADA9000D6C36 /* App.pb.swift */,
 				9A266FAA27F6ADA9000D6C36 /* Device.pb.swift */,
 				9A266FA927F6ADA9000D6C36 /* User.pb.swift */,
+				9A65B31E2B4BAEBB00730CE9 /* EventVisualizer+ClickStreamContracts.swift */,
 			);
 			path = Contracts;
 			sourceTree = "<group>";
@@ -272,6 +275,7 @@
 				9AA23CF3249C7589001BE490 /* AnalyticsManager.swift in Sources */,
 				9A266FAF27F6ADA9000D6C36 /* Device.pb.swift in Sources */,
 				9AEA265024924B340018931D /* AppDelegate.swift in Sources */,
+				9A65B31F2B4BAEBB00730CE9 /* EventVisualizer+ClickStreamContracts.swift in Sources */,
 				9A266FA727F6ACFB000D6C36 /* User.proto in Sources */,
 				BDDC8AE129E95D4B0024ED8C /* Constants.swift in Sources */,
 				9A266FB227F6ADA9000D6C36 /* App.pb.swift in Sources */,

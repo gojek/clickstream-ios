@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SwiftProtobuf
 
 public protocol CollectionMapper {
     var asDictionary: [String: Any] { get }
@@ -20,6 +21,13 @@ public extension CollectionMapper {
             guard label != "unknownFields" else { return nil }
 
             if let dict = value as? CollectionMapper {
+                // Check if value is Google_Protobuf_Timestamp type and then show Date value of it.
+                // If you remove this check then it will show seconds and nanos value in EV details screen
+                // For this to work we have conformed Google_Protobuf_Timestamp with CollectionMapper
+                if let timestamp = value as? Google_Protobuf_Timestamp {
+                    let label = label.replacingOccurrences(of: "_", with: "").replacingOccurrences(of: "storage.", with: "")
+                    return (label, timestamp.date)
+                }
                 return (label, dict.asDictionary)
             }
             return (label, value)
