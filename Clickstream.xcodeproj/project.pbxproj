@@ -13,6 +13,8 @@
 		9A0BBA882BC3A59300F7DC01 /* URLRequest+Equality.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0BBA872BC3A59300F7DC01 /* URLRequest+Equality.swift */; };
 		9A0BBA892BC3A59300F7DC01 /* URLRequest+Equality.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0BBA872BC3A59300F7DC01 /* URLRequest+Equality.swift */; };
 		9A0BBA8A2BC3C98000F7DC01 /* SortedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467EA2A5BD72000BFA976 /* SortedArray.swift */; };
+		9A0BBA8D2BC3CA5500F7DC01 /* PerformanceTracer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0BBA8C2BC3CA5500F7DC01 /* PerformanceTracer.swift */; };
+		9A0BBA8E2BC3CA5500F7DC01 /* PerformanceTracer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0BBA8C2BC3CA5500F7DC01 /* PerformanceTracer.swift */; };
 		BD6BDB6829FBC1360006B04A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD6BDB3E29FBC1360006B04A /* Assets.xcassets */; };
 		BD6BDB6929FBC1360006B04A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD6BDB3E29FBC1360006B04A /* Assets.xcassets */; };
 		BD6BDB6A29FBC1360006B04A /* RadioLabelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD6BDB4129FBC1360006B04A /* RadioLabelTableViewCell.swift */; };
@@ -223,6 +225,7 @@
 		68E7BD1B2456E6F10072549A /* ClickstreamTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClickstreamTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		88F9204101C5E8D41805FD1A /* Pods-ClickstreamTests.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.production.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.production.xcconfig"; sourceTree = "<group>"; };
 		9A0BBA872BC3A59300F7DC01 /* URLRequest+Equality.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+Equality.swift"; sourceTree = "<group>"; };
+		9A0BBA8C2BC3CA5500F7DC01 /* PerformanceTracer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceTracer.swift; sourceTree = "<group>"; };
 		9D31FA91B32979CBBA2C3849 /* Pods-ClickstreamTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.debug.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A870FFC059A664D0DF0292E5 /* Pods-ClickstreamTests.alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.alpha.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.alpha.xcconfig"; sourceTree = "<group>"; };
 		A8F29FD3E426DD04C26B8560 /* Pods-ClickstreamTests.integration.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.integration.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.integration.xcconfig"; sourceTree = "<group>"; };
@@ -395,6 +398,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		9A0BBA8B2BC3CA4000F7DC01 /* Performance */ = {
+			isa = PBXGroup;
+			children = (
+				9A0BBA8C2BC3CA5500F7DC01 /* PerformanceTracer.swift */,
+			);
+			path = Performance;
+			sourceTree = "<group>";
+		};
 		9AAFBB13247CBA15009BFDFB /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
@@ -491,6 +502,7 @@
 		BD6BDB5429FBC1360006B04A /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				9A0BBA8B2BC3CA4000F7DC01 /* Performance */,
 				BD6BDB5529FBC1360006B04A /* Health */,
 				BD6BDB5929FBC1360006B04A /* Tracker.swift */,
 				BD6BDB5A29FBC1360006B04A /* Utilities */,
@@ -1221,6 +1233,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BD6BDB7229FBC1360006B04A /* EventVisualizerLandingViewController.swift in Sources */,
+				9A0BBA8D2BC3CA5500F7DC01 /* PerformanceTracer.swift in Sources */,
 				BD6BDB7629FBC1360006B04A /* EventsListViewModel.swift in Sources */,
 				BD6BDB7429FBC1360006B04A /* EventsListViewController.swift in Sources */,
 				BDE468232A5BD72000BFA976 /* JSONStringDecoder.swift in Sources */,
@@ -1323,6 +1336,7 @@
 				BDE4677A2A5BD24500BFA976 /* DispatchQueue+Detection.swift in Sources */,
 				BD6BDB9B29FBC1360006B04A /* ClickStreamHealthConfigurations.swift in Sources */,
 				BDE467882A5BD24500BFA976 /* DeviceStatusNotifierTests.swift in Sources */,
+				9A0BBA8E2BC3CA5500F7DC01 /* PerformanceTracer.swift in Sources */,
 				BDE467852A5BD24500BFA976 /* NetworkManagerDependenciesTests.swift in Sources */,
 				BDE467822A5BD24500BFA976 /* EventProcessorDependenciesTests.swift in Sources */,
 				BDE467872A5BD24500BFA976 /* KeepAliveServiceTests.swift in Sources */,
