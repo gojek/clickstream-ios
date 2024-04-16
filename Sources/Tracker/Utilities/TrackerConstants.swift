@@ -57,6 +57,8 @@ public struct TrackerConstant {
     static var deviceMake = "Apple"
     static var deviceOS = "iOS"
     
+    static let appState = "app_state"
+    
     public static let eventName = "eventName"
     public static let eventProperties = "event_properties"
     public static let clickstream_timestamp = "clickstream_timestamp"
