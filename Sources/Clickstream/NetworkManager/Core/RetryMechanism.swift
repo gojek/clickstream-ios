@@ -419,6 +419,10 @@ extension DefaultRetryMechanism {
     
     
     private func retryFailedBatches() {
+        guard isAvailble else {
+            return
+        }
+        
         if let failedRequests = persistence.fetchAll(), !failedRequests.isEmpty {
             let date = Date()
             let timedOutRequests = failedRequests.filter {
