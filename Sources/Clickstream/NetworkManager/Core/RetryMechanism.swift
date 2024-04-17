@@ -420,6 +420,7 @@ extension DefaultRetryMechanism {
     
     private func retryFailedBatches() {
         guard isAvailble else {
+            stopObservingFailedBatches()
             return
         }
         
