@@ -17,10 +17,20 @@ enum SocketConnectionState {
 }
 
 final class SocketHandlerMockSuccess: SocketHandler {
-    
     static var state: SocketConnectionState = .successWithData
     
-    private let connectionCallback: ConnectionStatus?
+    init(performOnQueue: SerialQueue) {
+        
+    }
+    
+    func setup(request: URLRequest, keepTrying: Bool, connectionCallback: ConnectionStatus?) {
+        self.connectionCallback = connectionCallback
+        SerialQueue.main.asyncAfter(deadline: .now() + 0.5) {
+           connectionCallback?(.success(.connected))//change this. -AV
+        }
+    }
+    
+    private var connectionCallback: ConnectionStatus?
     
     func sendPing(_ data: Data) { }
     
@@ -50,7 +60,7 @@ final class SocketHandlerMockSuccess: SocketHandler {
         connectionCallback?(.success(.disconnected))
     }
     
-    var isConnected: Bool {
-        true
+    var isConnected: Atomic<Bool> {
+        return Atomic(true)
     }
 }

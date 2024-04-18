@@ -18,7 +18,7 @@ class KeepAliveServiceTests: XCTestCase {
         let mockQueue = SerialQueue(label: "com.mock.gojek.clickstream.keepAlive", qos: .utility)
         
         SerialQueue.registerDetection(of: mockQueue) //Registers a queue to be detected.
-        let sut = DefaultKeepAliveService(with: mockQueue, duration: 2.0, reachability: NetworkReachabilityMock(isReachable: true))
+        let sut = DefaultKeepAliveServiceWithSafeTimer(with: mockQueue, duration: 2.0, reachability: NetworkReachabilityMock(isReachable: true))
         //when
         sut.start {
             let queueName = SerialQueue.currentQueueLabel ?? ""
@@ -34,7 +34,7 @@ class KeepAliveServiceTests: XCTestCase {
         var callbackCount = 0
         let mockQueue = SerialQueue(label: "com.mock.gojek.clickstream.keepAlive", qos: .utility)
         
-        let sut = DefaultKeepAliveService(with: mockQueue, duration: 1.0, reachability: NetworkReachabilityMock(isReachable: true))
+        let sut = DefaultKeepAliveServiceWithSafeTimer(with: mockQueue, duration: 1.0, reachability: NetworkReachabilityMock(isReachable: true))
         
         //when
         sut.start {

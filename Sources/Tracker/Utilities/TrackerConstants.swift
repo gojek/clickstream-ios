@@ -49,6 +49,14 @@ enum FailureReason: String, Codable, CaseIterable {
 }
 
 public struct TrackerConstant {
+    
+    internal enum Traces: String {
+        case ClickstreamSocketConnectionTime = "ClickstreamSocketConnectionTimeTrace"
+    }
+    
+    public static var traceName = "traceName"
+    public static var traceAttributes = "traceAttributes"
+    
     //TODO: Added Traces after merging Health tracking
     public static let DebugEventsNotification = NSNotification.Name(rawValue: "ClickstreamDebugNotifications")
     public static let TraceStartNotification = NSNotification.Name(rawValue: "ClickstreamTraceStartNotification")

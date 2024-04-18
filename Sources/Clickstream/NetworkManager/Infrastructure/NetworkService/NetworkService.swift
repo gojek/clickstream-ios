@@ -15,8 +15,8 @@ protocol NetworkServiceInputs {
     /// - Parameters:
     ///   - connectionStatusListener: A callback to listen to the change in the status.
     ///   - keepTrying: allow connectable to try reconnection exponentially
-    @discardableResult func initiateConnection(connectionStatusListener: ConnectionStatus?,
-                                               keepTrying: Bool) -> Connectable?
+    func initiateConnection(connectionStatusListener: ConnectionStatus?,
+                            keepTrying: Bool)
     
     /// Writes data to the given connectable and fires a completion event after the write is completed.
     /// - Parameters:
@@ -77,15 +77,14 @@ final class DefaultNetworkService<C: Connectable>: NetworkService {
 extension DefaultNetworkService {
 
     func initiateConnection(connectionStatusListener: ConnectionStatus?,
-                            keepTrying: Bool = false) -> Connectable? {
-        guard _connectable == nil else { return self._connectable }
+                            keepTrying: Bool = false) {
+        guard _connectable == nil else { return }
         self.connectionCallback = connectionStatusListener
         let request = networkConfig.request
-        _connectable = C(request: request,
-                        keepTrying: false,
-                        performOnQueue: performQueue,
-                        connectionCallback: self.connectionCallback)
-        return _connectable
+        _connectable = C(performOnQueue: performQueue)
+        connectable?.setup(request: request,
+                           keepTrying: false,
+                           connectionCallback: self.connectionCallback)
     }
     
     func write<T>(_ data: Data, completion: @escaping (Result<T, ConnectableError>) -> Void) where T : Message {
@@ -129,6 +128,6 @@ extension DefaultNetworkService {
 extension DefaultNetworkService {
     
     var isConnected: Bool {
-        _connectable?.isConnected ?? false
+        _connectable?.isConnected.value ?? false
     }
 }
