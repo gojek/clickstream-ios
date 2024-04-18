@@ -27,6 +27,7 @@ enum Constants {
         public static var success = "success"
         public static var failure = "failure"
         public static var networkType = "networkType"
+        public static let clickstreamVersion = "2.0.26"
     }
     
     // MARK: - SDK Defaults
