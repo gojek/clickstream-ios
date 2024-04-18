@@ -29,6 +29,7 @@ Pod::Spec.new do |s|
   s.dependency    "SwiftProtobuf", "~> 1.10"
   s.dependency    "ReachabilitySwift", '>= 5.0.0'
   s.dependency    "GRDB.swift", "~> 6.7"
+  s.dependency    "Starscream", "~> 4.0"
   
   s.default_subspec  = 'Core'
 

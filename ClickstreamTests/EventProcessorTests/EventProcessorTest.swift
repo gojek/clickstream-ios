@@ -25,7 +25,7 @@ class EventProcessorTest: XCTestCase {
     private var eventWarehouser: DefaultEventWarehouser!
     private var persistence: DefaultDatabaseDAO<EventRequest>!
     private var eventPersistence: DefaultDatabaseDAO<Event>!
-    private var keepAliveService: DefaultKeepAliveService!
+    private var keepAliveService: DefaultKeepAliveServiceWithSafeTimer!
     private let dbQueueMock = SerialQueue(label: "com.mock.gojek.clickstream.network", qos: .utility, attributes: .concurrent)
     private let database = try! DefaultDatabase(qos: .WAL)
     private let batchSizeRegulator = BatchSizeRegulatorMock()
@@ -38,7 +38,7 @@ class EventProcessorTest: XCTestCase {
         persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         eventPersistence = DefaultDatabaseDAO<Event>(database: database, performOnQueue: dbQueueMock)
 
-        keepAliveService = DefaultKeepAliveService(with: processorQueueMock, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
+        keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: processorQueueMock, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
 
         retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: DefaultDeviceStatus(performOnQueue: processorQueueMock), appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: processorQueueMock, persistence: persistence, keepAliveService: keepAliveService)
         networkBuilder = DefaultNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: processorQueueMock)
