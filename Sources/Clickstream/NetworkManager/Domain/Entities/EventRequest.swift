@@ -64,6 +64,7 @@ extension EventRequest: DatabasePersistable {
                 t.column("data", .blob)
                 t.column("retriesMade", .text).notNull()
                 t.column("createdTimestamp", .datetime).notNull()
+                t.column("eventCount", .integer).notNull()
             }
         }
     }
@@ -89,9 +90,12 @@ extension EventRequest: DatabasePersistable {
         }
         
         let addsEventCount: (TableAlteration) -> Void = { t in
-            t.add(column: "eventCount", .integer)
+            t.add(column: "eventCount", .integer).notNull().defaults(to: 0)
         }
         
-        return [("addsIsInternalToEventRequest", addsIsInternal), ("addsEventTypeToEventRequest", addsEventType), ("addsEventCountToEventRequest", addsEventCount)]
+        return [("addsIsInternalToEventRequest", addsIsInternal), 
+                ("addsEventTypeToEventRequest", addsEventType),
+                ("addsEventCountToEventRequest", addsEventCount)
+        ]
     }
 }
