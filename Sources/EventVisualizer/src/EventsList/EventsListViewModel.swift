@@ -67,9 +67,14 @@ final class EventsListViewModel: EventsListViewModelInput {
                       let timestamp = message.asDictionary["storage.\(Constants.EventVisualizer.eventTimestamp)"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
                 eventTimeStamp = "\(timestamp.date)"
                 state = EventsHelper.shared.getState(of: eventGuid)
-            } else if let eventGuid = message.asDictionary["storage.meta.storage.\(Constants.EventVisualizer.eventGID)"] as? String,
-                      let timestamp = message.asDictionary["storage.\(Constants.EventVisualizer.eventTimestamp)"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
-                eventTimeStamp = "\(timestamp.date)"
+            } else if let eventGuid = message.asDictionary["storage.meta.storage.\(Constants.EventVisualizer.eventGID)"] as? String {
+                if let timestamp = message.asDictionary["storage.\(Constants.EventVisualizer.eventTimestamp)"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
+                    eventTimeStamp = "\(timestamp.date)"
+                } else if let nanos = message.asDictionary["storage.eventTimestamp.nanos"] as? Int32,
+                            let seconds = message.asDictionary["storage.eventTimestamp.seconds"] as? Int64 {
+                    let timestamp = SwiftProtobuf.Google_Protobuf_Timestamp(seconds: seconds, nanos: nanos)
+                    eventTimeStamp = "\(timestamp.date)"
+                }
                 state = EventsHelper.shared.getState(of: eventGuid)
             }
         }

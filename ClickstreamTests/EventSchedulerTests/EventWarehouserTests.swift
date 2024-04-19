@@ -36,7 +36,7 @@ class EventWarehouserTests: XCTestCase {
         let persistence = DefaultDatabaseDAO<Event>(database: database, performOnQueue: dbQueueMock)
         
         let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
-        let keepAliveService = DefaultKeepAliveService(with: schedulerQueueMock, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
+        let keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: schedulerQueueMock, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
 
         let retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: DefaultDeviceStatus(performOnQueue: schedulerQueueMock), appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: schedulerQueueMock, persistence: DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock), keepAliveService: keepAliveService)
         
