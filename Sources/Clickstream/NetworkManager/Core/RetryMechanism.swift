@@ -383,7 +383,7 @@ extension DefaultRetryMechanism {
                 persistence.deleteOne(eventRequest.guid)
                 #if TRACKER_ENABLED
                 if Tracker.debugMode {
-                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTimeout,
+                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchDropped,
                                                           eventBatchGUID: fetchedEventRequest.guid,
                                                           eventCount: eventRequest.eventCount)
                     Tracker.sharedInstance?.record(event: healthEvent)
@@ -460,22 +460,6 @@ extension DefaultRetryMechanism {
 }
 
 // MARK: - Track Clickstream health.
-extension DefaultRetryMechanism {
-    func trackHealthEvents(eventRequest: EventRequest) {
-        #if TRACKER_ENABLED
-        if Tracker.debugMode {
-            guard eventRequest.eventType != Constants.EventType.instant else { return }
-            
-            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchSuccessAck,
-                                                  eventBatchGUID: eventRequest.guid,
-                                                  eventCount: eventRequest.eventCount)
-            Tracker.sharedInstance?.record(event: healthEvent)
-            
-        }
-        #endif
-    }
-}
-
 extension DefaultRetryMechanism {
     
     func trackHealthAndPerformanceEvents(eventRequest: EventRequest, startTime: Date) {

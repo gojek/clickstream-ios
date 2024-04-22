@@ -26,7 +26,7 @@ enum HealthEvents: String, Codable, CaseIterable {
     case ClickstreamEventBatchTriggerFailed = "Clickstream Event Batch Trigger Failed"
     case ClickstreamWriteToSocketFailed = "Clickstream Write to Socket Failed"
     case ClickstreamEventBatchErrorResponse = "Clickstream Event Batch Error response"
-    case ClickstreamEventBatchTimeout = "Clickstream Event Batch Timeout"
+    case ClickstreamEventBatchDropped = "Clickstream Event Batch Dropped"
     
     case ClickstreamConnectionSuccess = "Clickstream Connection Success"
     case ClickstreamConnectionFailure = "Clickstream Connection Failure"
@@ -80,5 +80,5 @@ public struct TrackerConstant {
         case aggregate = "aggregate"
     }
     
-    static let InstantEvents: [HealthEvents] = [.ClickstreamEventBatchTimeout, .ClickstreamConnectionSuccess, .ClickstreamConnectionFailure, .ClickstreamEventBatchErrorResponse, .ClickstreamWriteToSocketFailed, .ClickstreamEventBatchTriggerFailed]
+    static let InstantEvents: [HealthEvents] = [.ClickstreamEventBatchDropped, .ClickstreamConnectionSuccess, .ClickstreamConnectionFailure, .ClickstreamEventBatchErrorResponse, .ClickstreamWriteToSocketFailed, .ClickstreamEventBatchTriggerFailed]
 }
