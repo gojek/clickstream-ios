@@ -114,7 +114,8 @@ extension DefaultNetworkBuilder {
         
         let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamBatchSent,
                                               events: eventGUIDsString,
-                                              eventBatchGUID: eventBatch.uuid)
+                                              eventBatchGUID: eventBatch.uuid, 
+                                              eventCount: eventBatch.events.count)
         Tracker.sharedInstance?.record(event: healthEvent)
         #endif
     }
