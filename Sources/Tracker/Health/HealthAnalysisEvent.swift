@@ -45,12 +45,15 @@ struct HealthAnalysisEvent: Codable, Equatable, AnalysisEvent {
     
     private(set) var timeToConnection: String?
     
+    private(set) var eventCount: Int
+    
     init?(eventName: HealthEvents,
           events: String? = nil,
           eventGUID: String? = nil,
           eventBatchGUID: String? = nil,
           reason: String? = nil,
-          timeToConnection: String? = nil) {
+          timeToConnection: String? = nil,
+          eventCount: Int = 0) {
         
         // Don't initialize if debugMode is off
         guard Tracker.debugMode  else {
@@ -68,12 +71,13 @@ struct HealthAnalysisEvent: Codable, Equatable, AnalysisEvent {
         self.guid = UUID().uuidString
         self.sessionID = Tracker.sharedInstance?.commonProperties?.session.sessionId
         self.timeToConnection = timeToConnection
+        self.eventCount = eventCount
         
         self.trackedVia = Tracker.healthTrackingConfigs.trackedVia.rawValue
     }
     
     private enum CodingKeys : String, CodingKey {
-        case guid,eventName,eventType,timestamp,reason,eventGUID,eventBatchGUID,events,sessionID,trackedVia, timeToConnection
+        case guid,eventName,eventType,timestamp,reason,eventGUID,eventBatchGUID,events,sessionID,trackedVia, timeToConnection, eventCount
     }
     
     static func == (lhs: HealthAnalysisEvent, rhs: HealthAnalysisEvent) -> Bool {
@@ -110,6 +114,8 @@ extension HealthAnalysisEvent: Notifiable {
             properties[TrackerConstant.clickstream_error_reason] = reason
         }
         
+        properties[TrackerConstant.clickstream_event_count] = eventCount
+        
         let dict: [String : Any] = [TrackerConstant.eventName: eventName.rawValue,
                                     TrackerConstant.eventProperties: properties]
         NotificationCenter.default.post(name: TrackerConstant.DebugEventsNotification, object: dict)
@@ -130,6 +136,7 @@ extension HealthAnalysisEvent: DatabasePersistable {
                 t.column("eventBatchGUID", .text)
                 t.column("events", .text)
                 t.column("sessionID", .text)
+                t.column("eventCount", .integer)
             }
         }
     }
@@ -153,6 +160,10 @@ extension HealthAnalysisEvent: DatabasePersistable {
             t.add(column: "timeToConnection", .text)
         }
         
-        return [("addsTrackedViaToHealthEvent", addsTrackedVia), ("addsTimeToConnectionToHealthEvent", addsTimeToConnection)]        
+        let addsEventCount: (TableAlteration) -> Void = { t in
+            t.add(column: "eventCount", .integer).defaults(to: 0)
+        }
+        
+        return [("addsTrackedViaToHealthEvent", addsTrackedVia), ("addsTimeToConnectionToHealthEvent", addsTimeToConnection), ("addsEventCountToHealthEvent", addsEventCount)]        
     }
 }

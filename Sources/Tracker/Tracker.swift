@@ -221,11 +221,20 @@ public final class Tracker {
                     }
                 }
             }
-            
+            var eventCount = 0
+            for e in eventNameBasedAggregation {
+                if e.eventCount > 0 {
+                    eventCount += e.eventCount
+                } else {
+                    eventCount = 0
+                    break /// break the loop and reset event count. If any one of the event has eventCount -1, final eventCount in aggregated event will be wrong and will be of no use
+                }
+            }
+
             let eventBatchGuids = eventNameBasedAggregation.compactMap { $0.eventBatchGUID }
             
             var healthEvent = Gojek_Clickstream_Internal_Health.with {
-                $0.numberOfEvents = Int64(eventGuids.count)
+                $0.numberOfEvents = eventCount > 0 ? Int64(eventCount) : Int64(eventGuids.count)
                 $0.numberOfBatches = Int64(eventBatchGuids.count)
                 $0.healthMeta = metaData
                 $0.healthMeta.eventGuid = eventGuid

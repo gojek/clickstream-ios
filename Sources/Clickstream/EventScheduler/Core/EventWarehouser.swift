@@ -63,7 +63,8 @@ extension DefaultEventWarehouser {
                 #endif
                 #if TRACKER_ENABLED
                 let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventCached,
-                                                      eventGUID: event.guid)
+                                                      eventGUID: event.guid,
+                                                      eventCount: 1)
                 if event.type != Constants.EventType.instant.rawValue {
                     Tracker.sharedInstance?.record(event: healthEvent)
                 }

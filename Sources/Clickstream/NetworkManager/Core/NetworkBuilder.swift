@@ -71,7 +71,7 @@ extension DefaultNetworkBuilder {
                     checkedSelf.trackHealthEvents(eventBatch: eventBatch,
                                                           eventBatchData: data)
                 }
-                
+                eventRequest.eventCount = eventBatch.events.count
                 checkedSelf.retryMech.trackBatch(with: eventRequest)
                 #if EVENT_VISUALIZER_ENABLED
                 /// Update status of the event batch to sent to network
@@ -114,7 +114,8 @@ extension DefaultNetworkBuilder {
         
         let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamBatchSent,
                                               events: eventGUIDsString,
-                                              eventBatchGUID: eventBatch.uuid)
+                                              eventBatchGUID: eventBatch.uuid, 
+                                              eventCount: eventBatch.events.count)
         Tracker.sharedInstance?.record(event: healthEvent)
         #endif
     }

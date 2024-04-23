@@ -255,7 +255,8 @@ extension DefaultRetryMechanism {
                                 var healthEvent: HealthAnalysisEvent!
                                 healthEvent = HealthAnalysisEvent(eventName: .ClickstreamWriteToSocketFailed,
                                                                   eventBatchGUID: eventRequest.guid,
-                                                                  reason: FailureReason.ParsingException.rawValue)
+                                                                  reason: FailureReason.ParsingException.rawValue,
+                                                                  eventCount: eventRequest.eventCount)
                                 Tracker.sharedInstance?.record(event: healthEvent)
                                 #if ETE_TEST_SUITE_ENABLED
                                 Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Bad Request")
@@ -269,7 +270,8 @@ extension DefaultRetryMechanism {
                     #if TRACKER_ENABLED
                     let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchErrorResponse,
                                                           eventBatchGUID: eventRequest.guid, // eventRequest.guid is the batch GUID
-                                                          reason: error.localizedDescription)
+                                                          reason: error.localizedDescription,
+                                                          eventCount: eventRequest.eventCount)
                     Tracker.sharedInstance?.record(event: healthEvent)
                     #if ETE_TEST_SUITE_ENABLED
                     Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "\(error)")
@@ -381,8 +383,9 @@ extension DefaultRetryMechanism {
                 persistence.deleteOne(eventRequest.guid)
                 #if TRACKER_ENABLED
                 if Tracker.debugMode {
-                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTimeout,
-                                                          eventBatchGUID: fetchedEventRequest.guid)
+                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchDropped,
+                                                          eventBatchGUID: fetchedEventRequest.guid,
+                                                          eventCount: eventRequest.eventCount)
                     Tracker.sharedInstance?.record(event: healthEvent)
                 }
                 #endif
@@ -458,21 +461,6 @@ extension DefaultRetryMechanism {
 
 // MARK: - Track Clickstream health.
 extension DefaultRetryMechanism {
-    func trackHealthEvents(eventRequest: EventRequest) {
-        #if TRACKER_ENABLED
-        if Tracker.debugMode {
-            guard eventRequest.eventType != Constants.EventType.instant else { return }
-            
-            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchSuccessAck,
-                                                  eventBatchGUID: eventRequest.guid)
-            Tracker.sharedInstance?.record(event: healthEvent)
-            
-        }
-        #endif
-    }
-}
-
-extension DefaultRetryMechanism {
     
     func trackHealthAndPerformanceEvents(eventRequest: EventRequest, startTime: Date) {
         #if TRACKER_ENABLED
@@ -480,7 +468,8 @@ extension DefaultRetryMechanism {
             guard eventRequest.eventType != Constants.EventType.instant else { return }
             
             let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchSuccessAck,
-                                                  eventBatchGUID: eventRequest.guid)
+                                                  eventBatchGUID: eventRequest.guid,
+                                                  eventCount: eventRequest.eventCount)
             Tracker.sharedInstance?.record(event: healthEvent)
             
         }

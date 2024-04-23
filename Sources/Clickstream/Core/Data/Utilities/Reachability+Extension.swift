@@ -17,6 +17,7 @@ enum NetworkType: Equatable {
     case wwan2g
     case wwan3g
     case wwan4g
+    case wwan5g
     case unknownTechnology(name: String)
     
     var trackingId: String {
@@ -27,6 +28,7 @@ enum NetworkType: Equatable {
         case .wwan2g:                       return "2G"
         case .wwan3g:                       return "3G"
         case .wwan4g:                       return "4G"
+        case .wwan5g:                       return "5G"
         case .unknownTechnology(let name):  return "Unknown Technology: \"\(name)\""
         }
     }
@@ -51,7 +53,18 @@ extension Reachability {
     }
     
     internal static func getWWANNetworkType() -> NetworkType {
-        guard let currentRadioAccessTechnology = CTTelephonyNetworkInfo().currentRadioAccessTechnology else { return .unknown }
+        var _currentRadioAccessTechnology: String? = nil
+        if let accessTechnology = CTTelephonyNetworkInfo().serviceCurrentRadioAccessTechnology?.values.first{
+            _currentRadioAccessTechnology = accessTechnology
+        }
+
+        guard let currentRadioAccessTechnology = _currentRadioAccessTechnology else { return .unknown }
+        
+        if #available(iOS 14.1, *) {
+            if currentRadioAccessTechnology == CTRadioAccessTechnologyNRNSA || currentRadioAccessTechnology == CTRadioAccessTechnologyNR{
+                return .wwan5g
+            }
+        }
         switch currentRadioAccessTechnology {
         case CTRadioAccessTechnologyGPRS,
              CTRadioAccessTechnologyEdge,
@@ -70,5 +83,5 @@ extension Reachability {
         default:
             return .unknownTechnology(name: currentRadioAccessTechnology)
         }
-    }    
+    }
 }
