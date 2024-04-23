@@ -19,6 +19,7 @@ struct EventRequest: Codable, Equatable {
     var createdTimestamp: Date?
     var eventType: Constants.EventType?
     var isInternal: Bool?
+    var eventCount: Int
     
     init(guid: String,
          data: Data? = nil) {
@@ -29,6 +30,7 @@ struct EventRequest: Codable, Equatable {
         self.createdTimestamp = Date()
         self.isInternal = false
         self.eventType = .realTime
+        self.eventCount = 0
     }
     
     static func == (lhs: Self, rhs: Self) -> Bool {
@@ -62,6 +64,7 @@ extension EventRequest: DatabasePersistable {
                 t.column("data", .blob)
                 t.column("retriesMade", .text).notNull()
                 t.column("createdTimestamp", .datetime).notNull()
+                t.column("eventCount", .integer).notNull()
             }
         }
     }
@@ -86,6 +89,13 @@ extension EventRequest: DatabasePersistable {
             t.add(column: "eventType", .text)
         }
         
-        return [("addsIsInternalToEventRequest", addsIsInternal), ("addsEventTypeToEventRequest", addsEventType)]
+        let addsEventCount: (TableAlteration) -> Void = { t in
+            t.add(column: "eventCount", .integer).notNull().defaults(to: 0)
+        }
+        
+        return [("addsIsInternalToEventRequest", addsIsInternal), 
+                ("addsEventTypeToEventRequest", addsEventType),
+                ("addsEventCountToEventRequest", addsEventCount)
+        ]
     }
 }
