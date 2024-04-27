@@ -80,7 +80,7 @@ public final class Tracker {
         self._dataSource = dataSource
         self.delegate = delegate
         self.observeAppStateChanges()
-        self.flushOnAppUpgrade()
+        self.deleteHealthDataOnAppUpgrade()
     }
     
     @discardableResult
@@ -283,12 +283,13 @@ public final class Tracker {
     }
     
     /// Flushes health events, being tracked via Clickstream, in case of an app upgrade.
-    private func flushOnAppUpgrade() {
+    private func deleteHealthDataOnAppUpgrade() {
         Tracker.queue.async { [weak self] in guard let checkedSelf = self else { return }
             let appVersionChecker = DefaultAppVersionChecker(currentAppVersion: checkedSelf.commonProperties?.app.version)
             if appVersionChecker.hasAppVersionChanged() {
+                print("hasAppVersionChanged yes ", .critical)
                 // Delete health events being tracked via Clickstream
-                checkedSelf.healthTracker.flushFunnelEvents()
+                checkedSelf.healthTracker.deleteHealthDataOnAppUpgrade()
             }
         }
     }

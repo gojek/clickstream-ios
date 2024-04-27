@@ -42,15 +42,17 @@ final class HealthTracker {
         queue.async {
             let trackeVia: TrackedVia = Tracker.healthTrackingConfigs.trackedVia == .both ? .both : .external
             
-            var events: [HealthAnalysisEvent]!
+            var healthAnalysisEvents: [HealthAnalysisEvent]?
             if Tracker.healthTrackingConfigs.trackedVia == .both {
-                events = self._persistence.fetchAll()
+                healthAnalysisEvents = self._persistence.fetchAll()
+                
             } else {
-                events = self._persistence.deleteWhere(HealthAnalysisEvent.Columns.trackedVia,
+                healthAnalysisEvents = self._persistence.deleteWhere(HealthAnalysisEvent.Columns.trackedVia,
                                                        value: trackeVia.rawValue)
             }
-            
-            guard !events.isEmpty else { return }
+            guard let events = healthAnalysisEvents, !events.isEmpty  else {
+                return
+            }
             
             let instantEvents = events.filter { $0.eventType.rawValue == TrackerConstant.EventType.instant.rawValue }
             for instantEvent in instantEvents {
@@ -107,5 +109,11 @@ final class HealthTracker {
                                             value: trackedVia.rawValue)
         }
         return nil
+    }
+    
+    func deleteHealthDataOnAppUpgrade() {
+        if let doesTableExist = _persistence.doesTableExist(with: HealthAnalysisEvent.description), doesTableExist {
+            _persistence.deleteAll()
+        }
     }
 }
