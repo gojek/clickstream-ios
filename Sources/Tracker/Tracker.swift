@@ -170,7 +170,7 @@ public final class Tracker {
             
             let healthEvent = Gojek_Clickstream_Internal_Health.with {
                 $0.eventName = event.eventName.rawValue
-                $0.numberOfEvents = 1 // Since instant events are fired one at a time
+                $0.numberOfEvents = event.eventCount == 0 ? 1 : Int64(event.eventCount)  // Since instant events are fired one at a time
                 $0.healthMeta = metaData
                 $0.healthMeta.eventGuid = eventGuid
                 let currentTimestamp = Tracker.currentNTPTimestamp ?? Date()
