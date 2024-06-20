@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
   s.source           = { :git => 'https://github.com/gojek/clickstream-ios.git', :tag => s.version }
 
   s.platform         = :ios
-  s.ios.deployment_target = '11.0'
+  s.ios.deployment_target = '12.0'
   s.swift_version    = '5.0'
 
   s.source_files  = 'Sources/**/*.swift'
