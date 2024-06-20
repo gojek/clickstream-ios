@@ -10,7 +10,7 @@ workspace 'Clickstream.xcworkspace'
 
 def clickstream_pods
   pod 'SwiftProtobuf', '~> 1.21.0'
-  pod 'ReachabilitySwift', '>= 5.0.0'
+  pod 'ReachabilitySwift', '~> 5.2.3'
   pod 'GRDB.swift', '~> 6.7.0'
   pod 'Starscream', '~> 4.0.6'
 end
