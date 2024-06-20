@@ -240,7 +240,7 @@ extension SocketHandler {
             switch networkType {
             case .wifi:
                 return 1
-            case .wwan4g:
+            case .wwan4g, .wwan5g:
                 return 1.3
             case .wwan3g:
                 return 1.6
