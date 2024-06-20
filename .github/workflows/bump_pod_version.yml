@@ -6,10 +6,7 @@ on:
       - main
       - rename_sdk
     types: [closed]
-  workflow_dispatch:  
-
-# Allows you to run this workflow manually from the Actions tab
-  # workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
   bump-pod-version:
