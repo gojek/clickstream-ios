@@ -8,7 +8,7 @@ PODS:
 
 DEPENDENCIES:
   - GRDB.swift (~> 6.7.0)
-  - ReachabilitySwift (~> 5.2.3)
+  - ReachabilitySwift (= 5.2.3)
   - Starscream (~> 4.0.6)
   - SwiftProtobuf (~> 1.21.0)
 
@@ -25,6 +25,6 @@ SPEC CHECKSUMS:
   Starscream: 19b5533ddb925208db698f0ac508a100b884a1b9
   SwiftProtobuf: afced68785854575756db965e9da52bbf3dc45e7
 
-PODFILE CHECKSUM: 7ce7d8a09f4c1f51dfbb48a9b98517279213ae5c
+PODFILE CHECKSUM: 90f76e61798bef03c4deda5bc7d258ea40c1ddd0
 
 COCOAPODS: 1.15.2
