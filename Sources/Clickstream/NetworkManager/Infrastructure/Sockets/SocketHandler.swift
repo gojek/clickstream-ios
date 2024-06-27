@@ -216,8 +216,8 @@ extension DefaultSocketHandler {
                 checkedSelf.connectionCallback?(.success(.cancelled))
             case .viabilityChanged(let status):
                 checkedSelf.isConnectionRequestOpen = status
-//            case .peerClosed:
-//                checkedSelf.isConnectionRequestOpen = false
+            case .peerClosed:
+                checkedSelf.isConnectionRequestOpen = false
             default:
                 break
             }
@@ -263,11 +263,11 @@ extension DefaultSocketHandler {
         guard Tracker.debugMode else { return }
         if let error = error, case HTTPUpgradeError.notAnUpgrade(let code) = error {
             
-            if code == 401 {
+            if code.0 == 401 {
                 let event = HealthAnalysisEvent(eventName: eventName,
                                                 reason: FailureReason.AuthenticationError.rawValue)
                 Tracker.sharedInstance?.record(event: event)
-            } else if code == 1008 {
+            } else if code.0 == 1008 {
                 let event = HealthAnalysisEvent(eventName: eventName,
                                                 reason: FailureReason.DuplicateID.rawValue)
                 Tracker.sharedInstance?.record(event: event)
