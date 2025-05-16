@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "Clickstream"
-  s.version          = "2.0.36"
+  s.version          = "2.0.36.1"
   s.summary          = "Real time Analytics SDK"
   s.description      = "Clickstream is an event agnostic, real-time data ingestion analytics SDK"
 
@@ -41,11 +41,20 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'EventVisualizer' do |eventVisualizer|
-    eventVisualizer.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) EVENT_VISUALIZER_ENABLED' }
+    eventVisualizer.xcconfig = {
+      'SWIFT_ACTIVE_COMPILATION_CONDITIONS[config=Debug]' => '$(inherited) EVENT_VISUALIZER_ENABLED',
+      'SWIFT_ACTIVE_COMPILATION_CONDITIONS[config=Integration]' => '$(inherited) EVENT_VISUALIZER_ENABLED',
+      'SWIFT_ACTIVE_COMPILATION_CONDITIONS[config=Alpha]' => '$(inherited) EVENT_VISUALIZER_ENABLED',
+      'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited)' # <-- default for all other configs
+    }
   end
 
   s.subspec 'ETETestSuite' do |eteTestSuite|
-    eteTestSuite.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) ETE_TEST_SUITE_ENABLED' }
+    eteTestSuite.xcconfig = {
+      'SWIFT_ACTIVE_COMPILATION_CONDITIONS[config=Debug]' => '$(inherited) ETE_TEST_SUITE_ENABLED',
+      'SWIFT_ACTIVE_COMPILATION_CONDITIONS[config=Integration]' => '$(inherited) ETE_TEST_SUITE_ENABLED',
+      'SWIFT_ACTIVE_COMPILATION_CONDITIONS[config=Alpha]' => '$(inherited) ETE_TEST_SUITE_ENABLED',
+      'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited)' # <-- default for all other configs
+    }
   end
-
 end
