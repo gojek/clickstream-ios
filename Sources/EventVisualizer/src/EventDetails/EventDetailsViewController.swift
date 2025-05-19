@@ -6,6 +6,7 @@
 //  Copyright © 2022 PT GoJek Indonesia. All rights reserved.
 //
 
+#if EVENT_VISUALIZER_ENABLED
 import SwiftProtobuf
 import UIKit
 
@@ -176,3 +177,4 @@ extension EventDetailsViewController: UISearchBarDelegate {
         tableView.reloadData()
     }
 }
+#endif

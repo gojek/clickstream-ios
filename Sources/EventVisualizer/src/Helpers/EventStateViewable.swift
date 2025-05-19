@@ -6,6 +6,7 @@
 //  Copyright © 2022 Gojek. All rights reserved.
 //
 
+#if EVENT_VISUALIZER_ENABLED
 import Foundation
 import SwiftProtobuf
 
@@ -60,3 +61,4 @@ public struct EventData {
     /// Thus, batch ID is used to update the state of the event to Acknowledged.
     public var batchId: String?
 }
+#endif

@@ -6,6 +6,7 @@
 //  Copyright © 2022 PT GoJek Indonesia. All rights reserved.
 //
 
+#if EVENT_VISUALIZER_ENABLED
 import UIKit
 
 protocol UserFilterDelegate {
@@ -76,3 +77,4 @@ extension FilterTextFieldTableViewCell: UITextFieldDelegate {
         return true
     }
 }
+#endif

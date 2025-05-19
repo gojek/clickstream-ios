@@ -6,6 +6,7 @@
 //  Copyright © 2022 PT GoJek Indonesia. All rights reserved.
 //
 
+#if EVENT_VISUALIZER_ENABLED
 import UIKit
 
 protocol ViewModelApplicable {
@@ -82,3 +83,4 @@ extension EventsListingTableViewCell {
         let value: String
     }
 }
+#endif

@@ -6,6 +6,7 @@
 //  Copyright © 2022 PT GoJek Indonesia. All rights reserved.
 //
 
+#if EVENT_VISUALIZER_ENABLED
 import Foundation
 import UIKit
 
@@ -42,3 +43,4 @@ extension UITableView {
         register(T.self, forCellReuseIdentifier: T.defaultReuseIdentifier)
     }
 }
+#endif

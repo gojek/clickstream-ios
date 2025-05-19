@@ -6,6 +6,7 @@
 //  Copyright © 2022 PT GoJek Indonesia. All rights reserved.
 //
 
+#if EVENT_VISUALIZER_ENABLED
 import UIKit
 
 final class RadioLabelTableViewCell: UITableViewCell, ReusableView, NibLoadableView  {
@@ -74,3 +75,4 @@ final class RadioLabelTableViewCell: UITableViewCell, ReusableView, NibLoadableV
         }
     }
 }
+#endif

@@ -6,6 +6,7 @@
 //  Copyright © 2022 PT GoJek Indonesia. All rights reserved.
 //
 
+#if EVENT_VISUALIZER_ENABLED
 import Foundation
 import SwiftProtobuf
 
@@ -57,3 +58,4 @@ public extension CollectionMapper {
         }
     }
 }
+#endif

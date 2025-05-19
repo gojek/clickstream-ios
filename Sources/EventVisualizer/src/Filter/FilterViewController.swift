@@ -6,6 +6,7 @@
 //  Copyright © 2022 PT GoJek Indonesia. All rights reserved.
 //
 
+#if EVENT_VISUALIZER_ENABLED
 import UIKit
 
 protocol FilterDataProtocol {
@@ -129,3 +130,4 @@ extension FilterViewController: UserFilterDelegate {
         typedArray[index].1 = value
     }
 }
+#endif

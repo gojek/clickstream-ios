@@ -9,6 +9,7 @@
 import UIKit
 import Foundation
 
+#if EVENT_VISUALIZER_ENABLED
 struct ClickstreamConnectionStatusView {
     var statusLabel: UILabel
     var statusImage: UIImageView
@@ -142,3 +143,4 @@ extension EventsHelper: EventStateViewable {
         return foundEventsArray
     }
 }
+#endif

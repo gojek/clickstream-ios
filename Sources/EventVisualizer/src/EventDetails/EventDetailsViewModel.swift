@@ -5,7 +5,7 @@
 //  Created by Rishav Gupta on 14/03/22.
 //  Copyright © 2022 PT GoJek Indonesia. All rights reserved.
 //
-
+#if EVENT_VISUALIZER_ENABLED
 import Foundation
 import SwiftProtobuf
 import UIKit
@@ -122,3 +122,4 @@ private extension Mirror.DisplayStyle {
         return self == displayCase
     }
 }
+#endif
