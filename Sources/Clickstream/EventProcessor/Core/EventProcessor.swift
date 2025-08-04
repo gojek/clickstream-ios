@@ -59,7 +59,7 @@ final class DefaultEventProcessor: EventProcessor {
         }
 
         
-        guard let classification = classifier.getClassification(eventName: event.eventName) else {
+        guard let classification = classifier.getClassification(event: event) else {
             return nil
         }
         

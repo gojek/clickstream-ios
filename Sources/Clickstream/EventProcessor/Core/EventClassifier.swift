@@ -11,15 +11,22 @@ import Foundation
 protocol EventClassifierInput { }
 
 protocol EventClassifierOutput {
-    func getClassification(eventName: String) -> String?
+    func getClassification(event: ClickstreamEvent) -> String?
 }
 
 protocol EventClassifier: EventClassifierInput, EventClassifierOutput { }
 
 struct DefaultEventClassifier: EventClassifier {
     
-    func getClassification(eventName: String) -> String? {
-        let classification = Clickstream.eventClassifier.eventTypes.filter {$0.eventNames.contains(eventName)}
-        return (classification.first?.identifier) ?? Clickstream.eventClassifier.eventTypes.first?.identifier
+    func getClassification(event: ClickstreamEvent) -> String? {
+        let classification = Clickstream.eventClassifier.eventTypes.filter({$0.eventNames.contains(event.eventName)})
+        if let identifier = classification.first?.identifier {
+            return identifier
+        }
+        if let csEventName = event.csEventName {
+            let eventClassification = Clickstream.eventClassifier.eventTypes.filter({$0.csEventNames.contains(csEventName)})
+            return (eventClassification.first?.identifier) ?? Clickstream.eventClassifier.eventTypes.first?.identifier
+        }
+        return Clickstream.eventClassifier.eventTypes.first?.identifier
     }
 }
