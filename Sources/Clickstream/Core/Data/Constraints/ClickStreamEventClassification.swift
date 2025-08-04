@@ -15,8 +15,7 @@ public struct ClickstreamEventClassification {
     private(set) var eventTypes: [EventClassifier]
     
     /// Returns an instance of ClickstreamEventClassification
-    public init(eventTypes: [EventClassifier] = [EventClassifier(identifier: "realTime", eventNames: []),
-                                                 EventClassifier(identifier: "instant", eventNames: [])]) {
+    public init(eventTypes: [EventClassifier] = [EventClassifier(identifier: "realTime", eventNames: [], csEventNames: []),EventClassifier(identifier: "instant", eventNames: [], csEventNames: [])]) {
         self.eventTypes = eventTypes
     }
     
@@ -28,9 +27,12 @@ public struct ClickstreamEventClassification {
         /// List of event names under a given category.
         private(set) var eventNames: [String]
         
-        public init(identifier: String, eventNames: [String]) {
+        private(set) var csEventNames: [String]
+        
+        public init(identifier: String, eventNames: [String], csEventNames: [String]) {
             self.identifier = identifier
             self.eventNames = eventNames
+            self.csEventNames = csEventNames
         }
     }
 }
