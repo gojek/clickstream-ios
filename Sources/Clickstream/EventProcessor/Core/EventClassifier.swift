@@ -20,13 +20,18 @@ struct DefaultEventClassifier: EventClassifier {
     
     func getClassification(event: ClickstreamEvent) -> String? {
         let classification = Clickstream.eventClassifier.eventTypes.filter({$0.eventNames.contains(event.eventName)})
-        if let identifier = classification.first?.identifier {
-            return identifier
+        // Once this is stable in next 2 versions we can remove the else part completely
+        if Clickstream.priorityEventsEnabled {
+            if let identifier = classification.first?.identifier {
+                return identifier
+            }
+            if let csEventName = event.csEventName {
+                let eventClassification = Clickstream.eventClassifier.eventTypes.filter({$0.csEventNames.contains(csEventName)})
+                return (eventClassification.first?.identifier) ?? Clickstream.eventClassifier.eventTypes.first?.identifier
+            }
+            return Clickstream.eventClassifier.eventTypes.first?.identifier
+        } else {
+            return (classification.first?.identifier) ?? Clickstream.eventClassifier.eventTypes.first?.identifier
         }
-        if let csEventName = event.csEventName {
-            let eventClassification = Clickstream.eventClassifier.eventTypes.filter({$0.csEventNames.contains(csEventName)})
-            return (eventClassification.first?.identifier) ?? Clickstream.eventClassifier.eventTypes.first?.identifier
-        }
-        return Clickstream.eventClassifier.eventTypes.first?.identifier
     }
 }

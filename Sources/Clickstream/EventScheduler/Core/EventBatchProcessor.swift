@@ -22,6 +22,8 @@ protocol EventBatchProcessorInputs {
     /// Call this method to send an event directly i.e. meant for instant sending.
     /// - Parameter event: Event to be forwarded
     func sendInstantly(event: Event) -> Bool
+    
+    func sendP0(classificationType: String)
 }
 
 protocol EventBatchProcessorOutputs { }
@@ -171,6 +173,13 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
     
     func sendInstantly(event: Event) -> Bool {
         return self.eventBatchCreator.forward(with: [event])
+    }
+    
+    func sendP0(classificationType: String) {
+        if let events = self.persistence.deleteWhere(Event.Columns.type, value: classificationType),
+           !events.isEmpty {
+            self.eventBatchCreator.forward(with: events)
+        }
     }
     
     private func stopObservingNotifications() {
