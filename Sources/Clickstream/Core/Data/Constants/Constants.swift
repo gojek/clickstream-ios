@@ -53,6 +53,7 @@ enum Constants {
         case realTime = "realTime"
         case standard = "standard"
         case internalEvent = "internalEvent"
+        case p0Event = "P0"
     }
     
     enum EventVisualizer {

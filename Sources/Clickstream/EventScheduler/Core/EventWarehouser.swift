@@ -51,8 +51,13 @@ extension DefaultEventWarehouser {
             if event.type == Constants.EventType.instant.rawValue {
                 _ = checkedSelf.eventBatchProcessor.sendInstantly(event: event)
             } else {
-                checkedSelf.batchRegulator.observe(event)
+                if event.type != Constants.EventType.p0Event.rawValue {
+                    checkedSelf.batchRegulator.observe(event)
+                }
                 checkedSelf.persistence.insert(event)
+                if event.type == Constants.EventType.p0Event.rawValue {
+                    checkedSelf.eventBatchProcessor.sendP0(classificationType: event.type)
+                }
                 #if EVENT_VISUALIZER_ENABLED
                 /// Update the status of the event to cached
                 /// to check if the delegate is connected, if not no event should be sent to client
