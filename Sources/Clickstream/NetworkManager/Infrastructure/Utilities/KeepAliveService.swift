@@ -50,9 +50,9 @@ final class DefaultKeepAliveServiceWithSafeTimer: KeepAliveService {
     @discardableResult
     private func makeTimer() -> RepeatingTimer? {
         if Clickstream.timerCrashFixFlag {
-            let timerDuration = duration*reachability.connectionRetryCoefficient
-            RepeatingTimer.shared.timeInterval = timerDuration
             self.timer = RepeatingTimer.shared
+            let timerDuration = duration*reachability.connectionRetryCoefficient
+            timer?.setup(timeInterval: timerDuration)
             timer?.eventHandler = { [weak self] in
                 guard let checkedSelf = self else { return }
                 checkedSelf.performQueue.async {
