@@ -35,7 +35,8 @@ protocol Retryable: RetryableInputs, RetryableOutputs {}
 final class DefaultRetryMechanism: Retryable {
     
     private var reachability: NetworkReachability
-    private let networkService: NetworkService
+    private let websocketNetworkService: NetworkService
+    private let courierNetworkService: NetworkService
     private let performQueue: SerialQueue
     private var deviceStatus: DefaultDeviceStatus
     private let appStateNotifier: AppStateNotifierService
@@ -44,6 +45,7 @@ final class DefaultRetryMechanism: Retryable {
     private var persistence: DefaultDatabaseDAO<EventRequest>
     private var retryTimer: DispatchSourceTimer?
     private var keepAliveService: KeepAliveService
+    private let eventDispatcherConfig: ClickstreamEventTypeDispatcherConfig
     
     #if ETE_TEST_SUITE_ENABLED
     lazy var testMode: Bool = {
@@ -54,7 +56,7 @@ final class DefaultRetryMechanism: Retryable {
     var isAvailble: Bool {
         
         let isReachable = reachability.isAvailable
-        let isConnected = networkService.isConnected
+        let isConnected = websocketNetworkService.isConnected
         let isOnLowPower = deviceStatus.isDeviceLowOnPower
         
         #if TRACKER_ENABLED
@@ -91,20 +93,25 @@ final class DefaultRetryMechanism: Retryable {
         return isReachable && isConnected && !isOnLowPower
     }
     
-    init(networkService: NetworkService,
+    init(websocketNetworkService: NetworkService,
+         courierNetworkService: NetworkService,
          reachability: NetworkReachability,
          deviceStatus: DefaultDeviceStatus,
          appStateNotifier: AppStateNotifierService,
          performOnQueue: SerialQueue,
          persistence: DefaultDatabaseDAO<EventRequest>,
-         keepAliveService: KeepAliveService) {
-        self.networkService = networkService
+         keepAliveService: KeepAliveService,
+         eventDispatcherConfig: ClickstreamEventTypeDispatcherConfig
+    ) {
+        self.websocketNetworkService = websocketNetworkService
+        self.courierNetworkService = courierNetworkService
         self.reachability = reachability
         self.performQueue = performOnQueue
         self.deviceStatus = deviceStatus
         self.appStateNotifier = appStateNotifier
         self.persistence = persistence
         self.keepAliveService = keepAliveService
+        self.eventDispatcherConfig = eventDispatcherConfig
         
         self.observeNetworkConnectivity()
         self.establishConnection()
@@ -152,10 +159,10 @@ final class DefaultRetryMechanism: Retryable {
             guard let checkedSelf = self else { return }
             /* If network is not connected and the device was on low power,
                now device is on charging state so establish the connection */
-            if !checkedSelf.networkService.isConnected && !isLowOnPower {
+            if !checkedSelf.websocketNetworkService.isConnected && !isLowOnPower {
                 checkedSelf.establishConnection()
                 // If network is connected but device is on low power, terminate the connection
-            } else if checkedSelf.networkService.isConnected && isLowOnPower {
+            } else if checkedSelf.websocketNetworkService.isConnected && isLowOnPower {
                 checkedSelf.terminateConnection()
             }
         }
@@ -165,11 +172,11 @@ final class DefaultRetryMechanism: Retryable {
         keepAliveService.start { [weak self] in
             guard let checkedSelf = self else { return }
             let isReachable = checkedSelf.reachability.isAvailable
-            let isConnected = checkedSelf.networkService.isConnected
+            let isConnected = checkedSelf.websocketNetworkService.isConnected
             let isOnLowPower = checkedSelf.deviceStatus.isDeviceLowOnPower
             
             if isReachable && !isConnected && !isOnLowPower {
-                checkedSelf.networkService.flushConnectable()
+                checkedSelf.websocketNetworkService.flushConnectable()
                 checkedSelf.establishConnection()
             }
         }
@@ -198,92 +205,185 @@ extension DefaultRetryMechanism {
             guard let checkedSelf = self, let data = eventRequest.data else {
                 return
             }
-            checkedSelf.networkService.write(data) { (result: Result<Odpf_Raccoon_EventResponse, ConnectableError>) in
-                switch result {
-                case .success(let response):
-                    if response.status == .success && response.code == .ok {
-                        if let guid = response.data["req_guid"] {
-                            // remove the delivered batch from the cache.
-                            checkedSelf.removeFromCache(with: guid)
-                            
-                            #if ETE_TEST_SUITE_ENABLED
-                            Clickstream.ackEvent = AckEventDetails(guid: guid, status: "Success")
-                            #endif
-                            if let eventType = eventRequest.eventType, !(eventType == .internalEvent) {
-                                checkedSelf.trackHealthAndPerformanceEvents(eventRequest: eventRequest, startTime: startTime)
-                            }
-                            #if EVENT_VISUALIZER_ENABLED
-                            /// Update status of the event batch to acknowledged from network
-                            /// to check if the delegate is connected, if not no event should be sent to client
-                            if let stateViewer = Clickstream._stateViewer {
-                                /// Updating the event state to acknowledged based on eventBatchGuid.
-                                /// The eventBatchID passed in NetworkBuilder would be used to map events and
-                                /// then update the state respectively.
-                                stateViewer.updateStatus(eventBatchID: guid, state: .ackReceived)
-                            }
-                            print("RetryMechanism, received response for batch with id: \(response.data)")
-                            #endif
-                        }
-                    } else {
-                        if response.code == .maxConnectionLimitReached {
-                            #if TRACKER_ENABLED
-                            if Tracker.debugMode {
-                                let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamConnectionFailure,
-                                                                      reason: FailureReason.MAX_CONNECTION_LIMIT_REACHED.rawValue)
-                                Tracker.sharedInstance?.record(event: healthEvent)
-                            }
-                            #endif
-                            checkedSelf.terminateConnection()
-                            checkedSelf.establishConnection()
-                            #if ETE_TEST_SUITE_ENABLED
-                            Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Max Connection Limit Reached")
-                            #endif
-                        }
-                        #if TRACKER_ENABLED
-                        if response.code == .maxUserLimitReached {
-                           let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamConnectionFailure,
-                                                                 reason: FailureReason.MAX_USER_LIMIT_REACHED.rawValue)
-                            Tracker.sharedInstance?.record(event: healthEvent)
-                            #if ETE_TEST_SUITE_ENABLED
-                            Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Max User Limit Reached")
-                            #endif
-                        }
+            checkedSelf.trackWebsocket(data: data, eventRequest: eventRequest, startTime: startTime)
+        }
+    }
+    
+    private func trackWebsocket(data: Data, eventRequest: EventRequest, startTime: Date) {
+        websocketNetworkService.write(data) { (result: Result<Odpf_Raccoon_EventResponse, ConnectableError>) in
+            switch result {
+            case .success(let response):
+                if response.status == .success && response.code == .ok {
+                    if let guid = response.data["req_guid"] {
+                        // remove the delivered batch from the cache.
+                        self.removeFromCache(with: guid)
                         
-                        if response.code == .badRequest {
-                            print("Error: Parsing Exception for eventRequest guid \(eventRequest.guid)", .verbose)
-                            if Tracker.debugMode {
-                                var healthEvent: HealthAnalysisEvent!
-                                healthEvent = HealthAnalysisEvent(eventName: .ClickstreamWriteToSocketFailed,
-                                                                  eventBatchGUID: eventRequest.guid,
-                                                                  reason: FailureReason.ParsingException.rawValue,
-                                                                  eventCount: eventRequest.eventCount)
-                                Tracker.sharedInstance?.record(event: healthEvent)
-                                #if ETE_TEST_SUITE_ENABLED
-                                Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Bad Request")
-                                #endif
-                            }
+                        #if ETE_TEST_SUITE_ENABLED
+                        Clickstream.ackEvent = AckEventDetails(guid: guid, status: "Success")
+                        #endif
+                        if let eventType = eventRequest.eventType, !(eventType == .internalEvent) {
+                            self.trackHealthAndPerformanceEvents(eventRequest: eventRequest, startTime: startTime)
                         }
+                        #if EVENT_VISUALIZER_ENABLED
+                        /// Update status of the event batch to acknowledged from network
+                        /// to check if the delegate is connected, if not no event should be sent to client
+                        if let stateViewer = Clickstream._stateViewer {
+                            /// Updating the event state to acknowledged based on eventBatchGuid.
+                            /// The eventBatchID passed in NetworkBuilder would be used to map events and
+                            /// then update the state respectively.
+                            stateViewer.updateStatus(eventBatchID: guid, state: .ackReceived)
+                        }
+                        print("RetryMechanism, received response for batch with id: \(response.data)")
                         #endif
                     }
-                case .failure(let error):
-                    print("Error: \(error.localizedDescription) for eventRequest guid \(eventRequest.guid)", .verbose)
+                } else {
+                    if response.code == .maxConnectionLimitReached {
+                        #if TRACKER_ENABLED
+                        if Tracker.debugMode {
+                            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamConnectionFailure,
+                                                                  reason: FailureReason.MAX_CONNECTION_LIMIT_REACHED.rawValue)
+                            Tracker.sharedInstance?.record(event: healthEvent)
+                        }
+                        #endif
+                        self.terminateConnection()
+                        self.establishConnection()
+                        #if ETE_TEST_SUITE_ENABLED
+                        Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Max Connection Limit Reached")
+                        #endif
+                    }
                     #if TRACKER_ENABLED
-                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchErrorResponse,
-                                                          eventBatchGUID: eventRequest.guid, // eventRequest.guid is the batch GUID
-                                                          reason: error.localizedDescription,
-                                                          eventCount: eventRequest.eventCount)
-                    Tracker.sharedInstance?.record(event: healthEvent)
-                    #if ETE_TEST_SUITE_ENABLED
-                    Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "\(error)")
-                    #endif
+                    if response.code == .maxUserLimitReached {
+                       let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamConnectionFailure,
+                                                             reason: FailureReason.MAX_USER_LIMIT_REACHED.rawValue)
+                        Tracker.sharedInstance?.record(event: healthEvent)
+                        #if ETE_TEST_SUITE_ENABLED
+                        Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Max User Limit Reached")
+                        #endif
+                    }
+                    
+                    if response.code == .badRequest {
+                        print("Error: Parsing Exception for eventRequest guid \(eventRequest.guid)", .verbose)
+                        if Tracker.debugMode {
+                            var healthEvent: HealthAnalysisEvent!
+                            healthEvent = HealthAnalysisEvent(eventName: .ClickstreamWriteToSocketFailed,
+                                                              eventBatchGUID: eventRequest.guid,
+                                                              reason: FailureReason.ParsingException.rawValue,
+                                                              eventCount: eventRequest.eventCount)
+                            Tracker.sharedInstance?.record(event: healthEvent)
+                            #if ETE_TEST_SUITE_ENABLED
+                            Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Bad Request")
+                            #endif
+                        }
+                    }
                     #endif
                 }
+            case .failure(let error):
+                print("Error: \(error.localizedDescription) for eventRequest guid \(eventRequest.guid)", .verbose)
+                #if TRACKER_ENABLED
+                let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchErrorResponse,
+                                                      eventBatchGUID: eventRequest.guid, // eventRequest.guid is the batch GUID
+                                                      reason: error.localizedDescription,
+                                                      eventCount: eventRequest.eventCount)
+                Tracker.sharedInstance?.record(event: healthEvent)
                 #if ETE_TEST_SUITE_ENABLED
-                if self?.testMode ?? false {
-                    FileManagerOverride.writeToFile()
-                }
+                Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "\(error)")
+                #endif
                 #endif
             }
+            #if ETE_TEST_SUITE_ENABLED
+            if self.testMode {
+                FileManagerOverride.writeToFile()
+            }
+            #endif
+        }
+    }
+    
+    private func trackCourier(data: Data, eventRequest: EventRequest, startTime: Date) {
+        courierNetworkService.write(data) { (result: Result<Odpf_Raccoon_EventResponse, ConnectableError>) in
+            switch result {
+            case .success(let response):
+                if response.status == .success && response.code == .ok {
+                    if let guid = response.data["req_guid"] {
+                        // remove the delivered batch from the cache.
+                        self.removeFromCache(with: guid)
+                        
+                        #if ETE_TEST_SUITE_ENABLED
+                        Clickstream.ackEvent = AckEventDetails(guid: guid, status: "Success")
+                        #endif
+                        if let eventType = eventRequest.eventType, !(eventType == .internalEvent) {
+                            self.trackHealthAndPerformanceEvents(eventRequest: eventRequest, startTime: startTime)
+                        }
+                        #if EVENT_VISUALIZER_ENABLED
+                        /// Update status of the event batch to acknowledged from network
+                        /// to check if the delegate is connected, if not no event should be sent to client
+                        if let stateViewer = Clickstream._stateViewer {
+                            /// Updating the event state to acknowledged based on eventBatchGuid.
+                            /// The eventBatchID passed in NetworkBuilder would be used to map events and
+                            /// then update the state respectively.
+                            stateViewer.updateStatus(eventBatchID: guid, state: .ackReceived)
+                        }
+                        print("RetryMechanism, received response for batch with id: \(response.data)")
+                        #endif
+                    }
+                } else {
+                    if response.code == .maxConnectionLimitReached {
+                        #if TRACKER_ENABLED
+                        if Tracker.debugMode {
+                            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamConnectionFailure,
+                                                                  reason: FailureReason.MAX_CONNECTION_LIMIT_REACHED.rawValue)
+                            Tracker.sharedInstance?.record(event: healthEvent)
+                        }
+                        #endif
+                        self.terminateConnection()
+                        self.establishConnection()
+                        #if ETE_TEST_SUITE_ENABLED
+                        Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Max Connection Limit Reached")
+                        #endif
+                    }
+                    #if TRACKER_ENABLED
+                    if response.code == .maxUserLimitReached {
+                       let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamConnectionFailure,
+                                                             reason: FailureReason.MAX_USER_LIMIT_REACHED.rawValue)
+                        Tracker.sharedInstance?.record(event: healthEvent)
+                        #if ETE_TEST_SUITE_ENABLED
+                        Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Max User Limit Reached")
+                        #endif
+                    }
+                    
+                    if response.code == .badRequest {
+                        print("Error: Parsing Exception for eventRequest guid \(eventRequest.guid)", .verbose)
+                        if Tracker.debugMode {
+                            var healthEvent: HealthAnalysisEvent!
+                            healthEvent = HealthAnalysisEvent(eventName: .ClickstreamWriteToSocketFailed,
+                                                              eventBatchGUID: eventRequest.guid,
+                                                              reason: FailureReason.ParsingException.rawValue,
+                                                              eventCount: eventRequest.eventCount)
+                            Tracker.sharedInstance?.record(event: healthEvent)
+                            #if ETE_TEST_SUITE_ENABLED
+                            Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Bad Request")
+                            #endif
+                        }
+                    }
+                    #endif
+                }
+            case .failure(let error):
+                print("Error: \(error.localizedDescription) for eventRequest guid \(eventRequest.guid)", .verbose)
+                #if TRACKER_ENABLED
+                let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchErrorResponse,
+                                                      eventBatchGUID: eventRequest.guid, // eventRequest.guid is the batch GUID
+                                                      reason: error.localizedDescription,
+                                                      eventCount: eventRequest.eventCount)
+                Tracker.sharedInstance?.record(event: healthEvent)
+                #if ETE_TEST_SUITE_ENABLED
+                Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "\(error)")
+                #endif
+                #endif
+            }
+            #if ETE_TEST_SUITE_ENABLED
+            if self.testMode {
+                FileManagerOverride.writeToFile()
+            }
+            #endif
         }
     }
     
@@ -303,7 +403,7 @@ extension DefaultRetryMechanism {
 extension DefaultRetryMechanism {
     
     private func terminateConnection() {
-        networkService.terminateConnection()
+        websocketNetworkService.terminateConnection()
         stopObservingFailedBatches()
     }
     
@@ -337,19 +437,19 @@ extension DefaultRetryMechanism {
         
         /// Resetting value of Clickstream.connectionState to .connected which had been changed
         /// to .closing in line 261 when app was moving to background
-        if Clickstream.updateConnectionStatus && self.networkService.isConnected {
+        if Clickstream.updateConnectionStatus && self.websocketNetworkService.isConnected {
             Clickstream.connectionState = .connected
         }
         
-        if self.networkService.isConnected || !reachability.isAvailable {
+        if self.websocketNetworkService.isConnected || !reachability.isAvailable {
             return
         }
         
         performQueue.async { [weak self] in guard let checkedSelf = self else { return }
-            checkedSelf.networkService.initiateConnection(connectionStatusListener: { result in
+            checkedSelf.websocketNetworkService.initiateConnection(connectionStatusListener: { result in
 
                 NotificationCenter.default.post(name: Constants.SocketConnectionNotification,
-                                                object: [Constants.Strings.didConnect: self?.networkService.isConnected])
+                                                object: [Constants.Strings.didConnect: self?.websocketNetworkService.isConnected])
 
                 guard let checkedSelf = self else {
                     return
@@ -361,7 +461,7 @@ extension DefaultRetryMechanism {
                         checkedSelf.startObservingFailedBatches()
                     case .cancelled, .disconnected:
                         checkedSelf.stopObservingFailedBatches()
-                        checkedSelf.networkService.flushConnectable()
+                        checkedSelf.websocketNetworkService.flushConnectable()
                     default:
                         break
                     }

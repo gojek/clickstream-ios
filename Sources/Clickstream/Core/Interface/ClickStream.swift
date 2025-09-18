@@ -242,7 +242,7 @@ public final class Clickstream {
             // All the dependency injections pertaining to the clickstream blocks happen here!
             // Load default dependencies.
             do {
-                let dependencies = try DefaultClickstreamDependencies(with: request)
+                let dependencies = try DefaultClickstreamDependencies(with: request, eventDispatcher: .courier)
                 sharedInstance = Clickstream(networkBuilder: dependencies.networkBuilder,
                                              eventWarehouser: dependencies.eventWarehouser,
                                              eventProcessor: dependencies.eventProcessor,

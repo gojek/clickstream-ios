@@ -7,9 +7,39 @@
 //
 
 import Foundation
+import CourierMQTT
+
+public enum ClickstreamEventDispatcherType {
+    case websocket
+    case courier
+}
+
+public struct ClickstreamEventTypeDispatcherConfig {    
+    let instant: ClickstreamEventDispatcherType
+    let realTime: ClickstreamEventDispatcherType
+    let standard: ClickstreamEventDispatcherType
+    let internalEvent: ClickstreamEventDispatcherType
+    let p0Event: ClickstreamEventDispatcherType
+
+    public init(
+        instant: ClickstreamEventDispatcherType = .courier,
+        realTime: ClickstreamEventDispatcherType = .courier,
+        standard: ClickstreamEventDispatcherType = .courier,
+        internalEvent: ClickstreamEventDispatcherType = .courier,
+        p0Event: ClickstreamEventDispatcherType = .courier
+    ) {
+        self.instant = instant
+        self.realTime = realTime
+        self.standard = standard
+        self.internalEvent = internalEvent
+        self.p0Event = p0Event
+    }
+}
 
 /// Holds the constraints for clickstream.
 public struct ClickstreamConstraints {
+
+    private(set) var eventDispatcherConfig: ClickstreamEventTypeDispatcherConfig
         
     /// Maximum number of retries for connection.
     private(set) var maxConnectionRetries: Int
@@ -54,7 +84,8 @@ public struct ClickstreamConstraints {
     var minBatteryLevelPercent: Float
     
     /// Returns an instance of ClickstreamConstraints
-    public init(maxConnectionRetries: Int = 30, maxConnectionRetryInterval: TimeInterval = 30,
+    public init(eventDispatcherConfig: ClickstreamEventTypeDispatcherConfig = ClickstreamEventTypeDispatcherConfig(),
+                maxConnectionRetries: Int = 30, maxConnectionRetryInterval: TimeInterval = 30,
                 maxRetryIntervalPostPrematureDisconnection: TimeInterval = 30, maxRetriesPostPrematureDisconnection: Int = 10,
                 maxPingInterval: TimeInterval = 15, priorities: [Priority] = [Priority()],
                 flushOnBackground: Bool = true, connectionTerminationTimerWaitTime: TimeInterval = 8,
@@ -76,6 +107,7 @@ public struct ClickstreamConstraints {
         self.connectionRetryDuration = connectionRetryDuration
         self.flushOnAppLaunch = flushOnAppLaunch
         self.minBatteryLevelPercent = minBatteryLevelPercent
+        self.eventDispatcherConfig = eventDispatcherConfig
     }
 }
 

@@ -14,13 +14,19 @@ final class DefaultClickstreamDependencies {
     private let request: URLRequest
     private let database: Database
     private var networkManagerDependencies: NetworkManagerDependencies!
+    private let eventDispatcher: ClickstreamEventDispatcherType
     
     var isSocketConnected: Bool {
         networkManagerDependencies.isSocketConnected
     }
 
-    init(with request: URLRequest) throws {
+    var isCourierConnected: Bool {
+        networkManagerDependencies.isSocketConnected
+    }
+
+    init(with request: URLRequest, eventDispatcher: ClickstreamEventDispatcherType) throws {
         self.request = request
+        self.eventDispatcher = eventDispatcher
         database = try DefaultDatabase(qos: .WAL)
     }
     
@@ -30,8 +36,10 @@ final class DefaultClickstreamDependencies {
         hence ensuring only one instane is tied to the Clickstream class.
      */
     lazy var networkBuilder: NetworkBuildable = {
+        let config = ClickstreamEventTypeDispatcherConfig(instant: .courier, realTime: .courier, standard: .courier, internalEvent: .courier, p0Event: .courier)
         networkManagerDependencies = NetworkManagerDependencies(with: request,
-                                                                db: database)
+                                                                db: database,
+                                                                eventDispatcherConfig: config)
         return networkManagerDependencies.makeNetworkBuilder()
     }()
     

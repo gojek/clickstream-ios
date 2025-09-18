@@ -12,11 +12,14 @@ final class NetworkManagerDependencies {
     
     private var request: URLRequest
     private let database: Database
-    
+    private let eventDispatcherConfig: ClickstreamEventTypeDispatcherConfig
+
     init(with request: URLRequest,
-         db: Database) {
+         db: Database,
+         eventDispatcherConfig: ClickstreamEventTypeDispatcherConfig) {
         self.database = db
         self.request = request
+        self.eventDispatcherConfig = eventDispatcherConfig
     }
     
     private let networkQueue = SerialQueue(label: Constants.QueueIdentifiers.network.rawValue, qos: .utility)
@@ -29,9 +32,14 @@ final class NetworkManagerDependencies {
         return DefaultNetworkConfiguration(request: request)
     }
 
-    private lazy var networkService: NetworkService = {
+    private lazy var websocketNetworkService: NetworkService = {
         return DefaultNetworkService<DefaultSocketHandler>(with: getNetworkConfig(),
-                                                               performOnQueue: networkQueue)
+                                                            performOnQueue: networkQueue)
+    }()
+    
+    private lazy var courierNetworkService: NetworkService = {
+        return DefaultNetworkService<DefaultCourierHandler>(with: getNetworkConfig(),
+                                                            performOnQueue: networkQueue)
     }()
     
     private lazy var reachability: NetworkReachability = {
@@ -60,13 +68,15 @@ final class NetworkManagerDependencies {
     }()
     
     private lazy var retryMech: Retryable = {
-       return DefaultRetryMechanism(networkService: networkService,
+       return DefaultRetryMechanism(websocketNetworkService: websocketNetworkService,
+                                    courierNetworkService: courierNetworkService,
                                     reachability: reachability,
                                     deviceStatus: deviceStatus,
                                     appStateNotifier: appStateNotifier,
                                     performOnQueue: networkQueue,
                                     persistence: defaultPersistence,
-                                    keepAliveService: keepAliveService)
+                                    keepAliveService: keepAliveService,
+                                    eventDispatcherConfig: eventDispatcherConfig)
     }()
     
     func makeNetworkBuilder() -> NetworkBuildable {
@@ -74,6 +84,10 @@ final class NetworkManagerDependencies {
     }
     
     var isSocketConnected: Bool {
-        networkService.isConnected
+        websocketNetworkService.isConnected
+    }
+
+    var isCourierConnected: Bool {
+        courierNetworkService.isConnected
     }
 }
