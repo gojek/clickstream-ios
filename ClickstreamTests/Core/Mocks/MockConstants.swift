@@ -17,8 +17,8 @@ struct MockConstants {
     }()
     
     static let eventClassification: ClickstreamEventClassification = {
-        let testRealtimeEvent = ClickstreamEventClassification.EventClassifier(identifier: "ClickstreamTestRealtime", eventNames: ["gojek.clickstream.products.events.AdCardEvent"])
-        let testStandardEvent = ClickstreamEventClassification.EventClassifier(identifier: "ClickstreamTestStandard", eventNames: ["GoChat", "GoPay"])
+        let testRealtimeEvent = ClickstreamEventClassification.EventClassifier(identifier: "ClickstreamTestRealtime", eventNames: ["gojek.clickstream.products.events.AdCardEvent"], csEventNames: ["gojek.clickstream.products.events.AdCardEvent"])
+        let testStandardEvent = ClickstreamEventClassification.EventClassifier(identifier: "ClickstreamTestStandard", eventNames: ["GoChat", "GoPay"], csEventNames:  ["GoChat", "GoPay"])
         
         return ClickstreamEventClassification(eventTypes: [testRealtimeEvent, testStandardEvent])
     }()

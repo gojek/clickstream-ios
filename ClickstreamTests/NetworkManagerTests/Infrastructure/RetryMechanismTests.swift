@@ -27,19 +27,19 @@ class RetryMechanismTests: XCTestCase {
     
     func test_whenNetworkIsNotAvailable_thenRetryMechanismMustRetryFailedBatches() {
         //given
-        let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
+        let config = WebsocketNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         let expectation = self.expectation(description: "The batch must be retried")
         
         let mockQueue = SerialQueue(label: "com.mock.gojek.clickstream.network", qos: .utility)
         SerialQueue.registerDetection(of: mockQueue) //Registers a queue to be detected.
         
         let deviceStatus = DefaultDeviceStatus(performOnQueue: mockQueue)
-        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
+        let networkService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         let keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: mockQueue, duration: 2, reachability: NetworkReachabilityMock(isReachable: false))
 
         //when
-        let sut = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: mockQueue, persistence: persistence, keepAliveService: keepAliveService)
+        let sut = WebsocketRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: mockQueue, persistence: persistence, keepAliveService: keepAliveService)
         
         persistence.deleteAll()
 
@@ -62,19 +62,19 @@ class RetryMechanismTests: XCTestCase {
     func test_whenTheMaxRetriesAreReached_thenTheBatchMustGetRemovedFromTheCache() {
         
         //given
-        let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
+        let config = WebsocketNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         let expectation = self.expectation(description: "batch with exhausted retries must be removed")
         
         let mockQueue = SerialQueue(label: "com.mock.gojek.clickstream.network", qos: .utility)
         SerialQueue.registerDetection(of: mockQueue) //Registers a queue to be detected.
         
         let deviceStatus = DefaultDeviceStatus(performOnQueue: mockQueue)
-        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
+        let networkService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         let keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: mockQueue, duration: 2, reachability: NetworkReachabilityMock(isReachable: false))
 
         //when
-        let sut = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: mockQueue, persistence: persistence, keepAliveService: keepAliveService)
+        let sut = WebsocketRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: mockQueue, persistence: persistence, keepAliveService: keepAliveService)
         
         persistence.deleteAll()
 

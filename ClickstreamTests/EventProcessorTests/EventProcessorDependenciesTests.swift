@@ -18,18 +18,18 @@ class EventProcessorDependenciesTests: XCTestCase {
     
     func testMakeEventProcessor() {
         // given
-        let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
+        let config = WebsocketNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         let prioritiesMock = [Priority(priority: 0, identifier: "realTime", maxBatchSize: 50000.0, maxTimeBetweenTwoBatches: 1)]
         
-        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: mockQueue)
+        let networkService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: mockQueue)
         let deviceStatus = DefaultDeviceStatus(performOnQueue: mockQueue)
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         let eventPersistence = DefaultDatabaseDAO<Event>(database: database, performOnQueue: mockQueue)
         let keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: mockQueue, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
 
-        let retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: mockQueue, persistence: persistence, keepAliveService: keepAliveService)
+        let retryMech = WebsocketRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: mockQueue, persistence: persistence, keepAliveService: keepAliveService)
         
-        let networkBuilder: NetworkBuildable = DefaultNetworkBuilder.init(networkConfigs: config, retryMech: retryMech, performOnQueue: mockQueue)
+        let networkBuilder: NetworkBuildable = WebsocketNetworkBuilder.init(networkConfigs: config, retryMech: retryMech, performOnQueue: mockQueue)
         
         let eventBatchCreator = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: mockQueue)
         

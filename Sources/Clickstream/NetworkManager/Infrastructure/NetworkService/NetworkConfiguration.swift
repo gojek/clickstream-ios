@@ -11,11 +11,3 @@ import Foundation
 protocol NetworkConfigurable {
     var request: URLRequest { get }
 }
-
-struct DefaultNetworkConfiguration: NetworkConfigurable {
-    let request: URLRequest
-    
-    init(request: URLRequest) {
-        self.request = request
-    }
-}

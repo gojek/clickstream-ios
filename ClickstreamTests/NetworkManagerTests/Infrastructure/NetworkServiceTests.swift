@@ -13,9 +13,9 @@ class NetworkServiceTests: XCTestCase {
     
     func test_whenMockDataIsPassed_shouldReturnConnectedResponse() {
         //given
-        let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
+        let config = WebsocketNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         let expectation = self.expectation(description: "Should return correct data")
-        let sut = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
+        let sut = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
         
         //when
         _ = sut.initiateConnection(connectionStatusListener: { result in
@@ -33,9 +33,9 @@ class NetworkServiceTests: XCTestCase {
     
     func test_whenMockDataIsPassed_shouldWriteSuccessfully() {
         //given
-        let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
+        let config = WebsocketNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         let expectation = self.expectation(description: "Should return correct data")
-        let sut = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
+        let sut = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
         
         //when
         _ = sut.initiateConnection(connectionStatusListener: { result in
@@ -56,10 +56,10 @@ class NetworkServiceTests: XCTestCase {
     
     func test_whenMockDataIsPassed_shouldDisconnectSuccessfully() {
         //given
-        let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
+        let config = WebsocketNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         let expectation = self.expectation(description: "Should return malformed url error")
         
-        let sut = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
+        let sut = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
         
         //when
         let statusListener: ConnectionStatus = { result in

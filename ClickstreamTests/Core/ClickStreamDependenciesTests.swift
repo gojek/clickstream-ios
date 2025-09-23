@@ -24,7 +24,7 @@ class ClickstreamDependenciesTests: XCTestCase {
         
         self.constraints = ClickstreamConstraints(maxConnectionRetries: 15, maxConnectionRetryInterval: 5, maxRetryIntervalPostPrematureDisconnection: 10, maxRetriesPostPrematureDisconnection: 20, maxPingInterval: 15, priorities: prioritiesMock, flushOnBackground: true, connectionTerminationTimerWaitTime: 2, maxRequestAckTimeout: 3, maxRetriesPerBatch: 10, maxRetryCacheSize: 100000, connectionRetryDuration: 3, flushOnAppLaunch: false, minBatteryLevelPercent: 10.0)
         
-        let eventClassifierMock = ClickstreamEventClassification.EventClassifier(identifier: "ClickstreamTestRealtime", eventNames: ["CardEvent"])
+        let eventClassifierMock = ClickstreamEventClassification.EventClassifier(identifier: "ClickstreamTestRealtime", eventNames: ["CardEvent"], csEventNames: ["CardEvent"])
         self.eventClassifier = ClickstreamEventClassification(eventTypes: [eventClassifierMock])
     }
     
@@ -37,16 +37,20 @@ class ClickstreamDependenciesTests: XCTestCase {
     
     func testNetworkBuilder() {
         // when
-        let clickStreamDependencies = try! DefaultClickstreamDependencies(with: dummyRequest)
-        
+        let database = try! DefaultDatabase(qos: .WAL)
+        let websocket = WebsocketManagerDependencies(with: dummyRequest, db: database)
+        let clickStreamDependencies = try! DefaultClickstreamDependencies(with: websocket, db: database)
+
         // then
         XCTAssertNotNil(clickStreamDependencies.networkBuilder)
     }
     
     func testEventWarehouser() {
         // when
-        let clickStreamDependencies = try! DefaultClickstreamDependencies(with: dummyRequest)
-        
+        let database = try! DefaultDatabase(qos: .WAL)
+        let websocket = WebsocketManagerDependencies(with: dummyRequest, db: database)
+        let clickStreamDependencies = try! DefaultClickstreamDependencies(with: websocket, db: database)
+
         // then
         XCTAssertNotNil(clickStreamDependencies.eventWarehouser)
     }
@@ -57,8 +61,10 @@ class ClickstreamDependenciesTests: XCTestCase {
         Clickstream.eventClassifier = ClickstreamEventClassification()
         
         // when
-        let clickStreamDependencies = try! DefaultClickstreamDependencies(with: dummyRequest)
-        
+        let database = try! DefaultDatabase(qos: .WAL)
+        let websocket = WebsocketManagerDependencies(with: dummyRequest, db: database)
+        let clickStreamDependencies = try! DefaultClickstreamDependencies(with: websocket, db: database)
+
         // then
         XCTAssertNotNil(clickStreamDependencies.eventProcessor)
     }

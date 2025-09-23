@@ -11,17 +11,17 @@ import Foundation
 /// A class that generates all the dependencies of the Clickstream SDK.
 final class DefaultClickstreamDependencies {
     
-    private let request: URLRequest
     private let database: Database
-    private var networkManagerDependencies: NetworkManagerDependencies!
+
+    private var networkependencies: NetworkManagerDependencies
     
-    var isSocketConnected: Bool {
-        networkManagerDependencies.isSocketConnected
+    var isConnected: Bool {
+        networkependencies.isConnected
     }
 
-    init(with request: URLRequest) throws {
-        self.request = request
-        database = try DefaultDatabase(qos: .WAL)
+    init(with networkependencies: NetworkManagerDependencies, db: Database) throws {
+        self.database = db
+        self.networkependencies = networkependencies
     }
     
     /**
@@ -30,9 +30,7 @@ final class DefaultClickstreamDependencies {
         hence ensuring only one instane is tied to the Clickstream class.
      */
     lazy var networkBuilder: NetworkBuildable = {
-        networkManagerDependencies = NetworkManagerDependencies(with: request,
-                                                                db: database)
-        return networkManagerDependencies.makeNetworkBuilder()
+        networkependencies.makeNetworkBuilder()
     }()
     
     /** A EventWarehouser instance.

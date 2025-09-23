@@ -10,8 +10,6 @@
 		68E7BD202456E6F10072549A /* libClickstream.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 68E7BADF244F08C00072549A /* libClickstream.a */; };
 		6E2A2FF5A4C4820DF0F31C3C /* libPods-ClickstreamTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0900D4ED17E642E4DA1234F8 /* libPods-ClickstreamTests.a */; };
 		98CDAC393665EEC635D0C690 /* libPods-Clickstream.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E561B35C0082DAE47E3BDE1 /* libPods-Clickstream.a */; };
-		9A0BBA882BC3A59300F7DC01 /* URLRequest+Equality.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0BBA872BC3A59300F7DC01 /* URLRequest+Equality.swift */; };
-		9A0BBA892BC3A59300F7DC01 /* URLRequest+Equality.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0BBA872BC3A59300F7DC01 /* URLRequest+Equality.swift */; };
 		9A0BBA8D2BC3CA5500F7DC01 /* PerformanceTracer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0BBA8C2BC3CA5500F7DC01 /* PerformanceTracer.swift */; };
 		9A0BBA8E2BC3CA5500F7DC01 /* PerformanceTracer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0BBA8C2BC3CA5500F7DC01 /* PerformanceTracer.swift */; };
 		BD6BDB6829FBC1360006B04A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD6BDB3E29FBC1360006B04A /* Assets.xcassets */; };
@@ -99,36 +97,6 @@
 		BDE467892A5BD24500BFA976 /* NetworkBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE4676C2A5BD24500BFA976 /* NetworkBuilderTests.swift */; };
 		BDE4678A2A5BD24500BFA976 /* NetworkServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE4676D2A5BD24500BFA976 /* NetworkServiceTests.swift */; };
 		BDE4678B2A5BD24500BFA976 /* RetryMechanismTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE4676E2A5BD24500BFA976 /* RetryMechanismTests.swift */; };
-		BDE467F92A5BD72000BFA976 /* NetworkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE4678F2A5BD72000BFA976 /* NetworkBuilder.swift */; };
-		BDE467FA2A5BD72000BFA976 /* NetworkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE4678F2A5BD72000BFA976 /* NetworkBuilder.swift */; };
-		BDE467FB2A5BD72000BFA976 /* RetryMechanism.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467902A5BD72000BFA976 /* RetryMechanism.swift */; };
-		BDE467FC2A5BD72000BFA976 /* RetryMechanism.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467902A5BD72000BFA976 /* RetryMechanism.swift */; };
-		BDE467FD2A5BD72000BFA976 /* NetworkManagerDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467922A5BD72000BFA976 /* NetworkManagerDependencies.swift */; };
-		BDE467FE2A5BD72000BFA976 /* NetworkManagerDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467922A5BD72000BFA976 /* NetworkManagerDependencies.swift */; };
-		BDE467FF2A5BD72000BFA976 /* Heartbeat.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467952A5BD72000BFA976 /* Heartbeat.swift */; };
-		BDE468002A5BD72000BFA976 /* Heartbeat.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467952A5BD72000BFA976 /* Heartbeat.swift */; };
-		BDE468012A5BD72000BFA976 /* SocketHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467962A5BD72000BFA976 /* SocketHandler.swift */; };
-		BDE468022A5BD72000BFA976 /* SocketHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467962A5BD72000BFA976 /* SocketHandler.swift */; };
-		BDE468032A5BD72000BFA976 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467982A5BD72000BFA976 /* NetworkService.swift */; };
-		BDE468042A5BD72000BFA976 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467982A5BD72000BFA976 /* NetworkService.swift */; };
-		BDE468052A5BD72000BFA976 /* Connectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467992A5BD72000BFA976 /* Connectable.swift */; };
-		BDE468062A5BD72000BFA976 /* Connectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467992A5BD72000BFA976 /* Connectable.swift */; };
-		BDE468072A5BD72000BFA976 /* NetworkConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE4679A2A5BD72000BFA976 /* NetworkConfiguration.swift */; };
-		BDE468082A5BD72000BFA976 /* NetworkConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE4679A2A5BD72000BFA976 /* NetworkConfiguration.swift */; };
-		BDE468092A5BD72000BFA976 /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE4679C2A5BD72000BFA976 /* Atomic.swift */; };
-		BDE4680A2A5BD72000BFA976 /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE4679C2A5BD72000BFA976 /* Atomic.swift */; };
-		BDE4680B2A5BD72000BFA976 /* DeviceStatusNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE4679D2A5BD72000BFA976 /* DeviceStatusNotifier.swift */; };
-		BDE4680C2A5BD72000BFA976 /* DeviceStatusNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE4679D2A5BD72000BFA976 /* DeviceStatusNotifier.swift */; };
-		BDE4680D2A5BD72000BFA976 /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE4679E2A5BD72000BFA976 /* NetworkReachability.swift */; };
-		BDE4680E2A5BD72000BFA976 /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE4679E2A5BD72000BFA976 /* NetworkReachability.swift */; };
-		BDE4680F2A5BD72000BFA976 /* DispatchSourceTimer+RepeatingTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE4679F2A5BD72000BFA976 /* DispatchSourceTimer+RepeatingTimer.swift */; };
-		BDE468102A5BD72000BFA976 /* DispatchSourceTimer+RepeatingTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE4679F2A5BD72000BFA976 /* DispatchSourceTimer+RepeatingTimer.swift */; };
-		BDE468112A5BD72000BFA976 /* KeepAliveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467A02A5BD72000BFA976 /* KeepAliveService.swift */; };
-		BDE468122A5BD72000BFA976 /* KeepAliveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467A02A5BD72000BFA976 /* KeepAliveService.swift */; };
-		BDE468132A5BD72000BFA976 /* ProtoConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467A32A5BD72000BFA976 /* ProtoConvertible.swift */; };
-		BDE468142A5BD72000BFA976 /* ProtoConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467A32A5BD72000BFA976 /* ProtoConvertible.swift */; };
-		BDE468152A5BD72000BFA976 /* EventRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467A62A5BD72000BFA976 /* EventRequest.swift */; };
-		BDE468162A5BD72000BFA976 /* EventRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467A62A5BD72000BFA976 /* EventRequest.swift */; };
 		BDE468172A5BD72000BFA976 /* ClickStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467A92A5BD72000BFA976 /* ClickStream.swift */; };
 		BDE468182A5BD72000BFA976 /* ClickStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467A92A5BD72000BFA976 /* ClickStream.swift */; };
 		BDE468192A5BD72000BFA976 /* ClickstreamDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467AB2A5BD72000BFA976 /* ClickstreamDependencies.swift */; };
@@ -189,6 +157,48 @@
 		BDE4687A2A5BD72000BFA976 /* EventProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467F72A5BD72000BFA976 /* EventProcessor.swift */; };
 		BDE4687B2A5BD72000BFA976 /* EventProcessorDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467F82A5BD72000BFA976 /* EventProcessorDependencies.swift */; };
 		BDE4687C2A5BD72000BFA976 /* EventProcessorDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467F82A5BD72000BFA976 /* EventProcessorDependencies.swift */; };
+		D8DD44BE2E812D32000D78C9 /* NetworkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44A82E812D32000D78C9 /* NetworkBuilder.swift */; };
+		D8DD44BF2E812D32000D78C9 /* URLRequest+Equality.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44BA2E812D32000D78C9 /* URLRequest+Equality.swift */; };
+		D8DD44C02E812D32000D78C9 /* DispatchSourceTimer+RepeatingTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44B72E812D32000D78C9 /* DispatchSourceTimer+RepeatingTimer.swift */; };
+		D8DD44C22E812D32000D78C9 /* DeviceStatusNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44B62E812D32000D78C9 /* DeviceStatusNotifier.swift */; };
+		D8DD44C32E812D32000D78C9 /* KeepAliveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44B82E812D32000D78C9 /* KeepAliveService.swift */; };
+		D8DD44C42E812D32000D78C9 /* RetryMechanism.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44A92E812D32000D78C9 /* RetryMechanism.swift */; };
+		D8DD44C52E812D32000D78C9 /* Connectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44B12E812D32000D78C9 /* Connectable.swift */; };
+		D8DD44C62E812D32000D78C9 /* NetworkConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44B22E812D32000D78C9 /* NetworkConfiguration.swift */; };
+		D8DD44C72E812D32000D78C9 /* EventRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44AE2E812D32000D78C9 /* EventRequest.swift */; };
+		D8DD44C82E812D32000D78C9 /* ProtoConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44AB2E812D32000D78C9 /* ProtoConvertible.swift */; };
+		D8DD44C92E812D32000D78C9 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44B32E812D32000D78C9 /* NetworkService.swift */; };
+		D8DD44CA2E812D32000D78C9 /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44B92E812D32000D78C9 /* NetworkReachability.swift */; };
+		D8DD44CB2E812D32000D78C9 /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44B52E812D32000D78C9 /* Atomic.swift */; };
+		D8DD44CC2E812D32000D78C9 /* NetworkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44A82E812D32000D78C9 /* NetworkBuilder.swift */; };
+		D8DD44CD2E812D32000D78C9 /* URLRequest+Equality.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44BA2E812D32000D78C9 /* URLRequest+Equality.swift */; };
+		D8DD44CE2E812D32000D78C9 /* DispatchSourceTimer+RepeatingTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44B72E812D32000D78C9 /* DispatchSourceTimer+RepeatingTimer.swift */; };
+		D8DD44D02E812D32000D78C9 /* DeviceStatusNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44B62E812D32000D78C9 /* DeviceStatusNotifier.swift */; };
+		D8DD44D12E812D32000D78C9 /* KeepAliveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44B82E812D32000D78C9 /* KeepAliveService.swift */; };
+		D8DD44D22E812D32000D78C9 /* RetryMechanism.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44A92E812D32000D78C9 /* RetryMechanism.swift */; };
+		D8DD44D32E812D32000D78C9 /* Connectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44B12E812D32000D78C9 /* Connectable.swift */; };
+		D8DD44D42E812D32000D78C9 /* NetworkConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44B22E812D32000D78C9 /* NetworkConfiguration.swift */; };
+		D8DD44D52E812D32000D78C9 /* EventRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44AE2E812D32000D78C9 /* EventRequest.swift */; };
+		D8DD44D62E812D32000D78C9 /* ProtoConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44AB2E812D32000D78C9 /* ProtoConvertible.swift */; };
+		D8DD44D72E812D32000D78C9 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44B32E812D32000D78C9 /* NetworkService.swift */; };
+		D8DD44D82E812D32000D78C9 /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44B92E812D32000D78C9 /* NetworkReachability.swift */; };
+		D8DD44D92E812D32000D78C9 /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44B52E812D32000D78C9 /* Atomic.swift */; };
+		D8DD44DC2E812EDB000D78C9 /* NetworkManagerDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44DB2E812EDB000D78C9 /* NetworkManagerDependencies.swift */; };
+		D8DD44DD2E812EDB000D78C9 /* NetworkManagerDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44DB2E812EDB000D78C9 /* NetworkManagerDependencies.swift */; };
+		D8DD44EA2E8131A1000D78C9 /* SocketHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E22E8131A1000D78C9 /* SocketHandler.swift */; };
+		D8DD44EB2E8131A1000D78C9 /* WebsocketNetworkConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E62E8131A1000D78C9 /* WebsocketNetworkConfiguration.swift */; };
+		D8DD44EC2E8131A1000D78C9 /* WebsocketNetworkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E52E8131A1000D78C9 /* WebsocketNetworkBuilder.swift */; };
+		D8DD44ED2E8131A1000D78C9 /* WebsocketManagerDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E42E8131A1000D78C9 /* WebsocketManagerDependencies.swift */; };
+		D8DD44EE2E8131A1000D78C9 /* WebsocketNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E72E8131A1000D78C9 /* WebsocketNetworkService.swift */; };
+		D8DD44EF2E8131A1000D78C9 /* WebsocketRetryMechanism.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E82E8131A1000D78C9 /* WebsocketRetryMechanism.swift */; };
+		D8DD44F02E8131A1000D78C9 /* Heartbeat.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E12E8131A1000D78C9 /* Heartbeat.swift */; };
+		D8DD44F12E8131A1000D78C9 /* SocketHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E22E8131A1000D78C9 /* SocketHandler.swift */; };
+		D8DD44F22E8131A1000D78C9 /* WebsocketNetworkConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E62E8131A1000D78C9 /* WebsocketNetworkConfiguration.swift */; };
+		D8DD44F32E8131A1000D78C9 /* WebsocketNetworkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E52E8131A1000D78C9 /* WebsocketNetworkBuilder.swift */; };
+		D8DD44F42E8131A1000D78C9 /* WebsocketManagerDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E42E8131A1000D78C9 /* WebsocketManagerDependencies.swift */; };
+		D8DD44F52E8131A1000D78C9 /* WebsocketNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E72E8131A1000D78C9 /* WebsocketNetworkService.swift */; };
+		D8DD44F62E8131A1000D78C9 /* WebsocketRetryMechanism.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E82E8131A1000D78C9 /* WebsocketRetryMechanism.swift */; };
+		D8DD44F72E8131A1000D78C9 /* Heartbeat.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E12E8131A1000D78C9 /* Heartbeat.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -221,7 +231,6 @@
 		68E7BADF244F08C00072549A /* libClickstream.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libClickstream.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		68E7BD1B2456E6F10072549A /* ClickstreamTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClickstreamTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		88F9204101C5E8D41805FD1A /* Pods-ClickstreamTests.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.production.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.production.xcconfig"; sourceTree = "<group>"; };
-		9A0BBA872BC3A59300F7DC01 /* URLRequest+Equality.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+Equality.swift"; sourceTree = "<group>"; };
 		9A0BBA8C2BC3CA5500F7DC01 /* PerformanceTracer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceTracer.swift; sourceTree = "<group>"; };
 		9D31FA91B32979CBBA2C3849 /* Pods-ClickstreamTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.debug.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A870FFC059A664D0DF0292E5 /* Pods-ClickstreamTests.alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.alpha.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.alpha.xcconfig"; sourceTree = "<group>"; };
@@ -283,21 +292,6 @@
 		BDE4676C2A5BD24500BFA976 /* NetworkBuilderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkBuilderTests.swift; sourceTree = "<group>"; };
 		BDE4676D2A5BD24500BFA976 /* NetworkServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkServiceTests.swift; sourceTree = "<group>"; };
 		BDE4676E2A5BD24500BFA976 /* RetryMechanismTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RetryMechanismTests.swift; sourceTree = "<group>"; };
-		BDE4678F2A5BD72000BFA976 /* NetworkBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkBuilder.swift; sourceTree = "<group>"; };
-		BDE467902A5BD72000BFA976 /* RetryMechanism.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RetryMechanism.swift; sourceTree = "<group>"; };
-		BDE467922A5BD72000BFA976 /* NetworkManagerDependencies.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkManagerDependencies.swift; sourceTree = "<group>"; };
-		BDE467952A5BD72000BFA976 /* Heartbeat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Heartbeat.swift; sourceTree = "<group>"; };
-		BDE467962A5BD72000BFA976 /* SocketHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketHandler.swift; sourceTree = "<group>"; };
-		BDE467982A5BD72000BFA976 /* NetworkService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
-		BDE467992A5BD72000BFA976 /* Connectable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Connectable.swift; sourceTree = "<group>"; };
-		BDE4679A2A5BD72000BFA976 /* NetworkConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkConfiguration.swift; sourceTree = "<group>"; };
-		BDE4679C2A5BD72000BFA976 /* Atomic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Atomic.swift; sourceTree = "<group>"; };
-		BDE4679D2A5BD72000BFA976 /* DeviceStatusNotifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceStatusNotifier.swift; sourceTree = "<group>"; };
-		BDE4679E2A5BD72000BFA976 /* NetworkReachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkReachability.swift; sourceTree = "<group>"; };
-		BDE4679F2A5BD72000BFA976 /* DispatchSourceTimer+RepeatingTimer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DispatchSourceTimer+RepeatingTimer.swift"; sourceTree = "<group>"; };
-		BDE467A02A5BD72000BFA976 /* KeepAliveService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeepAliveService.swift; sourceTree = "<group>"; };
-		BDE467A32A5BD72000BFA976 /* ProtoConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProtoConvertible.swift; sourceTree = "<group>"; };
-		BDE467A62A5BD72000BFA976 /* EventRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventRequest.swift; sourceTree = "<group>"; };
 		BDE467A92A5BD72000BFA976 /* ClickStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClickStream.swift; sourceTree = "<group>"; };
 		BDE467AB2A5BD72000BFA976 /* ClickstreamDependencies.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClickstreamDependencies.swift; sourceTree = "<group>"; };
 		BDE467AE2A5BD72000BFA976 /* ClickStreamConstraints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClickStreamConstraints.swift; sourceTree = "<group>"; };
@@ -330,6 +324,27 @@
 		BDE467F82A5BD72000BFA976 /* EventProcessorDependencies.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventProcessorDependencies.swift; sourceTree = "<group>"; };
 		C7CD1A2E08F13591955370E3 /* Pods-Clickstream.integration.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.integration.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.integration.xcconfig"; sourceTree = "<group>"; };
 		CA0F06B342B881F06295F6E3 /* Pods-Clickstream.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.debug.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.debug.xcconfig"; sourceTree = "<group>"; };
+		D8DD44A82E812D32000D78C9 /* NetworkBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkBuilder.swift; sourceTree = "<group>"; };
+		D8DD44A92E812D32000D78C9 /* RetryMechanism.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetryMechanism.swift; sourceTree = "<group>"; };
+		D8DD44AB2E812D32000D78C9 /* ProtoConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtoConvertible.swift; sourceTree = "<group>"; };
+		D8DD44AE2E812D32000D78C9 /* EventRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventRequest.swift; sourceTree = "<group>"; };
+		D8DD44B12E812D32000D78C9 /* Connectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connectable.swift; sourceTree = "<group>"; };
+		D8DD44B22E812D32000D78C9 /* NetworkConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkConfiguration.swift; sourceTree = "<group>"; };
+		D8DD44B32E812D32000D78C9 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
+		D8DD44B52E812D32000D78C9 /* Atomic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Atomic.swift; sourceTree = "<group>"; };
+		D8DD44B62E812D32000D78C9 /* DeviceStatusNotifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceStatusNotifier.swift; sourceTree = "<group>"; };
+		D8DD44B72E812D32000D78C9 /* DispatchSourceTimer+RepeatingTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DispatchSourceTimer+RepeatingTimer.swift"; sourceTree = "<group>"; };
+		D8DD44B82E812D32000D78C9 /* KeepAliveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeepAliveService.swift; sourceTree = "<group>"; };
+		D8DD44B92E812D32000D78C9 /* NetworkReachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkReachability.swift; sourceTree = "<group>"; };
+		D8DD44BA2E812D32000D78C9 /* URLRequest+Equality.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+Equality.swift"; sourceTree = "<group>"; };
+		D8DD44DB2E812EDB000D78C9 /* NetworkManagerDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManagerDependencies.swift; sourceTree = "<group>"; };
+		D8DD44E12E8131A1000D78C9 /* Heartbeat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Heartbeat.swift; sourceTree = "<group>"; };
+		D8DD44E22E8131A1000D78C9 /* SocketHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketHandler.swift; sourceTree = "<group>"; };
+		D8DD44E42E8131A1000D78C9 /* WebsocketManagerDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsocketManagerDependencies.swift; sourceTree = "<group>"; };
+		D8DD44E52E8131A1000D78C9 /* WebsocketNetworkBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsocketNetworkBuilder.swift; sourceTree = "<group>"; };
+		D8DD44E62E8131A1000D78C9 /* WebsocketNetworkConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsocketNetworkConfiguration.swift; sourceTree = "<group>"; };
+		D8DD44E72E8131A1000D78C9 /* WebsocketNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsocketNetworkService.swift; sourceTree = "<group>"; };
+		D8DD44E82E8131A1000D78C9 /* WebsocketRetryMechanism.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsocketRetryMechanism.swift; sourceTree = "<group>"; };
 		D982B8160D113D472BF2C8E0 /* Pods-Clickstream.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.production.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.production.xcconfig"; sourceTree = "<group>"; };
 		E083FF5B9C4808DB73B36B32 /* Pods-Clickstream.alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.alpha.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.alpha.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -550,6 +565,7 @@
 		BD8AF585287ED1CB002DD402 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				D8DD44712E812BA2000D78C9 /* ClickstreamNetworking */,
 				BDE4678C2A5BD72000BFA976 /* Clickstream */,
 				BD6BDB3C29FBC1360006B04A /* EventVisualizer */,
 				BD6BDB5429FBC1360006B04A /* Tracker */,
@@ -724,116 +740,13 @@
 		BDE4678C2A5BD72000BFA976 /* Clickstream */ = {
 			isa = PBXGroup;
 			children = (
-				BDE4678D2A5BD72000BFA976 /* NetworkManager */,
+				D8DD44BD2E812D32000D78C9 /* NetworkManager */,
 				BDE467A72A5BD72000BFA976 /* Core */,
 				BDE467BC2A5BD72000BFA976 /* Contracts */,
 				BDE467DF2A5BD72000BFA976 /* EventScheduler */,
 				BDE467F42A5BD72000BFA976 /* EventProcessor */,
 			);
 			path = Clickstream;
-			sourceTree = "<group>";
-		};
-		BDE4678D2A5BD72000BFA976 /* NetworkManager */ = {
-			isa = PBXGroup;
-			children = (
-				BDE4678E2A5BD72000BFA976 /* Core */,
-				BDE467932A5BD72000BFA976 /* Infrastructure */,
-				BDE467A12A5BD72000BFA976 /* Data */,
-				BDE467A42A5BD72000BFA976 /* Domain */,
-			);
-			path = NetworkManager;
-			sourceTree = "<group>";
-		};
-		BDE4678E2A5BD72000BFA976 /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				BDE4678F2A5BD72000BFA976 /* NetworkBuilder.swift */,
-				BDE467902A5BD72000BFA976 /* RetryMechanism.swift */,
-				BDE467912A5BD72000BFA976 /* Dependencies */,
-			);
-			path = Core;
-			sourceTree = "<group>";
-		};
-		BDE467912A5BD72000BFA976 /* Dependencies */ = {
-			isa = PBXGroup;
-			children = (
-				BDE467922A5BD72000BFA976 /* NetworkManagerDependencies.swift */,
-			);
-			path = Dependencies;
-			sourceTree = "<group>";
-		};
-		BDE467932A5BD72000BFA976 /* Infrastructure */ = {
-			isa = PBXGroup;
-			children = (
-				BDE467942A5BD72000BFA976 /* Sockets */,
-				BDE467972A5BD72000BFA976 /* NetworkService */,
-				BDE4679B2A5BD72000BFA976 /* Utilities */,
-			);
-			path = Infrastructure;
-			sourceTree = "<group>";
-		};
-		BDE467942A5BD72000BFA976 /* Sockets */ = {
-			isa = PBXGroup;
-			children = (
-				BDE467952A5BD72000BFA976 /* Heartbeat.swift */,
-				BDE467962A5BD72000BFA976 /* SocketHandler.swift */,
-			);
-			path = Sockets;
-			sourceTree = "<group>";
-		};
-		BDE467972A5BD72000BFA976 /* NetworkService */ = {
-			isa = PBXGroup;
-			children = (
-				BDE467982A5BD72000BFA976 /* NetworkService.swift */,
-				BDE467992A5BD72000BFA976 /* Connectable.swift */,
-				BDE4679A2A5BD72000BFA976 /* NetworkConfiguration.swift */,
-			);
-			path = NetworkService;
-			sourceTree = "<group>";
-		};
-		BDE4679B2A5BD72000BFA976 /* Utilities */ = {
-			isa = PBXGroup;
-			children = (
-				BDE4679C2A5BD72000BFA976 /* Atomic.swift */,
-				BDE4679D2A5BD72000BFA976 /* DeviceStatusNotifier.swift */,
-				BDE4679E2A5BD72000BFA976 /* NetworkReachability.swift */,
-				BDE4679F2A5BD72000BFA976 /* DispatchSourceTimer+RepeatingTimer.swift */,
-				BDE467A02A5BD72000BFA976 /* KeepAliveService.swift */,
-				9A0BBA872BC3A59300F7DC01 /* URLRequest+Equality.swift */,
-			);
-			path = Utilities;
-			sourceTree = "<group>";
-		};
-		BDE467A12A5BD72000BFA976 /* Data */ = {
-			isa = PBXGroup;
-			children = (
-				BDE467A22A5BD72000BFA976 /* ProtoConvertible */,
-			);
-			path = Data;
-			sourceTree = "<group>";
-		};
-		BDE467A22A5BD72000BFA976 /* ProtoConvertible */ = {
-			isa = PBXGroup;
-			children = (
-				BDE467A32A5BD72000BFA976 /* ProtoConvertible.swift */,
-			);
-			path = ProtoConvertible;
-			sourceTree = "<group>";
-		};
-		BDE467A42A5BD72000BFA976 /* Domain */ = {
-			isa = PBXGroup;
-			children = (
-				BDE467A52A5BD72000BFA976 /* Entities */,
-			);
-			path = Domain;
-			sourceTree = "<group>";
-		};
-		BDE467A52A5BD72000BFA976 /* Entities */ = {
-			isa = PBXGroup;
-			children = (
-				BDE467A62A5BD72000BFA976 /* EventRequest.swift */,
-			);
-			path = Entities;
 			sourceTree = "<group>";
 		};
 		BDE467A72A5BD72000BFA976 /* Core */ = {
@@ -1028,6 +941,121 @@
 				BDE467F82A5BD72000BFA976 /* EventProcessorDependencies.swift */,
 			);
 			path = Core;
+			sourceTree = "<group>";
+		};
+		D8DD44712E812BA2000D78C9 /* ClickstreamNetworking */ = {
+			isa = PBXGroup;
+			children = (
+				D8DD44E92E8131A1000D78C9 /* Websocket */,
+			);
+			path = ClickstreamNetworking;
+			sourceTree = "<group>";
+		};
+		D8DD44AA2E812D32000D78C9 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				D8DD44DB2E812EDB000D78C9 /* NetworkManagerDependencies.swift */,
+				D8DD44A82E812D32000D78C9 /* NetworkBuilder.swift */,
+				D8DD44A92E812D32000D78C9 /* RetryMechanism.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		D8DD44AC2E812D32000D78C9 /* ProtoConvertible */ = {
+			isa = PBXGroup;
+			children = (
+				D8DD44AB2E812D32000D78C9 /* ProtoConvertible.swift */,
+			);
+			path = ProtoConvertible;
+			sourceTree = "<group>";
+		};
+		D8DD44AD2E812D32000D78C9 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				D8DD44AC2E812D32000D78C9 /* ProtoConvertible */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		D8DD44AF2E812D32000D78C9 /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				D8DD44AE2E812D32000D78C9 /* EventRequest.swift */,
+			);
+			path = Entities;
+			sourceTree = "<group>";
+		};
+		D8DD44B02E812D32000D78C9 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				D8DD44AF2E812D32000D78C9 /* Entities */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		D8DD44B42E812D32000D78C9 /* NetworkService */ = {
+			isa = PBXGroup;
+			children = (
+				D8DD44B12E812D32000D78C9 /* Connectable.swift */,
+				D8DD44B22E812D32000D78C9 /* NetworkConfiguration.swift */,
+				D8DD44B32E812D32000D78C9 /* NetworkService.swift */,
+			);
+			path = NetworkService;
+			sourceTree = "<group>";
+		};
+		D8DD44BB2E812D32000D78C9 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				D8DD44B52E812D32000D78C9 /* Atomic.swift */,
+				D8DD44B62E812D32000D78C9 /* DeviceStatusNotifier.swift */,
+				D8DD44B72E812D32000D78C9 /* DispatchSourceTimer+RepeatingTimer.swift */,
+				D8DD44B82E812D32000D78C9 /* KeepAliveService.swift */,
+				D8DD44B92E812D32000D78C9 /* NetworkReachability.swift */,
+				D8DD44BA2E812D32000D78C9 /* URLRequest+Equality.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		D8DD44BC2E812D32000D78C9 /* Infrastructure */ = {
+			isa = PBXGroup;
+			children = (
+				D8DD44B42E812D32000D78C9 /* NetworkService */,
+				D8DD44BB2E812D32000D78C9 /* Utilities */,
+			);
+			path = Infrastructure;
+			sourceTree = "<group>";
+		};
+		D8DD44BD2E812D32000D78C9 /* NetworkManager */ = {
+			isa = PBXGroup;
+			children = (
+				D8DD44AA2E812D32000D78C9 /* Core */,
+				D8DD44AD2E812D32000D78C9 /* Data */,
+				D8DD44B02E812D32000D78C9 /* Domain */,
+				D8DD44BC2E812D32000D78C9 /* Infrastructure */,
+			);
+			path = NetworkManager;
+			sourceTree = "<group>";
+		};
+		D8DD44E32E8131A1000D78C9 /* Sockets */ = {
+			isa = PBXGroup;
+			children = (
+				D8DD44E12E8131A1000D78C9 /* Heartbeat.swift */,
+				D8DD44E22E8131A1000D78C9 /* SocketHandler.swift */,
+			);
+			path = Sockets;
+			sourceTree = "<group>";
+		};
+		D8DD44E92E8131A1000D78C9 /* Websocket */ = {
+			isa = PBXGroup;
+			children = (
+				D8DD44E32E8131A1000D78C9 /* Sockets */,
+				D8DD44E42E8131A1000D78C9 /* WebsocketManagerDependencies.swift */,
+				D8DD44E52E8131A1000D78C9 /* WebsocketNetworkBuilder.swift */,
+				D8DD44E62E8131A1000D78C9 /* WebsocketNetworkConfiguration.swift */,
+				D8DD44E72E8131A1000D78C9 /* WebsocketNetworkService.swift */,
+				D8DD44E82E8131A1000D78C9 /* WebsocketRetryMechanism.swift */,
+			);
+			path = Websocket;
 			sourceTree = "<group>";
 		};
 		FB2A02FC6F309C114517B6F5 /* Frameworks */ = {
@@ -1231,15 +1259,11 @@
 				BD6BDB7429FBC1360006B04A /* EventsListViewController.swift in Sources */,
 				BDE468232A5BD72000BFA976 /* JSONStringDecoder.swift in Sources */,
 				BD6BDB9829FBC1360006B04A /* CSLocationDTO.swift in Sources */,
-				BDE468132A5BD72000BFA976 /* ProtoConvertible.swift in Sources */,
 				BD6BDB7029FBC1360006B04A /* EventVisualizerLandingViewModel.swift in Sources */,
-				BDE468092A5BD72000BFA976 /* Atomic.swift in Sources */,
-				BDE467F92A5BD72000BFA976 /* NetworkBuilder.swift in Sources */,
 				BD6BDB6A29FBC1360006B04A /* RadioLabelTableViewCell.swift in Sources */,
 				BD6BDB9E29FBC1360006B04A /* CSCommonPropertiesDTO.swift in Sources */,
 				BD6BDB9A29FBC1360006B04A /* ClickStreamHealthConfigurations.swift in Sources */,
 				BDE468752A5BD72000BFA976 /* DatabasePersistable.swift in Sources */,
-				BDE468012A5BD72000BFA976 /* SocketHandler.swift in Sources */,
 				BD6BDB9029FBC1360006B04A /* Notifiable.swift in Sources */,
 				BD6BDB9C29FBC1360006B04A /* HealthTrackerDTO.swift in Sources */,
 				BDE468272A5BD72000BFA976 /* DeviceInfo.swift in Sources */,
@@ -1248,37 +1272,49 @@
 				BDE4685F2A5BD72000BFA976 /* EventBatchCreator.swift in Sources */,
 				BD6BDB8C29FBC1360006B04A /* Tracker.swift in Sources */,
 				BDE468732A5BD72000BFA976 /* TableDefinable.swift in Sources */,
+				D8DD44DD2E812EDB000D78C9 /* NetworkManagerDependencies.swift in Sources */,
 				BDE4682F2A5BD72000BFA976 /* EventRequest.pb.swift in Sources */,
 				BD6BDB8029FBC1360006B04A /* UITableViewExtensions.swift in Sources */,
 				BD6BDB9429FBC1360006B04A /* HealthMeta.pb.swift in Sources */,
 				BD6BDB9629FBC1360006B04A /* Health.pb.swift in Sources */,
-				BDE467FD2A5BD72000BFA976 /* NetworkManagerDependencies.swift in Sources */,
-				BDE4680B2A5BD72000BFA976 /* DeviceStatusNotifier.swift in Sources */,
 				BDE468292A5BD72000BFA976 /* Event.swift in Sources */,
-				BDE4680D2A5BD72000BFA976 /* NetworkReachability.swift in Sources */,
 				BDE4682B2A5BD72000BFA976 /* ClickstreamEvent.swift in Sources */,
 				BDE468312A5BD72000BFA976 /* EteExperiment.pb.swift in Sources */,
-				BDE468152A5BD72000BFA976 /* EventRequest.swift in Sources */,
 				BDE4681F2A5BD72000BFA976 /* Constants.swift in Sources */,
 				BDE468692A5BD72000BFA976 /* EventBatchSizeRegulator.swift in Sources */,
 				BDE468792A5BD72000BFA976 /* EventProcessor.swift in Sources */,
 				BDE468252A5BD72000BFA976 /* Logger.swift in Sources */,
+				D8DD44CC2E812D32000D78C9 /* NetworkBuilder.swift in Sources */,
+				D8DD44CD2E812D32000D78C9 /* URLRequest+Equality.swift in Sources */,
+				D8DD44CE2E812D32000D78C9 /* DispatchSourceTimer+RepeatingTimer.swift in Sources */,
+				D8DD44D02E812D32000D78C9 /* DeviceStatusNotifier.swift in Sources */,
+				D8DD44D12E812D32000D78C9 /* KeepAliveService.swift in Sources */,
+				D8DD44D22E812D32000D78C9 /* RetryMechanism.swift in Sources */,
+				D8DD44D32E812D32000D78C9 /* Connectable.swift in Sources */,
+				D8DD44D42E812D32000D78C9 /* NetworkConfiguration.swift in Sources */,
+				D8DD44D52E812D32000D78C9 /* EventRequest.swift in Sources */,
+				D8DD44D62E812D32000D78C9 /* ProtoConvertible.swift in Sources */,
+				D8DD44D72E812D32000D78C9 /* NetworkService.swift in Sources */,
+				D8DD44D82E812D32000D78C9 /* NetworkReachability.swift in Sources */,
+				D8DD44D92E812D32000D78C9 /* Atomic.swift in Sources */,
 				BDE468352A5BD72000BFA976 /* Event.pb.swift in Sources */,
 				BDE4687B2A5BD72000BFA976 /* EventProcessorDependencies.swift in Sources */,
+				D8DD44EA2E8131A1000D78C9 /* SocketHandler.swift in Sources */,
+				D8DD44EB2E8131A1000D78C9 /* WebsocketNetworkConfiguration.swift in Sources */,
+				D8DD44EC2E8131A1000D78C9 /* WebsocketNetworkBuilder.swift in Sources */,
+				D8DD44ED2E8131A1000D78C9 /* WebsocketManagerDependencies.swift in Sources */,
+				D8DD44EE2E8131A1000D78C9 /* WebsocketNetworkService.swift in Sources */,
+				D8DD44EF2E8131A1000D78C9 /* WebsocketRetryMechanism.swift in Sources */,
+				D8DD44F02E8131A1000D78C9 /* Heartbeat.swift in Sources */,
 				BD6BDB7A29FBC1360006B04A /* EventDetailsViewController.swift in Sources */,
 				BD6BDB9229FBC1360006B04A /* AppVersionChecker.swift in Sources */,
 				BDE4681D2A5BD72000BFA976 /* ClickStreamEventClassification.swift in Sources */,
 				BDE468612A5BD72000BFA976 /* EventSchedulerDependencies.swift in Sources */,
 				BD6BDB8629FBC1360006B04A /* HealthTracker.swift in Sources */,
-				BDE4680F2A5BD72000BFA976 /* DispatchSourceTimer+RepeatingTimer.swift in Sources */,
 				BD6BDB8429FBC1360006B04A /* CollectionMapper.swift in Sources */,
 				BDE4686B2A5BD72000BFA976 /* SchedulerService.swift in Sources */,
-				BDE468032A5BD72000BFA976 /* NetworkService.swift in Sources */,
-				BDE468072A5BD72000BFA976 /* NetworkConfiguration.swift in Sources */,
 				BDE4686F2A5BD72000BFA976 /* DatabaseHandler.swift in Sources */,
 				BDE468632A5BD72000BFA976 /* EventWarehouser.swift in Sources */,
-				BDE468052A5BD72000BFA976 /* Connectable.swift in Sources */,
-				BDE467FB2A5BD72000BFA976 /* RetryMechanism.swift in Sources */,
 				BDE468192A5BD72000BFA976 /* ClickstreamDependencies.swift in Sources */,
 				BDE468772A5BD72000BFA976 /* EventClassifier.swift in Sources */,
 				BDE468712A5BD72000BFA976 /* DatabaseDAO.swift in Sources */,
@@ -1286,15 +1322,12 @@
 				BD6BDB6E29FBC1360006B04A /* EventsListingTableViewCell.swift in Sources */,
 				BDE468672A5BD72000BFA976 /* AppStateNotifierService.swift in Sources */,
 				BD6BDB8829FBC1360006B04A /* HealthAnalysisEvent.swift in Sources */,
-				9A0BBA882BC3A59300F7DC01 /* URLRequest+Equality.swift in Sources */,
 				BD6BDB6C29FBC1360006B04A /* FilterTextFieldTableViewCell.swift in Sources */,
-				BDE467FF2A5BD72000BFA976 /* Heartbeat.swift in Sources */,
 				BDE468652A5BD72000BFA976 /* EventBatchProcessor.swift in Sources */,
 				BDE468212A5BD72000BFA976 /* Reachability+Extension.swift in Sources */,
 				BD6BDB8A29FBC1360006B04A /* HealthAnalysisEventBatch.swift in Sources */,
 				BDDC872229E6AF580024ED8C /* FileManagerOverride.swift in Sources */,
 				BD6BDB7C29FBC1360006B04A /* FilterViewController.swift in Sources */,
-				BDE468112A5BD72000BFA976 /* KeepAliveService.swift in Sources */,
 				BD6BDB8E29FBC1360006B04A /* TrackerConstants.swift in Sources */,
 				BDE468332A5BD72000BFA976 /* EventResponse.pb.swift in Sources */,
 				BDE4681B2A5BD72000BFA976 /* ClickStreamConstraints.swift in Sources */,
@@ -1307,23 +1340,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9A0BBA892BC3A59300F7DC01 /* URLRequest+Equality.swift in Sources */,
 				BD6BDB9F29FBC1360006B04A /* CSCommonPropertiesDTO.swift in Sources */,
 				BDE467752A5BD24500BFA976 /* BatchSizeRegulatorMock.swift in Sources */,
-				BDE4680E2A5BD72000BFA976 /* NetworkReachability.swift in Sources */,
-				BDE467FC2A5BD72000BFA976 /* RetryMechanism.swift in Sources */,
 				BDE467862A5BD24500BFA976 /* EventRequestTests.swift in Sources */,
-				BDE4680A2A5BD72000BFA976 /* Atomic.swift in Sources */,
 				BDE4686C2A5BD72000BFA976 /* SchedulerService.swift in Sources */,
 				BDE467742A5BD24500BFA976 /* AppStateNotifierMock.swift in Sources */,
 				BD6BDB7729FBC1360006B04A /* EventsListViewModel.swift in Sources */,
 				BDE468342A5BD72000BFA976 /* EventResponse.pb.swift in Sources */,
 				BDE468682A5BD72000BFA976 /* AppStateNotifierService.swift in Sources */,
-				BDE468122A5BD72000BFA976 /* KeepAliveService.swift in Sources */,
 				BD6BDB9929FBC1360006B04A /* CSLocationDTO.swift in Sources */,
 				BDE4682A2A5BD72000BFA976 /* Event.swift in Sources */,
 				BDE4676F2A5BD24500BFA976 /* MockConstants.swift in Sources */,
-				BDE468022A5BD72000BFA976 /* SocketHandler.swift in Sources */,
 				BD6BDB6F29FBC1360006B04A /* EventsListingTableViewCell.swift in Sources */,
 				BDE4677A2A5BD24500BFA976 /* DispatchQueue+Detection.swift in Sources */,
 				BD6BDB9B29FBC1360006B04A /* ClickStreamHealthConfigurations.swift in Sources */,
@@ -1332,7 +1359,6 @@
 				BDE467852A5BD24500BFA976 /* NetworkManagerDependenciesTests.swift in Sources */,
 				BDE467822A5BD24500BFA976 /* EventProcessorDependenciesTests.swift in Sources */,
 				BDE467872A5BD24500BFA976 /* KeepAliveServiceTests.swift in Sources */,
-				BDE468162A5BD72000BFA976 /* EventRequest.swift in Sources */,
 				BD6BDB8929FBC1360006B04A /* HealthAnalysisEvent.swift in Sources */,
 				BDE467782A5BD24500BFA976 /* EventSchedulerDependenciesTests.swift in Sources */,
 				BDE4681E2A5BD72000BFA976 /* ClickStreamEventClassification.swift in Sources */,
@@ -1346,16 +1372,20 @@
 				BDE467842A5BD24500BFA976 /* SocketHandlerMock.swift in Sources */,
 				BD6BDB8529FBC1360006B04A /* CollectionMapper.swift in Sources */,
 				BDE4681A2A5BD72000BFA976 /* ClickstreamDependencies.swift in Sources */,
+				D8DD44F12E8131A1000D78C9 /* SocketHandler.swift in Sources */,
+				D8DD44F22E8131A1000D78C9 /* WebsocketNetworkConfiguration.swift in Sources */,
+				D8DD44F32E8131A1000D78C9 /* WebsocketNetworkBuilder.swift in Sources */,
+				D8DD44F42E8131A1000D78C9 /* WebsocketManagerDependencies.swift in Sources */,
+				D8DD44F52E8131A1000D78C9 /* WebsocketNetworkService.swift in Sources */,
+				D8DD44F62E8131A1000D78C9 /* WebsocketRetryMechanism.swift in Sources */,
+				D8DD44F72E8131A1000D78C9 /* Heartbeat.swift in Sources */,
 				BDE467772A5BD24500BFA976 /* EventBatchProcessorTests.swift in Sources */,
 				BDE468182A5BD72000BFA976 /* ClickStream.swift in Sources */,
 				BDE468322A5BD72000BFA976 /* EteExperiment.pb.swift in Sources */,
 				BD6BDB7F29FBC1360006B04A /* EventsHelper.swift in Sources */,
-				BDE468002A5BD72000BFA976 /* Heartbeat.swift in Sources */,
 				BDE468262A5BD72000BFA976 /* Logger.swift in Sources */,
 				BDE468242A5BD72000BFA976 /* JSONStringDecoder.swift in Sources */,
 				BDE4687A2A5BD72000BFA976 /* EventProcessor.swift in Sources */,
-				BDE468042A5BD72000BFA976 /* NetworkService.swift in Sources */,
-				BDE468142A5BD72000BFA976 /* ProtoConvertible.swift in Sources */,
 				BDE468282A5BD72000BFA976 /* DeviceInfo.swift in Sources */,
 				BDE4677B2A5BD24500BFA976 /* SchedulerServiceTests.swift in Sources */,
 				BDE468602A5BD72000BFA976 /* EventBatchCreator.swift in Sources */,
@@ -1366,7 +1396,6 @@
 				BDE467812A5BD24500BFA976 /* EventProcessorTest.swift in Sources */,
 				BD6BDB9329FBC1360006B04A /* AppVersionChecker.swift in Sources */,
 				BD6BDB9D29FBC1360006B04A /* HealthTrackerDTO.swift in Sources */,
-				BDE468062A5BD72000BFA976 /* Connectable.swift in Sources */,
 				BDE468222A5BD72000BFA976 /* Reachability+Extension.swift in Sources */,
 				BD6BDB7D29FBC1360006B04A /* FilterViewController.swift in Sources */,
 				BDE468782A5BD72000BFA976 /* EventClassifier.swift in Sources */,
@@ -1375,12 +1404,10 @@
 				BDE467832A5BD24500BFA976 /* NetworkReachabilityMock.swift in Sources */,
 				BDE4681C2A5BD72000BFA976 /* ClickStreamConstraints.swift in Sources */,
 				BDE468702A5BD72000BFA976 /* DatabaseHandler.swift in Sources */,
-				BDE4680C2A5BD72000BFA976 /* DeviceStatusNotifier.swift in Sources */,
 				BD6BDB7929FBC1360006B04A /* EventDetailsViewModel.swift in Sources */,
 				BDE468762A5BD72000BFA976 /* DatabasePersistable.swift in Sources */,
 				BDE4677D2A5BD24500BFA976 /* EventWarehouserTests.swift in Sources */,
 				BD6BDB8B29FBC1360006B04A /* HealthAnalysisEventBatch.swift in Sources */,
-				BDE468102A5BD72000BFA976 /* DispatchSourceTimer+RepeatingTimer.swift in Sources */,
 				BDE468662A5BD72000BFA976 /* EventBatchProcessor.swift in Sources */,
 				BD6BDB6D29FBC1360006B04A /* FilterTextFieldTableViewCell.swift in Sources */,
 				BD6BDB8F29FBC1360006B04A /* TrackerConstants.swift in Sources */,
@@ -1389,20 +1416,31 @@
 				BDE4677F2A5BD24500BFA976 /* EventCreatorTests.swift in Sources */,
 				BDE468722A5BD72000BFA976 /* DatabaseDAO.swift in Sources */,
 				BDE4677E2A5BD24500BFA976 /* DatabaseDAOTests.swift in Sources */,
+				D8DD44BE2E812D32000D78C9 /* NetworkBuilder.swift in Sources */,
+				D8DD44BF2E812D32000D78C9 /* URLRequest+Equality.swift in Sources */,
+				D8DD44C02E812D32000D78C9 /* DispatchSourceTimer+RepeatingTimer.swift in Sources */,
+				D8DD44C22E812D32000D78C9 /* DeviceStatusNotifier.swift in Sources */,
+				D8DD44C32E812D32000D78C9 /* KeepAliveService.swift in Sources */,
+				D8DD44C42E812D32000D78C9 /* RetryMechanism.swift in Sources */,
+				D8DD44C52E812D32000D78C9 /* Connectable.swift in Sources */,
+				D8DD44C62E812D32000D78C9 /* NetworkConfiguration.swift in Sources */,
+				D8DD44C72E812D32000D78C9 /* EventRequest.swift in Sources */,
+				D8DD44C82E812D32000D78C9 /* ProtoConvertible.swift in Sources */,
+				D8DD44C92E812D32000D78C9 /* NetworkService.swift in Sources */,
+				D8DD44CA2E812D32000D78C9 /* NetworkReachability.swift in Sources */,
+				D8DD44CB2E812D32000D78C9 /* Atomic.swift in Sources */,
 				BDE4682E2A5BD72000BFA976 /* EventBatch.swift in Sources */,
 				BDE467732A5BD24500BFA976 /* EventTests.swift in Sources */,
 				BDE468742A5BD72000BFA976 /* TableDefinable.swift in Sources */,
-				BDE467FA2A5BD72000BFA976 /* NetworkBuilder.swift in Sources */,
 				BDE4678A2A5BD24500BFA976 /* NetworkServiceTests.swift in Sources */,
 				BD6BDB7529FBC1360006B04A /* EventsListViewController.swift in Sources */,
 				BDE4687C2A5BD72000BFA976 /* EventProcessorDependencies.swift in Sources */,
 				BDE4682C2A5BD72000BFA976 /* ClickstreamEvent.swift in Sources */,
 				BD6BDB8329FBC1360006B04A /* EventStateViewable.swift in Sources */,
-				BDE468082A5BD72000BFA976 /* NetworkConfiguration.swift in Sources */,
+				D8DD44DC2E812EDB000D78C9 /* NetworkManagerDependencies.swift in Sources */,
 				BDE468302A5BD72000BFA976 /* EventRequest.pb.swift in Sources */,
 				BD6BDB9529FBC1360006B04A /* HealthMeta.pb.swift in Sources */,
 				BD6BDB7329FBC1360006B04A /* EventVisualizerLandingViewController.swift in Sources */,
-				BDE467FE2A5BD72000BFA976 /* NetworkManagerDependencies.swift in Sources */,
 				BDE467762A5BD24500BFA976 /* DatabaseMock.swift in Sources */,
 				BDDC872329E6AF580024ED8C /* FileManagerOverride.swift in Sources */,
 				BD6BDB8129FBC1360006B04A /* UITableViewExtensions.swift in Sources */,

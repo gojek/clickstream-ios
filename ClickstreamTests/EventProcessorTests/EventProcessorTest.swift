@@ -13,10 +13,10 @@ import SwiftProtobuf
 class EventProcessorTest: XCTestCase {
 
     private let processorQueueMock = SerialQueue(label: "com.mock.gojek.clickstream.processor", qos: .utility)
-    private var config: DefaultNetworkConfiguration!
-    private var networkService: DefaultNetworkService<SocketHandlerMockSuccess>!
-    private var retryMech: DefaultRetryMechanism!
-    private var networkBuilder: DefaultNetworkBuilder!
+    private var config: WebsocketNetworkConfiguration!
+    private var networkService: WebsocketNetworkService<SocketHandlerMockSuccess>!
+    private var retryMech: WebsocketRetryMechanism!
+    private var networkBuilder: WebsocketNetworkBuilder!
     private var prioritiesMock: [Priority]!
     private var eventBatchCreator: DefaultEventBatchCreator!
     private var schedulerServiceMock: DefaultSchedulerService!
@@ -33,15 +33,15 @@ class EventProcessorTest: XCTestCase {
     override func setUp() {
         //given
         /// Network builder
-        config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
-        networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
+        config = WebsocketNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
+        networkService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
         persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         eventPersistence = DefaultDatabaseDAO<Event>(database: database, performOnQueue: dbQueueMock)
 
         keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: processorQueueMock, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
 
-        retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: DefaultDeviceStatus(performOnQueue: processorQueueMock), appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: processorQueueMock, persistence: persistence, keepAliveService: keepAliveService)
-        networkBuilder = DefaultNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: processorQueueMock)
+        retryMech = WebsocketRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: DefaultDeviceStatus(performOnQueue: processorQueueMock), appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: processorQueueMock, persistence: persistence, keepAliveService: keepAliveService)
+        networkBuilder = WebsocketNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: processorQueueMock)
         
         /// Event Splitter
         prioritiesMock = [Priority(priority: 0, identifier: "realTime", maxBatchSize: 50000.0, maxTimeBetweenTwoBatches: 1)]

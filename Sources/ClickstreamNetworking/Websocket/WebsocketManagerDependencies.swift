@@ -1,20 +1,11 @@
-//
-//  NetworkManagerDependencies.swift
-//  Clickstream
-//
-//  Created by Anirudh Vyas on 29/04/20.
-//  Copyright © 2020 Gojek. All rights reserved.
-//
-
 import Foundation
 
-final class NetworkManagerDependencies {
-    
+final class WebsocketManagerDependencies: NetworkManagerDependencies {
+
     private var request: URLRequest
     private let database: Database
     
-    init(with request: URLRequest,
-         db: Database) {
+    init(with request: URLRequest, db: Database) {
         self.database = db
         self.request = request
     }
@@ -22,21 +13,27 @@ final class NetworkManagerDependencies {
     private let networkQueue = SerialQueue(label: Constants.QueueIdentifiers.network.rawValue, qos: .utility)
     
     private let daoQueue = DispatchQueue(label: Constants.QueueIdentifiers.dao.rawValue,
-                                       qos: .utility,
-                                       attributes: .concurrent)
-    
-    private func getNetworkConfig() -> DefaultNetworkConfiguration {
-        return DefaultNetworkConfiguration(request: request)
-    }
+                                         qos: .utility,
+                                         attributes: .concurrent)
 
-    private lazy var networkService: NetworkService = {
-        return DefaultNetworkService<DefaultSocketHandler>(with: getNetworkConfig(),
+    internal lazy var networkService: NetworkService = {
+        return WebsocketNetworkService<DefaultSocketHandler>(with: getNetworkConfig(),
                                                                performOnQueue: networkQueue)
     }()
     
-    private lazy var reachability: NetworkReachability = {
+    internal lazy var reachability: NetworkReachability = {
         let reachability = DefaultNetworkReachability(with: networkQueue)
         return reachability
+    }()
+
+    internal lazy var retryMech: Retryable = {
+       return WebsocketRetryMechanism(networkService: networkService,
+                                      reachability: reachability,
+                                      deviceStatus: deviceStatus,
+                                      appStateNotifier: appStateNotifier,
+                                      performOnQueue: networkQueue,
+                                      persistence: defaultPersistence,
+                                      keepAliveService: keepAliveService)
     }()
     
     private lazy var deviceStatus: DefaultDeviceStatus = {
@@ -58,22 +55,16 @@ final class NetworkManagerDependencies {
                                                     duration: Clickstream.configurations.connectionRetryDuration,
                                                     reachability: reachability)
     }()
-    
-    private lazy var retryMech: Retryable = {
-       return DefaultRetryMechanism(networkService: networkService,
-                                    reachability: reachability,
-                                    deviceStatus: deviceStatus,
-                                    appStateNotifier: appStateNotifier,
-                                    performOnQueue: networkQueue,
-                                    persistence: defaultPersistence,
-                                    keepAliveService: keepAliveService)
-    }()
-    
-    func makeNetworkBuilder() -> NetworkBuildable {
-        return DefaultNetworkBuilder(networkConfigs: getNetworkConfig(), retryMech: retryMech, performOnQueue: networkQueue)
+
+    internal func getNetworkConfig() -> NetworkConfigurable {
+        return WebsocketNetworkConfiguration(request: request)
     }
-    
-    var isSocketConnected: Bool {
+
+    func makeNetworkBuilder() -> NetworkBuildable {
+        return WebsocketNetworkBuilder(networkConfigs: getNetworkConfig(), retryMech: retryMech, performOnQueue: networkQueue)
+    }
+
+    var isConnected: Bool {
         networkService.isConnected
     }
 }
