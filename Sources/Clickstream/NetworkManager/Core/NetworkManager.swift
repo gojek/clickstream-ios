@@ -8,14 +8,13 @@
 
 import Foundation
 
-protocol NetworkManagerDependencies {
-
-    init(with request: URLRequest, db: Database)
+protocol NetworkManager {
+    
+    init(with dependencies: DefaultNetworkDependencies)
 
     var networkService: NetworkService { get }
-    var reachability: NetworkReachability { get }
-    var isConnected: Bool { get }
     var retryMech: Retryable { get }
+    var isConnected: Bool { get }
 
     func getNetworkConfig() -> NetworkConfigurable
     func makeNetworkBuilder() -> NetworkBuildable

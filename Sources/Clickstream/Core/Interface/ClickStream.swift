@@ -242,18 +242,11 @@ public final class Clickstream {
             // All the dependency injections pertaining to the clickstream blocks happen here!
             // Load default dependencies.
             do {
-                let database = try DefaultDatabase(qos: .WAL)
-                let networkDependencies: NetworkManagerDependencies
+                let db = try DefaultDatabase(qos: .WAL)
+                let networkDependencies = try DefaultNetworkDependencies(with: request, db: db)
 
-                #if COURIER_DEPENDENCIES_ENABLED
-                networkDependencies = WebsocketManagerDependencies(with: request, db: database)
-                #else
-//                networkDependencies = CourierManagerDependencies(with: request, db: database)
-                #endif
-    
-                let websocket = WebsocketManagerDependencies(with: request, db: database)
-                
-                let dependencies = try DefaultClickstreamDependencies(with: websocket, db: database)
+                let websocket = WebsocketNetworkManager(with: networkDependencies)
+                let dependencies = DefaultClickstreamDependencies(networkManager: websocket, db: db)
                 sharedInstance = Clickstream(networkBuilder: dependencies.networkBuilder,
                                              eventWarehouser: dependencies.eventWarehouser,
                                              eventProcessor: dependencies.eventProcessor,

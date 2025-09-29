@@ -38,8 +38,9 @@ class ClickstreamDependenciesTests: XCTestCase {
     func testNetworkBuilder() {
         // when
         let database = try! DefaultDatabase(qos: .WAL)
-        let websocket = WebsocketManagerDependencies(with: dummyRequest, db: database)
-        let clickStreamDependencies = try! DefaultClickstreamDependencies(with: websocket, db: database)
+        let dependencies = try! DefaultNetworkDependencies(with: dummyRequest, db: database)
+        let websocket = WebsocketNetworkManager(with: dependencies)
+        let clickStreamDependencies = DefaultClickstreamDependencies(networkManager: websocket, db: database)
 
         // then
         XCTAssertNotNil(clickStreamDependencies.networkBuilder)
@@ -48,8 +49,9 @@ class ClickstreamDependenciesTests: XCTestCase {
     func testEventWarehouser() {
         // when
         let database = try! DefaultDatabase(qos: .WAL)
-        let websocket = WebsocketManagerDependencies(with: dummyRequest, db: database)
-        let clickStreamDependencies = try! DefaultClickstreamDependencies(with: websocket, db: database)
+        let dependencies = try! DefaultNetworkDependencies(with: dummyRequest, db: database)
+        let websocket = WebsocketNetworkManager(with: dependencies)
+        let clickStreamDependencies = DefaultClickstreamDependencies(networkManager: websocket, db: database)
 
         // then
         XCTAssertNotNil(clickStreamDependencies.eventWarehouser)
@@ -62,8 +64,9 @@ class ClickstreamDependenciesTests: XCTestCase {
         
         // when
         let database = try! DefaultDatabase(qos: .WAL)
-        let websocket = WebsocketManagerDependencies(with: dummyRequest, db: database)
-        let clickStreamDependencies = try! DefaultClickstreamDependencies(with: websocket, db: database)
+        let dependencies = try! DefaultNetworkDependencies(with: dummyRequest, db: database)
+        let websocket = WebsocketNetworkManager(with: dependencies)
+        let clickStreamDependencies = DefaultClickstreamDependencies(networkManager: websocket, db: database)
 
         // then
         XCTAssertNotNil(clickStreamDependencies.eventProcessor)

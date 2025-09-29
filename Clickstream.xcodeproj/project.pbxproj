@@ -157,6 +157,8 @@
 		BDE4687A2A5BD72000BFA976 /* EventProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467F72A5BD72000BFA976 /* EventProcessor.swift */; };
 		BDE4687B2A5BD72000BFA976 /* EventProcessorDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467F82A5BD72000BFA976 /* EventProcessorDependencies.swift */; };
 		BDE4687C2A5BD72000BFA976 /* EventProcessorDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467F82A5BD72000BFA976 /* EventProcessorDependencies.swift */; };
+		D844879A2E8A52B90085DCC4 /* NetworkDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = D84487992E8A52B90085DCC4 /* NetworkDependencies.swift */; };
+		D844879B2E8A52B90085DCC4 /* NetworkDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = D84487992E8A52B90085DCC4 /* NetworkDependencies.swift */; };
 		D8DD44BE2E812D32000D78C9 /* NetworkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44A82E812D32000D78C9 /* NetworkBuilder.swift */; };
 		D8DD44BF2E812D32000D78C9 /* URLRequest+Equality.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44BA2E812D32000D78C9 /* URLRequest+Equality.swift */; };
 		D8DD44C02E812D32000D78C9 /* DispatchSourceTimer+RepeatingTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44B72E812D32000D78C9 /* DispatchSourceTimer+RepeatingTimer.swift */; };
@@ -183,19 +185,19 @@
 		D8DD44D72E812D32000D78C9 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44B32E812D32000D78C9 /* NetworkService.swift */; };
 		D8DD44D82E812D32000D78C9 /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44B92E812D32000D78C9 /* NetworkReachability.swift */; };
 		D8DD44D92E812D32000D78C9 /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44B52E812D32000D78C9 /* Atomic.swift */; };
-		D8DD44DC2E812EDB000D78C9 /* NetworkManagerDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44DB2E812EDB000D78C9 /* NetworkManagerDependencies.swift */; };
-		D8DD44DD2E812EDB000D78C9 /* NetworkManagerDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44DB2E812EDB000D78C9 /* NetworkManagerDependencies.swift */; };
+		D8DD44DC2E812EDB000D78C9 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44DB2E812EDB000D78C9 /* NetworkManager.swift */; };
+		D8DD44DD2E812EDB000D78C9 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44DB2E812EDB000D78C9 /* NetworkManager.swift */; };
 		D8DD44EA2E8131A1000D78C9 /* SocketHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E22E8131A1000D78C9 /* SocketHandler.swift */; };
 		D8DD44EB2E8131A1000D78C9 /* WebsocketNetworkConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E62E8131A1000D78C9 /* WebsocketNetworkConfiguration.swift */; };
 		D8DD44EC2E8131A1000D78C9 /* WebsocketNetworkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E52E8131A1000D78C9 /* WebsocketNetworkBuilder.swift */; };
-		D8DD44ED2E8131A1000D78C9 /* WebsocketManagerDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E42E8131A1000D78C9 /* WebsocketManagerDependencies.swift */; };
+		D8DD44ED2E8131A1000D78C9 /* WebsocketNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E42E8131A1000D78C9 /* WebsocketNetworkManager.swift */; };
 		D8DD44EE2E8131A1000D78C9 /* WebsocketNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E72E8131A1000D78C9 /* WebsocketNetworkService.swift */; };
 		D8DD44EF2E8131A1000D78C9 /* WebsocketRetryMechanism.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E82E8131A1000D78C9 /* WebsocketRetryMechanism.swift */; };
 		D8DD44F02E8131A1000D78C9 /* Heartbeat.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E12E8131A1000D78C9 /* Heartbeat.swift */; };
 		D8DD44F12E8131A1000D78C9 /* SocketHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E22E8131A1000D78C9 /* SocketHandler.swift */; };
 		D8DD44F22E8131A1000D78C9 /* WebsocketNetworkConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E62E8131A1000D78C9 /* WebsocketNetworkConfiguration.swift */; };
 		D8DD44F32E8131A1000D78C9 /* WebsocketNetworkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E52E8131A1000D78C9 /* WebsocketNetworkBuilder.swift */; };
-		D8DD44F42E8131A1000D78C9 /* WebsocketManagerDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E42E8131A1000D78C9 /* WebsocketManagerDependencies.swift */; };
+		D8DD44F42E8131A1000D78C9 /* WebsocketNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E42E8131A1000D78C9 /* WebsocketNetworkManager.swift */; };
 		D8DD44F52E8131A1000D78C9 /* WebsocketNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E72E8131A1000D78C9 /* WebsocketNetworkService.swift */; };
 		D8DD44F62E8131A1000D78C9 /* WebsocketRetryMechanism.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E82E8131A1000D78C9 /* WebsocketRetryMechanism.swift */; };
 		D8DD44F72E8131A1000D78C9 /* Heartbeat.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DD44E12E8131A1000D78C9 /* Heartbeat.swift */; };
@@ -324,6 +326,7 @@
 		BDE467F82A5BD72000BFA976 /* EventProcessorDependencies.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventProcessorDependencies.swift; sourceTree = "<group>"; };
 		C7CD1A2E08F13591955370E3 /* Pods-Clickstream.integration.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.integration.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.integration.xcconfig"; sourceTree = "<group>"; };
 		CA0F06B342B881F06295F6E3 /* Pods-Clickstream.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.debug.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.debug.xcconfig"; sourceTree = "<group>"; };
+		D84487992E8A52B90085DCC4 /* NetworkDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkDependencies.swift; sourceTree = "<group>"; };
 		D8DD44A82E812D32000D78C9 /* NetworkBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkBuilder.swift; sourceTree = "<group>"; };
 		D8DD44A92E812D32000D78C9 /* RetryMechanism.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetryMechanism.swift; sourceTree = "<group>"; };
 		D8DD44AB2E812D32000D78C9 /* ProtoConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtoConvertible.swift; sourceTree = "<group>"; };
@@ -337,10 +340,10 @@
 		D8DD44B82E812D32000D78C9 /* KeepAliveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeepAliveService.swift; sourceTree = "<group>"; };
 		D8DD44B92E812D32000D78C9 /* NetworkReachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkReachability.swift; sourceTree = "<group>"; };
 		D8DD44BA2E812D32000D78C9 /* URLRequest+Equality.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+Equality.swift"; sourceTree = "<group>"; };
-		D8DD44DB2E812EDB000D78C9 /* NetworkManagerDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManagerDependencies.swift; sourceTree = "<group>"; };
+		D8DD44DB2E812EDB000D78C9 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		D8DD44E12E8131A1000D78C9 /* Heartbeat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Heartbeat.swift; sourceTree = "<group>"; };
 		D8DD44E22E8131A1000D78C9 /* SocketHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketHandler.swift; sourceTree = "<group>"; };
-		D8DD44E42E8131A1000D78C9 /* WebsocketManagerDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsocketManagerDependencies.swift; sourceTree = "<group>"; };
+		D8DD44E42E8131A1000D78C9 /* WebsocketNetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsocketNetworkManager.swift; sourceTree = "<group>"; };
 		D8DD44E52E8131A1000D78C9 /* WebsocketNetworkBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsocketNetworkBuilder.swift; sourceTree = "<group>"; };
 		D8DD44E62E8131A1000D78C9 /* WebsocketNetworkConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsocketNetworkConfiguration.swift; sourceTree = "<group>"; };
 		D8DD44E72E8131A1000D78C9 /* WebsocketNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsocketNetworkService.swift; sourceTree = "<group>"; };
@@ -954,7 +957,8 @@
 		D8DD44AA2E812D32000D78C9 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				D8DD44DB2E812EDB000D78C9 /* NetworkManagerDependencies.swift */,
+				D84487992E8A52B90085DCC4 /* NetworkDependencies.swift */,
+				D8DD44DB2E812EDB000D78C9 /* NetworkManager.swift */,
 				D8DD44A82E812D32000D78C9 /* NetworkBuilder.swift */,
 				D8DD44A92E812D32000D78C9 /* RetryMechanism.swift */,
 			);
@@ -1049,7 +1053,7 @@
 			isa = PBXGroup;
 			children = (
 				D8DD44E32E8131A1000D78C9 /* Sockets */,
-				D8DD44E42E8131A1000D78C9 /* WebsocketManagerDependencies.swift */,
+				D8DD44E42E8131A1000D78C9 /* WebsocketNetworkManager.swift */,
 				D8DD44E52E8131A1000D78C9 /* WebsocketNetworkBuilder.swift */,
 				D8DD44E62E8131A1000D78C9 /* WebsocketNetworkConfiguration.swift */,
 				D8DD44E72E8131A1000D78C9 /* WebsocketNetworkService.swift */,
@@ -1175,9 +1179,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1272,7 +1280,7 @@
 				BDE4685F2A5BD72000BFA976 /* EventBatchCreator.swift in Sources */,
 				BD6BDB8C29FBC1360006B04A /* Tracker.swift in Sources */,
 				BDE468732A5BD72000BFA976 /* TableDefinable.swift in Sources */,
-				D8DD44DD2E812EDB000D78C9 /* NetworkManagerDependencies.swift in Sources */,
+				D8DD44DD2E812EDB000D78C9 /* NetworkManager.swift in Sources */,
 				BDE4682F2A5BD72000BFA976 /* EventRequest.pb.swift in Sources */,
 				BD6BDB8029FBC1360006B04A /* UITableViewExtensions.swift in Sources */,
 				BD6BDB9429FBC1360006B04A /* HealthMeta.pb.swift in Sources */,
@@ -1302,7 +1310,7 @@
 				D8DD44EA2E8131A1000D78C9 /* SocketHandler.swift in Sources */,
 				D8DD44EB2E8131A1000D78C9 /* WebsocketNetworkConfiguration.swift in Sources */,
 				D8DD44EC2E8131A1000D78C9 /* WebsocketNetworkBuilder.swift in Sources */,
-				D8DD44ED2E8131A1000D78C9 /* WebsocketManagerDependencies.swift in Sources */,
+				D8DD44ED2E8131A1000D78C9 /* WebsocketNetworkManager.swift in Sources */,
 				D8DD44EE2E8131A1000D78C9 /* WebsocketNetworkService.swift in Sources */,
 				D8DD44EF2E8131A1000D78C9 /* WebsocketRetryMechanism.swift in Sources */,
 				D8DD44F02E8131A1000D78C9 /* Heartbeat.swift in Sources */,
@@ -1333,6 +1341,7 @@
 				BDE4681B2A5BD72000BFA976 /* ClickStreamConstraints.swift in Sources */,
 				BDE468172A5BD72000BFA976 /* ClickStream.swift in Sources */,
 				BD6BDB7829FBC1360006B04A /* EventDetailsViewModel.swift in Sources */,
+				D844879A2E8A52B90085DCC4 /* NetworkDependencies.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1375,7 +1384,7 @@
 				D8DD44F12E8131A1000D78C9 /* SocketHandler.swift in Sources */,
 				D8DD44F22E8131A1000D78C9 /* WebsocketNetworkConfiguration.swift in Sources */,
 				D8DD44F32E8131A1000D78C9 /* WebsocketNetworkBuilder.swift in Sources */,
-				D8DD44F42E8131A1000D78C9 /* WebsocketManagerDependencies.swift in Sources */,
+				D8DD44F42E8131A1000D78C9 /* WebsocketNetworkManager.swift in Sources */,
 				D8DD44F52E8131A1000D78C9 /* WebsocketNetworkService.swift in Sources */,
 				D8DD44F62E8131A1000D78C9 /* WebsocketRetryMechanism.swift in Sources */,
 				D8DD44F72E8131A1000D78C9 /* Heartbeat.swift in Sources */,
@@ -1393,6 +1402,7 @@
 				BDE467712A5BD24500BFA976 /* ClickStreamDependenciesTests.swift in Sources */,
 				BDE467892A5BD24500BFA976 /* NetworkBuilderTests.swift in Sources */,
 				BD6BDB8D29FBC1360006B04A /* Tracker.swift in Sources */,
+				D844879B2E8A52B90085DCC4 /* NetworkDependencies.swift in Sources */,
 				BDE467812A5BD24500BFA976 /* EventProcessorTest.swift in Sources */,
 				BD6BDB9329FBC1360006B04A /* AppVersionChecker.swift in Sources */,
 				BD6BDB9D29FBC1360006B04A /* HealthTrackerDTO.swift in Sources */,
@@ -1437,7 +1447,7 @@
 				BDE4687C2A5BD72000BFA976 /* EventProcessorDependencies.swift in Sources */,
 				BDE4682C2A5BD72000BFA976 /* ClickstreamEvent.swift in Sources */,
 				BD6BDB8329FBC1360006B04A /* EventStateViewable.swift in Sources */,
-				D8DD44DC2E812EDB000D78C9 /* NetworkManagerDependencies.swift in Sources */,
+				D8DD44DC2E812EDB000D78C9 /* NetworkManager.swift in Sources */,
 				BDE468302A5BD72000BFA976 /* EventRequest.pb.swift in Sources */,
 				BD6BDB9529FBC1360006B04A /* HealthMeta.pb.swift in Sources */,
 				BD6BDB7329FBC1360006B04A /* EventVisualizerLandingViewController.swift in Sources */,

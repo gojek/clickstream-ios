@@ -19,7 +19,8 @@ class NetworkManagerDependenciesTests: XCTestCase {
         Clickstream.configurations = MockConstants.constraints
         Clickstream.eventClassifier = MockConstants.eventClassification
         // when
-        let networkManagerDependencies = WebsocketManagerDependencies(with: dummyRequest, db: database)
+        let dependencies = try! DefaultNetworkDependencies(with: dummyRequest, db: database)
+        let networkManagerDependencies = WebsocketNetworkManager(with: dependencies)
         
         let networkBuilder: NetworkBuildable = networkManagerDependencies.makeNetworkBuilder()
         

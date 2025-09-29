@@ -13,15 +13,15 @@ final class DefaultClickstreamDependencies {
     
     private let database: Database
 
-    private var networkependencies: NetworkManagerDependencies
+    private var networkManager: NetworkManager
     
     var isConnected: Bool {
-        networkependencies.isConnected
+        networkManager.isConnected
     }
 
-    init(with networkependencies: NetworkManagerDependencies, db: Database) throws {
+    init(networkManager: NetworkManager, db: Database) {
+        self.networkManager = networkManager
         self.database = db
-        self.networkependencies = networkependencies
     }
     
     /**
@@ -30,7 +30,7 @@ final class DefaultClickstreamDependencies {
         hence ensuring only one instane is tied to the Clickstream class.
      */
     lazy var networkBuilder: NetworkBuildable = {
-        networkependencies.makeNetworkBuilder()
+        networkManager.makeNetworkBuilder()
     }()
     
     /** A EventWarehouser instance.
