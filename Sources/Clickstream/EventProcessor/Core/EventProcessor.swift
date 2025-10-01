@@ -22,13 +22,23 @@ final class DefaultEventProcessor: EventProcessor {
     private let eventWarehouser: EventWarehouser
     private let serialQueue: SerialQueue
     private let classifier: EventClassifier
+    private let sampler: EventSampler?
     
     init(performOnQueue: SerialQueue,
          classifier: EventClassifier,
-         eventWarehouser: EventWarehouser) {
+         eventWarehouser: EventWarehouser,
+         sampler: EventSampler? = nil) {
         self.serialQueue = performOnQueue
         self.classifier = classifier
         self.eventWarehouser = eventWarehouser
+        self.sampler = sampler
+    }
+    
+    func shouldTrackEvent(event: ClickstreamEvent) -> Bool {
+        if let eventSampler = sampler {
+            return eventSampler.shouldTrack(event: event)
+        }
+        return true
     }
     
     func createEvent(event: ClickstreamEvent) {
@@ -44,8 +54,10 @@ final class DefaultEventProcessor: EventProcessor {
             }
             #endif
             // Create an Event instance and forward it to the scheduler.
-            if let event = checkedSelf.constructEvent(event: event) {
-                checkedSelf.eventWarehouser.store(event)
+            if checkedSelf.shouldTrackEvent(event: event) {
+                if let event = checkedSelf.constructEvent(event: event) {
+                    checkedSelf.eventWarehouser.store(event)
+                }
             }
         }
     }

@@ -17,9 +17,17 @@ struct MockConstants {
     }()
     
     static let eventClassification: ClickstreamEventClassification = {
-        let testRealtimeEvent = ClickstreamEventClassification.EventClassifier(identifier: "ClickstreamTestRealtime", eventNames: ["gojek.clickstream.products.events.AdCardEvent"])
-        let testStandardEvent = ClickstreamEventClassification.EventClassifier(identifier: "ClickstreamTestStandard", eventNames: ["GoChat", "GoPay"])
+        let testRealtimeEvent = ClickstreamEventClassification.EventClassifier(identifier: "ClickstreamTestRealtime", eventNames: ["gojek.clickstream.products.events.AdCardEvent"], csEventNames: ["GoChat", "GoPay"])
+        let testStandardEvent = ClickstreamEventClassification.EventClassifier(identifier: "ClickstreamTestStandard", eventNames: ["GoChat", "GoPay"], csEventNames: ["GoChat", "GoPay"])
         
         return ClickstreamEventClassification(eventTypes: [testRealtimeEvent, testStandardEvent])
+    }()
+    
+    static let eventSamplerConfigurationDefault: EventSamplerConfiguration = {
+        return EventSamplerConfiguration(defaultRate: 100)
+    }()
+    
+    static let eventSamplerConfigurationOverriders: EventSamplerConfiguration = {
+        return EventSamplerConfiguration(defaultRate: 100, overrides: ["GoChat": 50, "GoPay": 100])
     }()
 }

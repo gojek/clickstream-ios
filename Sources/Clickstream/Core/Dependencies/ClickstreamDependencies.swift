@@ -14,13 +14,15 @@ final class DefaultClickstreamDependencies {
     private let request: URLRequest
     private let database: Database
     private var networkManagerDependencies: NetworkManagerDependencies!
+    private let samplerConfiguration: EventSamplerConfiguration?
     
     var isSocketConnected: Bool {
         networkManagerDependencies.isSocketConnected
     }
 
-    init(with request: URLRequest) throws {
+    init(with request: URLRequest, samplerConfiguration: EventSamplerConfiguration? = nil) throws {
         self.request = request
+        self.samplerConfiguration = samplerConfiguration
         database = try DefaultDatabase(qos: .WAL)
     }
     
@@ -44,11 +46,16 @@ final class DefaultClickstreamDependencies {
                                           db: database).makeEventWarehouser()
     }()
     
+    lazy var eventSampler: EventSampler? = {
+        guard let samplerConfiguration else { return nil }
+        return DefaultEventSampler(config: samplerConfiguration)
+    }()
+    
     /**
         EventProcessor instance.
         This instance acts as the only source of EventProcessor, hence ensuring only one instane is tied to the Clickstream class.
      */
     lazy var eventProcessor: EventProcessor = {
-        return EventProcessorDependencies(with: eventWarehouser).makeEventProcessor()
+        return EventProcessorDependencies(with: eventWarehouser, sampler: eventSampler).makeEventProcessor()
     }()
 }
