@@ -173,7 +173,7 @@ public final class Clickstream {
                                                      updateConnectionStatus: Bool = false,
                                                      timerCrashFixFlag: Bool = false,
                                                      priorityEventsEnabled: Bool = false,
-                                                     appPrefix: String) throws -> Clickstream? {
+                                                     appPrefix: String, samplerConfiguration: EventSamplerConfiguration? = nil) throws -> Clickstream? {
         do {
             return try initializeClickstream(
                 with: request,
@@ -183,7 +183,7 @@ public final class Clickstream {
                 updateConnectionStatus: updateConnectionStatus,
                 timerCrashFixFlag: timerCrashFixFlag,
                 priorityEventsEnabled: priorityEventsEnabled,
-                appPrefix: appPrefix)
+                appPrefix: appPrefix, samplerConfiguration: samplerConfiguration)
         } catch {
             print("Cannot initialise Clickstream. Dependencies could not be initialised.",.critical)
             // Relay the database error.
@@ -197,7 +197,7 @@ public final class Clickstream {
                                                      delegate: ClickstreamDelegate? = nil,
                                                      updateConnectionStatus: Bool = false,
                                                      timerCrashFixFlag: Bool = false,
-                                                     appPrefix: String) throws -> Clickstream? {
+                                                     appPrefix: String, samplerConfiguration: EventSamplerConfiguration? = nil) throws -> Clickstream? {
         do {
             return try initializeClickstream(
                 with: request,
@@ -206,7 +206,7 @@ public final class Clickstream {
                 delegate: delegate,
                 updateConnectionStatus: updateConnectionStatus,
                 timerCrashFixFlag: timerCrashFixFlag,
-                appPrefix: appPrefix)
+                appPrefix: appPrefix, samplerConfiguration: samplerConfiguration)
         } catch {
             print("Cannot initialise Clickstream. Dependencies could not be initialised.",.critical)
             // Relay the database error.
@@ -222,7 +222,7 @@ public final class Clickstream {
                                       updateConnectionStatus: Bool = false,
                                       timerCrashFixFlag: Bool = false,
                                       priorityEventsEnabled: Bool = false,
-                                      appPrefix: String) throws -> Clickstream? {
+                                      appPrefix: String, samplerConfiguration: EventSamplerConfiguration? = nil) throws -> Clickstream? {
         let semaphore = DispatchSemaphore(value: 1)
         defer {
             semaphore.signal()
@@ -242,7 +242,7 @@ public final class Clickstream {
             // All the dependency injections pertaining to the clickstream blocks happen here!
             // Load default dependencies.
             do {
-                let dependencies = try DefaultClickstreamDependencies(with: request)
+                let dependencies = try DefaultClickstreamDependencies(with: request, samplerConfiguration: samplerConfiguration)
                 sharedInstance = Clickstream(networkBuilder: dependencies.networkBuilder,
                                              eventWarehouser: dependencies.eventWarehouser,
                                              eventProcessor: dependencies.eventProcessor,

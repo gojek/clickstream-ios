@@ -24,7 +24,7 @@ class ClickstreamDependenciesTests: XCTestCase {
         
         self.constraints = ClickstreamConstraints(maxConnectionRetries: 15, maxConnectionRetryInterval: 5, maxRetryIntervalPostPrematureDisconnection: 10, maxRetriesPostPrematureDisconnection: 20, maxPingInterval: 15, priorities: prioritiesMock, flushOnBackground: true, connectionTerminationTimerWaitTime: 2, maxRequestAckTimeout: 3, maxRetriesPerBatch: 10, maxRetryCacheSize: 100000, connectionRetryDuration: 3, flushOnAppLaunch: false, minBatteryLevelPercent: 10.0)
         
-        let eventClassifierMock = ClickstreamEventClassification.EventClassifier(identifier: "ClickstreamTestRealtime", eventNames: ["CardEvent"])
+        let eventClassifierMock = ClickstreamEventClassification.EventClassifier(identifier: "ClickstreamTestRealtime", eventNames: ["CardEvent"], csEventNames: ["GoChat", "GoPay"])
         self.eventClassifier = ClickstreamEventClassification(eventTypes: [eventClassifierMock])
     }
     

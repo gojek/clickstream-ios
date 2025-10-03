@@ -11,6 +11,7 @@ import Foundation
 final class EventProcessorDependencies {
     
     private let eventWarehouser: EventWarehouser
+    private let eventSampler: EventSampler?
     
     private lazy var serialQueue: SerialQueue = {
         return SerialQueue(label: Constants.QueueIdentifiers.processor.rawValue)
@@ -20,13 +21,14 @@ final class EventProcessorDependencies {
         return DefaultEventClassifier()
     }()
     
-    init(with eventWarehouser: EventWarehouser) {
+    init(with eventWarehouser: EventWarehouser, sampler: EventSampler? = nil) {
         self.eventWarehouser = eventWarehouser
+        self.eventSampler = sampler
     }
     
     func makeEventProcessor() -> EventProcessor {
         return DefaultEventProcessor(performOnQueue: serialQueue,
                                      classifier: classifier,
-                                     eventWarehouser: eventWarehouser)
+                                     eventWarehouser: eventWarehouser, sampler: eventSampler)
     }
 }
