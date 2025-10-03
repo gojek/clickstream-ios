@@ -37,7 +37,7 @@ class SharedClickstreamDependenciesTests: XCTestCase {
     
     func testNetworkBuilder() {
         // when
-        let clickStreamDependencies = try! DefaultClickstreamDependencies(with: dummyRequest)
+        let clickStreamDependencies = try! SharedClickstreamDependencies(with: dummyRequest)
         
         // then
         XCTAssertNotNil(clickStreamDependencies.networkBuilder)
@@ -46,7 +46,7 @@ class SharedClickstreamDependenciesTests: XCTestCase {
 
     func testEventWarehouser() {
         // when
-        let clickStreamDependencies = try! DefaultClickstreamDependencies(with: dummyRequest)
+        let clickStreamDependencies = try! SharedClickstreamDependencies(with: dummyRequest)
         
         // then
         XCTAssertNotNil(clickStreamDependencies.eventWarehouser)
@@ -58,7 +58,7 @@ class SharedClickstreamDependenciesTests: XCTestCase {
         Clickstream.eventClassifier = ClickstreamEventClassification()
         
         // when
-        let clickStreamDependencies = try! DefaultClickstreamDependencies(with: dummyRequest)
+        let clickStreamDependencies = try! SharedClickstreamDependencies(with: dummyRequest)
         
         // then
         XCTAssertNotNil(clickStreamDependencies.eventProcessor)
