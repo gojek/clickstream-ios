@@ -40,11 +40,6 @@ Pod::Spec.new do |s|
       networkManager.source_files = 'Sources/ClickstreamNetworking/Websocket/**/*.swift'
   end
 
-  s.subspec 'Courier' do |networkManager|
-    networkManager.source_files = 'Sources/ClickstreamNetworking/Courier/**/*.swift'
-    # networkManager.xcconfig = { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) COURIER_DEPENDENCIES_ENABLED' }
-  end
-
   s.subspec 'Tracker' do |tracker|
     tracker.xcconfig =  { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) TRACKER_ENABLED' }
   end
