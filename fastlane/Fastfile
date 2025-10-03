@@ -1,5 +1,3 @@
-
-
 default_platform(:ios)
 
 platform :ios do
@@ -10,12 +8,15 @@ platform :ios do
 
         update_cocoapods(repo_update: true)
 
-        run_tests(
+        scan(
             workspace: "#{library_name}.xcworkspace",
             scheme: scheme_name,
             sdk: "iphonesimulator",
             clean: true,
+            force_quit_simulator: true,
             code_coverage: true,
+            number_of_retries: 2,
+            output_types: "html,junit",
             output_directory: "fastlane/reports",
             buildlog_path: "./build/tests_log",
             devices: TEST_SIMULATORS
@@ -34,11 +35,14 @@ platform :ios do
             if options[:retried]
                 UI.user_error!("Failed to install cocoapods: \n #{result}")
             else
-                sh('bundle exec pod repo remove trunk')
+                begin
+                  sh('bundle exec pod repo remove trunk')
+                rescue => e
+                  UI.message("Trunk repo doesn't exist or couldn't be removed: #{e}")
+                end
                 options[:retried] = true
                 update_cocoapods(options)
             end
-
           }
         )
     end
@@ -55,6 +59,6 @@ platform :ios do
         library_name
   end
 
-  TEST_SIMULATORS = ["iPhone 8 Plus"]
+  TEST_SIMULATORS = ["iPhone 16"]
 
 end
