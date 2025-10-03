@@ -1,60 +1,67 @@
-
-
 default_platform(:ios)
 
 platform :ios do
   
-  desc "Lane to run the unit_tests."
-  # Lane to run the unit_tests.
-    lane :unit_test do
+  lane :clean do
+    clear_derived_data
+  end
 
-        update_cocoapods(repo_update: true)
+  lane :pod_install do
+    update_cocoapods(repo_update: true)
+  end
 
-        run_tests(
-            workspace: "#{library_name}.xcworkspace",
-            scheme: scheme_name,
-            sdk: "iphonesimulator",
-            clean: true,
-            code_coverage: true,
-            output_directory: "fastlane/reports",
-            buildlog_path: "./build/tests_log",
-            devices: TEST_SIMULATORS
-        )
-    end
-
+  desc "Run unit tests"
+  lane :unit_test do
+    scan(
+      workspace: "#{library_name}.xcworkspace",
+      scheme: scheme_name,
+      sdk: "iphonesimulator",
+      clean: true,
+      force_quit_simulator: true,
+      code_coverage: true,
+      number_of_retries: 2,
+      output_types: "html,junit",
+      output_directory: "fastlane/reports",
+      buildlog_path: "./build/tests_log",
+      devices: TEST_SIMULATORS
+    )
+  end
 
   desc "Lane to publish code coverage."
-  # Lane to publish code coverage.
-    lane :update_cocoapods do |options|
-        cocoapods(        
-          try_repo_update_on_error: true,
-          repo_update: options[:repo_update],
-          podfile: "#{root_path}/Podfile", 
-          error_callback: lambda { |result|
-            if options[:retried]
-                UI.user_error!("Failed to install cocoapods: \n #{result}")
-            else
-                sh('bundle exec pod repo remove trunk')
-                options[:retried] = true
-                update_cocoapods(options)
-            end
-
-          }
-        )
-    end
+  lane :update_cocoapods do |options|
+    cocoapods(
+      clean_install: true,
+      try_repo_update_on_error: true,
+      repo_update: options[:repo_update],
+      podfile: "#{root_path}/Podfile", 
+      error_callback: lambda { |result|
+        if options[:retried]
+            UI.user_error!("Failed to install cocoapods: \n #{result}")
+        else
+          begin
+            sh('bundle exec pod repo remove trunk')
+          rescue => e
+            UI.message("Trunk repo doesn't exist or couldn't be removed: #{e}")
+          end
+          options[:retried] = true
+          update_cocoapods(options)
+        end
+      }
+    )
+  end
 
   def root_path
-        Pathname.new(File.expand_path(Dir.pwd)).parent
+    Pathname.new(File.expand_path(Dir.pwd)).parent
   end
 
   def library_name
-        "Clickstream"
+    "Clickstream"
   end
 
   def scheme_name 
-        library_name
+    library_name
   end
 
-  TEST_SIMULATORS = ["iPhone 8 Plus"]
+  TEST_SIMULATORS = ["iPhone 16"]
 
 end
