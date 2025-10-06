@@ -2,7 +2,7 @@
 
 source 'https://github.com/CocoaPods/Specs.git'
 
-platform :ios, '12.0'
+platform :ios, '14.0'
  use_modular_headers!
 
 project 'Clickstream.xcodeproj'
@@ -13,6 +13,9 @@ def clickstream_pods
   pod 'ReachabilitySwift', '5.2.3'
   pod 'GRDB.swift', '~> 6.7.0'
   pod 'Starscream', '4.0.5'
+  pod 'CourierCore', '0.0.30'
+  pod 'CourierMQTT', '0.0.30'
+  pod 'CourierProtobuf', '0.0.30'
 end
 
 target 'Clickstream' do
