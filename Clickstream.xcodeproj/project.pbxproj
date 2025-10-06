@@ -210,6 +210,12 @@
 		D872F6222E8FB810006F077E /* SharedNetworkManagerDependenciesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D872F6212E8FB810006F077E /* SharedNetworkManagerDependenciesTests.swift */; };
 		D872F6232E8FB8F5006F077E /* ClickstreamNetworkOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D872F6192E8FAF87006F077E /* ClickstreamNetworkOptions.swift */; };
 		D8F38D502E94CCD300C4281E /* ClickstreamNetworkOptionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D4F2E94CCD300C4281E /* ClickstreamNetworkOptionsTests.swift */; };
+		D8F38D6D2E9518F600C4281E /* CourierNetworkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D692E9518F600C4281E /* CourierNetworkBuilder.swift */; };
+		D8F38D6E2E9518F600C4281E /* CourierNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D6A2E9518F600C4281E /* CourierNetworkService.swift */; };
+		D8F38D6F2E9518F600C4281E /* CourierRetryMechanism.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D6B2E9518F600C4281E /* CourierRetryMechanism.swift */; };
+		D8F38D702E9518F600C4281E /* CourierNetworkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D692E9518F600C4281E /* CourierNetworkBuilder.swift */; };
+		D8F38D712E9518F600C4281E /* CourierNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D6A2E9518F600C4281E /* CourierNetworkService.swift */; };
+		D8F38D722E9518F600C4281E /* CourierRetryMechanism.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D6B2E9518F600C4281E /* CourierRetryMechanism.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -363,6 +369,9 @@
 		D872F61F2E8FB7D0006F077E /* SharedClickstreamDependenciesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedClickstreamDependenciesTests.swift; sourceTree = "<group>"; };
 		D872F6212E8FB810006F077E /* SharedNetworkManagerDependenciesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedNetworkManagerDependenciesTests.swift; sourceTree = "<group>"; };
 		D8F38D4F2E94CCD300C4281E /* ClickstreamNetworkOptionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickstreamNetworkOptionsTests.swift; sourceTree = "<group>"; };
+		D8F38D692E9518F600C4281E /* CourierNetworkBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierNetworkBuilder.swift; sourceTree = "<group>"; };
+		D8F38D6A2E9518F600C4281E /* CourierNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierNetworkService.swift; sourceTree = "<group>"; };
+		D8F38D6B2E9518F600C4281E /* CourierRetryMechanism.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierRetryMechanism.swift; sourceTree = "<group>"; };
 		D982B8160D113D472BF2C8E0 /* Pods-Clickstream.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.production.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.production.xcconfig"; sourceTree = "<group>"; };
 		E083FF5B9C4808DB73B36B32 /* Pods-Clickstream.alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.alpha.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.alpha.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -787,6 +796,7 @@
 				BDE467932A5BD72000BFA976 /* Infrastructure */,
 				BDE467A12A5BD72000BFA976 /* Data */,
 				BDE467A42A5BD72000BFA976 /* Domain */,
+				D8F38D6C2E9518F600C4281E /* Courier */,
 				D872F5FB2E8F8646006F077E /* Websocket */,
 			);
 			path = NetworkManager;
@@ -1091,6 +1101,16 @@
 			path = Websocket;
 			sourceTree = "<group>";
 		};
+		D8F38D6C2E9518F600C4281E /* Courier */ = {
+			isa = PBXGroup;
+			children = (
+				D8F38D692E9518F600C4281E /* CourierNetworkBuilder.swift */,
+				D8F38D6A2E9518F600C4281E /* CourierNetworkService.swift */,
+				D8F38D6B2E9518F600C4281E /* CourierRetryMechanism.swift */,
+			);
+			path = Courier;
+			sourceTree = "<group>";
+		};
 		FB2A02FC6F309C114517B6F5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1302,6 +1322,9 @@
 				BDE468132A5BD72000BFA976 /* ProtoConvertible.swift in Sources */,
 				BD6BDB7029FBC1360006B04A /* EventVisualizerLandingViewModel.swift in Sources */,
 				BDE468092A5BD72000BFA976 /* Atomic.swift in Sources */,
+				D8F38D6D2E9518F600C4281E /* CourierNetworkBuilder.swift in Sources */,
+				D8F38D6E2E9518F600C4281E /* CourierNetworkService.swift in Sources */,
+				D8F38D6F2E9518F600C4281E /* CourierRetryMechanism.swift in Sources */,
 				BDE467F92A5BD72000BFA976 /* NetworkBuilder.swift in Sources */,
 				BD6BDB6A29FBC1360006B04A /* RadioLabelTableViewCell.swift in Sources */,
 				BD6BDB9E29FBC1360006B04A /* CSCommonPropertiesDTO.swift in Sources */,
@@ -1478,6 +1501,9 @@
 				BDE468742A5BD72000BFA976 /* TableDefinable.swift in Sources */,
 				BDE467FA2A5BD72000BFA976 /* NetworkBuilder.swift in Sources */,
 				BDE4678A2A5BD24500BFA976 /* NetworkServiceTests.swift in Sources */,
+				D8F38D702E9518F600C4281E /* CourierNetworkBuilder.swift in Sources */,
+				D8F38D712E9518F600C4281E /* CourierNetworkService.swift in Sources */,
+				D8F38D722E9518F600C4281E /* CourierRetryMechanism.swift in Sources */,
 				BD6BDB7529FBC1360006B04A /* EventsListViewController.swift in Sources */,
 				BDE4687C2A5BD72000BFA976 /* EventProcessorDependencies.swift in Sources */,
 				BDE4682C2A5BD72000BFA976 /* ClickstreamEvent.swift in Sources */,
