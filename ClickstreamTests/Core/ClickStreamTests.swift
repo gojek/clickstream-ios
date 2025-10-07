@@ -24,7 +24,7 @@ class ClickstreamTests: XCTestCase {
     func testInitialiseClickstreamWithNetworkOptionsWebsocket() {
         // when
         let dummyRequest = URLRequest(url: URL(string: "dummy_url")!)
-        let networkOptions = ClickstreamNetworkOptions(isEnabled: true, options: [.websocket])
+        let networkOptions = ClickstreamNetworkOptions(isWebsocketEnabled: true)
         let clickStream = try! Clickstream.initialise(with: dummyRequest,
                                                       configurations: MockConstants.constraints,
                                                       eventClassification: MockConstants.eventClassification,
@@ -38,8 +38,12 @@ class ClickstreamTests: XCTestCase {
     func testInitialiseClickstreamWithNetworkOptionsCourier() {
         // when
         let dummyRequest = URLRequest(url: URL(string: "dummy_url")!)
-        let whitelistedEvents: Set<ClickstreamCourierEventIdentifier> = ["CSCourierEvent1", "CSCourierEvent2", "CSCourierEvent3"]
-        let networkOptions = ClickstreamNetworkOptions(isEnabled: true, options: [.courier(events: whitelistedEvents)])
+        let whitelistedEvents: Set<CourierEventIdentifier> = ["CSCourierEvent1", "CSCourierEvent2", "CSCourierEvent3"]
+        let networkOptions = ClickstreamNetworkOptions(isWebsocketEnabled: true,
+                                                       isCourierEnabled: true,
+                                                       courierEventTypes: whitelistedEvents,
+                                                       httpFallbackDelayMs: 500.0)
+
         let clickStream = try! Clickstream.initialise(with: dummyRequest,
                                                       configurations: MockConstants.constraints,
                                                       eventClassification: MockConstants.eventClassification,

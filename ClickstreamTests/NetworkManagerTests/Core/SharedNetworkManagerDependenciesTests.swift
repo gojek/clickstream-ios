@@ -13,15 +13,14 @@ class SharedNetworkManagerDependenciesTests: XCTestCase {
 
     private let database = try! DefaultDatabase(qos: .WAL)
 
-    func testMakeNetworkBuilder() throws {
+    func testMakeNetworkBuilderWithEmptyConfigs() throws {
         // given
         let dummyRequest = URLRequest(url: URL(string: "dummy_url")!)
-        let options: Set<ClickstreamDispatcherOption> = [.websocket]
 
         Clickstream.configurations = MockConstants.constraints
         Clickstream.eventClassifier = MockConstants.eventClassification
         // when
-        let networkManagerDependencies = SharedNetworkManagerDependencies(with: dummyRequest, db: database, options: options)
+        let networkManagerDependencies = SharedNetworkManagerDependencies(with: dummyRequest, db: database)
         
         let networkBuilder: NetworkBuildable = networkManagerDependencies.makeNetworkBuilder()
         
@@ -29,5 +28,4 @@ class SharedNetworkManagerDependenciesTests: XCTestCase {
         XCTAssertNotNil(networkBuilder)
         XCTAssertTrue(networkBuilder is WebsocketNetworkBuilder)
     }
-
 }

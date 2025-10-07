@@ -16,15 +16,9 @@ final class SharedNetworkManagerDependencies {
     private var request: URLRequest
     private let database: Database
 
-    private let dispatcherOptions: Set<ClickstreamDispatcherOption>
-
-    init(with request: URLRequest,
-         db: Database,
-         options: Set<ClickstreamDispatcherOption>) {
-
+    init(with request: URLRequest, db: Database) {
         self.database = db
         self.request = request
-        self.dispatcherOptions = options
     }
 
     private let networkQueue = SerialQueue(label: Constants.QueueIdentifiers.network.rawValue, qos: .utility)

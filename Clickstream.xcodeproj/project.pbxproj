@@ -209,6 +209,7 @@
 		D872F6202E8FB7D0006F077E /* SharedClickstreamDependenciesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D872F61F2E8FB7D0006F077E /* SharedClickstreamDependenciesTests.swift */; };
 		D872F6222E8FB810006F077E /* SharedNetworkManagerDependenciesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D872F6212E8FB810006F077E /* SharedNetworkManagerDependenciesTests.swift */; };
 		D872F6232E8FB8F5006F077E /* ClickstreamNetworkOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D872F6192E8FAF87006F077E /* ClickstreamNetworkOptions.swift */; };
+		D8F38D502E94CCD300C4281E /* ClickstreamNetworkOptionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D4F2E94CCD300C4281E /* ClickstreamNetworkOptionsTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -361,6 +362,7 @@
 		D872F6192E8FAF87006F077E /* ClickstreamNetworkOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickstreamNetworkOptions.swift; sourceTree = "<group>"; };
 		D872F61F2E8FB7D0006F077E /* SharedClickstreamDependenciesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedClickstreamDependenciesTests.swift; sourceTree = "<group>"; };
 		D872F6212E8FB810006F077E /* SharedNetworkManagerDependenciesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedNetworkManagerDependenciesTests.swift; sourceTree = "<group>"; };
+		D8F38D4F2E94CCD300C4281E /* ClickstreamNetworkOptionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickstreamNetworkOptionsTests.swift; sourceTree = "<group>"; };
 		D982B8160D113D472BF2C8E0 /* Pods-Clickstream.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.production.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.production.xcconfig"; sourceTree = "<group>"; };
 		E083FF5B9C4808DB73B36B32 /* Pods-Clickstream.alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.alpha.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.alpha.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -644,6 +646,7 @@
 			children = (
 				BDE467492A5BD24500BFA976 /* EventBatchTests.swift */,
 				BDE4674A2A5BD24500BFA976 /* EventTests.swift */,
+				D8F38D4F2E94CCD300C4281E /* ClickstreamNetworkOptionsTests.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -1452,6 +1455,7 @@
 				BDE4678B2A5BD24500BFA976 /* RetryMechanismTests.swift in Sources */,
 				BD6BDB8729FBC1360006B04A /* HealthTracker.swift in Sources */,
 				BDE467832A5BD24500BFA976 /* NetworkReachabilityMock.swift in Sources */,
+				D8F38D502E94CCD300C4281E /* ClickstreamNetworkOptionsTests.swift in Sources */,
 				BDE4681C2A5BD72000BFA976 /* ClickStreamConstraints.swift in Sources */,
 				BDE468702A5BD72000BFA976 /* DatabaseHandler.swift in Sources */,
 				BDE4680C2A5BD72000BFA976 /* DeviceStatusNotifier.swift in Sources */,

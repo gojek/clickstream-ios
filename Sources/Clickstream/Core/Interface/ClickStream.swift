@@ -254,11 +254,11 @@ public final class Clickstream {
             // Load default dependencies.
             do {
                 let dependencies: ClickstreamDependencies
-                if let networkOptions, networkOptions.isEnabled {
+                if let networkOptions, networkOptions.isConfigEnabled() {
                     // This will be the main `ClickstreamDependencies` until the flag is safely removed.
                     dependencies = try SharedClickstreamDependencies(with: request,
                                                                      samplerConfiguration: samplerConfiguration,
-                                                                     options: networkOptions.options)
+                                                                     networkOptions: networkOptions)
                 } else {
                     dependencies = try DefaultClickstreamDependencies(with: request, samplerConfiguration: samplerConfiguration)
                 }

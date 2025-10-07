@@ -16,7 +16,7 @@ final class SharedClickstreamDependencies: ClickstreamDependencies {
     private let database: Database
     private var networkManagerDependencies: SharedNetworkManagerDependencies!
     private let samplerConfiguration: EventSamplerConfiguration?
-    private let networkDispatcherOptions: Set<ClickstreamDispatcherOption>
+    private let networkOptions: ClickstreamNetworkOptions?
 
     var isSocketConnected: Bool {
         networkManagerDependencies.isSocketConnected
@@ -24,12 +24,12 @@ final class SharedClickstreamDependencies: ClickstreamDependencies {
 
     init(with request: URLRequest,
          samplerConfiguration: EventSamplerConfiguration? = nil,
-         options: Set<ClickstreamDispatcherOption> = [.websocket]) throws {
+         networkOptions: ClickstreamNetworkOptions? = nil) throws {
 
         self.request = request
         database = try DefaultDatabase(qos: .WAL)
         self.samplerConfiguration = samplerConfiguration
-        networkDispatcherOptions = options
+        self.networkOptions = networkOptions
     }
 
     /**
@@ -38,9 +38,7 @@ final class SharedClickstreamDependencies: ClickstreamDependencies {
         hence ensuring only one instane is tied to the Clickstream class.
      */
     lazy var networkBuilder: NetworkBuildable = {
-        networkManagerDependencies = SharedNetworkManagerDependencies(with: request,
-                                                                      db: database,
-                                                                      options: networkDispatcherOptions)
+        networkManagerDependencies = SharedNetworkManagerDependencies(with: request, db: database)
         return networkManagerDependencies.makeNetworkBuilder()
     }()
     
