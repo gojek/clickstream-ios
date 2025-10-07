@@ -210,12 +210,20 @@
 		D872F6222E8FB810006F077E /* SharedNetworkManagerDependenciesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D872F6212E8FB810006F077E /* SharedNetworkManagerDependenciesTests.swift */; };
 		D872F6232E8FB8F5006F077E /* ClickstreamNetworkOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D872F6192E8FAF87006F077E /* ClickstreamNetworkOptions.swift */; };
 		D8F38D502E94CCD300C4281E /* ClickstreamNetworkOptionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D4F2E94CCD300C4281E /* ClickstreamNetworkOptionsTests.swift */; };
-		D8F38D6D2E9518F600C4281E /* CourierNetworkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D692E9518F600C4281E /* CourierNetworkBuilder.swift */; };
-		D8F38D6E2E9518F600C4281E /* CourierNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D6A2E9518F600C4281E /* CourierNetworkService.swift */; };
-		D8F38D6F2E9518F600C4281E /* CourierRetryMechanism.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D6B2E9518F600C4281E /* CourierRetryMechanism.swift */; };
-		D8F38D702E9518F600C4281E /* CourierNetworkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D692E9518F600C4281E /* CourierNetworkBuilder.swift */; };
-		D8F38D712E9518F600C4281E /* CourierNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D6A2E9518F600C4281E /* CourierNetworkService.swift */; };
-		D8F38D722E9518F600C4281E /* CourierRetryMechanism.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D6B2E9518F600C4281E /* CourierRetryMechanism.swift */; };
+		D8F38D552E950B9500C4281E /* CourierEventBatchCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D512E950B9500C4281E /* CourierEventBatchCreator.swift */; };
+		D8F38D562E950B9500C4281E /* CourierEventWarehouser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D532E950B9500C4281E /* CourierEventWarehouser.swift */; };
+		D8F38D572E950B9500C4281E /* CourierEventBatchProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D522E950B9500C4281E /* CourierEventBatchProcessor.swift */; };
+		D8F38D582E950B9500C4281E /* CourierEventBatchCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D512E950B9500C4281E /* CourierEventBatchCreator.swift */; };
+		D8F38D592E950B9500C4281E /* CourierEventWarehouser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D532E950B9500C4281E /* CourierEventWarehouser.swift */; };
+		D8F38D5A2E950B9500C4281E /* CourierEventBatchProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D522E950B9500C4281E /* CourierEventBatchProcessor.swift */; };
+		D8F38D5D2E950BC300C4281E /* CourierEventBatchSizeRegulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D5B2E950BC300C4281E /* CourierEventBatchSizeRegulator.swift */; };
+		D8F38D5E2E950BC300C4281E /* CourierEventBatchSizeRegulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D5B2E950BC300C4281E /* CourierEventBatchSizeRegulator.swift */; };
+		D8F38D632E950C5D00C4281E /* CourierRetryMechanism.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D612E950C5D00C4281E /* CourierRetryMechanism.swift */; };
+		D8F38D642E950C5D00C4281E /* CourierNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D602E950C5D00C4281E /* CourierNetworkService.swift */; };
+		D8F38D652E950C5D00C4281E /* CourierNetworkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D5F2E950C5D00C4281E /* CourierNetworkBuilder.swift */; };
+		D8F38D662E950C5D00C4281E /* CourierRetryMechanism.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D612E950C5D00C4281E /* CourierRetryMechanism.swift */; };
+		D8F38D672E950C5D00C4281E /* CourierNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D602E950C5D00C4281E /* CourierNetworkService.swift */; };
+		D8F38D682E950C5D00C4281E /* CourierNetworkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D5F2E950C5D00C4281E /* CourierNetworkBuilder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -369,9 +377,13 @@
 		D872F61F2E8FB7D0006F077E /* SharedClickstreamDependenciesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedClickstreamDependenciesTests.swift; sourceTree = "<group>"; };
 		D872F6212E8FB810006F077E /* SharedNetworkManagerDependenciesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedNetworkManagerDependenciesTests.swift; sourceTree = "<group>"; };
 		D8F38D4F2E94CCD300C4281E /* ClickstreamNetworkOptionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickstreamNetworkOptionsTests.swift; sourceTree = "<group>"; };
-		D8F38D692E9518F600C4281E /* CourierNetworkBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierNetworkBuilder.swift; sourceTree = "<group>"; };
-		D8F38D6A2E9518F600C4281E /* CourierNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierNetworkService.swift; sourceTree = "<group>"; };
-		D8F38D6B2E9518F600C4281E /* CourierRetryMechanism.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierRetryMechanism.swift; sourceTree = "<group>"; };
+		D8F38D512E950B9500C4281E /* CourierEventBatchCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierEventBatchCreator.swift; sourceTree = "<group>"; };
+		D8F38D522E950B9500C4281E /* CourierEventBatchProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierEventBatchProcessor.swift; sourceTree = "<group>"; };
+		D8F38D532E950B9500C4281E /* CourierEventWarehouser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierEventWarehouser.swift; sourceTree = "<group>"; };
+		D8F38D5B2E950BC300C4281E /* CourierEventBatchSizeRegulator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierEventBatchSizeRegulator.swift; sourceTree = "<group>"; };
+		D8F38D5F2E950C5D00C4281E /* CourierNetworkBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierNetworkBuilder.swift; sourceTree = "<group>"; };
+		D8F38D602E950C5D00C4281E /* CourierNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierNetworkService.swift; sourceTree = "<group>"; };
+		D8F38D612E950C5D00C4281E /* CourierRetryMechanism.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierRetryMechanism.swift; sourceTree = "<group>"; };
 		D982B8160D113D472BF2C8E0 /* Pods-Clickstream.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.production.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.production.xcconfig"; sourceTree = "<group>"; };
 		E083FF5B9C4808DB73B36B32 /* Pods-Clickstream.alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.alpha.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.alpha.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -796,7 +808,7 @@
 				BDE467932A5BD72000BFA976 /* Infrastructure */,
 				BDE467A12A5BD72000BFA976 /* Data */,
 				BDE467A42A5BD72000BFA976 /* Domain */,
-				D8F38D6C2E9518F600C4281E /* Courier */,
+				D8F38D622E950C5D00C4281E /* Courier */,
 				D872F5FB2E8F8646006F077E /* Websocket */,
 			);
 			path = NetworkManager;
@@ -1005,6 +1017,7 @@
 		BDE467E02A5BD72000BFA976 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				D8F38D542E950B9500C4281E /* Courier */,
 				BDE467E12A5BD72000BFA976 /* EventBatchCreator.swift */,
 				BDE467E22A5BD72000BFA976 /* EventSchedulerDependencies.swift */,
 				BDE467E32A5BD72000BFA976 /* EventWarehouser.swift */,
@@ -1024,6 +1037,7 @@
 		BDE467E62A5BD72000BFA976 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				D8F38D5C2E950BC300C4281E /* Courier */,
 				BDE467E72A5BD72000BFA976 /* AppStateNotifierService.swift */,
 				BDE467E82A5BD72000BFA976 /* EventBatchSizeRegulator.swift */,
 				BDE467E92A5BD72000BFA976 /* SchedulerService.swift */,
@@ -1101,12 +1115,30 @@
 			path = Websocket;
 			sourceTree = "<group>";
 		};
-		D8F38D6C2E9518F600C4281E /* Courier */ = {
+		D8F38D542E950B9500C4281E /* Courier */ = {
 			isa = PBXGroup;
 			children = (
-				D8F38D692E9518F600C4281E /* CourierNetworkBuilder.swift */,
-				D8F38D6A2E9518F600C4281E /* CourierNetworkService.swift */,
-				D8F38D6B2E9518F600C4281E /* CourierRetryMechanism.swift */,
+				D8F38D512E950B9500C4281E /* CourierEventBatchCreator.swift */,
+				D8F38D522E950B9500C4281E /* CourierEventBatchProcessor.swift */,
+				D8F38D532E950B9500C4281E /* CourierEventWarehouser.swift */,
+			);
+			path = Courier;
+			sourceTree = "<group>";
+		};
+		D8F38D5C2E950BC300C4281E /* Courier */ = {
+			isa = PBXGroup;
+			children = (
+				D8F38D5B2E950BC300C4281E /* CourierEventBatchSizeRegulator.swift */,
+			);
+			path = Courier;
+			sourceTree = "<group>";
+		};
+		D8F38D622E950C5D00C4281E /* Courier */ = {
+			isa = PBXGroup;
+			children = (
+				D8F38D5F2E950C5D00C4281E /* CourierNetworkBuilder.swift */,
+				D8F38D602E950C5D00C4281E /* CourierNetworkService.swift */,
+				D8F38D612E950C5D00C4281E /* CourierRetryMechanism.swift */,
 			);
 			path = Courier;
 			sourceTree = "<group>";
@@ -1322,15 +1354,16 @@
 				BDE468132A5BD72000BFA976 /* ProtoConvertible.swift in Sources */,
 				BD6BDB7029FBC1360006B04A /* EventVisualizerLandingViewModel.swift in Sources */,
 				BDE468092A5BD72000BFA976 /* Atomic.swift in Sources */,
-				D8F38D6D2E9518F600C4281E /* CourierNetworkBuilder.swift in Sources */,
-				D8F38D6E2E9518F600C4281E /* CourierNetworkService.swift in Sources */,
-				D8F38D6F2E9518F600C4281E /* CourierRetryMechanism.swift in Sources */,
+				D8F38D5D2E950BC300C4281E /* CourierEventBatchSizeRegulator.swift in Sources */,
 				BDE467F92A5BD72000BFA976 /* NetworkBuilder.swift in Sources */,
 				BD6BDB6A29FBC1360006B04A /* RadioLabelTableViewCell.swift in Sources */,
 				BD6BDB9E29FBC1360006B04A /* CSCommonPropertiesDTO.swift in Sources */,
 				BD6BDB9A29FBC1360006B04A /* ClickStreamHealthConfigurations.swift in Sources */,
 				BDE468752A5BD72000BFA976 /* DatabasePersistable.swift in Sources */,
 				BDE468012A5BD72000BFA976 /* SocketHandler.swift in Sources */,
+				D8F38D662E950C5D00C4281E /* CourierRetryMechanism.swift in Sources */,
+				D8F38D672E950C5D00C4281E /* CourierNetworkService.swift in Sources */,
+				D8F38D682E950C5D00C4281E /* CourierNetworkBuilder.swift in Sources */,
 				BD6BDB9029FBC1360006B04A /* Notifiable.swift in Sources */,
 				BD6BDB9C29FBC1360006B04A /* HealthTrackerDTO.swift in Sources */,
 				BDE468272A5BD72000BFA976 /* DeviceInfo.swift in Sources */,
@@ -1372,6 +1405,9 @@
 				BDE468072A5BD72000BFA976 /* NetworkConfiguration.swift in Sources */,
 				BDE4686F2A5BD72000BFA976 /* DatabaseHandler.swift in Sources */,
 				BDE468632A5BD72000BFA976 /* EventWarehouser.swift in Sources */,
+				D8F38D552E950B9500C4281E /* CourierEventBatchCreator.swift in Sources */,
+				D8F38D562E950B9500C4281E /* CourierEventWarehouser.swift in Sources */,
+				D8F38D572E950B9500C4281E /* CourierEventBatchProcessor.swift in Sources */,
 				BDE468052A5BD72000BFA976 /* Connectable.swift in Sources */,
 				BDE467FB2A5BD72000BFA976 /* RetryMechanism.swift in Sources */,
 				BDE468192A5BD72000BFA976 /* ClickstreamDependencies.swift in Sources */,
@@ -1423,6 +1459,9 @@
 				D872F5FF2E8F8646006F077E /* WebsocketNetworkService.swift in Sources */,
 				D872F6022E8F8646006F077E /* WebsocketNetworkBuilder.swift in Sources */,
 				BDE4682A2A5BD72000BFA976 /* Event.swift in Sources */,
+				D8F38D582E950B9500C4281E /* CourierEventBatchCreator.swift in Sources */,
+				D8F38D592E950B9500C4281E /* CourierEventWarehouser.swift in Sources */,
+				D8F38D5A2E950B9500C4281E /* CourierEventBatchProcessor.swift in Sources */,
 				BDE4676F2A5BD24500BFA976 /* MockConstants.swift in Sources */,
 				BDE468022A5BD72000BFA976 /* SocketHandler.swift in Sources */,
 				BD6BDB6F29FBC1360006B04A /* EventsListingTableViewCell.swift in Sources */,
@@ -1483,6 +1522,7 @@
 				BDE468702A5BD72000BFA976 /* DatabaseHandler.swift in Sources */,
 				BDE4680C2A5BD72000BFA976 /* DeviceStatusNotifier.swift in Sources */,
 				BD6BDB7929FBC1360006B04A /* EventDetailsViewModel.swift in Sources */,
+				D8F38D5E2E950BC300C4281E /* CourierEventBatchSizeRegulator.swift in Sources */,
 				BDE468762A5BD72000BFA976 /* DatabasePersistable.swift in Sources */,
 				BDE4677D2A5BD24500BFA976 /* EventWarehouserTests.swift in Sources */,
 				BD6BDB8B29FBC1360006B04A /* HealthAnalysisEventBatch.swift in Sources */,
@@ -1492,6 +1532,9 @@
 				BD6BDB8F29FBC1360006B04A /* TrackerConstants.swift in Sources */,
 				BDE4686A2A5BD72000BFA976 /* EventBatchSizeRegulator.swift in Sources */,
 				BD6BDB6B29FBC1360006B04A /* RadioLabelTableViewCell.swift in Sources */,
+				D8F38D632E950C5D00C4281E /* CourierRetryMechanism.swift in Sources */,
+				D8F38D642E950C5D00C4281E /* CourierNetworkService.swift in Sources */,
+				D8F38D652E950C5D00C4281E /* CourierNetworkBuilder.swift in Sources */,
 				69CF74B92E8CE75A008438D0 /* EventSamplerConfiguration.swift in Sources */,
 				BDE4677F2A5BD24500BFA976 /* EventCreatorTests.swift in Sources */,
 				BDE468722A5BD72000BFA976 /* DatabaseDAO.swift in Sources */,
@@ -1501,9 +1544,6 @@
 				BDE468742A5BD72000BFA976 /* TableDefinable.swift in Sources */,
 				BDE467FA2A5BD72000BFA976 /* NetworkBuilder.swift in Sources */,
 				BDE4678A2A5BD24500BFA976 /* NetworkServiceTests.swift in Sources */,
-				D8F38D702E9518F600C4281E /* CourierNetworkBuilder.swift in Sources */,
-				D8F38D712E9518F600C4281E /* CourierNetworkService.swift in Sources */,
-				D8F38D722E9518F600C4281E /* CourierRetryMechanism.swift in Sources */,
 				BD6BDB7529FBC1360006B04A /* EventsListViewController.swift in Sources */,
 				BDE4687C2A5BD72000BFA976 /* EventProcessorDependencies.swift in Sources */,
 				BDE4682C2A5BD72000BFA976 /* ClickstreamEvent.swift in Sources */,
@@ -1655,7 +1695,7 @@
 			baseConfigurationReference = CA0F06B342B881F06295F6E3 /* Pods-Clickstream.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1670,7 +1710,7 @@
 			baseConfigurationReference = 47E59ADC19B15059C977CB9C /* Pods-Clickstream.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1745,7 +1785,7 @@
 			baseConfigurationReference = C7CD1A2E08F13591955370E3 /* Pods-Clickstream.integration.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1816,7 +1856,7 @@
 			baseConfigurationReference = D982B8160D113D472BF2C8E0 /* Pods-Clickstream.production.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1887,7 +1927,7 @@
 			baseConfigurationReference = E083FF5B9C4808DB73B36B32 /* Pods-Clickstream.alpha.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1905,7 +1945,7 @@
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ClickstreamTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1929,7 +1969,7 @@
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ClickstreamTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1953,7 +1993,7 @@
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ClickstreamTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1977,7 +2017,7 @@
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ClickstreamTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2001,7 +2041,7 @@
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ClickstreamTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

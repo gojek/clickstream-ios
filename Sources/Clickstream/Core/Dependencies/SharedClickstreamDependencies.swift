@@ -41,13 +41,19 @@ final class SharedClickstreamDependencies: ClickstreamDependencies {
         networkManagerDependencies = SharedNetworkManagerDependencies(with: request, db: database)
         return networkManagerDependencies.makeNetworkBuilder()
     }()
-    
+
+    lazy var courierNetworkBuilder: NetworkBuildable = {
+        networkManagerDependencies = SharedNetworkManagerDependencies(with: request, db: database)
+        return networkManagerDependencies.makeCourierNetworkBuilder()
+    }()
+
     /** A EventWarehouser instance.
         This instance acts as the only source of EventWarehouser,
         hence ensuring only one instane is tied to the Clickstream class.
      */
     lazy var eventWarehouser: EventWarehouser = {
         return EventSchedulerDependencies(with: networkBuilder,
+                                          courierNetworkBuildable: courierNetworkBuilder,
                                           db: database).makeEventWarehouser()
     }()
     

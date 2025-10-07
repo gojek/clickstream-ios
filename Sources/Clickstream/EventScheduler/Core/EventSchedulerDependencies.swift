@@ -12,12 +12,15 @@ import Foundation
 final class EventSchedulerDependencies {
     
     private let networkBuildable: NetworkBuildable
+    private let courierNetworkBuildable: NetworkBuildable?
     private let database: Database
     
     init(with networkBuildable: NetworkBuildable,
+         courierNetworkBuildable: NetworkBuildable? = nil,
          db: Database) {
         self.database = db
         self.networkBuildable = networkBuildable
+        self.courierNetworkBuildable = courierNetworkBuildable
     }
     
     /// A single instance of queue which ensures that all the tasks are performed on this queue.
@@ -47,7 +50,14 @@ final class EventSchedulerDependencies {
     private lazy var eventCreator: EventBatchCreator = {
         return DefaultEventBatchCreator(with: self.networkBuildable, performOnQueue: schedulerQueue)
     }()
-    
+
+    private lazy var courierEventCreator: EventBatchCreator? = {
+        guard let courierNetworkBuildable else {
+            return nil
+        }
+        return CourierEventBatchCreator(with: courierNetworkBuildable, performOnQueue: schedulerQueue)
+    }()
+
     private lazy var eventBatchProcessor: EventBatchProcessor = {
         return DefaultEventBatchProcessor(with: eventCreator,
                                           schedulerService: schedulerService,
@@ -55,7 +65,18 @@ final class EventSchedulerDependencies {
                                           batchSizeRegulator: batchSizeRegulator,
                                           persistence: persistence)
     }()
-    
+
+    private lazy var courierEventBatchProcessor: EventBatchProcessor? = {
+        guard let courierEventCreator else {
+            return nil
+        }
+        return CourierEventBatchProcessor(with: courierEventCreator,
+                                          schedulerService: schedulerService,
+                                          appStateNotifier: appStateNotifier,
+                                          batchSizeRegulator: batchSizeRegulator,
+                                          persistence: persistence)
+    }()
+
     private lazy var persistence: DefaultDatabaseDAO<Event> = {
         return DefaultDatabaseDAO<Event>(database: database,
                                          performOnQueue: daoQueue)
@@ -63,6 +84,10 @@ final class EventSchedulerDependencies {
     
     private lazy var batchSizeRegulator: BatchSizeRegulator = {
        return DefaultBatchSizeRegulator()
+    }()
+
+    private lazy var courierBatchSizeRegulator: BatchSizeRegulator = {
+       return CourierEventBatchSizeRegulator()
     }()
     
     /// Call this method to get the EventWarehouser instance.
@@ -72,5 +97,17 @@ final class EventSchedulerDependencies {
                                       performOnQueue: warehouserQueue,
                                       persistence: persistence,
                                       batchSizeRegulator: batchSizeRegulator)
+    }
+    
+    /// Call this method to get the EventWarehouser instance.
+    /// - Returns: Courier's EventWarehouser instance.
+    func makeCourierEventWarehouser() -> EventWarehouser? {
+        guard let courierEventBatchProcessor else {
+            return nil
+        }
+        return CourierEventWarehouser(with: courierEventBatchProcessor,
+                                      performOnQueue: warehouserQueue,
+                                      persistence: persistence,
+                                      batchSizeRegulator: courierBatchSizeRegulator)
     }
 }

@@ -253,21 +253,28 @@ public final class Clickstream {
             // All the dependency injections pertaining to the clickstream blocks happen here!
             // Load default dependencies.
             do {
-                let dependencies: ClickstreamDependencies
                 if let networkOptions, networkOptions.isConfigEnabled() {
                     // This will be the main `ClickstreamDependencies` until the flag is safely removed.
-                    dependencies = try SharedClickstreamDependencies(with: request,
-                                                                     samplerConfiguration: samplerConfiguration,
-                                                                     networkOptions: networkOptions)
-                } else {
-                    dependencies = try DefaultClickstreamDependencies(with: request, samplerConfiguration: samplerConfiguration)
-                }
-                sharedInstance = Clickstream(networkBuilder: dependencies.networkBuilder,
-                                             eventWarehouser: dependencies.eventWarehouser,
-                                             eventProcessor: dependencies.eventProcessor,
-                                             delegate: delegate)
+                    let dependencies = try SharedClickstreamDependencies(with: request,
+                                                                         samplerConfiguration: samplerConfiguration,
+                                                                         networkOptions: networkOptions)
 
-                sharedInstance?.dependencies = dependencies // saving a copy of dependencies
+                    sharedInstance = Clickstream(networkBuilder: dependencies.networkBuilder,
+                                                 eventWarehouser: dependencies.eventWarehouser,
+                                                 eventProcessor: dependencies.eventProcessor,
+                                                 delegate: delegate)
+
+                    sharedInstance?.dependencies = dependencies
+                } else {
+                    let dependencies = try DefaultClickstreamDependencies(with: request, samplerConfiguration: samplerConfiguration)
+
+                    sharedInstance = Clickstream(networkBuilder: dependencies.networkBuilder,
+                                                 eventWarehouser: dependencies.eventWarehouser,
+                                                 eventProcessor: dependencies.eventProcessor,
+                                                 delegate: delegate)
+
+                    sharedInstance?.dependencies = dependencies // saving a copy of dependencies
+                }
             } catch {
                 print("Cannot initialise Clickstream. Dependencies could not be initialised.",.critical)
                 // Relay the database error.
