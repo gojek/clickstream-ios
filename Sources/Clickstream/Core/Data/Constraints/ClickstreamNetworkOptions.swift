@@ -20,23 +20,27 @@ public struct ClickstreamNetworkOptions: Codable {
     let isCourierEnabled: Bool
     let courierEventTypes: Set<CourierEventIdentifier>
     let courierHttpFallbackDelayMs: TimeInterval
+    let courierConfig: ClickstreamCourierConfig
 
     enum CodingKeys: String, CodingKey {
         case isWebsocketEnabled = "websocket_enabled"
         case isCourierEnabled = "courier_enabled"
         case courierEventTypes = "event_types"
         case courierHttpFallbackDelayMs = "http_fallback_delay"
+        case courierConfig = "courier_config"
     }
 
     public init(isWebsocketEnabled: Bool = true,
                 isCourierEnabled: Bool = false,
                 courierEventTypes: Set<CourierEventIdentifier> = [],
-                httpFallbackDelayMs: TimeInterval = 500.0) {
+                httpFallbackDelayMs: TimeInterval = 500.0,
+                courierConfig: ClickstreamCourierConfig = ClickstreamCourierConfig()) {
 
         self.isWebsocketEnabled = isWebsocketEnabled
         self.isCourierEnabled = isCourierEnabled
         self.courierEventTypes = courierEventTypes
         self.courierHttpFallbackDelayMs = httpFallbackDelayMs
+        self.courierConfig = courierConfig
     }
 
     public init(from decoder: Decoder) throws {
@@ -54,18 +58,24 @@ public struct ClickstreamNetworkOptions: Codable {
             self.isCourierEnabled = false
         }
 
-        if let courierEventTypes = try? container.decode([String].self, forKey: .courierEventTypes) {
+        if let courierEventTypes = try? container.decodeIfPresent([String].self, forKey: .courierEventTypes) {
             self.courierEventTypes = Set(courierEventTypes)
         } else {
             self.courierEventTypes = []
         }
 
-        if let courierHttpFallbackDelayMs = try? container.decode(Double.self, forKey: .courierHttpFallbackDelayMs) {
+        if let courierHttpFallbackDelayMs = try? container.decodeIfPresent(Double.self, forKey: .courierHttpFallbackDelayMs) {
             self.courierHttpFallbackDelayMs =  TimeInterval(courierHttpFallbackDelayMs)
-        } else if let courierHttpFallbackDelayMs = try? container.decode(Int.self, forKey: .courierHttpFallbackDelayMs) {
+        } else if let courierHttpFallbackDelayMs = try? container.decodeIfPresent(Int.self, forKey: .courierHttpFallbackDelayMs) {
             self.courierHttpFallbackDelayMs = TimeInterval(courierHttpFallbackDelayMs)
         } else {
             self.courierHttpFallbackDelayMs = 500.0
+        }
+
+        if let courierConfig = try? container.decodeIfPresent(ClickstreamCourierConfig.self, forKey: .courierConfig) {
+            self.courierConfig = courierConfig
+        } else {
+            self.courierConfig = ClickstreamCourierConfig()
         }
     }
 

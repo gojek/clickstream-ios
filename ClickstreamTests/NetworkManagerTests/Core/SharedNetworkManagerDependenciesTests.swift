@@ -20,7 +20,7 @@ class SharedNetworkManagerDependenciesTests: XCTestCase {
         Clickstream.configurations = MockConstants.constraints
         Clickstream.eventClassifier = MockConstants.eventClassification
         // when
-        let networkManagerDependencies = SharedNetworkManagerDependencies(with: dummyRequest, db: database)
+        let networkManagerDependencies = SharedNetworkManagerDependencies(with: dummyRequest, db: database, courierConfig: ClickstreamCourierConfig())
         
         let networkBuilder: NetworkBuildable = networkManagerDependencies.makeNetworkBuilder()
         

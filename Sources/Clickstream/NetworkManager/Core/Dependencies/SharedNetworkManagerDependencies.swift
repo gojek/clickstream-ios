@@ -10,6 +10,7 @@ import Foundation
 import CourierCore
 import CourierMQTT
 import CourierProtobuf
+import Reachability
 
 /// A class equivalent to `NetworkManagerDependencies.swift`
 /// This class will be the main network manager dependencies, to support multiple network protocols
@@ -17,10 +18,12 @@ final class SharedNetworkManagerDependencies {
 
     private var request: URLRequest
     private let database: Database
+    private let courierConfig: ClickstreamCourierConfig
 
-    init(with request: URLRequest, db: Database) {
+    init(with request: URLRequest, db: Database, courierConfig: ClickstreamCourierConfig) {
         self.database = db
         self.request = request
+        self.courierConfig = courierConfig
     }
 
     private let networkQueue = SerialQueue(label: Constants.QueueIdentifiers.network.rawValue, qos: .utility)
@@ -57,7 +60,7 @@ final class SharedNetworkManagerDependencies {
     private lazy var courierNetworkService: NetworkService = {
         CourierNetworkService(with: getNetworkConfig(),
                               performOnQueue: networkQueue,
-                              courierConfig: makeCourierConfig())
+                              courierConfig: self.makeCourierConfig(with: courierConfig))
     }()
 
     private lazy var websocketRetryMech: Retryable = {
@@ -105,39 +108,31 @@ final class SharedNetworkManagerDependencies {
     }
 }
 
-extension SharedNetworkManagerDependencies {
+fileprivate extension SharedNetworkManagerDependencies {
 
-    private func makeCourierConfig() -> MQTTClientConfig {
-        let topics: [String: QoS] = ["clickstream/publish": .one]
-        let messageAdapters: [MessageAdapter] = [
-            JSONMessageAdapter(),
-            ProtobufMessageAdapter()
-        ]
+    private func makeCourierConfig(with config: ClickstreamCourierConfig) -> MQTTClientConfig {
+        let topics: [String: QoS] = config.topics.compactMapValues { QoS(value: $0) }
+
+        let messageAdapters: [MessageAdapter] = config.messageAdapters.compactMap({
+            CourierMessageAdapterType.mapped(from: $0)
+        })
 
         return MQTTClientConfig(topics: topics,
                                 authService: getAuthService(),
                                 messageAdapters: messageAdapters,
-                                isMessagePersistenceEnabled: true,
-                                autoReconnectInterval: 1,
-                                maxAutoReconnectInterval: 1,
-                                enableAuthenticationTimeout: true,
-                                authenticationTimeoutInterval: 3.0,
-                                connectTimeoutPolicy: getconnectTimeoutPolicy(),
-                                idleActivityTimeoutPolicy: getIdderActivityTimeoutPolicy(),
-                                messagePersistenceTTLSeconds: 1,
-                                messageCleanupInterval: 1,
-                                shouldInitializeCoreDataPersistenceContext: true)
+                                isMessagePersistenceEnabled: config.isMessagePersistenceEnabled,
+                                autoReconnectInterval: UInt16(config.autoReconnectInterval),
+                                maxAutoReconnectInterval: UInt16(config.maxAutoReconnectInterval),
+                                enableAuthenticationTimeout: config.enableAuthenticationTimeout,
+                                authenticationTimeoutInterval: config.authenticationTimeoutInterval,
+                                connectTimeoutPolicy: config.connectTimeoutPolicy,
+                                idleActivityTimeoutPolicy: config.iddleActivityPolicy,
+                                messagePersistenceTTLSeconds: config.messagePersistenceTTLSeconds,
+                                messageCleanupInterval: config.messageCleanupInterval,
+                                shouldInitializeCoreDataPersistenceContext: config.shouldInitializeCoreDataPersistenceContext)
     }
     
     func getAuthService() -> IConnectionServiceProvider {
-        fatalError()
-    }
-    
-    func getconnectTimeoutPolicy() -> IConnectTimeoutPolicy {
-        fatalError()
-    }
-    
-    func getIdderActivityTimeoutPolicy() -> IdleActivityTimeoutPolicyProtocol {
         fatalError()
     }
 }
