@@ -16,11 +16,11 @@ enum ClickstreamNetworkType {
 }
 
 public struct ClickstreamNetworkOptions: Codable {
-    let isWebsocketEnabled: Bool
-    let isCourierEnabled: Bool
-    let courierEventTypes: Set<CourierEventIdentifier>
-    let courierHttpFallbackDelayMs: TimeInterval
-    let courierConfig: ClickstreamCourierConfig
+    public let isWebsocketEnabled: Bool
+    public let isCourierEnabled: Bool
+    public let courierEventTypes: Set<CourierEventIdentifier>
+    public let courierHttpFallbackDelayMs: TimeInterval
+    public let courierConfig: ClickstreamCourierConfig
 
     enum CodingKeys: String, CodingKey {
         case isWebsocketEnabled = "websocket_enabled"

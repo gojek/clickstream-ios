@@ -82,3 +82,9 @@ final class SharedClickstreamDependencies: ClickstreamDependencies {
         return DefaultEventSampler(config: samplerConfiguration)
     }()
 }
+
+extension SharedClickstreamDependencies {
+    func configureCourierSession(with userCredentials: ClickstreamCourierUserCredentials) async {
+        await networkManagerDependencies.configureCourierSession(with: userCredentials)
+    }
+}

@@ -10,22 +10,22 @@ import Foundation
 import CourierMQTT
 
 public struct ClickstreamCourierConfig: Decodable {
-    let topics: [String: Int]
-    let messageAdapters: [CourierMessageAdapterType]
+    public let topics: [String: Int]
+    public let messageAdapters: [CourierMessageAdapterType]
 
-    let autoReconnectInterval: TimeInterval
-    let maxAutoReconnectInterval: TimeInterval
-    let enableAuthenticationTimeout: Bool
-    let authenticationTimeoutInterval: TimeInterval
+    public let autoReconnectInterval: TimeInterval
+    public let maxAutoReconnectInterval: TimeInterval
+    public let enableAuthenticationTimeout: Bool
+    public let authenticationTimeoutInterval: TimeInterval
 
-    let connectConfig: ClickstreamCourierConnectConfig
-    let connectTimeoutPolicy: IConnectTimeoutPolicy
-    let iddleActivityPolicy: IdleActivityTimeoutPolicyProtocol
+    public let connectConfig: ClickstreamCourierConnectConfig
+    public let connectTimeoutPolicy: IConnectTimeoutPolicy
+    public let iddleActivityPolicy: IdleActivityTimeoutPolicyProtocol
 
-    let messagePersistenceTTLSeconds: TimeInterval
-    let messageCleanupInterval: TimeInterval
-    let shouldInitializeCoreDataPersistenceContext: Bool
-    let isMessagePersistenceEnabled: Bool
+    public let messagePersistenceTTLSeconds: TimeInterval
+    public let messageCleanupInterval: TimeInterval
+    public let shouldInitializeCoreDataPersistenceContext: Bool
+    public let isMessagePersistenceEnabled: Bool
 
     enum CodingKeys: String, CodingKey {
         case topics
@@ -50,7 +50,12 @@ public struct ClickstreamCourierConfig: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         topics = (try? container.decodeIfPresent([String: Int].self, forKey: .topics)) ?? [:]
-        messageAdapters = (try? container.decodeIfPresent([CourierMessageAdapterType].self, forKey: .messageAdapters)) ?? []
+        
+        if let adapters = try? container.decodeIfPresent([String].self, forKey: .messageAdapters) {
+            messageAdapters = adapters.compactMap { CourierMessageAdapterType(rawValue: $0) }
+        } else {
+            messageAdapters = []
+        }
 
         isMessagePersistenceEnabled = (try? container.decode(Bool.self, forKey: .isMessagePersistenceEnabled)) ?? false
 
@@ -83,8 +88,8 @@ public struct ClickstreamCourierConfig: Decodable {
         shouldInitializeCoreDataPersistenceContext = (try? container.decodeIfPresent(Bool.self, forKey: .shouldInitializeCoreDataPersistenceContext)) ?? false
     }
 
-    public init(topics: [String: Int] = [:],
-                messageAdapter: [CourierMessageAdapterType] = [],
+    public init(topics: [String: Int] = ["/clickstream": 1],
+                messageAdapter: [CourierMessageAdapterType] = [.protobuf, .json],
                 isMessagePersistenceEnabled: Bool = false,
                 autoReconnectInterval: TimeInterval = 1,
                 maxAutoReconnectInterval: TimeInterval = 30,

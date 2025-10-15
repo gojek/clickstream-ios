@@ -28,7 +28,7 @@ final class SharedNetworkManagerDependencies {
 
     private let networkQueue = SerialQueue(label: Constants.QueueIdentifiers.network.rawValue, qos: .utility)
     private let daoQueue = DispatchQueue(label: Constants.QueueIdentifiers.dao.rawValue, qos: .utility, attributes: .concurrent)
-    
+
     private lazy var reachability: NetworkReachability = {
         DefaultNetworkReachability(with: networkQueue)
     }()
@@ -60,7 +60,7 @@ final class SharedNetworkManagerDependencies {
     private lazy var courierNetworkService: NetworkService = {
         CourierNetworkService(with: getNetworkConfig(),
                               performOnQueue: networkQueue,
-                              courierConfig: self.makeCourierConfig(with: courierConfig))
+                              courierConfig: courierConfig)
     }()
 
     private lazy var websocketRetryMech: Retryable = {
@@ -106,33 +106,14 @@ final class SharedNetworkManagerDependencies {
     var isCourierConnected: Bool {
         courierNetworkService.isConnected
     }
-}
 
-fileprivate extension SharedNetworkManagerDependencies {
+    func configureCourierSession(with userCredentials: ClickstreamCourierUserCredentials) async {
+        guard let networkService = self.courierNetworkService as? CourierNetworkService else {
+            return
+        }
 
-    private func makeCourierConfig(with config: ClickstreamCourierConfig) -> MQTTClientConfig {
-        let topics: [String: QoS] = config.topics.compactMapValues { QoS(value: $0) }
-
-        let messageAdapters: [MessageAdapter] = config.messageAdapters.compactMap({
-            CourierMessageAdapterType.mapped(from: $0)
-        })
-
-        return MQTTClientConfig(topics: topics,
-                                authService: getAuthService(),
-                                messageAdapters: messageAdapters,
-                                isMessagePersistenceEnabled: config.isMessagePersistenceEnabled,
-                                autoReconnectInterval: UInt16(config.autoReconnectInterval),
-                                maxAutoReconnectInterval: UInt16(config.maxAutoReconnectInterval),
-                                enableAuthenticationTimeout: config.enableAuthenticationTimeout,
-                                authenticationTimeoutInterval: config.authenticationTimeoutInterval,
-                                connectTimeoutPolicy: config.connectTimeoutPolicy,
-                                idleActivityTimeoutPolicy: config.iddleActivityPolicy,
-                                messagePersistenceTTLSeconds: config.messagePersistenceTTLSeconds,
-                                messageCleanupInterval: config.messageCleanupInterval,
-                                shouldInitializeCoreDataPersistenceContext: config.shouldInitializeCoreDataPersistenceContext)
-    }
-    
-    func getAuthService() -> IConnectionServiceProvider {
-        fatalError()
+        await networkService.configureCourierClient(with: userCredentials)
+        await networkService.establishConnection()
     }
 }
+

@@ -63,4 +63,19 @@ class SharedClickstreamDependenciesTests: XCTestCase {
         // then
         XCTAssertNotNil(clickStreamDependencies.eventProcessor)
     }
+    
+    func testConfigureCourierSession() async {
+        // given
+        Clickstream.configurations = ClickstreamConstraints()
+        Clickstream.eventClassifier = ClickstreamEventClassification()
+        
+        // when
+        let clickStreamDependencies = try! SharedClickstreamDependencies(with: dummyRequest, networkOptions: ClickstreamNetworkOptions())
+        let credentials = ClickstreamCourierUserCredentials(userIdentifier: "12345")
+        
+        await clickStreamDependencies.configureCourierSession(with: credentials)
+
+        // then
+        XCTAssertNotNil(clickStreamDependencies.eventProcessor)
+    }
 }

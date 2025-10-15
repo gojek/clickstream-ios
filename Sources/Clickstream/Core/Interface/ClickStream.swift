@@ -345,3 +345,15 @@ extension Clickstream {
     }
 }
 #endif
+
+extension Clickstream {
+    public func configureCourierSession(with userCredentials: ClickstreamCourierUserCredentials) {
+        guard let dependencies = dependencies as? SharedClickstreamDependencies else {
+            return
+        }
+        
+        Task {
+            await dependencies.configureCourierSession(with: userCredentials)
+        }
+    }
+}

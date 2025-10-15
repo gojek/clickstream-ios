@@ -19,11 +19,19 @@ final class CourierNetworkService: NetworkService {
     
     private let performQueue: SerialQueue
     private let networkConfig: NetworkConfigurable
-    private var courierClient: CourierClient
-    private var topic: String = "/clickstream/publish"
+    private var courierClient: CourierClient?
+    private let courierConfig: ClickstreamCourierConfig
     private var courierCancellables: Set<CourierCore.AnyCancellable> = []
+    private var messagePublisher: AnyPublisher<CourierCore.Message, Never>?
     
-    private var connectionCallback: ConnectionStatus?
+    private lazy var topics: [String: QoS] = {
+        courierConfig.topics.compactMapValues { QoS(value: $0) }
+    }()
+    
+    private var currentTopic: String {
+        topics.first?.key ?? ""
+    }
+    
     private var connectable: Connectable?
     private var _connectable: Connectable? {
         get {
@@ -38,66 +46,44 @@ final class CourierNetworkService: NetworkService {
             }
         }
     }
-    
+
+    var isConnected: Bool {
+        courierClient?.connectionState == .connected
+    }
+
     /// Initializer
     /// - Parameters:
     ///   - networkConfig: Network Configuration.
     ///   - endpoint: Endpoint to which the connectable needs to connect to.
     ///   - performOnQueue: A SerialQueue on which the networkService needs to be run.
-    init(with networkConfig: NetworkConfigurable, performOnQueue: SerialQueue, courierConfig: MQTTClientConfig) {
+    init(with networkConfig: NetworkConfigurable, performOnQueue: SerialQueue, courierConfig: ClickstreamCourierConfig) {
         self.networkConfig = networkConfig
         self.performQueue = performOnQueue
-        self.courierClient = CourierClientFactory().makeMQTTClient(config: courierConfig)
+        self.courierConfig = courierConfig
     }
-    
-    private func initializeCourier(with authService: IConnectionServiceProvider) {
-        let clientFactory = CourierClientFactory()
-        courierClient = clientFactory.makeMQTTClient(
-            config: MQTTClientConfig(
-                authService: authService,
-                messageAdapters: [
-                    JSONMessageAdapter(),
-                    ProtobufMessageAdapter()
-                ],
-                autoReconnectInterval: 1,
-                maxAutoReconnectInterval: 30
-            )
-        )
-    }
-    
-    private func subscribeTopics() {
-        courierClient.subscribe((self.topic, .one))
-    }
-    
-    private func unsubscribeTopics() {
-        courierClient.unsubscribe(self.topic)
-    }
-}
-
-extension CourierNetworkService {
 
     func initiateConnection(connectionStatusListener: ConnectionStatus?, keepTrying: Bool = false) {
-        courierClient.connect()
-        courierClient.connectionStatePublisher.sink { [weak self] state in
-            guard let self else { return }
-
-            if state == .connected {
-                connectionCallback?(.success(.connected))
-            } else if state == .disconnected {
-                connectionCallback?(.success(.disconnected))
-            } else if state == .connecting {
-                connectionCallback?(.success(.connecting))
-            } else {
-                connectionCallback?(.failure(.failed))
-            }
-        }.store(in: &courierCancellables)
+        performQueue.async {
+            self.courierClient?.connect(source: "clickstream")
+            self.courierClient?.connectionStatePublisher.sink { state in
+                switch state {
+                case .connected:
+                    connectionStatusListener?(.success(.connected))
+                case .connecting:
+                    connectionStatusListener?(.success(.connecting))
+                case .disconnected:
+                    connectionStatusListener?(.failure(.failed))
+                }
+            }.store(in: &self.courierCancellables)
+        }
     }
-    
+
     func write<T>(_ data: Data, completion: @escaping (Result<T, ConnectableError>) -> Void) where T : SwiftProtobuf.Message {
         performQueue.async {
             do {
-                try self.courierClient.publishMessage(data, topic: self.topic, qos: .one)
-                self.courierClient.messagePublisher(topic: self.topic).sink { (data: Data) in
+                try self.courierClient?.publishMessage(data, topic: self.currentTopic, qos: .one)
+
+                self.courierClient?.messagePublisher(topic: self.currentTopic).sink { (data: Data) in
                     // Handle response
                 }.store(in: &self.courierCancellables)
             } catch {
@@ -112,22 +98,98 @@ extension CourierNetworkService {
             }
         }
     }
-    
+
     func terminateConnection() {
-        unsubscribeTopics()
-        courierClient.destroy()
-        courierClient.disconnect()
+        performQueue.async {
+            self.unsubscribeTopics()
+            self.courierClient?.destroy()
+            self.courierClient?.disconnect()
+        }
     }
-    
+
     func flushConnectable() {
-        unsubscribeTopics()
-        courierClient.destroy()
+        performQueue.async {
+            self.unsubscribeTopics()
+            self.courierClient?.destroy()
+        }
     }
 }
 
+
 extension CourierNetworkService {
-    
-    var isConnected: Bool {
-        courierClient.connectionState == .connected
+
+    /// Configure upon user has authenticated
+    /// - Parameter userCredentials: user's credentials
+    func configureCourierClient(with userCredentials: ClickstreamCourierUserCredentials) async {
+        let messageAdapters: [MessageAdapter] = courierConfig.messageAdapters.compactMap({
+            CourierMessageAdapterType.mapped(from: $0)
+        })
+        
+        let authService = CourierAuthenticationProvider(config: courierConfig,
+                                                        userCredentials: userCredentials,
+                                                        applicationState: UIApplication.State.active,
+                                                        networkTypeProvider: .wifi)
+        
+        let mqttConfig = MQTTClientConfig(topics: topics,
+                                          authService: authService,
+                                          messageAdapters: messageAdapters,
+                                          isMessagePersistenceEnabled: courierConfig.isMessagePersistenceEnabled,
+                                          autoReconnectInterval: UInt16(courierConfig.autoReconnectInterval),
+                                          maxAutoReconnectInterval: UInt16(courierConfig.maxAutoReconnectInterval),
+                                          enableAuthenticationTimeout: courierConfig.enableAuthenticationTimeout,
+                                          authenticationTimeoutInterval: courierConfig.authenticationTimeoutInterval,
+                                          connectTimeoutPolicy: courierConfig.connectTimeoutPolicy,
+                                          idleActivityTimeoutPolicy: courierConfig.iddleActivityPolicy,
+                                          messagePersistenceTTLSeconds: courierConfig.messagePersistenceTTLSeconds,
+                                          messageCleanupInterval: courierConfig.messageCleanupInterval,
+                                          shouldInitializeCoreDataPersistenceContext: courierConfig.shouldInitializeCoreDataPersistenceContext)
+        
+        courierClient = CourierClientFactory().makeMQTTClient(config: mqttConfig)
+    }
+
+    /// Establish connection on upon initial Courier's client setup
+    func establishConnection() async {
+        var retryCounter = courierConfig.maxAutoReconnectInterval
+
+        initiateConnection(connectionStatusListener: { [weak self] result in
+            guard let self else { return }
+
+            switch result {
+            case .success(let state):
+                switch state {
+                case .connected:
+                    self.subscribeTopics()
+                    self.observedMessagePublisher()
+                case .disconnected:
+                    retryCounter -= 1
+                case .connecting, .cancelled:
+                    return
+                }
+            case .failure:
+                retryCounter -= 1
+            }
+        }, keepTrying: retryCounter > 1)
+    }
+
+    private func observedMessagePublisher() {
+        messagePublisher = self.courierClient?.messagePublisher()
+        messagePublisher?.sink { message in
+            // Process the message
+        }.store(in: &courierCancellables)
+    }
+
+    private func subscribeTopics() {
+        performQueue.async {
+            self.topics.forEach {
+                self.courierClient?.subscribe(($0.key, $0.value))
+            }
+        }
+    }
+
+    private func unsubscribeTopics() {
+        performQueue.async {
+            let topics = Array(self.topics.keys)
+            self.courierClient?.unsubscribe(topics)
+        }
     }
 }

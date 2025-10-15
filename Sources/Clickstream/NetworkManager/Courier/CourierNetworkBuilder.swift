@@ -78,6 +78,10 @@ extension CourierNetworkBuilder {
             checkedSelf.retryMech.stopTracking()
         }
     }
+    
+    func configureCourierSession(with userCredentials: ClickstreamCourierUserCredentials) {
+        
+    }
 }
 
 // MARK: - Track Clickstream health.
