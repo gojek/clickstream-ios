@@ -48,7 +48,7 @@ class CourierAuthenticationProviderTests: XCTestCase {
         )
         
         XCTAssertNil(provider.cachedAuthResponse)
-        XCTAssertEqual(provider.clientId, "testUser123:testUser123:com.test.app")
+        XCTAssertEqual(provider.clientId, "testUser123:device456:com.test.app")
     }
     
     func testInitWithDiskCachingValidToken() {
@@ -119,7 +119,7 @@ class CourierAuthenticationProviderTests: XCTestCase {
             networkTypeProvider: NetworkType.wifi
         )
         
-        XCTAssertEqual(provider.clientId, "user123:extra789:user123:com.app.test")
+        XCTAssertEqual(provider.clientId, "user123:extra789:device456:com.app.test")
     }
     
     func testClientIdGenerationWithoutExtra() {
@@ -132,7 +132,7 @@ class CourierAuthenticationProviderTests: XCTestCase {
             networkTypeProvider: NetworkType.wifi
         )
         
-        XCTAssertEqual(provider.clientId, "testUser123:testUser123:com.test.app")
+        XCTAssertEqual(provider.clientId, "testUser123:device456:com.test.app")
     }
     
     func testClearCachedAuthResponse() {

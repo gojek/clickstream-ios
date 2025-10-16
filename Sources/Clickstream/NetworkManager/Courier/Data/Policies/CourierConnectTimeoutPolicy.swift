@@ -25,6 +25,6 @@ public struct CourierConnectTimeoutPolicy: IConnectTimeoutPolicy, Decodable {
 
         isEnabled = try container.decodeIfPresent(Bool.self, forKey: .isEnabled) ?? false
         timerInterval = container.decodeTimeIntervalIfPresent(forKey: .timerInterval) ?? 15.0
-        timeout = container.decodeTimeIntervalIfPresent(forKey: .timeout) ?? 10.0
+        timeout = container.decodeTimeIntervalIfPresent(forKey: .timeout) ?? 15.0
     }
 }

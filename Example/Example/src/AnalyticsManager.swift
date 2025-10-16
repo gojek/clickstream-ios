@@ -13,10 +13,15 @@ import SwiftProtobuf
 class AnalyticsManager {
     
     private var clickstream: Clickstream?
-    
+    var networkOptions: ClickstreamNetworkOptions?
+    var courierUserCredentials: ClickstreamCourierUserCredentials?
+
+    var isCourierConfigSet: Bool {
+        networkOptions != nil && courierUserCredentials != nil
+    }
+
     /// Initialise Clickstream
-    func initialiseClickstream() {
-        
+    func initialiseClickstream(networkOptions: ClickstreamNetworkOptions? = nil) {
         Clickstream.setLogLevel(.verbose)
         do {
             let header = createHeader()
@@ -29,8 +34,11 @@ class AnalyticsManager {
                 with: request ?? URLRequest(url: URL(string: "")!),
                 configurations: configurations,
                 eventClassification: classification,
-                appPrefix: ""
+                appPrefix: "",
+                networkOptions: networkOptions
             )
+
+            self.networkOptions = networkOptions
         } catch  {
             print(error.localizedDescription)
         }
@@ -91,6 +99,12 @@ class AnalyticsManager {
         onController.present(navVC, animated: true, completion: nil)
     }
     #endif
+
+    func setupCourierClient(userCredentials: ClickstreamCourierUserCredentials) {
+        courierUserCredentials = userCredentials
+
+        clickstream?.configureCourierSession(with: userCredentials)
+    }
 }
 
 extension AnalyticsManager: TrackerDataSource {
@@ -111,7 +125,7 @@ extension AnalyticsManager: TrackerDelegate {
 
 extension AnalyticsManager {
     private func url() -> URL? {
-        return URL(string: "enter-your-url-here.com")
+        return URL(string: " ")
     }
     
     private func urlRequest(headerParamaters: [String: String]) -> URLRequest? {

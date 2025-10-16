@@ -11,6 +11,7 @@ import Foundation
 public struct ClickstreamCourierConnectConfig: Decodable {
     public let baseURL: String
     public let authURLPath: String
+    public let authURLQueries: String?
     public let tokenExpiryMins: TimeInterval
     public let pingIntervalMs: TimeInterval
     public let isCleanSessionEnabled: Bool
@@ -20,6 +21,7 @@ public struct ClickstreamCourierConnectConfig: Decodable {
     enum CodingKeys: String, CodingKey {
         case baseURL = "base_url"
         case authURLPath = "auth_url_path"
+        case authURLQueries = "auth_url_queries"
         case tokenExpiryMins = "token_expiry_mins"
         case pingIntervalMs = "ping_interval_ms"
         case isCleanSessionEnabled = "clean_session_enabled"
@@ -28,10 +30,11 @@ public struct ClickstreamCourierConnectConfig: Decodable {
     }
 
     public init(
-        baseURL: String = "https://integration-api.gojekapi.com",
-        authURLPath: String = "/courier/v1/token",
+        baseURL: String = "",
+        authURLPath: String = "",
+        authURLQueries: String? = nil,
         tokenExpiryMins: TimeInterval = 36.0,
-        pingIntervalMs: TimeInterval = 240.0,
+        pingIntervalMs: TimeInterval = 10.0,
         isCleanSessionEnabled: Bool = false,
         isTokenCacheExpiryEnabled: Bool = false,
         alpn: [String] = []
@@ -43,6 +46,7 @@ public struct ClickstreamCourierConnectConfig: Decodable {
         self.isCleanSessionEnabled = isCleanSessionEnabled
         self.isTokenCacheExpiryEnabled = isTokenCacheExpiryEnabled
         self.alpn = alpn
+        self.authURLQueries = authURLQueries
     }
 
     public init(from decoder: any Decoder) throws {
@@ -58,7 +62,8 @@ public struct ClickstreamCourierConnectConfig: Decodable {
 
         baseURL = baseURLString
         authURLPath = authPath
-        tokenExpiryMins = container.decodeTimeIntervalIfPresent(forKey: .tokenExpiryMins) ?? 36.0
+        authURLQueries = (try? container.decodeIfPresent(String.self, forKey: .authURLQueries))
+        tokenExpiryMins = container.decodeTimeIntervalIfPresent(forKey: .tokenExpiryMins) ?? 360.0
         pingIntervalMs = container.decodeTimeIntervalIfPresent(forKey: .pingIntervalMs) ?? 240.0
         isCleanSessionEnabled = (try? container.decodeIfPresent(Bool.self, forKey: .isCleanSessionEnabled)) ?? false
         isTokenCacheExpiryEnabled = (try? container.decodeIfPresent(Bool.self, forKey: .isTokenCacheExpiryEnabled)) ?? false

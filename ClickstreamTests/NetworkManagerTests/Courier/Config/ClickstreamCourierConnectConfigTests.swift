@@ -35,9 +35,9 @@ class ClickstreamCourierConnectConfigTests: XCTestCase {
         let config = ClickstreamCourierConnectConfig()
         
         XCTAssertEqual(config.baseURL, "")
-        XCTAssertEqual(config.authURLPath, "/courier/v1/token")
+        XCTAssertEqual(config.authURLPath, "")
         XCTAssertEqual(config.tokenExpiryMins, 36.0)
-        XCTAssertEqual(config.pingIntervalMs, 240.0)
+        XCTAssertEqual(config.pingIntervalMs, 10.0)
         XCTAssertFalse(config.isCleanSessionEnabled)
         XCTAssertFalse(config.isTokenCacheExpiryEnabled)
         XCTAssertTrue(config.alpn.isEmpty)
@@ -98,7 +98,7 @@ class ClickstreamCourierConnectConfigTests: XCTestCase {
         
         XCTAssertEqual(config.baseURL, "https://minimal.test.com")
         XCTAssertEqual(config.authURLPath, "/minimal")
-        XCTAssertEqual(config.tokenExpiryMins, 36.0)
+        XCTAssertEqual(config.tokenExpiryMins, 360.0)
         XCTAssertEqual(config.pingIntervalMs, 240.0)
         XCTAssertFalse(config.isCleanSessionEnabled)
         XCTAssertFalse(config.isTokenCacheExpiryEnabled)

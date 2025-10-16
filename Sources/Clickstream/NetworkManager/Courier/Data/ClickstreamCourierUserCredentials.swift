@@ -13,15 +13,18 @@ public struct ClickstreamCourierUserCredentials {
     public let deviceIdentifier: String
     public let bundleIdentifier: String?
     public let extraIdentifier: String?
+    public let authenticationHeaders: [String: String]?
 
     public init(userIdentifier: String,
-         deviceIdentifier: String = UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString,
-         bundleIdentifier: String? = Bundle.main.bundleIdentifier,
-         extraIdentifier: String? = nil) {
+                deviceIdentifier: String = UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString,
+                bundleIdentifier: String? = Bundle.main.bundleIdentifier,
+                extraIdentifier: String? = nil,
+                authenticationHeaders: [String: String]? = nil) {
 
         self.userIdentifier = userIdentifier
         self.deviceIdentifier = deviceIdentifier
         self.bundleIdentifier = bundleIdentifier
         self.extraIdentifier = extraIdentifier
+        self.authenticationHeaders = authenticationHeaders
     }
 }

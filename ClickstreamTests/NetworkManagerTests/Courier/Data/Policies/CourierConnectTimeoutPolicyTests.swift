@@ -35,8 +35,8 @@ class CourierConnectTimeoutPolicyTests: XCTestCase {
         let policy = try JSONDecoder().decode(CourierConnectTimeoutPolicy.self, from: json)
 
         XCTAssertFalse(policy.isEnabled)
-        XCTAssertEqual(policy.timerInterval, 16.0)
-        XCTAssertEqual(policy.timeout, 10.0)
+        XCTAssertEqual(policy.timerInterval, 15.0)
+        XCTAssertEqual(policy.timeout, 15.0)
     }
 
     func testDecodingWithPartialValues() throws {
@@ -51,7 +51,7 @@ class CourierConnectTimeoutPolicyTests: XCTestCase {
 
         XCTAssertTrue(policy.isEnabled)
         XCTAssertEqual(policy.timerInterval, 25.0)
-        XCTAssertEqual(policy.timeout, 10.0)
+        XCTAssertEqual(policy.timeout, 15.0)
     }
 
     func testDecodingWithIntegerValues() throws {
@@ -98,7 +98,7 @@ class CourierConnectTimeoutPolicyTests: XCTestCase {
         let policy = try JSONDecoder().decode(CourierConnectTimeoutPolicy.self, from: json)
 
         XCTAssertTrue(policy.isEnabled)
-        XCTAssertEqual(policy.timerInterval, 16.0)
-        XCTAssertEqual(policy.timeout, 10.0)
+        XCTAssertEqual(policy.timerInterval, 15.0)
+        XCTAssertEqual(policy.timeout, 15.0)
     }
 }

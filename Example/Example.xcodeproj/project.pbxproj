@@ -23,6 +23,7 @@
 		9AEA265C24924B360018931D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9AEA265A24924B360018931D /* LaunchScreen.storyboard */; };
 		BD4E9D61285719CC0093D342 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD4E9D60285719CC0093D342 /* Assets.xcassets */; };
 		BDDC8AE129E95D4B0024ED8C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDC8AE029E95D4B0024ED8C /* Constants.swift */; };
+		D839E22E2EA09FAA0049F0E2 /* CourierConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D839E22D2EA09FAA0049F0E2 /* CourierConfigViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,7 @@
 		BD4E9D60285719CC0093D342 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../EventVisualizer/Resources/Assets.xcassets; sourceTree = "<group>"; };
 		BDDC8AE029E95D4B0024ED8C /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		CDD9BE2452FB2F21C98C5E74 /* Pods-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.debug.xcconfig"; path = "Target Support Files/Pods-Example/Pods-Example.debug.xcconfig"; sourceTree = "<group>"; };
+		D839E22D2EA09FAA0049F0E2 /* CourierConfigViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierConfigViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +102,7 @@
 				9AA23CF2249C7589001BE490 /* AnalyticsManager.swift */,
 				9A266F9F27F56136000D6C36 /* ClickstreamViewController.swift */,
 				BDDC8AE029E95D4B0024ED8C /* Constants.swift */,
+				D839E22D2EA09FAA0049F0E2 /* CourierConfigViewController.swift */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -234,9 +237,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Example/Pods-Example-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Example/Pods-Example-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -291,6 +298,7 @@
 			files = (
 				9A266FA627F6ACFB000D6C36 /* App.proto in Sources */,
 				9AA23CF3249C7589001BE490 /* AnalyticsManager.swift in Sources */,
+				D839E22E2EA09FAA0049F0E2 /* CourierConfigViewController.swift in Sources */,
 				9A266FAF27F6ADA9000D6C36 /* Device.pb.swift in Sources */,
 				9AEA265024924B340018931D /* AppDelegate.swift in Sources */,
 				9A65B31F2B4BAEBB00730CE9 /* EventVisualizer+ClickStreamContracts.swift in Sources */,

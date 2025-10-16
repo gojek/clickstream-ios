@@ -110,9 +110,9 @@ class ClickstreamCourierConfigTests: XCTestCase {
         XCTAssertEqual(config.maxAutoReconnectInterval, 30.0)
         XCTAssertFalse(config.enableAuthenticationTimeout)
         XCTAssertEqual(config.authenticationTimeoutInterval, 30.0)
-        XCTAssertEqual(config.messagePersistenceTTLSeconds, 0)
+        XCTAssertEqual(config.messagePersistenceTTLSeconds, 86400.0)
         XCTAssertEqual(config.messageCleanupInterval, 10.0)
-        XCTAssertFalse(config.shouldInitializeCoreDataPersistenceContext)
+        XCTAssertTrue(config.shouldInitializeCoreDataPersistenceContext)
     }
     
     func testDecodingWithPartialData() throws {
@@ -159,9 +159,9 @@ class ClickstreamCourierConfigTests: XCTestCase {
         let config = try JSONDecoder().decode(ClickstreamCourierConfig.self, from: json)
         
         XCTAssertEqual(config.connectConfig.baseURL, "")
-        XCTAssertEqual(config.connectConfig.authURLPath, "/courier/v1/token")
+        XCTAssertEqual(config.connectConfig.authURLPath, "")
         XCTAssertEqual(config.connectConfig.tokenExpiryMins, 36.0)
-        XCTAssertEqual(config.connectConfig.pingIntervalMs, 240.0)
+        XCTAssertEqual(config.connectConfig.pingIntervalMs, 10.0)
         XCTAssertFalse(config.connectConfig.isCleanSessionEnabled)
         XCTAssertFalse(config.connectConfig.isTokenCacheExpiryEnabled)
         XCTAssertTrue(config.connectConfig.alpn.isEmpty)
