@@ -43,21 +43,22 @@ final class DefaultEventProcessor: EventProcessor {
     
     func createEvent(event: ClickstreamEvent) {
         self.serialQueue.async { [weak self] in guard let checkedSelf = self else { return }
-            #if EVENT_VISUALIZER_ENABLED
-            /// Sent event data to client with state received
-            /// to check if the delegate is connected, if not no event should be sent to client
-            if let message = event.message, let stateViewer = Clickstream._stateViewer {
-                /// creating the EventData object and setting the status to received.
-                let eventsData = EventData(msg: message, state: .received)
-                /// Sending the eventData object to client
-                stateViewer.sendEvent(eventsData)
-            }
-            #endif
-            // Create an Event instance and forward it to the scheduler.
             if checkedSelf.shouldTrackEvent(event: event) {
-                if let event = checkedSelf.constructEvent(event: event) {
-                    checkedSelf.eventWarehouser.store(event)
+
+                #if EVENT_VISUALIZER_ENABLED
+                /// Sent event data to client with state received
+                /// to check if the delegate is connected, if not no event should be sent to client
+                if let message = event.message, let stateViewer = Clickstream._stateViewer {
+                    /// creating the EventData object and setting the status to received.
+                    let eventsData = EventData(msg: message, state: .received)
+                    /// Sending the eventData object to client
+                    stateViewer.sendEvent(eventsData)
                 }
+                #endif
+                // Create an Event instance and forward it to the scheduler.
+                    if let event = checkedSelf.constructEvent(event: event) {
+                        checkedSelf.eventWarehouser.store(event)
+                    }
             }
         }
     }

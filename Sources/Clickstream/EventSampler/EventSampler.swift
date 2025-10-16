@@ -20,9 +20,8 @@ class DefaultEventSampler: EventSampler {
     }
     
     func shouldTrack(event: ClickstreamEvent) -> Bool {
-        let eventName = event.eventName
         
-        if let overrides = configurations.overrides, let sampleRate = overrides[eventName] {
+        if let overrides = configurations.overrides, let eventName = event.csEventName, let sampleRate = overrides[eventName] {
             let randomValue = Int.random(in: 1...EventSamplerConstants.defaultSampleRate)
             return randomValue <= Int(sampleRate)
         }
