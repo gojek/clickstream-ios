@@ -18,12 +18,12 @@ final class SharedNetworkManagerDependencies {
 
     private var request: URLRequest
     private let database: Database
-    private let courierConfig: ClickstreamCourierConfig
+    private let networkOptions: ClickstreamNetworkOptions
 
-    init(with request: URLRequest, db: Database, courierConfig: ClickstreamCourierConfig) {
+    init(with request: URLRequest, db: Database, networkOptions: ClickstreamNetworkOptions) {
         self.database = db
         self.request = request
-        self.courierConfig = courierConfig
+        self.networkOptions = networkOptions
     }
 
     private let networkQueue = SerialQueue(label: Constants.QueueIdentifiers.network.rawValue, qos: .utility)
@@ -58,9 +58,8 @@ final class SharedNetworkManagerDependencies {
     }()
     
     private lazy var courierNetworkService: NetworkService = {
-        CourierNetworkService(with: getNetworkConfig(),
-                              performOnQueue: networkQueue,
-                              courierConfig: courierConfig)
+        CourierNetworkService<DefaultCourierHandler>(with: getNetworkConfig(),
+                                                     performOnQueue: networkQueue)
     }()
 
     private lazy var websocketRetryMech: Retryable = {
@@ -79,12 +78,11 @@ final class SharedNetworkManagerDependencies {
                               deviceStatus: deviceStatus,
                               appStateNotifier: appStateNotifier,
                               performOnQueue: networkQueue,
-                              persistence: defaultPersistence,
-                              keepAliveService: keepAliveService)
+                              persistence: defaultPersistence)
     }()
 
     private func getNetworkConfig() -> DefaultNetworkConfiguration {
-        DefaultNetworkConfiguration(request: request)
+        DefaultNetworkConfiguration(request: request, networkOptions: networkOptions)
     }
 
     func makeNetworkBuilder() -> NetworkBuildable {
@@ -107,13 +105,13 @@ final class SharedNetworkManagerDependencies {
         courierNetworkService.isConnected
     }
 
-    func configureCourierSession(with userCredentials: ClickstreamCourierUserCredentials) async {
-        guard let networkService = self.courierNetworkService as? CourierNetworkService else {
+    func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers) {
+        guard let courierRetryMech = self.courierRetryMech as? CourierRetryMechanism,
+              let courierIdentifiers = identifiers as? CourierIdentifiers else {
             return
         }
 
-        await networkService.configureCourierClient(with: userCredentials)
-        await networkService.establishConnection()
+        courierRetryMech.configureIdentifiers(courierIdentifiers)
     }
 }
 

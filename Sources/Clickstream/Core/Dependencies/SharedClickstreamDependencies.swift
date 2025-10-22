@@ -38,7 +38,7 @@ final class SharedClickstreamDependencies: ClickstreamDependencies {
     lazy var networkManagerDependencies: SharedNetworkManagerDependencies = {
         return SharedNetworkManagerDependencies(with: request,
                                                 db: database,
-                                                courierConfig: networkOptions.courierConfig)
+                                                networkOptions: networkOptions)
     }()
 
     /**
@@ -55,7 +55,7 @@ final class SharedClickstreamDependencies: ClickstreamDependencies {
         A NetworkBuildable instance. This instance acts as the only source of Courier's NetworkBuildable,
         hence ensuring only one instane is tied to the Clickstream class.
      */
-    lazy var courierNetworkBuilder: NetworkBuildable = {
+    lazy var secondaryNetworkBuilder: NetworkBuildable = {
         return networkManagerDependencies.makeCourierNetworkBuilder()
     }()
 
@@ -64,9 +64,11 @@ final class SharedClickstreamDependencies: ClickstreamDependencies {
         hence ensuring only one instane is tied to the Clickstream class.
      */
     lazy var eventWarehouser: EventWarehouser = {
-        return EventSchedulerDependencies(with: networkBuilder,
-                                          courierNetworkBuildable: courierNetworkBuilder,
-                                          db: database).makeEventWarehouser()
+        EventSchedulerDependencies(
+            with: networkBuilder,
+            secondary: secondaryNetworkBuilder,
+            db: database
+        ).makeSharedEventWarehouser(with: networkOptions)
     }()
     
     /**
@@ -84,7 +86,10 @@ final class SharedClickstreamDependencies: ClickstreamDependencies {
 }
 
 extension SharedClickstreamDependencies {
-    func configureCourierSession(with userCredentials: ClickstreamCourierUserCredentials) async {
-        await networkManagerDependencies.configureCourierSession(with: userCredentials)
+
+    /// Courier client's user credentials provider
+    /// - Parameter userCredentials: A user credentials object
+    func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers) {
+        networkManagerDependencies.provideClientIdentifiers(with: identifiers)
     }
 }

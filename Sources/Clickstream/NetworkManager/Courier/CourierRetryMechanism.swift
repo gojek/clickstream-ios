@@ -19,7 +19,7 @@ final class CourierRetryMechanism: Retryable {
     private var networkServiceState: ConnectableState = .disconnected
     private var persistence: DefaultDatabaseDAO<EventRequest>
     private var retryTimer: DispatchSourceTimer?
-    private var keepAliveService: KeepAliveService
+    private var identifiers: CourierIdentifiers?
     
     #if ETE_TEST_SUITE_ENABLED
     lazy var testMode: Bool = {
@@ -72,21 +72,17 @@ final class CourierRetryMechanism: Retryable {
          deviceStatus: DefaultDeviceStatus,
          appStateNotifier: AppStateNotifierService,
          performOnQueue: SerialQueue,
-         persistence: DefaultDatabaseDAO<EventRequest>,
-         keepAliveService: KeepAliveService) {
+         persistence: DefaultDatabaseDAO<EventRequest>) {
         self.networkService = networkService
         self.reachability = reachability
         self.performQueue = performOnQueue
         self.deviceStatus = deviceStatus
         self.appStateNotifier = appStateNotifier
         self.persistence = persistence
-        self.keepAliveService = keepAliveService
         
         self.observeNetworkConnectivity()
-        self.establishConnection()
         self.observeDeviceStatus()
         self.observeAppStateChanges()
-        self.keepConnectionAlive()
     }
     
     /// Adding a subscription to the app state changes.
@@ -94,10 +90,8 @@ final class CourierRetryMechanism: Retryable {
         appStateNotifier.start { [weak self] (stateNotification) in guard let checkedSelf = self else { return }
             switch stateNotification {
             case .willResignActive:
-                checkedSelf.keepAliveService.stop()
                 checkedSelf.prepareForTerminatingConnection()
             case .didBecomeActive:
-                checkedSelf.keepConnectionAlive()
                 checkedSelf.cancelTerminationCountDown()
                 checkedSelf.establishConnection()
             default:
@@ -133,20 +127,6 @@ final class CourierRetryMechanism: Retryable {
                 // If network is connected but device is on low power, terminate the connection
             } else if checkedSelf.networkService.isConnected && isLowOnPower {
                 checkedSelf.terminateConnection()
-            }
-        }
-    }
-    
-    private func keepConnectionAlive() {
-        keepAliveService.start { [weak self] in
-            guard let checkedSelf = self else { return }
-            let isReachable = checkedSelf.reachability.isAvailable
-            let isConnected = checkedSelf.networkService.isConnected
-            let isOnLowPower = checkedSelf.deviceStatus.isDeviceLowOnPower
-            
-            if isReachable && !isConnected && !isOnLowPower {
-                checkedSelf.networkService.flushConnectable()
-                checkedSelf.establishConnection()
             }
         }
     }
@@ -268,11 +248,15 @@ extension CourierRetryMechanism {
     }
     
     func stopTracking() {
-        keepAliveService.stop()
         appStateNotifier.stop()
         deviceStatus.stopTracking()
         reachability.stopNotifier()
         terminateConnection()
+    }
+
+    func configureIdentifiers(_ identifiers: CourierIdentifiers) {
+        self.identifiers = identifiers
+        establishConnection()
     }
 }
 
@@ -284,7 +268,6 @@ extension CourierRetryMechanism {
     }
     
     private func prepareForTerminatingConnection() {
-        
         let semaphore = DispatchSemaphore(value: 1)
         defer {
             semaphore.signal()
@@ -305,31 +288,29 @@ extension CourierRetryMechanism {
     }
     
     private func establishConnection(keepTrying: Bool = false) {
-        let semaphore = DispatchSemaphore(value: 1)
-        defer {
-            semaphore.signal()
+        guard let identifiers else {
+            return
         }
-        semaphore.wait()
-        
+
         /// Resetting value of Clickstream.connectionState to .connected which had been changed
         /// to .closing in line 261 when app was moving to background
         if Clickstream.updateConnectionStatus && self.networkService.isConnected {
             Clickstream.connectionState = .connected
         }
-        
+
         if self.networkService.isConnected || !reachability.isAvailable {
             return
         }
-        
-        performQueue.async { [weak self] in guard let checkedSelf = self else { return }
-            checkedSelf.networkService.initiateConnection(connectionStatusListener: { result in
 
-                NotificationCenter.default.post(name: Constants.SocketConnectionNotification,
-                                                object: [Constants.Strings.didConnect: self?.networkService.isConnected])
-
+        Task {
+            await networkService.initiateSecondaryConnection(connectionStatusListener: { [weak self] result in
                 guard let checkedSelf = self else {
                     return
                 }
+
+                NotificationCenter.default.post(name: Constants.CourierConnectionNotification,
+                                                object: [Constants.Strings.didConnect: checkedSelf.networkService.isConnected])
+
                 switch result {
                 case .success(let state):
                     switch state {
@@ -345,10 +326,9 @@ extension CourierRetryMechanism {
                 case .failure:
                     checkedSelf.stopObservingFailedBatches()
                 }
-            }, keepTrying: keepTrying)
+            }, keepTrying: keepTrying, identifiers: identifiers)
         }
     }
-
 }
 
 extension CourierRetryMechanism {

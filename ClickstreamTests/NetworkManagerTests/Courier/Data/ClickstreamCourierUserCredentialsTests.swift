@@ -1,5 +1,5 @@
 //
-//  ClickstreamCourierUserCredentialsTests.swift
+//  CourierIdentifiersTests.swift
 //  ClickstreamTests
 //
 //  Created by Luqman Fauzi on 15/10/25.
@@ -9,10 +9,10 @@
 @testable import Clickstream
 import XCTest
 
-class ClickstreamCourierUserCredentialsTests: XCTestCase {
+class CourierIdentifiersTests: XCTestCase {
 
     func testInitWithAllParameters() {
-        let credentials = ClickstreamCourierUserCredentials(
+        let credentials = CourierIdentifiers(
             userIdentifier: "user123",
             deviceIdentifier: "device456",
             bundleIdentifier: "com.test.app",
@@ -26,7 +26,7 @@ class ClickstreamCourierUserCredentialsTests: XCTestCase {
     }
     
     func testInitWithDefaultParameters() {
-        let credentials = ClickstreamCourierUserCredentials(userIdentifier: "testUser")
+        let credentials = CourierIdentifiers(userIdentifier: "testUser")
         
         XCTAssertEqual(credentials.userIdentifier, "testUser")
         XCTAssertNotNil(credentials.deviceIdentifier)
@@ -34,7 +34,7 @@ class ClickstreamCourierUserCredentialsTests: XCTestCase {
     }
     
     func testInitWithNilOptionalParameters() {
-        let credentials = ClickstreamCourierUserCredentials(
+        let credentials = CourierIdentifiers(
             userIdentifier: "user456",
             deviceIdentifier: "device789",
             bundleIdentifier: nil,
@@ -48,11 +48,11 @@ class ClickstreamCourierUserCredentialsTests: XCTestCase {
     }
     
     func testDeviceIdentifierGeneration() {
-        let credentials1 = ClickstreamCourierUserCredentials(
+        let credentials1 = CourierIdentifiers(
             userIdentifier: "user1",
             deviceIdentifier: UUID().uuidString
         )
-        let credentials2 = ClickstreamCourierUserCredentials(
+        let credentials2 = CourierIdentifiers(
             userIdentifier: "user2",
             deviceIdentifier: UUID().uuidString
         )
@@ -63,15 +63,15 @@ class ClickstreamCourierUserCredentialsTests: XCTestCase {
     }
     
     func testDeviceIdentifierFallbackGeneration() {
-        let credentials = ClickstreamCourierUserCredentials(userIdentifier: "testUser")
+        let credentials = CourierIdentifiers(userIdentifier: "testUser")
         
         XCTAssertFalse(credentials.deviceIdentifier.isEmpty)
         XCTAssertTrue(credentials.deviceIdentifier.count >= 36)
     }
     
     func testUserIdentifierValidation() {
-        let emptyUserCredentials = ClickstreamCourierUserCredentials(userIdentifier: "")
-        let validUserCredentials = ClickstreamCourierUserCredentials(userIdentifier: "validUser")
+        let emptyUserCredentials = CourierIdentifiers(userIdentifier: "")
+        let validUserCredentials = CourierIdentifiers(userIdentifier: "validUser")
         
         XCTAssertEqual(emptyUserCredentials.userIdentifier, "")
         XCTAssertEqual(validUserCredentials.userIdentifier, "validUser")

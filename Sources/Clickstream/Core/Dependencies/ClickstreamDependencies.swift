@@ -11,14 +11,9 @@ import Foundation
 protocol ClickstreamDependencies {
     var isSocketConnected: Bool { get }
     var networkBuilder: NetworkBuildable { get }
-    var courierNetworkBuilder: NetworkBuildable? { get }
     var eventWarehouser: EventWarehouser { get }
     var eventProcessor: EventProcessor { get }
     var eventSampler: EventSampler? { get }
-}
-
-extension ClickstreamDependencies {
-    var courierNetworkBuilder: NetworkBuildable? { nil }
 }
 
 /// A class that generates all the dependencies of the Clickstream SDK.

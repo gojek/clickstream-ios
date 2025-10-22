@@ -14,7 +14,7 @@ class CourierAuthenticationProviderTests: XCTestCase {
     
     var mockUserDefaults: UserDefaults!
     var config: ClickstreamCourierConfig!
-    var userCredentials: ClickstreamCourierUserCredentials!
+    var userCredentials: CourierIdentifiers!
     
     override func setUp() {
         super.setUp()
@@ -22,7 +22,7 @@ class CourierAuthenticationProviderTests: XCTestCase {
         mockUserDefaults.removePersistentDomain(forName: "test.courier.auth")
         
         config = ClickstreamCourierConfig()
-        userCredentials = ClickstreamCourierUserCredentials(
+        userCredentials = CourierIdentifiers(
             userIdentifier: "testUser123",
             deviceIdentifier: "device456",
             bundleIdentifier: "com.test.app"
@@ -43,7 +43,6 @@ class CourierAuthenticationProviderTests: XCTestCase {
             userCredentials: userCredentials,
             cachingType: .noop,
             userDefaults: mockUserDefaults,
-            applicationState: .active,
             networkTypeProvider: NetworkType.wifi
         )
         
@@ -69,7 +68,6 @@ class CourierAuthenticationProviderTests: XCTestCase {
             cachingType: .disk,
             userDefaults: mockUserDefaults,
             isConnectUserPropertiesEnabled: true,
-            applicationState: .active,
             networkTypeProvider: NetworkType.wifi
         )
         
@@ -94,7 +92,6 @@ class CourierAuthenticationProviderTests: XCTestCase {
             userCredentials: userCredentials,
             cachingType: .disk,
             userDefaults: mockUserDefaults,
-            applicationState: .active,
             networkTypeProvider: NetworkType.wifi
         )
         
@@ -103,7 +100,7 @@ class CourierAuthenticationProviderTests: XCTestCase {
     }
     
     func testClientIdGeneration() {
-        let credentials = ClickstreamCourierUserCredentials(
+        let credentials = CourierIdentifiers(
             userIdentifier: "user123",
             deviceIdentifier: "device456",
             bundleIdentifier: "com.app.test",
@@ -115,7 +112,6 @@ class CourierAuthenticationProviderTests: XCTestCase {
             userCredentials: credentials,
             cachingType: .noop,
             userDefaults: mockUserDefaults,
-            applicationState: .active,
             networkTypeProvider: NetworkType.wifi
         )
         
@@ -128,7 +124,6 @@ class CourierAuthenticationProviderTests: XCTestCase {
             userCredentials: userCredentials,
             cachingType: .noop,
             userDefaults: mockUserDefaults,
-            applicationState: .active,
             networkTypeProvider: NetworkType.wifi
         )
         
@@ -141,7 +136,6 @@ class CourierAuthenticationProviderTests: XCTestCase {
             userCredentials: userCredentials,
             cachingType: .disk,
             userDefaults: mockUserDefaults,
-            applicationState: .active,
             networkTypeProvider: NetworkType.wifi
         )
 

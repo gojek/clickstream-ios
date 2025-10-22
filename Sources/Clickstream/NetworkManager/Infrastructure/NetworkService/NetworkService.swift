@@ -15,9 +15,16 @@ protocol NetworkServiceInputs {
     /// - Parameters:
     ///   - connectionStatusListener: A callback to listen to the change in the status.
     ///   - keepTrying: allow connectable to try reconnection exponentially
-    func initiateConnection(connectionStatusListener: ConnectionStatus?,
-                            keepTrying: Bool)
+    func initiateConnection(connectionStatusListener: ConnectionStatus?, keepTrying: Bool)
+
     
+    /// Initiates a Courier connection through a connectable.
+    /// - Parameters:
+    ///   - connectionStatusListener: A callback to listen to the change in the status.
+    ///   - keepTrying: allow connectable to try reconnection exponentially
+    ///   - userCredentials: Courier's user credentials
+    func initiateSecondaryConnection(connectionStatusListener: ConnectionStatus?, keepTrying: Bool, identifiers: ClickstreamClientIdentifiers) async
+
     /// Writes data to the given connectable and fires a completion event after the write is completed.
     /// - Parameters:
     ///   - data:  Data to be written/sent.
@@ -38,6 +45,11 @@ protocol NetworkServiceOutputs {
 }
 
 protocol NetworkService: NetworkServiceInputs, NetworkServiceOutputs { }
+
+extension NetworkService {
+    func initiateConnection(connectionStatusListener: ConnectionStatus?, keepTrying: Bool) {}
+    func initiateSecondaryConnection(connectionStatusListener: ConnectionStatus?, keepTrying: Bool, identifiers: ClickstreamClientIdentifiers) async {}
+}
 
 final class DefaultNetworkService<C: Connectable>: NetworkService {
     

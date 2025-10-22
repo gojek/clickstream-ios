@@ -1,5 +1,5 @@
 //
-//  ClickstreamCourierUserCredentials.swift
+//  CourierIdentifiers.swift
 //  Clickstream
 //
 //  Created by Luqman Fauzi on 14/10/25.
@@ -8,7 +8,16 @@
 
 import UIKit
 
-public struct ClickstreamCourierUserCredentials {
+public protocol ClickstreamClientIdentifiers {
+    var userIdentifier: String { get }
+    var deviceIdentifier: String { get }
+    var bundleIdentifier: String? { get }
+    var extraIdentifier: String? { get }
+    var authenticationHeaders: [String: String]? { get }
+}
+
+public struct CourierIdentifiers: ClickstreamClientIdentifiers {
+
     public let userIdentifier: String
     public let deviceIdentifier: String
     public let bundleIdentifier: String?

@@ -86,6 +86,7 @@ public final class Clickstream {
     
     // MARK: - Building blocks of the SDK.
     private let networkBuilder: NetworkBuildable
+    private let secondaryNetworkBuilder: NetworkBuildable?
     private let eventProcessor: EventProcessor
     private let eventWarehouser: EventWarehouser
     
@@ -96,10 +97,12 @@ public final class Clickstream {
     ///   - eventProcessor: event processor instance
     ///   - dataSource: dataSource for Clickstream
     private init(networkBuilder: NetworkBuildable,
+                 secondaryNetworkBuilder: NetworkBuildable? = nil,
                  eventWarehouser: EventWarehouser,
                  eventProcessor: EventProcessor,
                  delegate: ClickstreamDelegate? = nil) {
         self.networkBuilder = networkBuilder
+        self.secondaryNetworkBuilder = secondaryNetworkBuilder
         self.eventWarehouser = eventWarehouser
         self.eventProcessor = eventProcessor
         self.delegate = delegate
@@ -260,6 +263,7 @@ public final class Clickstream {
                                                                          networkOptions: networkOptions)
 
                     sharedInstance = Clickstream(networkBuilder: dependencies.networkBuilder,
+                                                 secondaryNetworkBuilder: dependencies.secondaryNetworkBuilder,
                                                  eventWarehouser: dependencies.eventWarehouser,
                                                  eventProcessor: dependencies.eventProcessor,
                                                  delegate: delegate)
@@ -347,13 +351,14 @@ extension Clickstream {
 #endif
 
 extension Clickstream {
-    public func configureCourierSession(with userCredentials: ClickstreamCourierUserCredentials) {
+
+    /// Courier client's user credentials provider
+    /// - Parameter identifiers: A client's credentials
+    public func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers) {
         guard let dependencies = dependencies as? SharedClickstreamDependencies else {
             return
         }
-        
-        Task {
-            await dependencies.configureCourierSession(with: userCredentials)
-        }
+
+        dependencies.provideClientIdentifiers(with: identifiers)
     }
 }

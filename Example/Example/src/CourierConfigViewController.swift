@@ -38,9 +38,9 @@ final class CourierConfigViewController: UITableViewController {
     @IBOutlet weak var iddlePolicyReadTimeoutTextField: UITextField!
 
     var config: ClickstreamCourierConfig?
-    var userCredentials: ClickstreamCourierUserCredentials?
+    var userCredentials: ClickstreamClientIdentifiers?
 
-    var didSaveConfig: ((_ config: ClickstreamCourierConfig, _ userCredentials: ClickstreamCourierUserCredentials) -> Void)?
+    var didSaveConfig: ((_ config: ClickstreamCourierConfig, _ userCredentials: ClickstreamClientIdentifiers) -> Void)?
 
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -15,6 +15,7 @@ typealias SerialQueue = DispatchQueue
 enum Constants {
     
     static let SocketConnectionNotification = NSNotification.Name(rawValue: "SocketConnectionNotification")
+    static let CourierConnectionNotification = NSNotification.Name(rawValue: "CourierConnectionNotification")
     static let HealthEventType = "healthEvent"
     
     // MARK: - Strings

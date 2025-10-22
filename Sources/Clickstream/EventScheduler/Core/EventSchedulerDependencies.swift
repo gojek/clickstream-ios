@@ -12,15 +12,15 @@ import Foundation
 final class EventSchedulerDependencies {
     
     private let networkBuildable: NetworkBuildable
-    private let courierNetworkBuildable: NetworkBuildable?
+    private let secondaryNetworkBuilder: NetworkBuildable?
     private let database: Database
     
     init(with networkBuildable: NetworkBuildable,
-         courierNetworkBuildable: NetworkBuildable? = nil,
+         secondary secondaryNetworkBuilder: NetworkBuildable? = nil,
          db: Database) {
         self.database = db
         self.networkBuildable = networkBuildable
-        self.courierNetworkBuildable = courierNetworkBuildable
+        self.secondaryNetworkBuilder = secondaryNetworkBuilder
     }
     
     /// A single instance of queue which ensures that all the tasks are performed on this queue.
@@ -51,11 +51,11 @@ final class EventSchedulerDependencies {
         return DefaultEventBatchCreator(with: self.networkBuildable, performOnQueue: schedulerQueue)
     }()
 
-    private lazy var courierEventCreator: EventBatchCreator? = {
-        guard let courierNetworkBuildable else {
+    private lazy var secondaryEventCreator: EventBatchCreator? = {
+        guard let secondaryNetworkBuilder else {
             return nil
         }
-        return CourierEventBatchCreator(with: courierNetworkBuildable, performOnQueue: schedulerQueue)
+        return CourierEventBatchCreator(with: secondaryNetworkBuilder, performOnQueue: schedulerQueue)
     }()
 
     private lazy var eventBatchProcessor: EventBatchProcessor = {
@@ -66,14 +66,14 @@ final class EventSchedulerDependencies {
                                           persistence: persistence)
     }()
 
-    private lazy var courierEventBatchProcessor: EventBatchProcessor? = {
-        guard let courierEventCreator else {
+    private lazy var secondaryEventBatchProcessor: EventBatchProcessor? = {
+        guard let secondaryEventCreator else {
             return nil
         }
-        return CourierEventBatchProcessor(with: courierEventCreator,
+        return CourierEventBatchProcessor(with: secondaryEventCreator,
                                           schedulerService: schedulerService,
                                           appStateNotifier: appStateNotifier,
-                                          batchSizeRegulator: batchSizeRegulator,
+                                          batchSizeRegulator: secondaryBatchSizeRegulator,
                                           persistence: persistence)
     }()
 
@@ -86,7 +86,7 @@ final class EventSchedulerDependencies {
        return DefaultBatchSizeRegulator()
     }()
 
-    private lazy var courierBatchSizeRegulator: BatchSizeRegulator = {
+    private lazy var secondaryBatchSizeRegulator: BatchSizeRegulator = {
        return CourierEventBatchSizeRegulator()
     }()
     
@@ -98,16 +98,17 @@ final class EventSchedulerDependencies {
                                       persistence: persistence,
                                       batchSizeRegulator: batchSizeRegulator)
     }
-    
-    /// Call this method to get the EventWarehouser instance.
-    /// - Returns: Courier's EventWarehouser instance.
-    func makeCourierEventWarehouser() -> EventWarehouser? {
-        guard let courierEventBatchProcessor else {
-            return nil
-        }
-        return CourierEventWarehouser(with: courierEventBatchProcessor,
-                                      performOnQueue: warehouserQueue,
-                                      persistence: persistence,
-                                      batchSizeRegulator: courierBatchSizeRegulator)
+
+    /// Call this method to get the SharedEventWarehouser instance.
+    /// - Parameter networkOptions: EventWarehouser instance.
+    /// - Returns: CS networking options
+    func makeSharedEventWarehouser(with networkOptions: ClickstreamNetworkOptions) -> EventWarehouser {
+        SharedEventWarehouser(with: eventBatchProcessor,
+                              secondary: secondaryEventBatchProcessor,
+                              performOnQueue: warehouserQueue,
+                              persistence: persistence,
+                              batchSizeRegulator: batchSizeRegulator,
+                              secondaryBatchSizeRegulator: secondaryBatchSizeRegulator,
+                              networkOptions: networkOptions)
     }
 }

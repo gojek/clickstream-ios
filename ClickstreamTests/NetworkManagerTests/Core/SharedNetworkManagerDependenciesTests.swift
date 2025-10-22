@@ -21,7 +21,9 @@ class SharedNetworkManagerDependenciesTests: XCTestCase {
         Clickstream.eventClassifier = MockConstants.eventClassification
 
         // when
-        let networkManagerDependencies = SharedNetworkManagerDependencies(with: dummyRequest, db: database, courierConfig: ClickstreamCourierConfig())
+        let networkManagerDependencies = SharedNetworkManagerDependencies(with: dummyRequest,
+                                                                          db: database,
+                                                                          networkOptions: .init(isWebsocketEnabled: true, isCourierEnabled: false))
         let networkBuilder: NetworkBuildable = networkManagerDependencies.makeNetworkBuilder()
 
         // then
@@ -37,7 +39,9 @@ class SharedNetworkManagerDependenciesTests: XCTestCase {
         Clickstream.eventClassifier = MockConstants.eventClassification
 
         // when
-        let networkManagerDependencies = SharedNetworkManagerDependencies(with: dummyRequest, db: database, courierConfig: ClickstreamCourierConfig())
+        let networkManagerDependencies = SharedNetworkManagerDependencies(with: dummyRequest,
+                                                                          db: database,
+                                                                          networkOptions: .init(isWebsocketEnabled: false, isCourierEnabled: true))
         let networkBuilder: NetworkBuildable = networkManagerDependencies.makeCourierNetworkBuilder()
 
         // then
@@ -49,18 +53,19 @@ class SharedNetworkManagerDependenciesTests: XCTestCase {
         // given
         let expectation = XCTestExpectation(description: "Courier session must be configured")
         let dummyRequest = URLRequest(url: URL(string: "dummy_url")!)
-        let user = ClickstreamCourierUserCredentials(userIdentifier: "12345")
+        let user = CourierIdentifiers(userIdentifier: "12345")
         
         Clickstream.configurations = MockConstants.constraints
         Clickstream.eventClassifier = MockConstants.eventClassification
 
         // when
-        let networkManagerDependencies = SharedNetworkManagerDependencies(with: dummyRequest, db: database, courierConfig: ClickstreamCourierConfig())
+        let networkManagerDependencies = SharedNetworkManagerDependencies(with: dummyRequest,
+                                                                          db: database,
+                                                                          networkOptions: .init(isWebsocketEnabled: false, isCourierEnabled: true))
         let networkBuilder: NetworkBuildable = networkManagerDependencies.makeCourierNetworkBuilder()
+        networkManagerDependencies.provideClientIdentifiers(with: user)
 
-        Task {
-            await networkManagerDependencies.configureCourierSession(with: user)
-            await fulfillment(of: [expectation], timeout: 1.0)
-        }
+        XCTAssertNotNil(networkBuilder)
+        XCTAssertTrue(networkBuilder is CourierNetworkBuilder)
     }
 }

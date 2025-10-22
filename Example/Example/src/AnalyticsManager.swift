@@ -14,7 +14,7 @@ class AnalyticsManager {
     
     private var clickstream: Clickstream?
     var networkOptions: ClickstreamNetworkOptions?
-    var courierUserCredentials: ClickstreamCourierUserCredentials?
+    var courierUserCredentials: ClickstreamClientIdentifiers?
 
     var isCourierConfigSet: Bool {
         networkOptions != nil && courierUserCredentials != nil
@@ -28,7 +28,7 @@ class AnalyticsManager {
             let request = self.urlRequest(headerParamaters: header)
             
             let configurations = ClickstreamConstraints(maxConnectionRetries: 5)
-            let classification = ClickstreamEventClassification()
+            let classification = ClickstreamEventClassification(eventTypes: [.init(identifier: "instant", eventNames: [], csEventNames: [])])
 
             self.clickstream = try Clickstream.initialise(
                 with: request ?? URLRequest(url: URL(string: "")!),
@@ -100,10 +100,10 @@ class AnalyticsManager {
     }
     #endif
 
-    func setupCourierClient(userCredentials: ClickstreamCourierUserCredentials) {
+    func setupCourierClient(userCredentials: ClickstreamClientIdentifiers) {
         courierUserCredentials = userCredentials
 
-        clickstream?.configureCourierSession(with: userCredentials)
+        clickstream?.provideClientIdentifiers(with: userCredentials)
     }
 }
 

@@ -84,7 +84,7 @@
                                             <constraint firstAttribute="height" constant="40" id="eAs-b5-4BE"/>
                                         </constraints>
                                     </stackView>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g7j-BG-u2C">
+                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g7j-BG-u2C">
                                         <rect key="frame" x="125" y="320" width="110.33333333333331" height="34.333333333333314"/>
                                         <color key="backgroundColor" systemColor="systemBlueColor"/>
                                         <state key="normal" title="Button"/>
@@ -95,7 +95,7 @@
                                             <action selector="sendEventToClickstream:" destination="WAz-PT-SgK" eventType="touchUpInside" id="SYR-54-t9b"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Aj0-23-zkl">
+                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Aj0-23-zkl">
                                         <rect key="frame" x="88.333333333333329" y="372.33333333333337" width="183.33333333333337" height="35"/>
                                         <color key="backgroundColor" systemColor="systemBlueColor"/>
                                         <state key="normal" title="Button"/>
@@ -106,7 +106,7 @@
                                             <action selector="sendMultipleEventsToClickstream:" destination="WAz-PT-SgK" eventType="touchUpInside" id="fIp-6U-x08"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2i5-0h-cxC">
+                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2i5-0h-cxC">
                                         <rect key="frame" x="108.00000000000001" y="425.33333333333337" width="144.33333333333337" height="34.333333333333314"/>
                                         <color key="backgroundColor" systemColor="systemBlueColor"/>
                                         <state key="normal" title="Button"/>
@@ -160,6 +160,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Clickstream Test App" id="JcE-vW-PwK">
+                        <barButtonItem key="leftBarButtonItem" title="Autofill" id="e2C-6B-byW">
+                            <connections>
+                                <action selector="autofillEventForm:" destination="WAz-PT-SgK" id="e7M-hj-sCE"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Settings" id="WB3-yb-PxA">
                             <imageReference key="image" image="gear" catalog="system" symbolScale="default"/>
                             <connections>

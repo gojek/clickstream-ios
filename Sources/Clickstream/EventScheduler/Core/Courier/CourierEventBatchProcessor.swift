@@ -1,11 +1,3 @@
-//
-//  CourierEventBatchProcessor.swift
-//  Clickstream
-//
-//  Created by Luqman Fauzi on 06/10/25.
-//  Copyright © 2025 Gojek. All rights reserved.
-//
-
 import Foundation
 
 
@@ -124,7 +116,7 @@ final class CourierEventBatchProcessor: EventBatchProcessor {
             if !eventBatchCreator.canForward {
                 NotificationCenter.default.addObserver(self,
                                                selector: #selector(respondToNotification(with:)),
-                                               name: Constants.SocketConnectionNotification,
+                                               name: Constants.CourierConnectionNotification,
                                                object: nil)
                 eventBatchCreator.requestForConnection()
             } else {
@@ -163,7 +155,7 @@ final class CourierEventBatchProcessor: EventBatchProcessor {
     
     private func stopObservingNotifications() {
         NotificationCenter.default.removeObserver(self,
-                                                  name: Constants.SocketConnectionNotification,
+                                                  name: Constants.CourierConnectionNotification,
                                                   object: nil)
     }
     

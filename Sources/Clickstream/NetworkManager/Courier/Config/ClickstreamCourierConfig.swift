@@ -85,7 +85,7 @@ public struct ClickstreamCourierConfig: Decodable {
         messagePersistenceTTLSeconds = container.decodeTimeIntervalIfPresent(forKey: .messagePersistenceTTLSeconds) ?? 86400
         messageCleanupInterval = container.decodeTimeIntervalIfPresent(forKey: .messageCleanupInterval) ?? 10
 
-        shouldInitializeCoreDataPersistenceContext = (try? container.decodeIfPresent(Bool.self, forKey: .shouldInitializeCoreDataPersistenceContext)) ?? true
+        shouldInitializeCoreDataPersistenceContext = (try? container.decodeIfPresent(Bool.self, forKey: .shouldInitializeCoreDataPersistenceContext)) ?? false
     }
 
     public init(topics: [String: Int] = [:],
@@ -100,7 +100,7 @@ public struct ClickstreamCourierConfig: Decodable {
                 iddleActivityPolicy: IdleActivityTimeoutPolicyProtocol = IdleActivityTimeoutPolicy(),
                 messagePersistenceTTLSeconds: TimeInterval = 0,
                 messageCleanupInterval: TimeInterval = 10,
-                shouldInitializeCoreDataPersistenceContext: Bool = true) {
+                shouldInitializeCoreDataPersistenceContext: Bool = false) {
 
         self.topics = topics
         self.messageAdapters = messageAdapter

@@ -1,11 +1,3 @@
-//
-//  CourierEventBatchSizeRegulator.swift
-//  Clickstream
-//
-//  Created by Luqman Fauzi on 06/10/25.
-//  Copyright © 2025 Gojek. All rights reserved.
-//
-
 import Foundation
 
 final class CourierEventBatchSizeRegulator: BatchSizeRegulator {

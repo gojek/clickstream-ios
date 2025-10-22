@@ -48,8 +48,13 @@ class ClickstreamViewController: UIViewController {
     @IBAction func disconnectClickstream(_ sender: UIButton) {
         self.analyticsManager.disconnect()
     }
-    
+
     @IBAction func sendEventToClickstream(_ sender: UIButton) {
+        guard !textFieldAge.text!.isEmpty, !textFieldGender.text!.isEmpty, !textFieldPhoneNumber.text!.isEmpty, !textFieldEmail.text!.isEmpty else {
+            presentAlert(title: "Invalid Input", message: "Please fill all the required fields")
+            return
+        }
+
         let eventGuid = UUID().uuidString
         self.analyticsManager.trackEvent(guid: eventGuid, message: self.createUser(eventGuid: eventGuid))
     }
@@ -75,16 +80,22 @@ class ClickstreamViewController: UIViewController {
             fatalError("MyViewController not found in Main.storyboard")
         }
 
-        let defaultCredentials = ClickstreamCourierUserCredentials(userIdentifier: "12345")
-        let defaultConfig = ClickstreamCourierConfig()
+        let courierIdentifiers = CourierIdentifiers(
+            userIdentifier: "",
+            authenticationHeaders: [:]
+        )
+
+        let defaultConfig = ClickstreamCourierConfig(messageAdapter: [.json],
+                                                     connectConfig: .init(baseURL: "", authURLPath: ""))
+
         let defaultNetworkOptions = ClickstreamNetworkOptions(isWebsocketEnabled: false,
                                                               isCourierEnabled: true,
-                                                              courierEventTypes: [],
+                                                              courierEventTypes: ["User"],
                                                               httpFallbackDelayMs: 500,
                                                               courierConfig: defaultConfig)
         
         analyticsManager.networkOptions = defaultNetworkOptions
-        analyticsManager.courierUserCredentials = defaultCredentials
+        analyticsManager.courierUserCredentials = courierIdentifiers
 
         configView.config = analyticsManager.networkOptions?.courierConfig
         configView.userCredentials = analyticsManager.courierUserCredentials
@@ -94,6 +105,20 @@ class ClickstreamViewController: UIViewController {
         }
 
         present(navigation, animated: true)
+    }
+
+    @IBAction func autofillEventForm(_ sender: UIBarButtonItem) {
+        let names = ["Alice", "Bob", "Charlie", "David", "Emma"]
+        let ages = ["20", "30", "40", "50", "60"]
+        let genders = ["Female", "Male"]
+        let phone = ["1234567890", "2345678901", "3456789012", "4567890123", "5678901234"]
+        let email = ["alice@example.com", "bob@example.com", "charlie@example.com", "david@example.com", "emma@example.com"]
+
+        self.textFieldName.text = names.randomElement()
+        self.textFieldAge.text = ages.randomElement()
+        self.textFieldGender.text = genders.randomElement()
+        self.textFieldPhoneNumber.text = phone.randomElement()
+        self.textFieldEmail.text = email.randomElement()
     }
 
     /// Create User from field values

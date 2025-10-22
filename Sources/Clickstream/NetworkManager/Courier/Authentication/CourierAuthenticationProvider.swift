@@ -9,6 +9,10 @@
 import Foundation
 import CourierCore
 
+enum CourierApplicationState: String {
+    case background, foreground
+}
+
 final class CourierAuthenticationProvider: IConnectionServiceProvider {
 
     private let cachingType: CourierConnectCacheType
@@ -19,7 +23,7 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
 
     private let isConnectUserPropertiesEnabled: Bool
     private let networkTypeProvider: NetworkType
-    private let applicationState: UIApplication.State
+    private let applicationState: CourierApplicationState
 
     private var _cachedAuthResponse: Atomic<CourierConnect?>
     private(set) var cachedAuthResponse: CourierConnect? {
@@ -56,7 +60,7 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
 
     public private(set) var existingConnectOptions: ConnectOptions?
     
-    private let userCredentials: ClickstreamCourierUserCredentials
+    private let userCredentials: ClickstreamClientIdentifiers
 
 
     private var userProperties: [String: String]? {
@@ -66,19 +70,19 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
             "OS": "iOS",
             "OSVer": UIDevice.current.systemVersion,
             "AppVer": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unkn",
-            "AppState": applicationState == .active ? "FG" : "BG",
+            "AppState": applicationState == .foreground ? "FG" : "BG",
             "Network": networkTypeProvider.trackingId
         ]
     }
 
     init(
         config: ClickstreamCourierConfig,
-        userCredentials: ClickstreamCourierUserCredentials,
+        userCredentials: ClickstreamClientIdentifiers,
         cachingType: CourierConnectCacheType = .disk,
         userDefaults: UserDefaults = .init(suiteName: "com.clickstream.courier") ?? .standard,
         userDefaultsKey: String = "connect_auth_response",
         isConnectUserPropertiesEnabled: Bool = false,
-        applicationState: UIApplication.State,
+        applicationState: CourierApplicationState = .foreground,
         networkTypeProvider: NetworkType
     ) {
         self.config = config
@@ -121,24 +125,7 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
 
         Task {
             do {
-                let baseURL = self.config.connectConfig.baseURL
-                let urlPath = self.config.connectConfig.authURLPath
-                let urlQuery = self.config.connectConfig.authURLQueries
-                
-                guard !baseURL.isEmpty, !urlPath.isEmpty else {
-                    fatalError("Authentication URL components are missing.")
-                }
-
-                var urlString = "\(baseURL)\(urlPath)"
-
-                if let urlQuery, !urlQuery.isEmpty {
-                    urlString.append("?\(urlQuery)")
-                }
-
-                guard let url = URL(string: urlString) else {
-                    throw AuthError.otherError(.init(domain: "com.clickstream.courier.auth", code: -1, userInfo: ["error": "Invalid auth url"]))
-                }
-
+                let url = try constructURL()
                 let urlCachePolicy: URLRequest.CachePolicy = self.config.connectConfig.isCleanSessionEnabled ?
                     .reloadIgnoringLocalCacheData : .returnCacheDataElseLoad
 
@@ -207,8 +194,28 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
         } catch(let error) {
             throw AuthError.otherError(.init(domain: "com.clickstream.courier.auth", code: -1, userInfo: ["error": error.localizedDescription]))
         }
-        
+    }
 
+    private func constructURL() throws -> URL {
+        let baseURL = config.connectConfig.baseURL
+        let urlPath = config.connectConfig.authURLPath
+        let urlQuery = config.connectConfig.authURLQueries
+        
+        guard !baseURL.isEmpty, !urlPath.isEmpty else {
+            throw AuthError.otherError(.init(domain: "com.clickstream.courier.auth", code: -1, userInfo: ["error": "Invalid auth url"]))
+        }
+
+        var urlString = "\(baseURL)\(urlPath)"
+
+        if let urlQuery, !urlQuery.isEmpty {
+            urlString.append("?\(urlQuery)")
+        }
+
+        guard let url = URL(string: urlString) else {
+            throw AuthError.otherError(.init(domain: "com.clickstream.courier.auth", code: -1, userInfo: ["error": "Invalid auth url"]))
+        }
+        
+        return url
     }
 }
 

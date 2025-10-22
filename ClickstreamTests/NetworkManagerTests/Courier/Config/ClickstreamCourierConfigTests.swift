@@ -60,7 +60,7 @@ class ClickstreamCourierConfigTests: XCTestCase {
         XCTAssertFalse(config.enableAuthenticationTimeout)
         XCTAssertEqual(config.messagePersistenceTTLSeconds, 0)
         XCTAssertEqual(config.messageCleanupInterval, 10.0)
-        XCTAssertTrue(config.shouldInitializeCoreDataPersistenceContext)
+        XCTAssertFalse(config.shouldInitializeCoreDataPersistenceContext)
     }
     
     func testDecodingWithValidJSON() throws {
@@ -112,7 +112,7 @@ class ClickstreamCourierConfigTests: XCTestCase {
         XCTAssertEqual(config.authenticationTimeoutInterval, 30.0)
         XCTAssertEqual(config.messagePersistenceTTLSeconds, 86400.0)
         XCTAssertEqual(config.messageCleanupInterval, 10.0)
-        XCTAssertTrue(config.shouldInitializeCoreDataPersistenceContext)
+        XCTAssertFalse(config.shouldInitializeCoreDataPersistenceContext)
     }
     
     func testDecodingWithPartialData() throws {
