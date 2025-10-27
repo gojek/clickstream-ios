@@ -10,6 +10,7 @@ import Foundation
 
 final class CourierRetryMechanism: Retryable {
     
+    private var networkOptions: ClickstreamNetworkOptions
     private var reachability: NetworkReachability
     private let networkService: NetworkService
     private let performQueue: SerialQueue
@@ -26,6 +27,10 @@ final class CourierRetryMechanism: Retryable {
         return ProcessInfo.processInfo.arguments.contains("testMode")
     }()
     #endif
+    
+    private lazy var retryFallbackDelay: TimeInterval = {
+        networkOptions.courierHttpFallbackDelayMs / 1000
+    }()
     
     var isAvailble: Bool {
         
@@ -67,12 +72,14 @@ final class CourierRetryMechanism: Retryable {
         return isReachable && isConnected && !isOnLowPower
     }
     
-    init(networkService: NetworkService,
+    init(networkOptions: ClickstreamNetworkOptions,
+         networkService: NetworkService,
          reachability: NetworkReachability,
          deviceStatus: DefaultDeviceStatus,
          appStateNotifier: AppStateNotifierService,
          performOnQueue: SerialQueue,
          persistence: DefaultDatabaseDAO<EventRequest>) {
+        self.networkOptions = networkOptions
         self.networkService = networkService
         self.reachability = reachability
         self.performQueue = performOnQueue
@@ -157,70 +164,8 @@ extension CourierRetryMechanism {
             checkedSelf.networkService.write(data) { (result: Result<Odpf_Raccoon_EventResponse, ConnectableError>) in
                 switch result {
                 case .success(let response):
-                    if response.status == .success && response.code == .ok {
-                        if let guid = response.data["req_guid"] {
-                            // remove the delivered batch from the cache.
-                            checkedSelf.removeFromCache(with: guid)
-                            
-                            #if ETE_TEST_SUITE_ENABLED
-                            Clickstream.ackEvent = AckEventDetails(guid: guid, status: "Success")
-                            #endif
-                            if let eventType = eventRequest.eventType, !(eventType == .internalEvent) {
-                                checkedSelf.trackHealthAndPerformanceEvents(eventRequest: eventRequest, startTime: startTime)
-                            }
-                            #if EVENT_VISUALIZER_ENABLED
-                            /// Update status of the event batch to acknowledged from network
-                            /// to check if the delegate is connected, if not no event should be sent to client
-                            if let stateViewer = Clickstream._stateViewer {
-                                /// Updating the event state to acknowledged based on eventBatchGuid.
-                                /// The eventBatchID passed in NetworkBuilder would be used to map events and
-                                /// then update the state respectively.
-                                stateViewer.updateStatus(eventBatchID: guid, state: .ackReceived)
-                            }
-                            print("RetryMechanism, received response for batch with id: \(response.data)")
-                            #endif
-                        }
-                    } else {
-                        if response.code == .maxConnectionLimitReached {
-                            #if TRACKER_ENABLED
-                            if Tracker.debugMode {
-                                let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamConnectionFailure,
-                                                                      reason: FailureReason.MAX_CONNECTION_LIMIT_REACHED.rawValue)
-                                Tracker.sharedInstance?.record(event: healthEvent)
-                            }
-                            #endif
-                            checkedSelf.terminateConnection()
-                            checkedSelf.establishConnection()
-                            #if ETE_TEST_SUITE_ENABLED
-                            Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Max Connection Limit Reached")
-                            #endif
-                        }
-                        #if TRACKER_ENABLED
-                        if response.code == .maxUserLimitReached {
-                           let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamConnectionFailure,
-                                                                 reason: FailureReason.MAX_USER_LIMIT_REACHED.rawValue)
-                            Tracker.sharedInstance?.record(event: healthEvent)
-                            #if ETE_TEST_SUITE_ENABLED
-                            Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Max User Limit Reached")
-                            #endif
-                        }
-                        
-                        if response.code == .badRequest {
-                            print("Error: Parsing Exception for eventRequest guid \(eventRequest.guid)", .verbose)
-                            if Tracker.debugMode {
-                                var healthEvent: HealthAnalysisEvent!
-                                healthEvent = HealthAnalysisEvent(eventName: .ClickstreamWriteToSocketFailed,
-                                                                  eventBatchGUID: eventRequest.guid,
-                                                                  reason: FailureReason.ParsingException.rawValue,
-                                                                  eventCount: eventRequest.eventCount)
-                                Tracker.sharedInstance?.record(event: healthEvent)
-                                #if ETE_TEST_SUITE_ENABLED
-                                Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Bad Request")
-                                #endif
-                            }
-                        }
-                        #endif
-                    }
+                    // Handle Racoon EventResponse
+                    checkedSelf.handleRacoonEventResponse(with: eventRequest, startTime: startTime, response: response)
                 case .failure(let error):
                     print("Error: \(error.localizedDescription) for eventRequest guid \(eventRequest.guid)", .verbose)
                     #if TRACKER_ENABLED
@@ -243,6 +188,104 @@ extension CourierRetryMechanism {
         }
     }
     
+    
+    func trackBatchFallbackHTTP(with eventRequest: EventRequest) {
+        // add the batch to the cache before sending the batch to the network.
+        let startTime = Date()
+
+        performQueue.async(flags: .barrier) { [weak self] in
+            guard let checkedSelf = self, let courierNetworkService = checkedSelf.networkService as? CourierNetworkService<DefaultCourierHandler> else {
+                return
+            }
+
+            Task {
+                do {
+                    let response = try await courierNetworkService.executeHTTPRequest()
+                    checkedSelf.handleRacoonEventResponse(with: eventRequest, startTime: startTime, response: response)
+                } catch(let error) {
+                    print("Error: \(error.localizedDescription) for eventRequest guid \(eventRequest.guid)", .verbose)
+                    #if TRACKER_ENABLED
+                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchErrorResponse,
+                                                          eventBatchGUID: eventRequest.guid, // eventRequest.guid is the batch GUID
+                                                          reason: error.localizedDescription,
+                                                          eventCount: eventRequest.eventCount)
+                    Tracker.sharedInstance?.record(event: healthEvent)
+                    #if ETE_TEST_SUITE_ENABLED
+                    Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "\(error)")
+                    #endif
+                    #endif
+                }
+            }
+        }
+    }
+    
+    private func handleRacoonEventResponse(with eventRequest: EventRequest, startTime: Date, response: Odpf_Raccoon_EventResponse) {
+        if response.status == .success && response.code == .ok {
+            if let guid = response.data["req_guid"] {
+                // remove the delivered batch from the cache.
+                removeFromCache(with: guid)
+                
+                #if ETE_TEST_SUITE_ENABLED
+                Clickstream.ackEvent = AckEventDetails(guid: guid, status: "Success")
+                #endif
+                if let eventType = eventRequest.eventType, !(eventType == .internalEvent) {
+                    trackHealthAndPerformanceEvents(eventRequest: eventRequest, startTime: startTime)
+                }
+                #if EVENT_VISUALIZER_ENABLED
+                /// Update status of the event batch to acknowledged from network
+                /// to check if the delegate is connected, if not no event should be sent to client
+                if let stateViewer = Clickstream._stateViewer {
+                    /// Updating the event state to acknowledged based on eventBatchGuid.
+                    /// The eventBatchID passed in NetworkBuilder would be used to map events and
+                    /// then update the state respectively.
+                    stateViewer.updateStatus(eventBatchID: guid, state: .ackReceived)
+                }
+                print("RetryMechanism, received response for batch with id: \(response.data)")
+                #endif
+            }
+        } else {
+            if response.code == .maxConnectionLimitReached {
+                #if TRACKER_ENABLED
+                if Tracker.debugMode {
+                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamConnectionFailure,
+                                                          reason: FailureReason.MAX_CONNECTION_LIMIT_REACHED.rawValue)
+                    Tracker.sharedInstance?.record(event: healthEvent)
+                }
+                #endif
+                terminateConnection()
+                establishConnection()
+                #if ETE_TEST_SUITE_ENABLED
+                Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Max Connection Limit Reached")
+                #endif
+            }
+            #if TRACKER_ENABLED
+            if response.code == .maxUserLimitReached {
+               let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamConnectionFailure,
+                                                     reason: FailureReason.MAX_USER_LIMIT_REACHED.rawValue)
+                Tracker.sharedInstance?.record(event: healthEvent)
+                #if ETE_TEST_SUITE_ENABLED
+                Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Max User Limit Reached")
+                #endif
+            }
+            
+            if response.code == .badRequest {
+                print("Error: Parsing Exception for eventRequest guid \(eventRequest.guid)", .verbose)
+                if Tracker.debugMode {
+                    var healthEvent: HealthAnalysisEvent!
+                    healthEvent = HealthAnalysisEvent(eventName: .ClickstreamWriteToSocketFailed,
+                                                      eventBatchGUID: eventRequest.guid,
+                                                      reason: FailureReason.ParsingException.rawValue,
+                                                      eventCount: eventRequest.eventCount)
+                    Tracker.sharedInstance?.record(event: healthEvent)
+                    #if ETE_TEST_SUITE_ENABLED
+                    Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Bad Request")
+                    #endif
+                }
+            }
+            #endif
+        }
+    }
+
     func openConnectionForcefully() {
         establishConnection(keepTrying: true)
     }
@@ -362,7 +405,7 @@ extension CourierRetryMechanism {
     private func startObservingFailedBatches() {
         guard retryTimer == nil else { return }
         retryTimer = DispatchSource.makeTimerSource(flags: .strict, queue: performQueue)
-        retryTimer?.schedule(deadline: .now() + Clickstream.configurations.maxRequestAckTimeout,
+        retryTimer?.schedule(deadline: .now() + retryFallbackDelay,
                              repeating: Clickstream.configurations.maxRequestAckTimeout)
         retryTimer?.setEventHandler(handler: { [weak self] in
             guard let checkedSelf = self else { return }
@@ -386,7 +429,7 @@ extension CourierRetryMechanism {
         if let failedRequests = persistence.fetchAll(), !failedRequests.isEmpty {
             let date = Date()
             let timedOutRequests = failedRequests.filter {
-                (date.timeIntervalSince1970 - $0.timeStamp.timeIntervalSince1970) >= Clickstream.configurations.maxRequestAckTimeout
+                (date.timeIntervalSince1970 - $0.timeStamp.timeIntervalSince1970) >= retryFallbackDelay
             }
             
             // If no timedOut requests are found then do nothing and return.
@@ -405,10 +448,11 @@ extension CourierRetryMechanism {
                     do {
                         // Refresh the timeStamp before sending the batch!
                         try _batch.refreshBatchSentTimeStamp()
+                        checkedSelf.trackBatch(with: _batch)
                     } catch {
+                        checkedSelf.trackBatchFallbackHTTP(with: _batch)
                         print("Failed to update batch time on retry. Description: \(error)",.critical)
                     }
-                    checkedSelf.trackBatch(with: _batch)
                 }
             }
         }

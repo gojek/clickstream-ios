@@ -73,7 +73,8 @@ final class SharedNetworkManagerDependencies {
     }()
 
     private lazy var courierRetryMech: Retryable = {
-        CourierRetryMechanism(networkService: courierNetworkService,
+        CourierRetryMechanism(networkOptions: networkOptions,
+                              networkService: courierNetworkService,
                               reachability: reachability,
                               deviceStatus: deviceStatus,
                               appStateNotifier: appStateNotifier,

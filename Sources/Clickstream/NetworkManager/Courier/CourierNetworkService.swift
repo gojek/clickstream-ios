@@ -8,6 +8,7 @@
 
 import Foundation
 import SwiftProtobuf
+import CourierCore
 
 final class CourierNetworkService<C: CourierConnectable>: NetworkService {
     
@@ -56,12 +57,13 @@ final class CourierNetworkService<C: CourierConnectable>: NetworkService {
 
 extension CourierNetworkService {
     
-    func write<T>(_ data: Data, completion: @escaping (Result<T, ConnectableError>) -> Void) where T : Message {
+    func write<T>(_ data: Data, completion: @escaping (Result<T, ConnectableError>) -> Void) where T : SwiftProtobuf.Message {
         performQueue.async {
             do {
                 try self._connectable?.publishMessage(data)
-            } catch {
+            } catch(let error) {
                 // Handle failing courier message publish
+                completion(.failure(ConnectableError.networkError(error)))
             }
         }
     }
@@ -79,5 +81,28 @@ extension CourierNetworkService {
     
     var isConnected: Bool {
         _connectable?.isConnected.value ?? false
+    }
+}
+
+extension CourierNetworkService {
+    func executeHTTPRequest() async throws -> Odpf_Raccoon_EventResponse {
+        do {
+            let session = URLSession.shared
+            let (data, response) = try await session.data(for: self.networkConfig.request)
+
+            guard let httpResponse = response as? HTTPURLResponse, (200..<300).contains(httpResponse.statusCode) else {
+                throw CourierError.httpError
+            }
+
+            // Decode protobuf (or other data format)
+            let eventResponse = try Odpf_Raccoon_EventResponse(serializedBytes: data)
+            return eventResponse
+        } catch let error as URLError {
+            throw ConnectableError.networkError(error)
+        } catch let error as Swift.DecodingError {
+            throw ConnectableError.networkError(error)
+        } catch {
+            throw CourierError.otherError
+        }
     }
 }
