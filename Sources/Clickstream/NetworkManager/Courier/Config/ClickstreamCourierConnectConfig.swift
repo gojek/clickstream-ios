@@ -37,7 +37,7 @@ public struct ClickstreamCourierConnectConfig: Decodable {
         pingIntervalMs: TimeInterval = 10.0,
         isCleanSessionEnabled: Bool = false,
         isTokenCacheExpiryEnabled: Bool = false,
-        alpn: [String] = []
+        alpn: [String] = ["mqtt"]
     ) {
         self.baseURL = baseURL
         self.authURLPath = authURLPath

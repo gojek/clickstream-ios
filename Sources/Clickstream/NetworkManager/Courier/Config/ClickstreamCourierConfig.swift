@@ -54,7 +54,7 @@ public struct ClickstreamCourierConfig: Decodable {
         if let adapters = try? container.decodeIfPresent([String].self, forKey: .messageAdapters) {
             messageAdapters = adapters.compactMap { CourierMessageAdapterType(rawValue: $0) }
         } else {
-            messageAdapters = []
+            messageAdapters = [.protobuf]
         }
 
         isMessagePersistenceEnabled = (try? container.decode(Bool.self, forKey: .isMessagePersistenceEnabled)) ?? false
@@ -89,12 +89,12 @@ public struct ClickstreamCourierConfig: Decodable {
     }
 
     public init(topics: [String: Int] = [:],
-                messageAdapter: [CourierMessageAdapterType] = [],
+                messageAdapter: [CourierMessageAdapterType] = [.protobuf],
                 isMessagePersistenceEnabled: Bool = false,
                 autoReconnectInterval: TimeInterval = 1,
                 maxAutoReconnectInterval: TimeInterval = 30,
                 authenticationTimeoutInterval: TimeInterval = 30,
-                enableAuthenticationTimeout: Bool = false,
+                enableAuthenticationTimeout: Bool = true,
                 connectConfig: ClickstreamCourierConnectConfig = ClickstreamCourierConnectConfig(),
                 connectTimeoutPolicy: IConnectTimeoutPolicy = ConnectTimeoutPolicy(),
                 iddleActivityPolicy: IdleActivityTimeoutPolicyProtocol = IdleActivityTimeoutPolicy(),

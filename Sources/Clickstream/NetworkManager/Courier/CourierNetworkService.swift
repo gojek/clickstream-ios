@@ -88,6 +88,9 @@ extension CourierNetworkService {
     func executeHTTPRequest() async throws -> Odpf_Raccoon_EventResponse {
         do {
             let session = URLSession.shared
+            var request = self.networkConfig.request
+            request.httpMethod = "POST"
+
             let (data, response) = try await session.data(for: self.networkConfig.request)
 
             guard let httpResponse = response as? HTTPURLResponse, (200..<300).contains(httpResponse.statusCode) else {

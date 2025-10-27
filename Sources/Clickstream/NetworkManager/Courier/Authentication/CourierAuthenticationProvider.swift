@@ -6,8 +6,9 @@
 //  Copyright © 2025 Gojek. All rights reserved.
 //
 
-import Foundation
 import CourierCore
+import Foundation
+import UIKit
 
 enum CourierApplicationState: String {
     case background, foreground

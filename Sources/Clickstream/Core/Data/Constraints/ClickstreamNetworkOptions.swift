@@ -20,7 +20,7 @@ public struct ClickstreamNetworkOptions: Codable {
     public let isCourierEnabled: Bool
     public let courierEventTypes: Set<CourierEventIdentifier>
     public let courierHttpFallbackDelayMs: TimeInterval
-    public let courierConfig: ClickstreamCourierConfig
+    public var courierConfig: ClickstreamCourierConfig
 
     enum CodingKeys: String, CodingKey {
         case isWebsocketEnabled = "websocket_enabled"

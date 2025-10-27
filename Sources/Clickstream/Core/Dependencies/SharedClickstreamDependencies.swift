@@ -90,6 +90,9 @@ extension SharedClickstreamDependencies {
     /// Courier client's user credentials provider
     /// - Parameter userCredentials: A user credentials object
     func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers) {
+        guard networkOptions.isCourierEnabled, !networkOptions.courierEventTypes.isEmpty else {
+            return
+        }
         networkManagerDependencies.provideClientIdentifiers(with: identifiers)
     }
 }
