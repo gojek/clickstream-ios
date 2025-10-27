@@ -8,10 +8,9 @@
 
 import Foundation
 import CourierMQTT
-import CourierProtobuf
 
 public enum CourierMessageAdapterType: String, Decodable {
-    case json, protobuf, data, text, plist
+    case json, data, text, plist
     
     static func mapped(from type: CourierMessageAdapterType) -> MessageAdapter? {
         guard let config = CourierMessageAdapterType(rawValue: type.rawValue) else { return nil }
@@ -19,8 +18,6 @@ public enum CourierMessageAdapterType: String, Decodable {
         switch config {
         case .json:
             return JSONMessageAdapter()
-        case .protobuf:
-            return ProtobufMessageAdapter()
         case .data:
             return DataMessageAdapter()
         case .text:

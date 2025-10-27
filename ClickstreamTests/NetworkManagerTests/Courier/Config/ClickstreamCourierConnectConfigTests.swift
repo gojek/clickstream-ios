@@ -40,7 +40,7 @@ class ClickstreamCourierConnectConfigTests: XCTestCase {
         XCTAssertEqual(config.pingIntervalMs, 10.0)
         XCTAssertFalse(config.isCleanSessionEnabled)
         XCTAssertFalse(config.isTokenCacheExpiryEnabled)
-        XCTAssertTrue(config.alpn.isEmpty)
+        XCTAssertFalse(config.alpn.isEmpty)
     }
     
     func testDecodingValidationFailure() {

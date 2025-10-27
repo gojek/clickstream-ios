@@ -32,7 +32,6 @@ Pod::Spec.new do |s|
   s.dependency    "Starscream", "4.0.5"
   s.dependency    "CourierCore"
   s.dependency    "CourierMQTT"
-  s.dependency    "CourierProtobuf"
   
   s.default_subspec  = 'Core'
 

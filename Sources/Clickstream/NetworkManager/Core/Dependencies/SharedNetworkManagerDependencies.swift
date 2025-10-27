@@ -9,7 +9,6 @@
 import Foundation
 import CourierCore
 import CourierMQTT
-import CourierProtobuf
 import Reachability
 
 /// A class equivalent to `NetworkManagerDependencies.swift`

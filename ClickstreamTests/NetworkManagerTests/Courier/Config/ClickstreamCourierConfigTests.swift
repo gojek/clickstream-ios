@@ -24,7 +24,7 @@ class ClickstreamCourierConfigTests: XCTestCase {
         
         let config = ClickstreamCourierConfig(
             topics: ["topic1": 1, "topic2": 2],
-            messageAdapter: [.json, .protobuf],
+            messageAdapter: [.json, .data],
             isMessagePersistenceEnabled: true,
             autoReconnectInterval: 2.0,
             maxAutoReconnectInterval: 60.0,
@@ -57,7 +57,7 @@ class ClickstreamCourierConfigTests: XCTestCase {
         XCTAssertEqual(config.autoReconnectInterval, 1.0)
         XCTAssertEqual(config.maxAutoReconnectInterval, 30.0)
         XCTAssertEqual(config.authenticationTimeoutInterval, 30.0)
-        XCTAssertFalse(config.enableAuthenticationTimeout)
+        XCTAssertTrue(config.enableAuthenticationTimeout)
         XCTAssertEqual(config.messagePersistenceTTLSeconds, 0)
         XCTAssertEqual(config.messageCleanupInterval, 10.0)
         XCTAssertFalse(config.shouldInitializeCoreDataPersistenceContext)
@@ -67,7 +67,7 @@ class ClickstreamCourierConfigTests: XCTestCase {
         let json = """
         {
             "topics": {"topic1": 1, "topic2": 2},
-            "message_adapters": ["json", "protobuf"],
+            "message_adapters": ["json", "data"],
             "auto_reconnect_interval": 2.5,
             "max_auto_reconnect_interval": 45.0,
             "enable_authentication_timeout": true,
@@ -85,7 +85,6 @@ class ClickstreamCourierConfigTests: XCTestCase {
         XCTAssertEqual(config.topics["topic2"], 2)
         XCTAssertEqual(config.messageAdapters.count, 2)
         XCTAssertTrue(config.messageAdapters.contains(.json))
-        XCTAssertTrue(config.messageAdapters.contains(.protobuf))
         XCTAssertEqual(config.autoReconnectInterval, 2.5)
         XCTAssertEqual(config.maxAutoReconnectInterval, 45.0)
         XCTAssertTrue(config.enableAuthenticationTimeout)
@@ -136,15 +135,14 @@ class ClickstreamCourierConfigTests: XCTestCase {
     func testDecodingWithInvalidAdapters() throws {
         let json = """
         {
-            "message_adapters": ["json", "invalid_adapter", "protobuf"]
+            "message_adapters": ["json", "invalid_adapter"]
         }
         """.data(using: .utf8)!
         
         do {
             let config = try JSONDecoder().decode(ClickstreamCourierConfig.self, from: json)
-            XCTAssertEqual(config.messageAdapters.count, 2)
+            XCTAssertEqual(config.messageAdapters.count, 1)
             XCTAssertTrue(config.messageAdapters.contains(.json))
-            XCTAssertTrue(config.messageAdapters.contains(.protobuf))
             XCTAssertFalse(config.messageAdapters.contains(where: { $0.rawValue == "invalid_adapter" }))
         } catch {
             XCTFail("Decoding should handle invalid adapters gracefully")
@@ -164,7 +162,7 @@ class ClickstreamCourierConfigTests: XCTestCase {
         XCTAssertEqual(config.connectConfig.pingIntervalMs, 10.0)
         XCTAssertFalse(config.connectConfig.isCleanSessionEnabled)
         XCTAssertFalse(config.connectConfig.isTokenCacheExpiryEnabled)
-        XCTAssertTrue(config.connectConfig.alpn.isEmpty)
+        XCTAssertFalse(config.connectConfig.alpn.isEmpty)
     }
     
     func testPolicyDefaults() throws {

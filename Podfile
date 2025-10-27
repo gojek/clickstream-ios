@@ -15,7 +15,6 @@ def clickstream_pods
   pod 'Starscream', '4.0.5'
   pod 'CourierCore', '0.0.30'
   pod 'CourierMQTT', '0.0.30'
-  pod 'CourierProtobuf', '0.0.30'
 end
 
 target 'Clickstream' do

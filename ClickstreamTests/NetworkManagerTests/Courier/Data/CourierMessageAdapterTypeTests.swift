@@ -9,13 +9,11 @@
 @testable import Clickstream
 import XCTest
 import CourierMQTT
-import CourierProtobuf
 
 class CourierMessageAdapterTypeTests: XCTestCase {
     
     func testRawValueInitialization() {
         XCTAssertEqual(CourierMessageAdapterType.json.rawValue, "json")
-        XCTAssertEqual(CourierMessageAdapterType.protobuf.rawValue, "protobuf")
         XCTAssertEqual(CourierMessageAdapterType.data.rawValue, "data")
         XCTAssertEqual(CourierMessageAdapterType.text.rawValue, "text")
         XCTAssertEqual(CourierMessageAdapterType.plist.rawValue, "plist")
@@ -31,8 +29,8 @@ class CourierMessageAdapterTypeTests: XCTestCase {
     }
     
     func testDecodingAllTypes() throws {
-        let types = ["json", "protobuf", "data", "text", "plist"]
-        let expected: [CourierMessageAdapterType] = [.json, .protobuf, .data, .text, .plist]
+        let types = ["json", "data", "text", "plist"]
+        let expected: [CourierMessageAdapterType] = [.json, .data, .text, .plist]
         
         for (index, typeString) in types.enumerated() {
             let jsonData = "\"\(typeString)\"".data(using: .utf8)!
@@ -44,11 +42,6 @@ class CourierMessageAdapterTypeTests: XCTestCase {
     func testMappedAdapterForJSON() {
         let adapter = CourierMessageAdapterType.mapped(from: .json)
         XCTAssertTrue(adapter is JSONMessageAdapter)
-    }
-    
-    func testMappedAdapterForProtobuf() {
-        let adapter = CourierMessageAdapterType.mapped(from: .protobuf)
-        XCTAssertTrue(adapter is ProtobufMessageAdapter)
     }
     
     func testMappedAdapterForData() {
@@ -67,7 +60,7 @@ class CourierMessageAdapterTypeTests: XCTestCase {
     }
     
     func testAllTypesReturnValidAdapters() {
-        let allTypes: [CourierMessageAdapterType] = [.json, .protobuf, .data, .text, .plist]
+        let allTypes: [CourierMessageAdapterType] = [.json, .data, .text, .plist]
         
         for type in allTypes {
             let adapter = CourierMessageAdapterType.mapped(from: type)
