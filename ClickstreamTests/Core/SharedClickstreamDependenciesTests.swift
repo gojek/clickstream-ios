@@ -37,7 +37,7 @@ class SharedClickstreamDependenciesTests: XCTestCase {
     
     func testNetworkBuilder() {
         // when
-        let clickStreamDependencies = try! SharedClickstreamDependencies(with: dummyRequest)
+        let clickStreamDependencies = try! SharedClickstreamDependencies(with: dummyRequest, networkOptions: ClickstreamNetworkOptions())
         
         // then
         XCTAssertNotNil(clickStreamDependencies.networkBuilder)
@@ -46,7 +46,7 @@ class SharedClickstreamDependenciesTests: XCTestCase {
 
     func testEventWarehouser() {
         // when
-        let clickStreamDependencies = try! SharedClickstreamDependencies(with: dummyRequest)
+        let clickStreamDependencies = try! SharedClickstreamDependencies(with: dummyRequest, networkOptions: ClickstreamNetworkOptions())
         
         // then
         XCTAssertNotNil(clickStreamDependencies.eventWarehouser)
@@ -58,8 +58,26 @@ class SharedClickstreamDependenciesTests: XCTestCase {
         Clickstream.eventClassifier = ClickstreamEventClassification()
         
         // when
-        let clickStreamDependencies = try! SharedClickstreamDependencies(with: dummyRequest)
+        let clickStreamDependencies = try! SharedClickstreamDependencies(with: dummyRequest, networkOptions: ClickstreamNetworkOptions())
         
+        // then
+        XCTAssertNotNil(clickStreamDependencies.eventProcessor)
+    }
+    
+    func testConfigureCourierSession() async {
+        // given
+        Clickstream.configurations = ClickstreamConstraints()
+        Clickstream.eventClassifier = ClickstreamEventClassification()
+        
+        // when
+        let connectConfig = ClickstreamCourierConnectConfig(baseURL: "https://auth.mqtt.com", authURLPath: "/token", authURLQueries: "source=clickstream")
+        let courierConfig = ClickstreamCourierConfig(connectConfig: connectConfig)
+        let networkOptions = ClickstreamNetworkOptions(courierConfig: courierConfig)
+        let clickStreamDependencies = try! SharedClickstreamDependencies(with: dummyRequest, networkOptions: networkOptions)
+        let credentials = CourierIdentifiers(userIdentifier: "12345")
+        
+        clickStreamDependencies.provideClientIdentifiers(with: credentials)
+
         // then
         XCTAssertNotNil(clickStreamDependencies.eventProcessor)
     }

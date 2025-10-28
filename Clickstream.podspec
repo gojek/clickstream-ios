@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "Clickstream"
-  s.version          = "2.0.46"
+  s.version          = "2.0.47"
   s.summary          = "Real time Analytics SDK"
   s.description      = "Clickstream is an event agnostic, real-time data ingestion analytics SDK"
 
@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
   s.source           = { :git => 'https://github.com/gojek/clickstream-ios.git', :tag => s.version }
 
   s.platform         = :ios
-  s.ios.deployment_target = '12.0'
+  s.ios.deployment_target = '14.0'
   s.swift_version    = '5.0'
 
   s.source_files  = 'Sources/**/*.swift'
@@ -30,6 +30,8 @@ Pod::Spec.new do |s|
   s.dependency    "ReachabilitySwift", '>= 5.0.0'
   s.dependency    "GRDB.swift", "~> 6.7.0"
   s.dependency    "Starscream", "4.0.5"
+  s.dependency    "CourierCore"
+  s.dependency    "CourierMQTT"
   
   s.default_subspec  = 'Core'
 

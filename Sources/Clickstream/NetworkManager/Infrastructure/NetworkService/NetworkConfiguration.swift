@@ -10,12 +10,15 @@ import Foundation
 
 protocol NetworkConfigurable {
     var request: URLRequest { get }
+    var networkOptions: ClickstreamNetworkOptions? { get }
 }
 
 struct DefaultNetworkConfiguration: NetworkConfigurable {
     let request: URLRequest
-    
-    init(request: URLRequest) {
+    var networkOptions: ClickstreamNetworkOptions?
+
+    init(request: URLRequest, networkOptions: ClickstreamNetworkOptions? = nil) {
         self.request = request
+        self.networkOptions = networkOptions
     }
 }

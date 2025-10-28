@@ -42,3 +42,7 @@ struct Constants {
         return nil
     }
 }
+
+enum NetworkSource {
+    case websocket, courier
+}

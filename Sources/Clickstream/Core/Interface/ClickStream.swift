@@ -86,6 +86,7 @@ public final class Clickstream {
     
     // MARK: - Building blocks of the SDK.
     private let networkBuilder: NetworkBuildable
+    private let secondaryNetworkBuilder: NetworkBuildable?
     private let eventProcessor: EventProcessor
     private let eventWarehouser: EventWarehouser
     
@@ -96,10 +97,12 @@ public final class Clickstream {
     ///   - eventProcessor: event processor instance
     ///   - dataSource: dataSource for Clickstream
     private init(networkBuilder: NetworkBuildable,
+                 secondaryNetworkBuilder: NetworkBuildable? = nil,
                  eventWarehouser: EventWarehouser,
                  eventProcessor: EventProcessor,
                  delegate: ClickstreamDelegate? = nil) {
         self.networkBuilder = networkBuilder
+        self.secondaryNetworkBuilder = secondaryNetworkBuilder
         self.eventWarehouser = eventWarehouser
         self.eventProcessor = eventProcessor
         self.delegate = delegate
@@ -253,21 +256,29 @@ public final class Clickstream {
             // All the dependency injections pertaining to the clickstream blocks happen here!
             // Load default dependencies.
             do {
-                let dependencies: ClickstreamDependencies
                 if let networkOptions, networkOptions.isConfigEnabled() {
                     // This will be the main `ClickstreamDependencies` until the flag is safely removed.
-                    dependencies = try SharedClickstreamDependencies(with: request,
-                                                                     samplerConfiguration: samplerConfiguration,
-                                                                     networkOptions: networkOptions)
-                } else {
-                    dependencies = try DefaultClickstreamDependencies(with: request, samplerConfiguration: samplerConfiguration)
-                }
-                sharedInstance = Clickstream(networkBuilder: dependencies.networkBuilder,
-                                             eventWarehouser: dependencies.eventWarehouser,
-                                             eventProcessor: dependencies.eventProcessor,
-                                             delegate: delegate)
+                    let dependencies = try SharedClickstreamDependencies(with: request,
+                                                                         samplerConfiguration: samplerConfiguration,
+                                                                         networkOptions: networkOptions)
 
-                sharedInstance?.dependencies = dependencies // saving a copy of dependencies
+                    sharedInstance = Clickstream(networkBuilder: dependencies.networkBuilder,
+                                                 secondaryNetworkBuilder: dependencies.secondaryNetworkBuilder,
+                                                 eventWarehouser: dependencies.eventWarehouser,
+                                                 eventProcessor: dependencies.eventProcessor,
+                                                 delegate: delegate)
+
+                    sharedInstance?.dependencies = dependencies
+                } else {
+                    let dependencies = try DefaultClickstreamDependencies(with: request, samplerConfiguration: samplerConfiguration)
+
+                    sharedInstance = Clickstream(networkBuilder: dependencies.networkBuilder,
+                                                 eventWarehouser: dependencies.eventWarehouser,
+                                                 eventProcessor: dependencies.eventProcessor,
+                                                 delegate: delegate)
+
+                    sharedInstance?.dependencies = dependencies // saving a copy of dependencies
+                }
             } catch {
                 print("Cannot initialise Clickstream. Dependencies could not be initialised.",.critical)
                 // Relay the database error.
@@ -338,3 +349,16 @@ extension Clickstream {
     }
 }
 #endif
+
+extension Clickstream {
+
+    /// Courier client's user credentials provider
+    /// - Parameter identifiers: A client's credentials
+    public func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers) {
+        guard let dependencies = dependencies as? SharedClickstreamDependencies else {
+            return
+        }
+
+        dependencies.provideClientIdentifiers(with: identifiers)
+    }
+}

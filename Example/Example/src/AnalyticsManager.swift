@@ -13,24 +13,32 @@ import SwiftProtobuf
 class AnalyticsManager {
     
     private var clickstream: Clickstream?
-    
+    var networkOptions: ClickstreamNetworkOptions?
+    var courierUserCredentials: ClickstreamClientIdentifiers?
+
+    var isCourierConfigSet: Bool {
+        networkOptions != nil && courierUserCredentials != nil
+    }
+
     /// Initialise Clickstream
-    func initialiseClickstream() {
-        
+    func initialiseClickstream(networkOptions: ClickstreamNetworkOptions? = nil) {
         Clickstream.setLogLevel(.verbose)
         do {
             let header = createHeader()
             let request = self.urlRequest(headerParamaters: header)
             
             let configurations = ClickstreamConstraints(maxConnectionRetries: 5)
-            let classification = ClickstreamEventClassification()
+            let classification = ClickstreamEventClassification(eventTypes: [.init(identifier: "instant", eventNames: [], csEventNames: [])])
 
             self.clickstream = try Clickstream.initialise(
                 with: request ?? URLRequest(url: URL(string: "")!),
                 configurations: configurations,
                 eventClassification: classification,
-                appPrefix: ""
+                appPrefix: "",
+                networkOptions: networkOptions
             )
+
+            self.networkOptions = networkOptions
         } catch  {
             print(error.localizedDescription)
         }
@@ -91,6 +99,12 @@ class AnalyticsManager {
         onController.present(navVC, animated: true, completion: nil)
     }
     #endif
+
+    func setupCourierClient(userCredentials: ClickstreamClientIdentifiers) {
+        courierUserCredentials = userCredentials
+
+        clickstream?.provideClientIdentifiers(with: userCredentials)
+    }
 }
 
 extension AnalyticsManager: TrackerDataSource {
@@ -111,7 +125,7 @@ extension AnalyticsManager: TrackerDelegate {
 
 extension AnalyticsManager {
     private func url() -> URL? {
-        return URL(string: "enter-your-url-here.com")
+        return URL(string: " ")
     }
     
     private func urlRequest(headerParamaters: [String: String]) -> URLRequest? {

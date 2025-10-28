@@ -14,9 +14,8 @@ final class SharedClickstreamDependencies: ClickstreamDependencies {
 
     private let request: URLRequest
     private let database: Database
-    private var networkManagerDependencies: SharedNetworkManagerDependencies!
     private let samplerConfiguration: EventSamplerConfiguration?
-    private let networkOptions: ClickstreamNetworkOptions?
+    private let networkOptions: ClickstreamNetworkOptions
 
     var isSocketConnected: Bool {
         networkManagerDependencies.isSocketConnected
@@ -24,7 +23,7 @@ final class SharedClickstreamDependencies: ClickstreamDependencies {
 
     init(with request: URLRequest,
          samplerConfiguration: EventSamplerConfiguration? = nil,
-         networkOptions: ClickstreamNetworkOptions? = nil) throws {
+         networkOptions: ClickstreamNetworkOptions) throws {
 
         self.request = request
         database = try DefaultDatabase(qos: .WAL)
@@ -33,22 +32,43 @@ final class SharedClickstreamDependencies: ClickstreamDependencies {
     }
 
     /**
+        Initializes an instance of `SharedNetworkManagerDependencies`
+        Given `URLRequest`, `Database`, & `ClickstreamNetworkOptions`
+     */
+    lazy var networkManagerDependencies: SharedNetworkManagerDependencies = {
+        return SharedNetworkManagerDependencies(with: request,
+                                                db: database,
+                                                networkOptions: networkOptions)
+    }()
+
+    /**
         Initializes an instance of the API with the given configurations.
         A NetworkBuildable instance. This instance acts as the only source of NetworkBuildable, 
         hence ensuring only one instane is tied to the Clickstream class.
      */
     lazy var networkBuilder: NetworkBuildable = {
-        networkManagerDependencies = SharedNetworkManagerDependencies(with: request, db: database)
         return networkManagerDependencies.makeNetworkBuilder()
     }()
-    
+
+    /**
+        Initializes an instance of the API with the given configurations.
+        A NetworkBuildable instance. This instance acts as the only source of Courier's NetworkBuildable,
+        hence ensuring only one instane is tied to the Clickstream class.
+     */
+    lazy var secondaryNetworkBuilder: NetworkBuildable = {
+        return networkManagerDependencies.makeCourierNetworkBuilder()
+    }()
+
     /** A EventWarehouser instance.
         This instance acts as the only source of EventWarehouser,
         hence ensuring only one instane is tied to the Clickstream class.
      */
     lazy var eventWarehouser: EventWarehouser = {
-        return EventSchedulerDependencies(with: networkBuilder,
-                                          db: database).makeEventWarehouser()
+        EventSchedulerDependencies(
+            with: networkBuilder,
+            secondary: secondaryNetworkBuilder,
+            db: database
+        ).makeSharedEventWarehouser(with: networkOptions)
     }()
     
     /**
@@ -63,4 +83,16 @@ final class SharedClickstreamDependencies: ClickstreamDependencies {
         guard let samplerConfiguration else { return nil }
         return DefaultEventSampler(config: samplerConfiguration)
     }()
+}
+
+extension SharedClickstreamDependencies {
+
+    /// Courier client's user credentials provider
+    /// - Parameter userCredentials: A user credentials object
+    func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers) {
+        guard networkOptions.isCourierEnabled, !networkOptions.courierEventTypes.isEmpty else {
+            return
+        }
+        networkManagerDependencies.provideClientIdentifiers(with: identifiers)
+    }
 }
