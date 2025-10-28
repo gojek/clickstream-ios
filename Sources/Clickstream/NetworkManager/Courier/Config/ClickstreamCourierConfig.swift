@@ -11,7 +11,7 @@ import CourierMQTT
 
 public struct ClickstreamCourierConfig: Decodable {
     public let topics: [String: Int]
-    public let messageAdapters: [CourierMessageAdapterType]
+    public let messageAdapters: [MessageAdapter]
 
     public let autoReconnectInterval: TimeInterval
     public let maxAutoReconnectInterval: TimeInterval
@@ -52,7 +52,10 @@ public struct ClickstreamCourierConfig: Decodable {
         topics = (try? container.decodeIfPresent([String: Int].self, forKey: .topics)) ?? [:]
         
         if let adapters = try? container.decodeIfPresent([String].self, forKey: .messageAdapters) {
-            messageAdapters = adapters.compactMap { CourierMessageAdapterType(rawValue: $0) }
+            messageAdapters = adapters.compactMap {
+                guard let type = CourierMessageAdapterType(rawValue: $0) else { return nil }
+                return CourierMessageAdapterType.mapped(from: type)
+            }
         } else {
             messageAdapters = []
         }
@@ -89,7 +92,7 @@ public struct ClickstreamCourierConfig: Decodable {
     }
 
     public init(topics: [String: Int] = [:],
-                messageAdapter: [CourierMessageAdapterType] = [],
+                messageAdapter: [MessageAdapter] = [],
                 isMessagePersistenceEnabled: Bool = false,
                 autoReconnectInterval: TimeInterval = 1,
                 maxAutoReconnectInterval: TimeInterval = 30,

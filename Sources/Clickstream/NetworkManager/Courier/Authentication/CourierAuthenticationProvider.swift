@@ -82,7 +82,6 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
         cachingType: CourierConnectCacheType = .disk,
         userDefaults: UserDefaults = .init(suiteName: "com.clickstream.courier") ?? .standard,
         userDefaultsKey: String = "connect_auth_response",
-        isConnectUserPropertiesEnabled: Bool = false,
         applicationState: CourierApplicationState = .foreground,
         networkTypeProvider: NetworkType
     ) {
@@ -107,7 +106,7 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
             self._cachedAuthResponse = Atomic(nil)
         }
 
-        self.isConnectUserPropertiesEnabled = isConnectUserPropertiesEnabled
+        self.isConnectUserPropertiesEnabled = config.connectConfig.isConnectUserPropertiesEnabled
         self.applicationState = applicationState
         self.networkTypeProvider = networkTypeProvider
     }

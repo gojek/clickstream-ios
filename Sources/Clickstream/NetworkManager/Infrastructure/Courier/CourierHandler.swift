@@ -71,15 +71,11 @@ final class DefaultCourierHandler: CourierHandler {
 extension DefaultCourierHandler {
 
     private func getCourierClient() async -> CourierClient {
-        let messageAdapters: [MessageAdapter] = courierConfig.messageAdapters.compactMap({
-            CourierMessageAdapterType.mapped(from: $0)
-        })
-
         let topics = courierConfig.topics.compactMapValues { QoS(value: $0) }
 
         let mqttConfig = MQTTClientConfig(topics: topics,
                                           authService: authServiceProvider,
-                                          messageAdapters: messageAdapters,
+                                          messageAdapters: courierConfig.messageAdapters,
                                           isMessagePersistenceEnabled: courierConfig.isMessagePersistenceEnabled,
                                           autoReconnectInterval: UInt16(courierConfig.autoReconnectInterval),
                                           maxAutoReconnectInterval: UInt16(courierConfig.maxAutoReconnectInterval),

@@ -67,7 +67,6 @@ class CourierAuthenticationProviderTests: XCTestCase {
             userCredentials: userCredentials,
             cachingType: .disk,
             userDefaults: mockUserDefaults,
-            isConnectUserPropertiesEnabled: true,
             networkTypeProvider: NetworkType.wifi
         )
         

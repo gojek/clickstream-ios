@@ -8,6 +8,7 @@
 
 @testable import Clickstream
 import XCTest
+import CourierMQTT
 
 class ClickstreamCourierConfigTests: XCTestCase {
     
@@ -24,7 +25,7 @@ class ClickstreamCourierConfigTests: XCTestCase {
         
         let config = ClickstreamCourierConfig(
             topics: ["topic1": 1, "topic2": 2],
-            messageAdapter: [.json, .data],
+            messageAdapter: [JSONMessageAdapter(), DataMessageAdapter()],
             isMessagePersistenceEnabled: true,
             autoReconnectInterval: 2.0,
             maxAutoReconnectInterval: 60.0,
@@ -84,7 +85,6 @@ class ClickstreamCourierConfigTests: XCTestCase {
         XCTAssertEqual(config.topics["topic1"], 1)
         XCTAssertEqual(config.topics["topic2"], 2)
         XCTAssertEqual(config.messageAdapters.count, 2)
-        XCTAssertTrue(config.messageAdapters.contains(.json))
         XCTAssertEqual(config.autoReconnectInterval, 2.5)
         XCTAssertEqual(config.maxAutoReconnectInterval, 45.0)
         XCTAssertTrue(config.enableAuthenticationTimeout)
@@ -142,8 +142,6 @@ class ClickstreamCourierConfigTests: XCTestCase {
         do {
             let config = try JSONDecoder().decode(ClickstreamCourierConfig.self, from: json)
             XCTAssertEqual(config.messageAdapters.count, 1)
-            XCTAssertTrue(config.messageAdapters.contains(.json))
-            XCTAssertFalse(config.messageAdapters.contains(where: { $0.rawValue == "invalid_adapter" }))
         } catch {
             XCTFail("Decoding should handle invalid adapters gracefully")
         }

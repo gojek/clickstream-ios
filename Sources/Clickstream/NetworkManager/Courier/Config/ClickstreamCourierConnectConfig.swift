@@ -16,6 +16,7 @@ public struct ClickstreamCourierConnectConfig: Decodable {
     public let pingIntervalMs: TimeInterval
     public let isCleanSessionEnabled: Bool
     public let isTokenCacheExpiryEnabled: Bool
+    public let isConnectUserPropertiesEnabled: Bool
     public let alpn: [String]
 
     enum CodingKeys: String, CodingKey {
@@ -26,6 +27,7 @@ public struct ClickstreamCourierConnectConfig: Decodable {
         case pingIntervalMs = "ping_interval_ms"
         case isCleanSessionEnabled = "clean_session_enabled"
         case isTokenCacheExpiryEnabled = "token_expiry_cache_enabled"
+        case isConnectUserPropertiesEnabled = "is_connect_user_properties_enabled"
         case alpn
     }
 
@@ -37,16 +39,18 @@ public struct ClickstreamCourierConnectConfig: Decodable {
         pingIntervalMs: TimeInterval = 10.0,
         isCleanSessionEnabled: Bool = false,
         isTokenCacheExpiryEnabled: Bool = false,
+        isConnectUserPropertiesEnabled: Bool = false,
         alpn: [String] = ["mqtt"]
     ) {
         self.baseURL = baseURL
         self.authURLPath = authURLPath
+        self.authURLQueries = authURLQueries
         self.tokenExpiryMins = tokenExpiryMins
         self.pingIntervalMs = pingIntervalMs
         self.isCleanSessionEnabled = isCleanSessionEnabled
         self.isTokenCacheExpiryEnabled = isTokenCacheExpiryEnabled
+        self.isConnectUserPropertiesEnabled = isConnectUserPropertiesEnabled
         self.alpn = alpn
-        self.authURLQueries = authURLQueries
     }
 
     public init(from decoder: any Decoder) throws {
@@ -67,6 +71,7 @@ public struct ClickstreamCourierConnectConfig: Decodable {
         pingIntervalMs = container.decodeTimeIntervalIfPresent(forKey: .pingIntervalMs) ?? 240.0
         isCleanSessionEnabled = (try? container.decodeIfPresent(Bool.self, forKey: .isCleanSessionEnabled)) ?? false
         isTokenCacheExpiryEnabled = (try? container.decodeIfPresent(Bool.self, forKey: .isTokenCacheExpiryEnabled)) ?? false
+        isConnectUserPropertiesEnabled = (try? container.decodeIfPresent(Bool.self, forKey: .isConnectUserPropertiesEnabled)) ?? false
         alpn = (try? container.decodeIfPresent([String].self, forKey: .alpn)) ?? []
     }
 
