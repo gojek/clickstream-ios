@@ -41,7 +41,6 @@ class CourierAuthenticationProviderTests: XCTestCase {
         let provider = CourierAuthenticationProvider(
             config: config,
             userCredentials: userCredentials,
-            cachingType: .noop,
             userDefaults: mockUserDefaults,
             networkTypeProvider: NetworkType.wifi
         )
@@ -65,7 +64,6 @@ class CourierAuthenticationProviderTests: XCTestCase {
         let provider = CourierAuthenticationProvider(
             config: config,
             userCredentials: userCredentials,
-            cachingType: .disk,
             userDefaults: mockUserDefaults,
             networkTypeProvider: NetworkType.wifi
         )
@@ -89,7 +87,6 @@ class CourierAuthenticationProviderTests: XCTestCase {
         let provider = CourierAuthenticationProvider(
             config: config,
             userCredentials: userCredentials,
-            cachingType: .disk,
             userDefaults: mockUserDefaults,
             networkTypeProvider: NetworkType.wifi
         )
@@ -109,7 +106,6 @@ class CourierAuthenticationProviderTests: XCTestCase {
         let provider = CourierAuthenticationProvider(
             config: config,
             userCredentials: credentials,
-            cachingType: .noop,
             userDefaults: mockUserDefaults,
             networkTypeProvider: NetworkType.wifi
         )
@@ -121,7 +117,6 @@ class CourierAuthenticationProviderTests: XCTestCase {
         let provider = CourierAuthenticationProvider(
             config: config,
             userCredentials: userCredentials,
-            cachingType: .noop,
             userDefaults: mockUserDefaults,
             networkTypeProvider: NetworkType.wifi
         )
@@ -133,7 +128,6 @@ class CourierAuthenticationProviderTests: XCTestCase {
         let provider = CourierAuthenticationProvider(
             config: config,
             userCredentials: userCredentials,
-            cachingType: .disk,
             userDefaults: mockUserDefaults,
             networkTypeProvider: NetworkType.wifi
         )

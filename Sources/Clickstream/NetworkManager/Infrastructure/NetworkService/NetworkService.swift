@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CourierCore
 import SwiftProtobuf
 
 protocol NetworkServiceInputs {
@@ -23,13 +24,17 @@ protocol NetworkServiceInputs {
     ///   - connectionStatusListener: A callback to listen to the change in the status.
     ///   - keepTrying: allow connectable to try reconnection exponentially
     ///   - userCredentials: Courier's user credentials
-    func initiateSecondaryConnection(connectionStatusListener: ConnectionStatus?, keepTrying: Bool, identifiers: ClickstreamClientIdentifiers) async
+    ///   - eventHandler: Courier's event handler delegate
+    func initiateSecondaryConnection(connectionStatusListener: ConnectionStatus?,
+                                     keepTrying: Bool,
+                                     identifiers: ClickstreamClientIdentifiers,
+                                     eventHandler: ICourierEventHandler?) async
 
     /// Writes data to the given connectable and fires a completion event after the write is completed.
     /// - Parameters:
     ///   - data:  Data to be written/sent.
     ///   - completion: A callback to listen to the result thus produced by the write action.
-    func write<T: Message>(_ data: Data, completion: @escaping (Result<T, ConnectableError>) -> Void)
+    func write<T: SwiftProtobuf.Message>(_ data: Data, completion: @escaping (Result<T, ConnectableError>) -> Void)
     
     /// Terminates the established connection.
     func terminateConnection()
@@ -48,7 +53,11 @@ protocol NetworkService: NetworkServiceInputs, NetworkServiceOutputs { }
 
 extension NetworkService {
     func initiateConnection(connectionStatusListener: ConnectionStatus?, keepTrying: Bool) {}
-    func initiateSecondaryConnection(connectionStatusListener: ConnectionStatus?, keepTrying: Bool, identifiers: ClickstreamClientIdentifiers) async {}
+    func initiateSecondaryConnection(connectionStatusListener: ConnectionStatus?,
+                                     keepTrying: Bool,
+                                     identifiers: ClickstreamClientIdentifiers,
+                                     eventHandler: ICourierEventHandler?) async {}
+    func write<T: SwiftProtobuf.Message>(_ data: Data, completion: @escaping (Result<T, ConnectableError>) -> Void) {}
 }
 
 final class DefaultNetworkService<C: Connectable>: NetworkService {
@@ -99,7 +108,7 @@ extension DefaultNetworkService {
                            connectionCallback: self.connectionCallback)
     }
     
-    func write<T>(_ data: Data, completion: @escaping (Result<T, ConnectableError>) -> Void) where T : Message {
+    func write<T>(_ data: Data, completion: @escaping (Result<T, ConnectableError>) -> Void) where T : SwiftProtobuf.Message {
         performQueue.async {
             self._connectable?.write(data) { [weak self] result in guard let _ = self else { return }
                 switch result {

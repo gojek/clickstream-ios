@@ -354,11 +354,11 @@ extension Clickstream {
 
     /// Courier client's user credentials provider
     /// - Parameter identifiers: A client's credentials
-    public func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers) {
+    public func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers, topic: String) {
         guard let dependencies = dependencies as? SharedClickstreamDependencies else {
             return
         }
 
-        dependencies.provideClientIdentifiers(with: identifiers)
+        dependencies.provideClientIdentifiers(with: identifiers, topic: topic)
     }
 }

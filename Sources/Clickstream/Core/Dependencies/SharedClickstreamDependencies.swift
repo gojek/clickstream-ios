@@ -88,11 +88,12 @@ final class SharedClickstreamDependencies: ClickstreamDependencies {
 extension SharedClickstreamDependencies {
 
     /// Courier client's user credentials provider
-    /// - Parameter userCredentials: A user credentials object
-    func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers) {
+    /// - Parameter identifiers: Client's user identifiers
+    /// - Parameter topic: Courier's topic path
+    func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers, topic: String) {
         guard networkOptions.isCourierEnabled, !networkOptions.courierEventTypes.isEmpty else {
             return
         }
-        networkManagerDependencies.provideClientIdentifiers(with: identifiers)
+        networkManagerDependencies.provideClientIdentifiers(with: identifiers, topic: topic)
     }
 }

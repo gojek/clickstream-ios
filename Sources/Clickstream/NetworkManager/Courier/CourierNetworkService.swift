@@ -8,6 +8,7 @@
 
 import Foundation
 import SwiftProtobuf
+import Combine
 import CourierCore
 
 final class CourierNetworkService<C: CourierConnectable>: NetworkService {
@@ -44,28 +45,33 @@ final class CourierNetworkService<C: CourierConnectable>: NetworkService {
         self.performQueue = performOnQueue
     }
 
-    func initiateSecondaryConnection(connectionStatusListener: ConnectionStatus?, keepTrying: Bool, identifiers: ClickstreamClientIdentifiers) async {
+    /// Initiate secondary network connection given `Connectable`
+    /// - Parameters:
+    ///   - connectionStatusListener: A callback connection listerner
+    ///   - keepTrying: A flag to rery connect attempts
+    ///   - identifiers: Client's user identifiers
+    func initiateSecondaryConnection(connectionStatusListener: ConnectionStatus?,
+                                     keepTrying: Bool,
+                                     identifiers: ClickstreamClientIdentifiers,
+                                     eventHandler: ICourierEventHandler? = nil) async {
 
         guard _connectable == nil, let courierConfig = networkConfig.networkOptions?.courierConfig else { return }
 
         self.connectionCallback = connectionStatusListener
+
         _connectable = C(config: courierConfig, userCredentials: identifiers)
 
-        await connectable?.setup(request: networkConfig.request, keepTrying: keepTrying, connectionCallback: self.connectionCallback)
+        await connectable?.setup(request: networkConfig.request,
+                                 keepTrying: keepTrying,
+                                 connectionCallback: self.connectionCallback,
+                                 eventHandler: eventHandler)
     }
 }
 
 extension CourierNetworkService {
     
-    func write<T>(_ data: Data, completion: @escaping (Result<T, ConnectableError>) -> Void) where T : SwiftProtobuf.Message {
-        performQueue.async {
-            do {
-                try self._connectable?.publishMessage(data)
-            } catch(let error) {
-                // Handle failing courier message publish
-                completion(.failure(ConnectableError.networkError(error)))
-            }
-        }
+    func publish(_ data: Data, topic: String) throws {
+        try self._connectable?.publishMessage(data, topic: topic)
     }
     
     func terminateConnection() {

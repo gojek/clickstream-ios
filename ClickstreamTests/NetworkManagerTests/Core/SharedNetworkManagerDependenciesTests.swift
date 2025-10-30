@@ -54,6 +54,7 @@ class SharedNetworkManagerDependenciesTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Courier session must be configured")
         let dummyRequest = URLRequest(url: URL(string: "dummy_url")!)
         let user = CourierIdentifiers(userIdentifier: "12345")
+        let topic = "clickstream/topic"
         
         Clickstream.configurations = MockConstants.constraints
         Clickstream.eventClassifier = MockConstants.eventClassification
@@ -63,7 +64,7 @@ class SharedNetworkManagerDependenciesTests: XCTestCase {
                                                                           db: database,
                                                                           networkOptions: .init(isWebsocketEnabled: false, isCourierEnabled: true))
         let networkBuilder: NetworkBuildable = networkManagerDependencies.makeCourierNetworkBuilder()
-        networkManagerDependencies.provideClientIdentifiers(with: user)
+        networkManagerDependencies.provideClientIdentifiers(with: user, topic: topic)
 
         XCTAssertNotNil(networkBuilder)
         XCTAssertTrue(networkBuilder is CourierNetworkBuilder)

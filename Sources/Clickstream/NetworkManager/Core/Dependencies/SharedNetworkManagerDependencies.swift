@@ -105,13 +105,13 @@ final class SharedNetworkManagerDependencies {
         courierNetworkService.isConnected
     }
 
-    func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers) {
+    func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers, topic: String) {
         guard let courierRetryMech = self.courierRetryMech as? CourierRetryMechanism,
               let courierIdentifiers = identifiers as? CourierIdentifiers else {
             return
         }
 
-        courierRetryMech.configureIdentifiers(courierIdentifiers)
+        courierRetryMech.configureIdentifiers(with: courierIdentifiers, topic: topic)
     }
 }
 

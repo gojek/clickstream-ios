@@ -75,8 +75,9 @@ class SharedClickstreamDependenciesTests: XCTestCase {
         let networkOptions = ClickstreamNetworkOptions(courierConfig: courierConfig)
         let clickStreamDependencies = try! SharedClickstreamDependencies(with: dummyRequest, networkOptions: networkOptions)
         let credentials = CourierIdentifiers(userIdentifier: "12345")
+        let topic = "clickstream/topic"
         
-        clickStreamDependencies.provideClientIdentifiers(with: credentials)
+        clickStreamDependencies.provideClientIdentifiers(with: credentials, topic: topic)
 
         // then
         XCTAssertNotNil(clickStreamDependencies.eventProcessor)

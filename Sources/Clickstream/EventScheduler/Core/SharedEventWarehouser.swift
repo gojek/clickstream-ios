@@ -47,7 +47,12 @@ final class SharedEventWarehouser: EventWarehouser {
         guard let eventType = try? Odpf_Raccoon_Event(serializedBytes: data).type else {
             return false
         }
-        return networkOptions.isCourierEnabled && courierWhitelistedEvents.contains(eventType)
+        
+        if courierWhitelistedEvents.isEmpty {
+            return networkOptions.isCourierEnabled
+        } else {
+            return networkOptions.isCourierEnabled && courierWhitelistedEvents.contains(eventType)
+        }
     }
 
     /// Send `instant` event type

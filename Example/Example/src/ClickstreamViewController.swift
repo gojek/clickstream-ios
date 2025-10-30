@@ -9,6 +9,7 @@
 import UIKit
 import SwiftProtobuf
 import Clickstream
+import CourierMQTT
 
 class ClickstreamViewController: UIViewController {
 
@@ -41,7 +42,7 @@ class ClickstreamViewController: UIViewController {
             }
 
             analyticsManager.initialiseClickstream(networkOptions: networkOptions)
-            analyticsManager.setupCourierClient(userCredentials: userCredentials)
+            analyticsManager.provideUserCredentials(with: userCredentials)
         }
     }
     
@@ -80,28 +81,17 @@ class ClickstreamViewController: UIViewController {
             fatalError("MyViewController not found in Main.storyboard")
         }
 
-        let courierIdentifiers = CourierIdentifiers(
-            userIdentifier: "",
-            authenticationHeaders: [:]
-        )
+        configView.didSaveConfig = { [weak self] (config, userCredentials, topic) in
+            let whitelistedEvents = ["User"]
+            let defaultNetworkOptions = ClickstreamNetworkOptions(isWebsocketEnabled: false,
+                                                                  isCourierEnabled: true,
+                                                                  courierEventTypes: Set(whitelistedEvents),
+                                                                  httpFallbackDelayMs: 500,
+                                                                  courierConfig: config)
 
-        let defaultConfig = ClickstreamCourierConfig(messageAdapter: [.json],
-                                                     connectConfig: .init(baseURL: "", authURLPath: ""))
-
-        let defaultNetworkOptions = ClickstreamNetworkOptions(isWebsocketEnabled: false,
-                                                              isCourierEnabled: true,
-                                                              courierEventTypes: ["User"],
-                                                              httpFallbackDelayMs: 500,
-                                                              courierConfig: defaultConfig)
-        
-        analyticsManager.networkOptions = defaultNetworkOptions
-        analyticsManager.courierUserCredentials = courierIdentifiers
-
-        configView.config = analyticsManager.networkOptions?.courierConfig
-        configView.userCredentials = analyticsManager.courierUserCredentials
-
-        configView.didSaveConfig = { [weak self] (config, userCredentials) in
-            self?.analyticsManager.setupCourierClient(userCredentials: userCredentials)
+            self?.analyticsManager.networkOptions = defaultNetworkOptions
+            self?.analyticsManager.courierUserCredentials = userCredentials
+            self?.analyticsManager.courierTopic = topic
         }
 
         present(navigation, animated: true)

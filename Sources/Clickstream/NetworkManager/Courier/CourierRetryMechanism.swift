@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CourierCore
 
 final class CourierRetryMechanism: Retryable {
     
@@ -21,6 +22,7 @@ final class CourierRetryMechanism: Retryable {
     private var persistence: DefaultDatabaseDAO<EventRequest>
     private var retryTimer: DispatchSourceTimer?
     private var identifiers: CourierIdentifiers?
+    private var topic: String?
     
     #if ETE_TEST_SUITE_ENABLED
     lazy var testMode: Bool = {
@@ -157,35 +159,57 @@ extension CourierRetryMechanism {
         if let eventType = eventRequest.eventType, eventType != .instant {
             addToCache(with: eventRequest)
         }
-        performQueue.async(flags: .barrier) { [weak self] in
-            guard let checkedSelf = self, let data = eventRequest.data else {
-                return
-            }
-            checkedSelf.networkService.write(data) { (result: Result<Odpf_Raccoon_EventResponse, ConnectableError>) in
-                switch result {
-                case .success(let response):
-                    // Handle Racoon EventResponse
-                    checkedSelf.handleRacoonEventResponse(with: eventRequest, startTime: startTime, response: response)
-                case .failure(let error):
-                    print("Error: \(error.localizedDescription) for eventRequest guid \(eventRequest.guid)", .verbose)
-                    #if TRACKER_ENABLED
-                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchErrorResponse,
-                                                          eventBatchGUID: eventRequest.guid, // eventRequest.guid is the batch GUID
-                                                          reason: error.localizedDescription,
-                                                          eventCount: eventRequest.eventCount)
-                    Tracker.sharedInstance?.record(event: healthEvent)
-                    #if ETE_TEST_SUITE_ENABLED
-                    Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "\(error)")
-                    #endif
-                    #endif
-                }
-                #if ETE_TEST_SUITE_ENABLED
-                if self?.testMode ?? false {
-                    FileManagerOverride.writeToFile()
-                }
-                #endif
-            }
+
+        guard let data = eventRequest.data, let topic, let networkService = networkService as? CourierNetworkService<DefaultCourierHandler> else {
+            return
         }
+
+        do {
+            try networkService.publish(data, topic: topic)
+        } catch(let error) {
+            print("Error: \(error.localizedDescription) for eventRequest guid \(eventRequest.guid)", .verbose)
+            #if TRACKER_ENABLED
+            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchErrorResponse,
+                                                  eventBatchGUID: eventRequest.guid, // eventRequest.guid is the batch GUID
+                                                  reason: error.localizedDescription,
+                                                  eventCount: eventRequest.eventCount)
+            Tracker.sharedInstance?.record(event: healthEvent)
+            #if ETE_TEST_SUITE_ENABLED
+            Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "\(error)")
+            #endif
+            #endif
+        }
+            
+
+//        performQueue.async(flags: .barrier) { [weak self] in
+//            guard let checkedSelf = self, let data = eventRequest.data else {
+//                return
+//            }
+//            checkedSelf.networkService.write(data) { (result: Result<Odpf_Raccoon_EventResponse, ConnectableError>) in
+//                switch result {
+//                case .success(let response):
+//                    // Handle Racoon EventResponse
+//                    checkedSelf.handleRacoonEventResponse(with: eventRequest, startTime: startTime, response: response)
+//                case .failure(let error):
+//                    print("Error: \(error.localizedDescription) for eventRequest guid \(eventRequest.guid)", .verbose)
+//                    #if TRACKER_ENABLED
+//                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchErrorResponse,
+//                                                          eventBatchGUID: eventRequest.guid, // eventRequest.guid is the batch GUID
+//                                                          reason: error.localizedDescription,
+//                                                          eventCount: eventRequest.eventCount)
+//                    Tracker.sharedInstance?.record(event: healthEvent)
+//                    #if ETE_TEST_SUITE_ENABLED
+//                    Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "\(error)")
+//                    #endif
+//                    #endif
+//                }
+//                #if ETE_TEST_SUITE_ENABLED
+//                if self?.testMode ?? false {
+//                    FileManagerOverride.writeToFile()
+//                }
+//                #endif
+//            }
+//        }
     }
     
     
@@ -297,8 +321,9 @@ extension CourierRetryMechanism {
         terminateConnection()
     }
 
-    func configureIdentifiers(_ identifiers: CourierIdentifiers) {
+    func configureIdentifiers(with identifiers: CourierIdentifiers, topic: String) {
         self.identifiers = identifiers
+        self.topic = topic
         establishConnection()
     }
 }
@@ -369,7 +394,7 @@ extension CourierRetryMechanism {
                 case .failure:
                     checkedSelf.stopObservingFailedBatches()
                 }
-            }, keepTrying: keepTrying, identifiers: identifiers)
+            }, keepTrying: keepTrying, identifiers: identifiers, eventHandler: self)
         }
     }
 }
@@ -477,3 +502,17 @@ extension CourierRetryMechanism {
     }
 }
 
+// MARK: - Observe Courier's events
+extension CourierRetryMechanism: ICourierEventHandler {
+
+    func onEvent(_ event: CourierCore.CourierEvent) {
+        switch event.type {
+        case .messageSendSuccess:
+            return
+        case .messageSendFailure(_, _, let error, _):
+            return
+        default:
+            return
+        }
+    }
+}

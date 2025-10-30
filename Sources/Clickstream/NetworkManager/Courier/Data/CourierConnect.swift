@@ -8,10 +8,6 @@
 
 import Foundation
 
-enum CourierConnectCacheType: Int {
-    case noop, inMemory, disk
-}
-
 struct CourierConnect: Codable {
     let token: String
     let broker: Broker

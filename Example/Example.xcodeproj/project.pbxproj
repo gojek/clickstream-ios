@@ -24,6 +24,9 @@
 		BD4E9D61285719CC0093D342 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD4E9D60285719CC0093D342 /* Assets.xcassets */; };
 		BDDC8AE129E95D4B0024ED8C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDC8AE029E95D4B0024ED8C /* Constants.swift */; };
 		D839E22E2EA09FAA0049F0E2 /* CourierConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D839E22D2EA09FAA0049F0E2 /* CourierConfigViewController.swift */; };
+		D8E4B8AA2EB882A70001D3D6 /* Envelope.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E4B8A92EB882A70001D3D6 /* Envelope.pb.swift */; };
+		D8E4B8AC2EB882DD0001D3D6 /* Common.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E4B8AB2EB882DD0001D3D6 /* Common.pb.swift */; };
+		D8E4B8AF2EB8832A0001D3D6 /* EnvelopMessageAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E4B8AE2EB8832A0001D3D6 /* EnvelopMessageAdapter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +53,9 @@
 		BDDC8AE029E95D4B0024ED8C /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		CDD9BE2452FB2F21C98C5E74 /* Pods-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.debug.xcconfig"; path = "Target Support Files/Pods-Example/Pods-Example.debug.xcconfig"; sourceTree = "<group>"; };
 		D839E22D2EA09FAA0049F0E2 /* CourierConfigViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierConfigViewController.swift; sourceTree = "<group>"; };
+		D8E4B8A92EB882A70001D3D6 /* Envelope.pb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Envelope.pb.swift; sourceTree = "<group>"; };
+		D8E4B8AB2EB882DD0001D3D6 /* Common.pb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.pb.swift; sourceTree = "<group>"; };
+		D8E4B8AE2EB8832A0001D3D6 /* EnvelopMessageAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvelopMessageAdapter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +103,7 @@
 		9ABDE54224933CD600EC286E /* src */ = {
 			isa = PBXGroup;
 			children = (
+				D8E4B8AD2EB8831E0001D3D6 /* Courier */,
 				9AE28DE126EF035A00513705 /* Contracts */,
 				9AEA264F24924B340018931D /* AppDelegate.swift */,
 				9AA23CF2249C7589001BE490 /* AnalyticsManager.swift */,
@@ -125,6 +132,8 @@
 				9A266FAA27F6ADA9000D6C36 /* Device.pb.swift */,
 				9A266FA927F6ADA9000D6C36 /* User.pb.swift */,
 				9A65B31E2B4BAEBB00730CE9 /* EventVisualizer+ClickStreamContracts.swift */,
+				D8E4B8A92EB882A70001D3D6 /* Envelope.pb.swift */,
+				D8E4B8AB2EB882DD0001D3D6 /* Common.pb.swift */,
 			);
 			path = Contracts;
 			sourceTree = "<group>";
@@ -156,6 +165,14 @@
 				9AEA265D24924B360018931D /* Info.plist */,
 			);
 			path = Example;
+			sourceTree = "<group>";
+		};
+		D8E4B8AD2EB8831E0001D3D6 /* Courier */ = {
+			isa = PBXGroup;
+			children = (
+				D8E4B8AE2EB8832A0001D3D6 /* EnvelopMessageAdapter.swift */,
+			);
+			path = Courier;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -298,7 +315,9 @@
 			files = (
 				9A266FA627F6ACFB000D6C36 /* App.proto in Sources */,
 				9AA23CF3249C7589001BE490 /* AnalyticsManager.swift in Sources */,
+				D8E4B8AA2EB882A70001D3D6 /* Envelope.pb.swift in Sources */,
 				D839E22E2EA09FAA0049F0E2 /* CourierConfigViewController.swift in Sources */,
+				D8E4B8AF2EB8832A0001D3D6 /* EnvelopMessageAdapter.swift in Sources */,
 				9A266FAF27F6ADA9000D6C36 /* Device.pb.swift in Sources */,
 				9AEA265024924B340018931D /* AppDelegate.swift in Sources */,
 				9A65B31F2B4BAEBB00730CE9 /* EventVisualizer+ClickStreamContracts.swift in Sources */,
@@ -308,6 +327,7 @@
 				9A266FA827F6ACFB000D6C36 /* Device.proto in Sources */,
 				9A266FA027F56136000D6C36 /* ClickstreamViewController.swift in Sources */,
 				9A266FAC27F6ADA9000D6C36 /* User.pb.swift in Sources */,
+				D8E4B8AC2EB882DD0001D3D6 /* Common.pb.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

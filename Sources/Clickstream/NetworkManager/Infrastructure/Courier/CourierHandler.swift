@@ -20,7 +20,7 @@ final class DefaultCourierHandler: CourierHandler {
     private var courierConfig: ClickstreamCourierConfig
     private var userCredentials: ClickstreamClientIdentifiers
     private var cancellables: Set<CourierCore.AnyCancellable> = []
-    private var topics: [String: QoS]?
+    private var topic: String?
 
     private lazy var authServiceProvider: IConnectionServiceProvider = {
         CourierAuthenticationProvider(config: courierConfig,
@@ -37,50 +37,40 @@ final class DefaultCourierHandler: CourierHandler {
         self.userCredentials = userCredentials
     }
 
-    func publishMessage(_ data: Data) throws {
-        // Commented-out for debugging prupose
-//        guard let eventRequest = try? Odpf_Raccoon_EventRequest(serializedBytes: data) else {
-//            return
-//        }
-//        
-//        let events = eventRequest.events.compactMap {
-//            try? Odpf_Raccoon_Event(serializedBytes: $0.eventBytes)
-//        }
-
-        try courierClient?.publishMessage(data, topic: "", qos: .one)
+    func publishMessage(_ data: Data, topic: String) throws {
+        try courierClient?.publishMessage(data, topic: topic, qos: .oneWithoutPersistenceAndRetry)
     }
     
     func disconnect() {
-        unsubscribeTopics()
         courierClient?.destroy()
         courierClient?.disconnect()
     }
 
     func setup(request: URLRequest,
                keepTrying: Bool,
-               connectionCallback: ConnectionStatus?) async {
+               connectionCallback: ConnectionStatus?,
+               eventHandler: ICourierEventHandler? = nil) async {
 
         courierClient = await getCourierClient()
 
+        if let eventHandler {
+            courierClient?.addEventHandler(eventHandler)
+        }
+
         await connect(connectionCallback: connectionCallback)
-        
-        subscribeTopics()
     }
 }
 
 extension DefaultCourierHandler {
 
     private func getCourierClient() async -> CourierClient {
-        let topics = courierConfig.topics.compactMapValues { QoS(value: $0) }
-
-        let mqttConfig = MQTTClientConfig(topics: topics,
-                                          authService: authServiceProvider,
+        let mqttConfig = MQTTClientConfig(authService: authServiceProvider,
                                           messageAdapters: courierConfig.messageAdapters,
                                           isMessagePersistenceEnabled: courierConfig.isMessagePersistenceEnabled,
-                                          autoReconnectInterval: UInt16(courierConfig.autoReconnectInterval),
-                                          maxAutoReconnectInterval: UInt16(courierConfig.maxAutoReconnectInterval),
-                                          enableAuthenticationTimeout: courierConfig.enableAuthenticationTimeout,
-                                          authenticationTimeoutInterval: courierConfig.authenticationTimeoutInterval,
+                                          autoReconnectInterval: UInt16(courierConfig.connectConfig.autoReconnectInterval),
+                                          maxAutoReconnectInterval: UInt16(courierConfig.connectConfig.maxAutoReconnectInterval),
+                                          enableAuthenticationTimeout: courierConfig.connectConfig.enableAuthenticationTimeout,
+                                          authenticationTimeoutInterval: courierConfig.connectConfig.authenticationTimeoutInterval,
                                           connectTimeoutPolicy: courierConfig.connectTimeoutPolicy,
                                           idleActivityTimeoutPolicy: courierConfig.iddleActivityPolicy,
                                           messagePersistenceTTLSeconds: courierConfig.messagePersistenceTTLSeconds,
@@ -102,20 +92,5 @@ extension DefaultCourierHandler {
                 connectionCallback?(.failure(.failed))
             }
         }.store(in: &cancellables)
-    }
-
-    private func subscribeTopics() {
-        guard let topics, !topics.isEmpty else { return }
-
-        topics.forEach {
-            courierClient?.subscribe(($0.key, $0.value))
-        }
-    }
-
-    private func unsubscribeTopics() {
-        guard let topics, !topics.isEmpty else { return }
-
-        let keys = Array(topics.keys)
-        courierClient?.unsubscribe(keys)
     }
 }
