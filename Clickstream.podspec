@@ -33,6 +33,8 @@ Pod::Spec.new do |s|
   s.dependency    "CourierCore"
   s.dependency    "CourierMQTT"
   
+  s.static_framework = true
+
   s.default_subspec  = 'Core'
 
   s.subspec 'Core' do |core|
