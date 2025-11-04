@@ -67,7 +67,6 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
     
     private let userCredentials: ClickstreamClientIdentifiers
 
-
     private var userProperties: [String: String]? {
         guard isConnectUserPropertiesEnabled else { return nil }
 
@@ -128,11 +127,7 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
 
         Task {
             do {
-                let url = try constructURL()
-                let courierConnect = try await self.executeRequest(timeoutInterval: self.config.connectConfig.authenticationTimeoutInterval,
-                                                                   customHeaders: self.userCredentials.authenticationHeaders,
-                                                                   url: url)
-
+                let courierConnect = try await executeRequest(with: userCredentials.authURLRequest)
                 let connectOptions = connectOptions(with: courierConnect)
                 self.existingConnectOptions = connectOptions
                 completion(.success(connectOptions))
@@ -166,21 +161,9 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
         )
     }
 
-    private func executeRequest(
-        timeoutInterval: TimeInterval = 10,
-        customHeaders: [String: String]? = nil,
-        url: URL
-    ) async throws -> CourierConnect {
-        var request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: timeoutInterval)
-
-        if let customHeaders {
-            customHeaders.forEach {
-                request.addValue($0.value, forHTTPHeaderField: $0.key)
-            }
-        }
-
+    private func executeRequest(with urlRequest: URLRequest) async throws -> CourierConnect {
         do {
-            let (data, response) = try await URLSession.shared.data(for: request)
+            let (data, response) = try await URLSession.shared.data(for: urlRequest)
             
             guard let httpResponse = response as? HTTPURLResponse, 200..<300 ~= httpResponse.statusCode else {
                 let statusCode: Int = (response as? HTTPURLResponse)?.statusCode ?? -1
@@ -192,28 +175,6 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
         } catch(let error) {
             throw AuthError.otherError(.init(domain: "com.clickstream.courier.auth", code: -1, userInfo: ["error": error.localizedDescription]))
         }
-    }
-
-    private func constructURL() throws -> URL {
-        let baseURL = config.connectConfig.baseURL
-        let urlPath = config.connectConfig.authURLPath
-        let urlQuery = config.connectConfig.authURLQueries
-        
-        guard !baseURL.isEmpty, !urlPath.isEmpty else {
-            throw AuthError.otherError(.init(domain: "com.clickstream.courier.auth", code: -1, userInfo: ["error": "Invalid auth url"]))
-        }
-
-        var urlString = "\(baseURL)\(urlPath)"
-
-        if let urlQuery, !urlQuery.isEmpty {
-            urlString.append("?\(urlQuery)")
-        }
-
-        guard let url = URL(string: urlString) else {
-            throw AuthError.otherError(.init(domain: "com.clickstream.courier.auth", code: -1, userInfo: ["error": "Invalid auth url"]))
-        }
-        
-        return url
     }
 }
 

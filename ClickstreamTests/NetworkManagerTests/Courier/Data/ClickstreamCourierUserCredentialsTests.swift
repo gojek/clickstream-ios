@@ -16,7 +16,8 @@ class CourierIdentifiersTests: XCTestCase {
             userIdentifier: "user123",
             deviceIdentifier: "device456",
             bundleIdentifier: "com.test.app",
-            extraIdentifier: "extra789"
+            extraIdentifier: "extra789",
+            authURLRequest: URLRequest(url: .init(string: "some_url")!)
         )
         
         XCTAssertEqual(credentials.userIdentifier, "user123")
@@ -26,7 +27,7 @@ class CourierIdentifiersTests: XCTestCase {
     }
     
     func testInitWithDefaultParameters() {
-        let credentials = CourierIdentifiers(userIdentifier: "testUser")
+        let credentials = CourierIdentifiers(userIdentifier: "testUser", authURLRequest: URLRequest(url: .init(string: "some_url")!))
         
         XCTAssertEqual(credentials.userIdentifier, "testUser")
         XCTAssertNotNil(credentials.deviceIdentifier)
@@ -38,7 +39,8 @@ class CourierIdentifiersTests: XCTestCase {
             userIdentifier: "user456",
             deviceIdentifier: "device789",
             bundleIdentifier: nil,
-            extraIdentifier: nil
+            extraIdentifier: nil,
+            authURLRequest: URLRequest(url: .init(string: "some_url")!)
         )
         
         XCTAssertEqual(credentials.userIdentifier, "user456")
@@ -50,11 +52,13 @@ class CourierIdentifiersTests: XCTestCase {
     func testDeviceIdentifierGeneration() {
         let credentials1 = CourierIdentifiers(
             userIdentifier: "user1",
-            deviceIdentifier: UUID().uuidString
+            deviceIdentifier: UUID().uuidString,
+            authURLRequest: URLRequest(url: .init(string: "some_url")!)
         )
         let credentials2 = CourierIdentifiers(
             userIdentifier: "user2",
-            deviceIdentifier: UUID().uuidString
+            deviceIdentifier: UUID().uuidString,
+            authURLRequest: URLRequest(url: .init(string: "some_url")!)
         )
         
         XCTAssertNotEqual(credentials1.deviceIdentifier, credentials2.deviceIdentifier)
@@ -63,15 +67,15 @@ class CourierIdentifiersTests: XCTestCase {
     }
     
     func testDeviceIdentifierFallbackGeneration() {
-        let credentials = CourierIdentifiers(userIdentifier: "testUser")
+        let credentials = CourierIdentifiers(userIdentifier: "testUser", authURLRequest: URLRequest(url: .init(string: "some_url")!))
         
         XCTAssertFalse(credentials.deviceIdentifier.isEmpty)
         XCTAssertTrue(credentials.deviceIdentifier.count >= 36)
     }
     
     func testUserIdentifierValidation() {
-        let emptyUserCredentials = CourierIdentifiers(userIdentifier: "")
-        let validUserCredentials = CourierIdentifiers(userIdentifier: "validUser")
+        let emptyUserCredentials = CourierIdentifiers(userIdentifier: "", authURLRequest: URLRequest(url: .init(string: "some_url")!))
+        let validUserCredentials = CourierIdentifiers(userIdentifier: "validUser", authURLRequest: URLRequest(url: .init(string: "some_url")!))
         
         XCTAssertEqual(emptyUserCredentials.userIdentifier, "")
         XCTAssertEqual(validUserCredentials.userIdentifier, "validUser")

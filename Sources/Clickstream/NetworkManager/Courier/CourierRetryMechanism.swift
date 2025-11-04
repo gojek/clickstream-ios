@@ -164,52 +164,48 @@ extension CourierRetryMechanism {
             return
         }
 
-        do {
-            try networkService.publish(data, topic: topic)
-        } catch(let error) {
-            print("Error: \(error.localizedDescription) for eventRequest guid \(eventRequest.guid)", .verbose)
-            #if TRACKER_ENABLED
-            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchErrorResponse,
-                                                  eventBatchGUID: eventRequest.guid, // eventRequest.guid is the batch GUID
-                                                  reason: error.localizedDescription,
-                                                  eventCount: eventRequest.eventCount)
-            Tracker.sharedInstance?.record(event: healthEvent)
+        Task {
+            do {
+                try await networkService.publish(data, topic: topic)
+                
+                let guid = eventRequest.guid
+                removeFromCache(with: guid)
+                
+                #if ETE_TEST_SUITE_ENABLED
+                Clickstream.ackEvent = AckEventDetails(guid: guid, status: "Success")
+                #endif
+                if let eventType = eventRequest.eventType, !(eventType == .internalEvent) {
+                    trackHealthAndPerformanceEvents(eventRequest: eventRequest, startTime: startTime)
+                }
+                #if EVENT_VISUALIZER_ENABLED
+                /// Update status of the event batch to acknowledged from network
+                /// to check if the delegate is connected, if not no event should be sent to client
+                if let stateViewer = Clickstream._stateViewer {
+                    /// Updating the event state to acknowledged based on eventBatchGuid.
+                    /// The eventBatchID passed in NetworkBuilder would be used to map events and
+                    /// then update the state respectively.
+                    stateViewer.updateStatus(eventBatchID: guid, state: .ackReceived)
+                }
+                #endif
+            } catch(let error) {
+                print("Error: \(error.localizedDescription) for eventRequest guid \(eventRequest.guid)", .verbose)
+                #if TRACKER_ENABLED
+                let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchErrorResponse,
+                                                      eventBatchGUID: eventRequest.guid, // eventRequest.guid is the batch GUID
+                                                      reason: error.localizedDescription,
+                                                      eventCount: eventRequest.eventCount)
+                Tracker.sharedInstance?.record(event: healthEvent)
+                #if ETE_TEST_SUITE_ENABLED
+                Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "\(error)")
+                if testMode { FileManagerOverride.writeToFile() }
+                #endif
+                #endif
+            }
+
             #if ETE_TEST_SUITE_ENABLED
-            Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "\(error)")
-            #endif
+            if testMode { FileManagerOverride.writeToFile() }
             #endif
         }
-            
-
-//        performQueue.async(flags: .barrier) { [weak self] in
-//            guard let checkedSelf = self, let data = eventRequest.data else {
-//                return
-//            }
-//            checkedSelf.networkService.write(data) { (result: Result<Odpf_Raccoon_EventResponse, ConnectableError>) in
-//                switch result {
-//                case .success(let response):
-//                    // Handle Racoon EventResponse
-//                    checkedSelf.handleRacoonEventResponse(with: eventRequest, startTime: startTime, response: response)
-//                case .failure(let error):
-//                    print("Error: \(error.localizedDescription) for eventRequest guid \(eventRequest.guid)", .verbose)
-//                    #if TRACKER_ENABLED
-//                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchErrorResponse,
-//                                                          eventBatchGUID: eventRequest.guid, // eventRequest.guid is the batch GUID
-//                                                          reason: error.localizedDescription,
-//                                                          eventCount: eventRequest.eventCount)
-//                    Tracker.sharedInstance?.record(event: healthEvent)
-//                    #if ETE_TEST_SUITE_ENABLED
-//                    Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "\(error)")
-//                    #endif
-//                    #endif
-//                }
-//                #if ETE_TEST_SUITE_ENABLED
-//                if self?.testMode ?? false {
-//                    FileManagerOverride.writeToFile()
-//                }
-//                #endif
-//            }
-//        }
     }
     
     
@@ -430,7 +426,7 @@ extension CourierRetryMechanism {
     private func startObservingFailedBatches() {
         guard retryTimer == nil else { return }
         retryTimer = DispatchSource.makeTimerSource(flags: .strict, queue: performQueue)
-        retryTimer?.schedule(deadline: .now() + retryFallbackDelay,
+        retryTimer?.schedule(deadline: .now() + Clickstream.configurations.maxRequestAckTimeout,
                              repeating: Clickstream.configurations.maxRequestAckTimeout)
         retryTimer?.setEventHandler(handler: { [weak self] in
             guard let checkedSelf = self else { return }
@@ -454,7 +450,7 @@ extension CourierRetryMechanism {
         if let failedRequests = persistence.fetchAll(), !failedRequests.isEmpty {
             let date = Date()
             let timedOutRequests = failedRequests.filter {
-                (date.timeIntervalSince1970 - $0.timeStamp.timeIntervalSince1970) >= retryFallbackDelay
+                (date.timeIntervalSince1970 - $0.timeStamp.timeIntervalSince1970) >= Clickstream.configurations.maxRequestAckTimeout
             }
             
             // If no timedOut requests are found then do nothing and return.

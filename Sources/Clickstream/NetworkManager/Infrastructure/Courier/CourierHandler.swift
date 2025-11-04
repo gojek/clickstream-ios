@@ -37,7 +37,7 @@ final class DefaultCourierHandler: CourierHandler {
         self.userCredentials = userCredentials
     }
 
-    func publishMessage(_ data: Data, topic: String) throws {
+    func publishMessage(_ data: Data, topic: String) async throws {
         try courierClient?.publishMessage(data, topic: topic, qos: .oneWithoutPersistenceAndRetry)
     }
     
@@ -90,6 +90,8 @@ extension DefaultCourierHandler {
                 connectionCallback?(.success(.connecting))
             case .disconnected:
                 connectionCallback?(.failure(.failed))
+            @unknown default:
+                return
             }
         }.store(in: &cancellables)
     }

@@ -91,7 +91,7 @@ extension SharedClickstreamDependencies {
     /// - Parameter identifiers: Client's user identifiers
     /// - Parameter topic: Courier's topic path
     func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers, topic: String) {
-        guard networkOptions.isCourierEnabled, !networkOptions.courierEventTypes.isEmpty else {
+        guard networkOptions.isCourierEnabled else {
             return
         }
         networkManagerDependencies.provideClientIdentifiers(with: identifiers, topic: topic)

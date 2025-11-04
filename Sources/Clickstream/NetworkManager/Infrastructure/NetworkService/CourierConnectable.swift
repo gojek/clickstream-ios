@@ -21,7 +21,7 @@ protocol CourierConnectableInputs {
     /// - Parameters:
     ///   - data: Data to be written/sent.
     ///   - topic: Courier's topic path
-    func publishMessage(_ data: Data, topic: String) throws
+    func publishMessage(_ data: Data, topic: String) async throws
 
     /// Disconnects the connection.
     func disconnect()

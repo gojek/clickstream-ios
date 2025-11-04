@@ -70,8 +70,8 @@ final class CourierNetworkService<C: CourierConnectable>: NetworkService {
 
 extension CourierNetworkService {
     
-    func publish(_ data: Data, topic: String) throws {
-        try self._connectable?.publishMessage(data, topic: topic)
+    func publish(_ data: Data, topic: String) async throws {
+        try await _connectable?.publishMessage(data, topic: topic)
     }
     
     func terminateConnection() {

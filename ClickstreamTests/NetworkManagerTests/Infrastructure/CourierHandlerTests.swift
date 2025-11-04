@@ -37,18 +37,26 @@ final class CourierHandlerTests: XCTestCase {
         XCTAssertFalse(sut.isConnected.value)
     }
     
-    func testPublishMessage_WithValidData_DoesNotThrow() {
+    func testPublishMessage_WithValidData_DoesNotThrow() async {
         let testData = "test message".data(using: .utf8)!
         let topic = "clickstream/topic"
         
-        XCTAssertNoThrow(try sut.publishMessage(testData, topic: topic))
+        do {
+            try await sut.publishMessage(testData, topic: topic)
+        } catch {
+            XCTFail("Should not throw error: \(error)")
+        }
     }
     
-    func testPublishMessage_WithEmptyData_DoesNotThrow() {
+    func testPublishMessage_WithEmptyData_DoesNotThrow() async {
         let emptyData = Data()
         let topic = "clickstream/topic"
         
-        XCTAssertNoThrow(try sut.publishMessage(emptyData, topic: topic))
+        do {
+            try await sut.publishMessage(emptyData, topic: topic)
+        } catch {
+            XCTFail("Should not throw error: \(error)")
+        }
     }
     
     func testDisconnect_WhenCalled_DoesNotThrow() {
@@ -90,19 +98,23 @@ final class CourierHandlerTests: XCTestCase {
         XCTAssertFalse(newSut.isConnected.value)
     }
     
-    func testLargeDataPublish_WithLargePayload_DoesNotThrow() {
+    func testLargeDataPublish_WithLargePayload_DoesNotThrow() async {
         let largeData = Data(repeating: 0x41, count: 10000)
         let topic = "clickstream/topic"
         
-        XCTAssertNoThrow(try sut.publishMessage(largeData, topic: topic))
+        do {
+            try await sut.publishMessage(largeData, topic: topic)
+        } catch {
+            XCTFail("Should not throw error: \(error)")
+        }
     }
     
-    func testPublishMessage_WhenClientNotInitialized_ThrowsError() {
+    func testPublishMessage_WhenClientNotInitialized_ThrowsError() async {
         let testData = "test message".data(using: .utf8)!
         let topic = "clickstream/topic"
 
         do {
-            try sut.publishMessage(testData, topic: topic)
+            try await sut.publishMessage(testData, topic: topic)
         } catch {
             XCTAssertNotNil(error)
         }
@@ -116,15 +128,21 @@ final class CourierHandlerTests: XCTestCase {
         sut.disconnect()
         
         let testData = "test message".data(using: .utf8)!
-        XCTAssertThrowsError(try sut.publishMessage(testData, topic: topic))
+        
+        do {
+            try await sut.publishMessage(testData, topic: topic)
+            XCTFail("Should have thrown an error")
+        } catch {
+            XCTAssertNotNil(error)
+        }
     }
     
-    func testPublishMessage_WithMalformedData_HandlesError() {
+    func testPublishMessage_WithMalformedData_HandlesError() async {
         let malformedData = Data([0x00, 0xFF, 0x00, 0xFF])
         let topic = "clickstream/topic"
         
         do {
-            try sut.publishMessage(malformedData, topic: topic)
+            try await sut.publishMessage(malformedData, topic: topic)
         } catch {
             XCTFail("Should handle malformed data gracefully")
         }
@@ -141,7 +159,7 @@ final class CourierHandlerTests: XCTestCase {
         await withTaskGroup(of: Void.self) { group in
             group.addTask {
                 do {
-                    try self.sut.publishMessage(testData1, topic: topic)
+                    try await self.sut.publishMessage(testData1, topic: topic)
                 } catch {
                     XCTAssertNotNil(error)
                 }
@@ -149,7 +167,7 @@ final class CourierHandlerTests: XCTestCase {
             
             group.addTask {
                 do {
-                    try self.sut.publishMessage(testData2, topic: topic)
+                    try await self.sut.publishMessage(testData2, topic: topic)
                 } catch {
                     XCTAssertNotNil(error)
                 }
@@ -157,12 +175,12 @@ final class CourierHandlerTests: XCTestCase {
         }
     }
     
-    func testPublishMessage_WithExtremelyLargePayload_HandlesCorrectly() {
+    func testPublishMessage_WithExtremelyLargePayload_HandlesCorrectly() async {
         let extremelyLargeData = Data(repeating: 0x42, count: 1_000_000)
         let topic = "clickstream/topic"
 
         do {
-            try sut.publishMessage(extremelyLargeData, topic: topic)
+            try await sut.publishMessage(extremelyLargeData, topic: topic)
         } catch {
             XCTAssertTrue(error is CourierError)
         }
@@ -178,7 +196,7 @@ final class CourierHandlerTests: XCTestCase {
             let topic = "clickstream/topic"
 
             do {
-                try sut.publishMessage(testData, topic: topic)
+                try await sut.publishMessage(testData, topic: topic)
             } catch {
                 continue
             }
@@ -189,62 +207,80 @@ final class CourierHandlerTests: XCTestCase {
         XCTAssertNotNil(sut)
     }
     
-    func testPublishMessage_WithValidParametersAndData_DoesNotThrow() {
+    func testPublishMessage_WithValidParametersAndData_DoesNotThrow() async {
         let testData = "test message".data(using: .utf8)!
         let topic = "clickstream/topic"
-        let qos = CourierCore.QoS.one
-        
-        XCTAssertNoThrow(try sut.publishMessage(testData, topic: topic))
-    }
-    
-    func testPublishMessage_WithEmptyDataAndValidParameters_DoesNotThrow() {
-        let emptyData = Data()
-        let topic = "clickstream/topic"
-        let qos = CourierCore.QoS.one
-        
-        XCTAssertNoThrow(try sut.publishMessage(emptyData, topic: topic))
-    }
-    
-    func testPublishMessage_WithDifferentQoSLevels_DoesNotThrow() {
-        let testData = "test message".data(using: .utf8)!
-        let topic = "clickstream/topic"
-        
-        XCTAssertNoThrow(try sut.publishMessage(testData, topic: topic))
-        XCTAssertNoThrow(try sut.publishMessage(testData, topic: topic))
-        XCTAssertNoThrow(try sut.publishMessage(testData, topic: topic))
-    }
-    
-    func testPublishMessage_WithEmptyTopic_DoesNotThrow() {
-        let testData = "test message".data(using: .utf8)!
-        let emptyTopic = ""
-        let qos = CourierCore.QoS.one
-        
-        XCTAssertNoThrow(try sut.publishMessage(testData, topic: emptyTopic))
-    }
-    
-    func testPublishMessage_WithSpecialCharactersInTopic_DoesNotThrow() {
-        let testData = "test message".data(using: .utf8)!
-        let specialTopic = "test/topic-with_special.chars#123"
-        let qos = CourierCore.QoS.one
-        
-        XCTAssertNoThrow(try sut.publishMessage(testData, topic: specialTopic))
-    }
-    
-    func testPublishMessage_WithLargePayloadAndTopic_DoesNotThrow() {
-        let largeData = Data(repeating: 0x41, count: 10000)
-        let topic = "test/large/payload/topic"
-        let qos = CourierCore.QoS.one
-        
-        XCTAssertNoThrow(try sut.publishMessage(largeData, topic: topic))
-    }
-    
-    func testPublishMessage_WhenClientNotInitializedWithParameters_ThrowsError() {
-        let testData = "test message".data(using: .utf8)!
-        let topic = "test/topic"
-        let qos = CourierCore.QoS.one
         
         do {
-            try sut.publishMessage(testData, topic: topic)
+            try await sut.publishMessage(testData, topic: topic)
+        } catch {
+            XCTFail("Should not throw error: \(error)")
+        }
+    }
+    
+    func testPublishMessage_WithEmptyDataAndValidParameters_DoesNotThrow() async {
+        let testData = Data()
+        let topic = "clickstream/topic"
+        
+        do {
+            try await sut.publishMessage(testData, topic: topic)
+        } catch {
+            XCTFail("Should not throw error: \(error)")
+        }
+    }
+    
+    func testPublishMessage_WithDifferentQoSLevels_DoesNotThrow() async {
+        let testData = "test message".data(using: .utf8)!
+        let topic = "clickstream/topic"
+        
+        do {
+            try await sut.publishMessage(testData, topic: topic)
+            try await sut.publishMessage(testData, topic: topic)
+            try await sut.publishMessage(testData, topic: topic)
+        } catch {
+            XCTFail("Should not throw error: \(error)")
+        }
+    }
+    
+    func testPublishMessage_WithEmptyTopic_DoesNotThrow() async {
+        let testData = "test message".data(using: .utf8)!
+        let emptyTopic = ""
+        
+        do {
+            try await sut.publishMessage(testData, topic: emptyTopic)
+        } catch {
+            XCTFail("Should not throw error: \(error)")
+        }
+    }
+    
+    func testPublishMessage_WithSpecialCharactersInTopic_DoesNotThrow() async {
+        let testData = "test message".data(using: .utf8)!
+        let specialTopic = "test/topic-with_special.chars#123"
+        
+        do {
+            try await sut.publishMessage(testData, topic: specialTopic)
+        } catch {
+            XCTFail("Should not throw error: \(error)")
+        }
+    }
+    
+    func testPublishMessage_WithLargePayloadAndTopic_DoesNotThrow() async {
+        let largeData = Data(repeating: 0x41, count: 10000)
+        let topic = "test/large/payload/topic"
+        
+        do {
+            try await sut.publishMessage(largeData, topic: topic)
+        } catch {
+            XCTFail("Should not throw error: \(error)")
+        }
+    }
+    
+    func testPublishMessage_WhenClientNotInitializedWithParameters_ThrowsError() async {
+        let testData = "test message".data(using: .utf8)!
+        let topic = "test/topic"
+        
+        do {
+            try await sut.publishMessage(testData, topic: topic)
         } catch {
             XCTAssertNotNil(error)
         }
@@ -258,18 +294,21 @@ final class CourierHandlerTests: XCTestCase {
         
         let testData = "test message".data(using: .utf8)!
         let topic = "test/topic"
-        let qos = CourierCore.QoS.one
-        
-        XCTAssertThrowsError(try sut.publishMessage(testData, topic: topic))
-    }
-    
-    func testPublishMessage_WithMalformedDataAndParameters_HandlesError() {
-        let malformedData = Data([0x00, 0xFF, 0x00, 0xFF])
-        let topic = "test/malformed"
-        let qos = CourierCore.QoS.one
         
         do {
-            try sut.publishMessage(malformedData, topic: topic)
+            try await sut.publishMessage(testData, topic: topic)
+            XCTFail("Should have thrown an error")
+        } catch {
+            XCTAssertNotNil(error)
+        }
+    }
+    
+    func testPublishMessage_WithMalformedDataAndParameters_HandlesError() async {
+        let malformedData = Data([0x00, 0xFF, 0x00, 0xFF])
+        let topic = "test/malformed"
+        
+        do {
+            try await sut.publishMessage(malformedData, topic: topic)
         } catch {
             XCTFail("Should handle malformed data gracefully")
         }
@@ -283,12 +322,11 @@ final class CourierHandlerTests: XCTestCase {
         let testData2 = "message2".data(using: .utf8)!
         let topic1 = "test/topic1"
         let topic2 = "test/topic2"
-        let qos = CourierCore.QoS.one
         
         await withTaskGroup(of: Void.self) { group in
             group.addTask {
                 do {
-                    try self.sut.publishMessage(testData1, topic: topic1)
+                    try await self.sut.publishMessage(testData1, topic: topic1)
                 } catch {
                     XCTAssertNotNil(error)
                 }
@@ -296,7 +334,7 @@ final class CourierHandlerTests: XCTestCase {
             
             group.addTask {
                 do {
-                    try self.sut.publishMessage(testData2, topic: topic2)
+                    try await self.sut.publishMessage(testData2, topic: topic2)
                 } catch {
                     XCTAssertNotNil(error)
                 }
@@ -304,40 +342,48 @@ final class CourierHandlerTests: XCTestCase {
         }
     }
     
-    func testPublishMessage_WithExtremelyLargePayloadAndParameters_HandlesCorrectly() {
+    func testPublishMessage_WithExtremelyLargePayloadAndParameters_HandlesCorrectly() async {
         let extremelyLargeData = Data(repeating: 0x42, count: 1_000_000)
         let topic = "test/extremely/large"
-        let qos = CourierCore.QoS.two
         
         do {
-            try sut.publishMessage(extremelyLargeData, topic: topic)
+            try await sut.publishMessage(extremelyLargeData, topic: topic)
         } catch {
             XCTAssertTrue(error is CourierError)
         }
     }
     
-    func testPublishMessage_WithLongTopicName_DoesNotThrow() {
+    func testPublishMessage_WithLongTopicName_DoesNotThrow() async {
         let testData = "test message".data(using: .utf8)!
         let longTopic = String(repeating: "verylongtopic/", count: 50) + "end"
-        let qos = CourierCore.QoS.one
         
-        XCTAssertNoThrow(try sut.publishMessage(testData, topic: longTopic))
+        do {
+            try await sut.publishMessage(testData, topic: longTopic)
+        } catch {
+            XCTFail("Should not throw error: \(error)")
+        }
     }
     
-    func testPublishMessage_WithUnicodeInTopic_DoesNotThrow() {
+    func testPublishMessage_WithUnicodeInTopic_DoesNotThrow() async {
         let testData = "test message".data(using: .utf8)!
         let unicodeTopic = "test/topic/with/unicode/🚀/📱"
-        let qos = CourierCore.QoS.one
         
-        XCTAssertNoThrow(try sut.publishMessage(testData, topic: unicodeTopic))
+        do {
+            try await sut.publishMessage(testData, topic: unicodeTopic)
+        } catch {
+            XCTFail("Should not throw error: \(error)")
+        }
     }
     
-    func testPublishMessage_WithNullBytesInData_HandlesCorrectly() {
+    func testPublishMessage_WithNullBytesInData_HandlesCorrectly() async {
         let dataWithNulls = Data([0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x00, 0x57, 0x6F, 0x72, 0x6C, 0x64])
         let topic = "test/null/bytes"
-        let qos = CourierCore.QoS.one
         
-        XCTAssertNoThrow(try sut.publishMessage(dataWithNulls, topic: topic))
+        do {
+            try await sut.publishMessage(dataWithNulls, topic: topic)
+        } catch {
+            XCTFail("Should not throw error: \(error)")
+        }
     }
 }
 
@@ -368,11 +414,17 @@ extension CourierHandlerTests {
     }
     
     private func createMockCredentials() -> ClickstreamClientIdentifiers {
-        CourierIdentifiers(userIdentifier: "user_id", deviceIdentifier: "device_id", bundleIdentifier: "bundle_id")
+        CourierIdentifiers(userIdentifier: "user_id",
+                           deviceIdentifier: "device_id",
+                           bundleIdentifier: "bundle_id",
+                           authURLRequest: URLRequest(url: URL(string: "https://auth.example.com/token")!))
     }
     
     private func createMockCredentialsWithDifferentValues() -> ClickstreamClientIdentifiers {
-        CourierIdentifiers(userIdentifier: "user_id_2", deviceIdentifier: "device_id_2", bundleIdentifier: "bundle_id_3")
+        CourierIdentifiers(userIdentifier: "user_id_2",
+                           deviceIdentifier: "device_id_2",
+                           bundleIdentifier: "bundle_id_3",
+                           authURLRequest: URLRequest(url: URL(string: "https://auth.example.com/token")!))
 
     }
     

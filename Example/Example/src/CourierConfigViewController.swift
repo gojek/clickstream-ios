@@ -17,7 +17,7 @@ final class CourierConfigViewController: UITableViewController {
     @IBOutlet weak var bundleIdTextField: UITextField!
     @IBOutlet weak var extrraIdTextField: UITextField!
 
-    @IBOutlet weak var baseUrlTextField: UITextField!
+    @IBOutlet weak var urlHostTextField: UITextField!
     @IBOutlet weak var urlPathTextField: UITextField!
     @IBOutlet weak var urlQueriesTextField: UITextField!
 
@@ -27,7 +27,6 @@ final class CourierConfigViewController: UITableViewController {
     @IBOutlet weak var adapterPlistEnabled: UISwitch!
 
     @IBOutlet weak var topicTextField: UITextField!
-    @IBOutlet weak var topicQoSTab: UISegmentedControl!
 
     @IBOutlet weak var connectPolicyEnabledSwitch: UISwitch!
     @IBOutlet weak var connectPolicyTimerIntervalTextField: UITextField!
@@ -49,10 +48,37 @@ final class CourierConfigViewController: UITableViewController {
     }
 
     private func setupConfigs() {
-        // TEMP: Must be removed from open-source code
+        // ================
+        // Must be provided
+        let userIdentifier = ""
+        let host = urlHostTextField.text
+        let path = urlPathTextField.text
+        let queries = urlQueriesTextField.text
+        let headers: [String: String] = [:]
+        let topic = topicTextField.text
+        // ================
+
+        var urlComponents = URLComponents()
+        urlComponents.scheme = "https"
+        urlComponents.host = host
+        urlComponents.path = path ?? ""
+        urlComponents.queryItems = queries?.split(separator: "&").compactMap {
+            URLQueryItem(name: String($0.split(separator: "=")[0]), value: String($0.split(separator: "=")[1]))
+        }
+
+        guard let url = urlComponents.url else {
+            assertionFailure("Auth URL must be valid")
+            return
+        }
+
+        var urlRequest = URLRequest(url: url)
+        headers.forEach {
+            urlRequest.setValue($0.value, forHTTPHeaderField: $0.key)
+        }
+
         userCredentials = CourierIdentifiers(
-            userIdentifier: "",
-            authenticationHeaders: [:]
+            userIdentifier: userIdentifier,
+            authURLRequest: urlRequest
         )
 
         let formatter = DateFormatter()
@@ -65,24 +91,16 @@ final class CourierConfigViewController: UITableViewController {
         let messageAdapter = EnvelopeMessageAdapter(messageAdapters: [JSONMessageAdapter(jsonDecoder: decoder), DataMessageAdapter()],
                                                     isToMessageEnabled: false)
 
-        config = ClickstreamCourierConfig(messageAdapter: [messageAdapter],
-                                          connectConfig: .init(baseURL: "",
-                                                               authURLPath: "",
-                                                               authURLQueries: ""))
-
-        if let userId = userCredentials?.userIdentifier.description {
-            let userType = "customer"
-            topicTextField.text = "clickstream/v1/\(userType)/\(userId)"
-        }
+        config = ClickstreamCourierConfig(messageAdapter: [messageAdapter])
 
         userIdTextField.text = userCredentials?.userIdentifier.description
         deviceIdTextField.text = userCredentials?.deviceIdentifier.description
         bundleIdTextField.text = userCredentials?.bundleIdentifier?.description
         extrraIdTextField.text = userCredentials?.extraIdentifier?.description
-        
-        baseUrlTextField.text = config?.connectConfig.baseURL
-        urlPathTextField.text = config?.connectConfig.authURLPath
-        urlQueriesTextField.text = config?.connectConfig.authURLQueries
+        urlHostTextField.text = host
+        urlPathTextField.text = path
+        urlQueriesTextField.text = queries
+        topicTextField.text = topic
 
         guard let config else { return }
         for adapter in config.messageAdapters {

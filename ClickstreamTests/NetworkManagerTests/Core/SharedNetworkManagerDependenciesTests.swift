@@ -53,7 +53,7 @@ class SharedNetworkManagerDependenciesTests: XCTestCase {
         // given
         let expectation = XCTestExpectation(description: "Courier session must be configured")
         let dummyRequest = URLRequest(url: URL(string: "dummy_url")!)
-        let user = CourierIdentifiers(userIdentifier: "12345")
+        let user = CourierIdentifiers(userIdentifier: "12345", authURLRequest: URLRequest(url: .init(string: "some_url")!))
         let topic = "clickstream/topic"
         
         Clickstream.configurations = MockConstants.constraints

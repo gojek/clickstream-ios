@@ -14,9 +14,6 @@ class ClickstreamCourierConfigTests: XCTestCase {
     
     func testInitWithAllParameters() {
         let connectConfig = ClickstreamCourierConnectConfig(
-            baseURL: "https://api.example.com",
-            authURLPath: "/auth",
-            authURLQueries: "version=1",
             enableAuthenticationTimeout: true,
             authenticationTimeoutInterval: 45.0,
             autoReconnectInterval: 2.0,
@@ -60,7 +57,7 @@ class ClickstreamCourierConfigTests: XCTestCase {
         XCTAssertFalse(config.isMessagePersistenceEnabled)
         XCTAssertEqual(config.connectConfig.autoReconnectInterval, 5.0)
         XCTAssertEqual(config.connectConfig.maxAutoReconnectInterval, 10.0)
-        XCTAssertEqual(config.connectConfig.authenticationTimeoutInterval, 30.0)
+        XCTAssertEqual(config.connectConfig.authenticationTimeoutInterval, 20.0)
         XCTAssertTrue(config.connectConfig.enableAuthenticationTimeout)
         XCTAssertEqual(config.messagePersistenceTTLSeconds, 86400.0)
         XCTAssertEqual(config.messageCleanupInterval, 10.0)
@@ -72,8 +69,6 @@ class ClickstreamCourierConfigTests: XCTestCase {
         {
             "message_adapters": ["json", "data"],
             "connect_config": {
-                "base_url": "https://test.com",
-                "auth_url_path": "/auth",
                 "auto_reconnect_interval": 2.5,
                 "max_auto_reconnect_interval": 45.0,
                 "enable_authentication_timeout": true,
@@ -111,7 +106,7 @@ class ClickstreamCourierConfigTests: XCTestCase {
         XCTAssertEqual(config.connectConfig.autoReconnectInterval, 5.0)
         XCTAssertEqual(config.connectConfig.maxAutoReconnectInterval, 10.0)
         XCTAssertTrue(config.connectConfig.enableAuthenticationTimeout)
-        XCTAssertEqual(config.connectConfig.authenticationTimeoutInterval, 30.0)
+        XCTAssertEqual(config.connectConfig.authenticationTimeoutInterval, 20.0)
         XCTAssertEqual(config.messagePersistenceTTLSeconds, 86400.0)
         XCTAssertEqual(config.messageCleanupInterval, 10.0)
         XCTAssertFalse(config.shouldInitializeCoreDataPersistenceContext)
@@ -121,8 +116,6 @@ class ClickstreamCourierConfigTests: XCTestCase {
         let json = """
         {
             "connect_config": {
-                "base_url": "https://test.com",
-                "auth_url_path": "/auth",
                 "auto_reconnect_interval": "5.5",
                 "enable_authentication_timeout": true
             }
@@ -150,8 +143,6 @@ class ClickstreamCourierConfigTests: XCTestCase {
     
     func testTimeIntervalBoundaries() {
         let connectConfig = ClickstreamCourierConnectConfig(
-            baseURL: "https://test.com",
-            authURLPath: "/auth",
             authenticationTimeoutInterval: 120.0,
             autoReconnectInterval: 0.1,
             maxAutoReconnectInterval: 3600.0
@@ -175,9 +166,6 @@ class ClickstreamCourierConfigTests: XCTestCase {
         {
             "message_adapters": ["json", "data"],
             "connect_config": {
-                "base_url": "https://test.com",
-                "auth_url_path": "/auth",
-                "auth_url_queries": "version=1",
                 "enable_authentication_timeout": true,
                 "authentication_timeout_interval": 45.0,
                 "auto_reconnect_interval": 3.0,
@@ -199,9 +187,6 @@ class ClickstreamCourierConfigTests: XCTestCase {
         let config = try JSONDecoder().decode(ClickstreamCourierConfig.self, from: json)
         
         XCTAssertEqual(config.messageAdapters.count, 2)
-        XCTAssertEqual(config.connectConfig.baseURL, "https://test.com")
-        XCTAssertEqual(config.connectConfig.authURLPath, "/auth")
-        XCTAssertEqual(config.connectConfig.authURLQueries, "version=1")
         XCTAssertTrue(config.connectConfig.enableAuthenticationTimeout)
         XCTAssertEqual(config.connectConfig.authenticationTimeoutInterval, 45.0)
         XCTAssertEqual(config.connectConfig.autoReconnectInterval, 3.0)
@@ -259,7 +244,6 @@ class ClickstreamCourierConfigTests: XCTestCase {
         let config = try JSONDecoder().decode(ClickstreamCourierConfig.self, from: json)
         
         XCTAssertTrue(config.messageAdapters.isEmpty)
-        XCTAssertEqual(config.connectConfig.baseURL, "")
         XCTAssertEqual(config.pingIntervalMs, 10.0)
         XCTAssertFalse(config.isCleanSessionEnabled)
         XCTAssertFalse(config.isMessagePersistenceEnabled)
