@@ -322,6 +322,12 @@ extension CourierRetryMechanism {
         self.topic = topic
         establishConnection()
     }
+
+    func removeIdentifiers() {
+        identifiers = nil
+        topic = nil
+        stopTracking()
+    }
 }
 
 extension CourierRetryMechanism {

@@ -113,5 +113,12 @@ final class SharedNetworkManagerDependencies {
 
         courierRetryMech.configureIdentifiers(with: courierIdentifiers, topic: topic)
     }
+    
+    func removeClientIdentifiers() {
+        guard let courierRetryMech = self.courierRetryMech as? CourierRetryMechanism else {
+            return
+        }
+        courierRetryMech.removeIdentifiers()
+    }
 }
 

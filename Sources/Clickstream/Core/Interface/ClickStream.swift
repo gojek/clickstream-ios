@@ -361,4 +361,11 @@ extension Clickstream {
 
         dependencies.provideClientIdentifiers(with: identifiers, topic: topic)
     }
+
+    public func removeClientIdentifiers() {
+        guard let dependencies = dependencies as? SharedClickstreamDependencies else {
+            return
+        }
+        dependencies.removeClientIdentifiers()
+    }
 }

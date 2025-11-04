@@ -96,4 +96,9 @@ extension SharedClickstreamDependencies {
         }
         networkManagerDependencies.provideClientIdentifiers(with: identifiers, topic: topic)
     }
+
+    /// Remove client identifier upon user's session is revoked
+    public func removeClientIdentifiers() {
+        networkManagerDependencies.removeClientIdentifiers()
+    }
 }
