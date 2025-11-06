@@ -195,6 +195,34 @@
 		BDE4687A2A5BD72000BFA976 /* EventProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467F72A5BD72000BFA976 /* EventProcessor.swift */; };
 		BDE4687B2A5BD72000BFA976 /* EventProcessorDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467F82A5BD72000BFA976 /* EventProcessorDependencies.swift */; };
 		BDE4687C2A5BD72000BFA976 /* EventProcessorDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467F82A5BD72000BFA976 /* EventProcessorDependencies.swift */; };
+		D8011B9A2EBB24A30088C6F8 /* BaseAsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011B8D2EBB24A30088C6F8 /* BaseAsyncOperation.swift */; };
+		D8011B9C2EBB24A30088C6F8 /* CourierNetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011B912EBB24A30088C6F8 /* CourierNetworkClient.swift */; };
+		D8011B9D2EBB24A30088C6F8 /* AsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011B812EBB24A30088C6F8 /* AsyncOperation.swift */; };
+		D8011B9E2EBB24A30088C6F8 /* PollingEventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011B932EBB24A30088C6F8 /* PollingEventHandler.swift */; };
+		D8011BA12EBB24A30088C6F8 /* CourierFallbackPollingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011B902EBB24A30088C6F8 /* CourierFallbackPollingService.swift */; };
+		D8011BA22EBB24A30088C6F8 /* PollingFallbackService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011B942EBB24A30088C6F8 /* PollingFallbackService.swift */; };
+		D8011BA82EBB24A30088C6F8 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011B962EBB24A30088C6F8 /* Models.swift */; };
+		D8011BAA2EBB24A30088C6F8 /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011B972EBB24A30088C6F8 /* NetworkClient.swift */; };
+		D8011BAB2EBB24A30088C6F8 /* BaseFallbackPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011B832EBB24A30088C6F8 /* BaseFallbackPolicy.swift */; };
+		D8011BAD2EBB24A30088C6F8 /* HTTPRequestOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011B872EBB24A30088C6F8 /* HTTPRequestOperation.swift */; };
+		D8011BAE2EBB24A30088C6F8 /* BaseAsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011B8D2EBB24A30088C6F8 /* BaseAsyncOperation.swift */; };
+		D8011BB02EBB24A30088C6F8 /* CourierNetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011B912EBB24A30088C6F8 /* CourierNetworkClient.swift */; };
+		D8011BB12EBB24A30088C6F8 /* AsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011B812EBB24A30088C6F8 /* AsyncOperation.swift */; };
+		D8011BB22EBB24A30088C6F8 /* PollingEventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011B932EBB24A30088C6F8 /* PollingEventHandler.swift */; };
+		D8011BB52EBB24A30088C6F8 /* CourierFallbackPollingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011B902EBB24A30088C6F8 /* CourierFallbackPollingService.swift */; };
+		D8011BB62EBB24A30088C6F8 /* PollingFallbackService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011B942EBB24A30088C6F8 /* PollingFallbackService.swift */; };
+		D8011BBC2EBB24A30088C6F8 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011B962EBB24A30088C6F8 /* Models.swift */; };
+		D8011BBE2EBB24A30088C6F8 /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011B972EBB24A30088C6F8 /* NetworkClient.swift */; };
+		D8011BBF2EBB24A30088C6F8 /* BaseFallbackPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011B832EBB24A30088C6F8 /* BaseFallbackPolicy.swift */; };
+		D8011BC12EBB24A30088C6F8 /* HTTPRequestOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011B872EBB24A30088C6F8 /* HTTPRequestOperation.swift */; };
+		D8011BC32EBB265E0088C6F8 /* CourierAtomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011BC22EBB265E0088C6F8 /* CourierAtomic.swift */; };
+		D8011BC42EBB265E0088C6F8 /* CourierAtomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011BC22EBB265E0088C6F8 /* CourierAtomic.swift */; };
+		D8011BC62EBB38DB0088C6F8 /* PublishFallbackPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011BC52EBB38DB0088C6F8 /* PublishFallbackPolicy.swift */; };
+		D8011BC72EBB38DB0088C6F8 /* PublishFallbackPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011BC52EBB38DB0088C6F8 /* PublishFallbackPolicy.swift */; };
+		D8011BC92EBB3D050088C6F8 /* CourierFallbackPollingConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011BC82EBB3D050088C6F8 /* CourierFallbackPollingConfig.swift */; };
+		D8011BCA2EBB3D050088C6F8 /* CourierFallbackPollingConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011BC82EBB3D050088C6F8 /* CourierFallbackPollingConfig.swift */; };
+		D8011BCF2EBC86770088C6F8 /* PollingMessageListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011BCE2EBC86770088C6F8 /* PollingMessageListener.swift */; };
+		D8011BD02EBC86770088C6F8 /* PollingMessageListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8011BCE2EBC86770088C6F8 /* PollingMessageListener.swift */; };
 		D859DC3B2E9F50B2008D900F /* CourierAuthenticationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D952E9CC0C000C4281E /* CourierAuthenticationProvider.swift */; };
 		D859DC3E2E9F5147008D900F /* CourierExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D859DC3D2E9F5146008D900F /* CourierExtensionTests.swift */; };
 		D859DC412E9F51C6008D900F /* CourierConnectTimeoutPolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D859DC402E9F51C6008D900F /* CourierConnectTimeoutPolicyTests.swift */; };
@@ -404,6 +432,20 @@
 		BDE467F82A5BD72000BFA976 /* EventProcessorDependencies.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventProcessorDependencies.swift; sourceTree = "<group>"; };
 		C7CD1A2E08F13591955370E3 /* Pods-Clickstream.integration.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.integration.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.integration.xcconfig"; sourceTree = "<group>"; };
 		CA0F06B342B881F06295F6E3 /* Pods-Clickstream.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.debug.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.debug.xcconfig"; sourceTree = "<group>"; };
+		D8011B812EBB24A30088C6F8 /* AsyncOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncOperation.swift; sourceTree = "<group>"; };
+		D8011B832EBB24A30088C6F8 /* BaseFallbackPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseFallbackPolicy.swift; sourceTree = "<group>"; };
+		D8011B872EBB24A30088C6F8 /* HTTPRequestOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPRequestOperation.swift; sourceTree = "<group>"; };
+		D8011B8D2EBB24A30088C6F8 /* BaseAsyncOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseAsyncOperation.swift; sourceTree = "<group>"; };
+		D8011B902EBB24A30088C6F8 /* CourierFallbackPollingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierFallbackPollingService.swift; sourceTree = "<group>"; };
+		D8011B912EBB24A30088C6F8 /* CourierNetworkClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierNetworkClient.swift; sourceTree = "<group>"; };
+		D8011B932EBB24A30088C6F8 /* PollingEventHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollingEventHandler.swift; sourceTree = "<group>"; };
+		D8011B942EBB24A30088C6F8 /* PollingFallbackService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollingFallbackService.swift; sourceTree = "<group>"; };
+		D8011B962EBB24A30088C6F8 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		D8011B972EBB24A30088C6F8 /* NetworkClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkClient.swift; sourceTree = "<group>"; };
+		D8011BC22EBB265E0088C6F8 /* CourierAtomic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierAtomic.swift; sourceTree = "<group>"; };
+		D8011BC52EBB38DB0088C6F8 /* PublishFallbackPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishFallbackPolicy.swift; sourceTree = "<group>"; };
+		D8011BC82EBB3D050088C6F8 /* CourierFallbackPollingConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierFallbackPollingConfig.swift; sourceTree = "<group>"; };
+		D8011BCE2EBC86770088C6F8 /* PollingMessageListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollingMessageListener.swift; sourceTree = "<group>"; };
 		D859DC3D2E9F5146008D900F /* CourierExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierExtensionTests.swift; sourceTree = "<group>"; };
 		D859DC402E9F51C6008D900F /* CourierConnectTimeoutPolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierConnectTimeoutPolicyTests.swift; sourceTree = "<group>"; };
 		D859DC422E9F51D3008D900F /* CourierIdleActivityTimeoutPolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierIdleActivityTimeoutPolicyTests.swift; sourceTree = "<group>"; };
@@ -1171,6 +1213,67 @@
 			path = Core;
 			sourceTree = "<group>";
 		};
+		D8011B8C2EBB24A30088C6F8 /* Policies */ = {
+			isa = PBXGroup;
+			children = (
+				D8011B832EBB24A30088C6F8 /* BaseFallbackPolicy.swift */,
+				D8011BC52EBB38DB0088C6F8 /* PublishFallbackPolicy.swift */,
+			);
+			path = Policies;
+			sourceTree = "<group>";
+		};
+		D8011B8E2EBB24A30088C6F8 /* Operations */ = {
+			isa = PBXGroup;
+			children = (
+				D8011B8D2EBB24A30088C6F8 /* BaseAsyncOperation.swift */,
+				D8011B812EBB24A30088C6F8 /* AsyncOperation.swift */,
+				D8011B872EBB24A30088C6F8 /* HTTPRequestOperation.swift */,
+			);
+			path = Operations;
+			sourceTree = "<group>";
+		};
+		D8011B922EBB24A30088C6F8 /* FallbackPolling */ = {
+			isa = PBXGroup;
+			children = (
+				D8011BD12EBC99F70088C6F8 /* Utilities */,
+				D8011B8C2EBB24A30088C6F8 /* Policies */,
+				D8011B8E2EBB24A30088C6F8 /* Operations */,
+				D8011B902EBB24A30088C6F8 /* CourierFallbackPollingService.swift */,
+				D8011B912EBB24A30088C6F8 /* CourierNetworkClient.swift */,
+				D8011BC82EBB3D050088C6F8 /* CourierFallbackPollingConfig.swift */,
+			);
+			path = FallbackPolling;
+			sourceTree = "<group>";
+		};
+		D8011B982EBB24A30088C6F8 /* Interface */ = {
+			isa = PBXGroup;
+			children = (
+				D8011B962EBB24A30088C6F8 /* Models.swift */,
+				D8011BCE2EBC86770088C6F8 /* PollingMessageListener.swift */,
+				D8011B932EBB24A30088C6F8 /* PollingEventHandler.swift */,
+				D8011B942EBB24A30088C6F8 /* PollingFallbackService.swift */,
+				D8011B972EBB24A30088C6F8 /* NetworkClient.swift */,
+			);
+			path = Interface;
+			sourceTree = "<group>";
+		};
+		D8011B992EBB24A30088C6F8 /* PollingService */ = {
+			isa = PBXGroup;
+			children = (
+				D8011B922EBB24A30088C6F8 /* FallbackPolling */,
+				D8011B982EBB24A30088C6F8 /* Interface */,
+			);
+			path = PollingService;
+			sourceTree = "<group>";
+		};
+		D8011BD12EBC99F70088C6F8 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				D8011BC22EBB265E0088C6F8 /* CourierAtomic.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		D859DC3C2E9F512E008D900F /* Courier */ = {
 			isa = PBXGroup;
 			children = (
@@ -1278,6 +1381,7 @@
 				D8F38D892E9CB04A00C4281E /* Utilities */,
 				D8F38D7B2E98ECE200C4281E /* Data */,
 				D8F38D772E98C42C00C4281E /* Config */,
+				D8011B992EBB24A30088C6F8 /* PollingService */,
 				D8F38D5F2E950C5D00C4281E /* CourierNetworkBuilder.swift */,
 				D8F38D602E950C5D00C4281E /* CourierNetworkService.swift */,
 				D8F38D612E950C5D00C4281E /* CourierRetryMechanism.swift */,
@@ -1543,6 +1647,7 @@
 				D872F6042E8F8646006F077E /* WebsocketRetryMechanism.swift in Sources */,
 				D872F6062E8F8646006F077E /* WebsocketNetworkService.swift in Sources */,
 				D8F38D9C2E9E0DF300C4281E /* ClickstreamCourierUserCredentials.swift in Sources */,
+				D8011BCA2EBB3D050088C6F8 /* CourierFallbackPollingConfig.swift in Sources */,
 				D872F6092E8F8646006F077E /* WebsocketNetworkBuilder.swift in Sources */,
 				BD6BDB7629FBC1360006B04A /* EventsListViewModel.swift in Sources */,
 				BD6BDB7429FBC1360006B04A /* EventsListViewController.swift in Sources */,
@@ -1566,8 +1671,21 @@
 				BD6BDB9C29FBC1360006B04A /* HealthTrackerDTO.swift in Sources */,
 				BDE468272A5BD72000BFA976 /* DeviceInfo.swift in Sources */,
 				BDE4682D2A5BD72000BFA976 /* EventBatch.swift in Sources */,
+				D8011BC32EBB265E0088C6F8 /* CourierAtomic.swift in Sources */,
 				BD6BDB7E29FBC1360006B04A /* EventsHelper.swift in Sources */,
+				D8011BCF2EBC86770088C6F8 /* PollingMessageListener.swift in Sources */,
 				BDE4685F2A5BD72000BFA976 /* EventBatchCreator.swift in Sources */,
+				D8011BC62EBB38DB0088C6F8 /* PublishFallbackPolicy.swift in Sources */,
+				D8011BAE2EBB24A30088C6F8 /* BaseAsyncOperation.swift in Sources */,
+				D8011BB02EBB24A30088C6F8 /* CourierNetworkClient.swift in Sources */,
+				D8011BB12EBB24A30088C6F8 /* AsyncOperation.swift in Sources */,
+				D8011BB22EBB24A30088C6F8 /* PollingEventHandler.swift in Sources */,
+				D8011BB52EBB24A30088C6F8 /* CourierFallbackPollingService.swift in Sources */,
+				D8011BB62EBB24A30088C6F8 /* PollingFallbackService.swift in Sources */,
+				D8011BBC2EBB24A30088C6F8 /* Models.swift in Sources */,
+				D8011BBE2EBB24A30088C6F8 /* NetworkClient.swift in Sources */,
+				D8011BBF2EBB24A30088C6F8 /* BaseFallbackPolicy.swift in Sources */,
+				D8011BC12EBB24A30088C6F8 /* HTTPRequestOperation.swift in Sources */,
 				BD6BDB8C29FBC1360006B04A /* Tracker.swift in Sources */,
 				BDE468732A5BD72000BFA976 /* TableDefinable.swift in Sources */,
 				D8F38D8F2E9CB08300C4281E /* QoS+Int.swift in Sources */,
@@ -1653,6 +1771,7 @@
 				D859DC4D2E9F52B7008D900F /* ClickstreamCourierConfigTests.swift in Sources */,
 				D859DC482E9F5224008D900F /* ClickstreamCourierUserCredentialsTests.swift in Sources */,
 				BD6BDB9F29FBC1360006B04A /* CSCommonPropertiesDTO.swift in Sources */,
+				D8011BC92EBB3D050088C6F8 /* CourierFallbackPollingConfig.swift in Sources */,
 				BDE467752A5BD24500BFA976 /* BatchSizeRegulatorMock.swift in Sources */,
 				BDE4680E2A5BD72000BFA976 /* NetworkReachability.swift in Sources */,
 				BDE467FC2A5BD72000BFA976 /* RetryMechanism.swift in Sources */,
@@ -1757,7 +1876,19 @@
 				D859DC4A2E9F5280008D900F /* CourierConnectTests.swift in Sources */,
 				BD6BDB8F29FBC1360006B04A /* TrackerConstants.swift in Sources */,
 				BDE4686A2A5BD72000BFA976 /* EventBatchSizeRegulator.swift in Sources */,
+				D8011BC42EBB265E0088C6F8 /* CourierAtomic.swift in Sources */,
 				BD6BDB6B29FBC1360006B04A /* RadioLabelTableViewCell.swift in Sources */,
+				D8011B9A2EBB24A30088C6F8 /* BaseAsyncOperation.swift in Sources */,
+				D8011B9C2EBB24A30088C6F8 /* CourierNetworkClient.swift in Sources */,
+				D8011B9D2EBB24A30088C6F8 /* AsyncOperation.swift in Sources */,
+				D8011BD02EBC86770088C6F8 /* PollingMessageListener.swift in Sources */,
+				D8011B9E2EBB24A30088C6F8 /* PollingEventHandler.swift in Sources */,
+				D8011BA12EBB24A30088C6F8 /* CourierFallbackPollingService.swift in Sources */,
+				D8011BA22EBB24A30088C6F8 /* PollingFallbackService.swift in Sources */,
+				D8011BA82EBB24A30088C6F8 /* Models.swift in Sources */,
+				D8011BAA2EBB24A30088C6F8 /* NetworkClient.swift in Sources */,
+				D8011BAB2EBB24A30088C6F8 /* BaseFallbackPolicy.swift in Sources */,
+				D8011BAD2EBB24A30088C6F8 /* HTTPRequestOperation.swift in Sources */,
 				D8F38D9B2E9E0DF300C4281E /* ClickstreamCourierUserCredentials.swift in Sources */,
 				D8F38D632E950C5D00C4281E /* CourierRetryMechanism.swift in Sources */,
 				D8F38D642E950C5D00C4281E /* CourierNetworkService.swift in Sources */,
@@ -1776,6 +1907,7 @@
 				BD6BDB7529FBC1360006B04A /* EventsListViewController.swift in Sources */,
 				BDE4687C2A5BD72000BFA976 /* EventProcessorDependencies.swift in Sources */,
 				BDE4682C2A5BD72000BFA976 /* ClickstreamEvent.swift in Sources */,
+				D8011BC72EBB38DB0088C6F8 /* PublishFallbackPolicy.swift in Sources */,
 				BD6BDB8329FBC1360006B04A /* EventStateViewable.swift in Sources */,
 				BDE468082A5BD72000BFA976 /* NetworkConfiguration.swift in Sources */,
 				BDE468302A5BD72000BFA976 /* EventRequest.pb.swift in Sources */,

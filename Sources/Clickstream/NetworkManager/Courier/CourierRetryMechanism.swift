@@ -166,7 +166,7 @@ extension CourierRetryMechanism {
 
         Task {
             do {
-                try await networkService.publish(data, topic: topic)
+                try await networkService.publish(eventRequest, topic: topic)
                 
                 let guid = eventRequest.guid
                 removeFromCache(with: guid)
@@ -187,6 +187,10 @@ extension CourierRetryMechanism {
                     stateViewer.updateStatus(eventBatchID: guid, state: .ackReceived)
                 }
                 #endif
+
+                #if ETE_TEST_SUITE_ENABLED
+                if testMode { FileManagerOverride.writeToFile() }
+                #endif
             } catch(let error) {
                 print("Error: \(error.localizedDescription) for eventRequest guid \(eventRequest.guid)", .verbose)
                 #if TRACKER_ENABLED
@@ -200,41 +204,6 @@ extension CourierRetryMechanism {
                 if testMode { FileManagerOverride.writeToFile() }
                 #endif
                 #endif
-            }
-
-            #if ETE_TEST_SUITE_ENABLED
-            if testMode { FileManagerOverride.writeToFile() }
-            #endif
-        }
-    }
-    
-    
-    func trackBatchFallbackHTTP(with eventRequest: EventRequest) {
-        // add the batch to the cache before sending the batch to the network.
-        let startTime = Date()
-
-        performQueue.async(flags: .barrier) { [weak self] in
-            guard let checkedSelf = self, let courierNetworkService = checkedSelf.networkService as? CourierNetworkService<DefaultCourierHandler> else {
-                return
-            }
-
-            Task {
-                do {
-                    let response = try await courierNetworkService.executeHTTPRequest()
-                    checkedSelf.handleRacoonEventResponse(with: eventRequest, startTime: startTime, response: response)
-                } catch(let error) {
-                    print("Error: \(error.localizedDescription) for eventRequest guid \(eventRequest.guid)", .verbose)
-                    #if TRACKER_ENABLED
-                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchErrorResponse,
-                                                          eventBatchGUID: eventRequest.guid, // eventRequest.guid is the batch GUID
-                                                          reason: error.localizedDescription,
-                                                          eventCount: eventRequest.eventCount)
-                    Tracker.sharedInstance?.record(event: healthEvent)
-                    #if ETE_TEST_SUITE_ENABLED
-                    Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "\(error)")
-                    #endif
-                    #endif
-                }
             }
         }
     }
@@ -475,11 +444,10 @@ extension CourierRetryMechanism {
                     do {
                         // Refresh the timeStamp before sending the batch!
                         try _batch.refreshBatchSentTimeStamp()
-                        checkedSelf.trackBatch(with: _batch)
                     } catch {
-                        checkedSelf.trackBatchFallbackHTTP(with: _batch)
                         print("Failed to update batch time on retry. Description: \(error)",.critical)
                     }
+                    checkedSelf.trackBatch(with: _batch)
                 }
             }
         }

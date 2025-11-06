@@ -40,9 +40,10 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithValidData_DoesNotThrow() async {
         let testData = "test message".data(using: .utf8)!
         let topic = "clickstream/topic"
-        
+        let eventRequest = EventRequest(guid: "12345", data: testData)
+
         do {
-            try await sut.publishMessage(testData, topic: topic)
+            try await sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTFail("Should not throw error: \(error)")
         }
@@ -51,9 +52,10 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithEmptyData_DoesNotThrow() async {
         let emptyData = Data()
         let topic = "clickstream/topic"
-        
+        let eventRequest = EventRequest(guid: "12345", data: emptyData)
+
         do {
-            try await sut.publishMessage(emptyData, topic: topic)
+            try await sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTFail("Should not throw error: \(error)")
         }
@@ -101,9 +103,10 @@ final class CourierHandlerTests: XCTestCase {
     func testLargeDataPublish_WithLargePayload_DoesNotThrow() async {
         let largeData = Data(repeating: 0x41, count: 10000)
         let topic = "clickstream/topic"
+        let eventRequest = EventRequest(guid: "12345", data: largeData)
         
         do {
-            try await sut.publishMessage(largeData, topic: topic)
+            try await sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTFail("Should not throw error: \(error)")
         }
@@ -112,9 +115,10 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WhenClientNotInitialized_ThrowsError() async {
         let testData = "test message".data(using: .utf8)!
         let topic = "clickstream/topic"
+        let eventRequest = EventRequest(guid: "12345", data: testData)
 
         do {
-            try await sut.publishMessage(testData, topic: topic)
+            try await sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTAssertNotNil(error)
         }
@@ -128,9 +132,10 @@ final class CourierHandlerTests: XCTestCase {
         sut.disconnect()
         
         let testData = "test message".data(using: .utf8)!
-        
+        let eventRequest = EventRequest(guid: "12345", data: testData)
+
         do {
-            try await sut.publishMessage(testData, topic: topic)
+            try await sut.publishMessage(eventRequest, topic: topic)
             XCTFail("Should have thrown an error")
         } catch {
             XCTAssertNotNil(error)
@@ -140,9 +145,10 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithMalformedData_HandlesError() async {
         let malformedData = Data([0x00, 0xFF, 0x00, 0xFF])
         let topic = "clickstream/topic"
+        let eventRequest = EventRequest(guid: "12345", data: malformedData)
         
         do {
-            try await sut.publishMessage(malformedData, topic: topic)
+            try await sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTFail("Should handle malformed data gracefully")
         }
@@ -159,7 +165,8 @@ final class CourierHandlerTests: XCTestCase {
         await withTaskGroup(of: Void.self) { group in
             group.addTask {
                 do {
-                    try await self.sut.publishMessage(testData1, topic: topic)
+                    let eventRequest = EventRequest(guid: "12345", data: testData1)
+                    try await self.sut.publishMessage(eventRequest, topic: topic)
                 } catch {
                     XCTAssertNotNil(error)
                 }
@@ -167,7 +174,8 @@ final class CourierHandlerTests: XCTestCase {
             
             group.addTask {
                 do {
-                    try await self.sut.publishMessage(testData2, topic: topic)
+                    let eventRequest = EventRequest(guid: "12345", data: testData2)
+                    try await self.sut.publishMessage(eventRequest, topic: topic)
                 } catch {
                     XCTAssertNotNil(error)
                 }
@@ -178,9 +186,10 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithExtremelyLargePayload_HandlesCorrectly() async {
         let extremelyLargeData = Data(repeating: 0x42, count: 1_000_000)
         let topic = "clickstream/topic"
+        let eventRequest = EventRequest(guid: "12345", data: extremelyLargeData)
 
         do {
-            try await sut.publishMessage(extremelyLargeData, topic: topic)
+            try await sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTAssertTrue(error is CourierError)
         }
@@ -194,9 +203,10 @@ final class CourierHandlerTests: XCTestCase {
             
             let testData = "test".data(using: .utf8)!
             let topic = "clickstream/topic"
+            let eventRequest = EventRequest(guid: "12345", data: testData)
 
             do {
-                try await sut.publishMessage(testData, topic: topic)
+                try await sut.publishMessage(eventRequest, topic: topic)
             } catch {
                 continue
             }
@@ -210,9 +220,10 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithValidParametersAndData_DoesNotThrow() async {
         let testData = "test message".data(using: .utf8)!
         let topic = "clickstream/topic"
-        
+        let eventRequest = EventRequest(guid: "12345", data: testData)
+
         do {
-            try await sut.publishMessage(testData, topic: topic)
+            try await sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTFail("Should not throw error: \(error)")
         }
@@ -221,9 +232,10 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithEmptyDataAndValidParameters_DoesNotThrow() async {
         let testData = Data()
         let topic = "clickstream/topic"
-        
+        let eventRequest = EventRequest(guid: "12345", data: testData)
+
         do {
-            try await sut.publishMessage(testData, topic: topic)
+            try await sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTFail("Should not throw error: \(error)")
         }
@@ -232,11 +244,12 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithDifferentQoSLevels_DoesNotThrow() async {
         let testData = "test message".data(using: .utf8)!
         let topic = "clickstream/topic"
-        
+        let eventRequest = EventRequest(guid: "12345", data: testData)
+
         do {
-            try await sut.publishMessage(testData, topic: topic)
-            try await sut.publishMessage(testData, topic: topic)
-            try await sut.publishMessage(testData, topic: topic)
+            try await sut.publishMessage(eventRequest, topic: topic)
+            try await sut.publishMessage(eventRequest, topic: topic)
+            try await sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTFail("Should not throw error: \(error)")
         }
@@ -245,9 +258,10 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithEmptyTopic_DoesNotThrow() async {
         let testData = "test message".data(using: .utf8)!
         let emptyTopic = ""
-        
+        let eventRequest = EventRequest(guid: "12345", data: testData)
+
         do {
-            try await sut.publishMessage(testData, topic: emptyTopic)
+            try await sut.publishMessage(eventRequest, topic: emptyTopic)
         } catch {
             XCTFail("Should not throw error: \(error)")
         }
@@ -256,9 +270,10 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithSpecialCharactersInTopic_DoesNotThrow() async {
         let testData = "test message".data(using: .utf8)!
         let specialTopic = "test/topic-with_special.chars#123"
-        
+        let eventRequest = EventRequest(guid: "12345", data: testData)
+
         do {
-            try await sut.publishMessage(testData, topic: specialTopic)
+            try await sut.publishMessage(eventRequest, topic: specialTopic)
         } catch {
             XCTFail("Should not throw error: \(error)")
         }
@@ -267,9 +282,10 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithLargePayloadAndTopic_DoesNotThrow() async {
         let largeData = Data(repeating: 0x41, count: 10000)
         let topic = "test/large/payload/topic"
-        
+        let eventRequest = EventRequest(guid: "12345", data: largeData)
+
         do {
-            try await sut.publishMessage(largeData, topic: topic)
+            try await sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTFail("Should not throw error: \(error)")
         }
@@ -278,9 +294,10 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WhenClientNotInitializedWithParameters_ThrowsError() async {
         let testData = "test message".data(using: .utf8)!
         let topic = "test/topic"
-        
+        let eventRequest = EventRequest(guid: "12345", data: testData)
+
         do {
-            try await sut.publishMessage(testData, topic: topic)
+            try await sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTAssertNotNil(error)
         }
@@ -294,9 +311,10 @@ final class CourierHandlerTests: XCTestCase {
         
         let testData = "test message".data(using: .utf8)!
         let topic = "test/topic"
-        
+        let eventRequest = EventRequest(guid: "12345", data: testData)
+
         do {
-            try await sut.publishMessage(testData, topic: topic)
+            try await sut.publishMessage(eventRequest, topic: topic)
             XCTFail("Should have thrown an error")
         } catch {
             XCTAssertNotNil(error)
@@ -306,9 +324,10 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithMalformedDataAndParameters_HandlesError() async {
         let malformedData = Data([0x00, 0xFF, 0x00, 0xFF])
         let topic = "test/malformed"
-        
+        let eventRequest = EventRequest(guid: "12345", data: malformedData)
+
         do {
-            try await sut.publishMessage(malformedData, topic: topic)
+            try await sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTFail("Should handle malformed data gracefully")
         }
@@ -322,11 +341,13 @@ final class CourierHandlerTests: XCTestCase {
         let testData2 = "message2".data(using: .utf8)!
         let topic1 = "test/topic1"
         let topic2 = "test/topic2"
-        
+        let eventRequest1 = EventRequest(guid: "12345", data: testData1)
+        let eventRequest2 = EventRequest(guid: "12345", data: testData2)
+
         await withTaskGroup(of: Void.self) { group in
             group.addTask {
                 do {
-                    try await self.sut.publishMessage(testData1, topic: topic1)
+                    try await self.sut.publishMessage(eventRequest1, topic: topic1)
                 } catch {
                     XCTAssertNotNil(error)
                 }
@@ -334,7 +355,7 @@ final class CourierHandlerTests: XCTestCase {
             
             group.addTask {
                 do {
-                    try await self.sut.publishMessage(testData2, topic: topic2)
+                    try await self.sut.publishMessage(eventRequest2, topic: topic2)
                 } catch {
                     XCTAssertNotNil(error)
                 }
@@ -345,9 +366,10 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithExtremelyLargePayloadAndParameters_HandlesCorrectly() async {
         let extremelyLargeData = Data(repeating: 0x42, count: 1_000_000)
         let topic = "test/extremely/large"
-        
+        let eventRequest = EventRequest(guid: "12345", data: extremelyLargeData)
+
         do {
-            try await sut.publishMessage(extremelyLargeData, topic: topic)
+            try await sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTAssertTrue(error is CourierError)
         }
@@ -356,9 +378,10 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithLongTopicName_DoesNotThrow() async {
         let testData = "test message".data(using: .utf8)!
         let longTopic = String(repeating: "verylongtopic/", count: 50) + "end"
-        
+        let eventRequest = EventRequest(guid: "12345", data: testData)
+
         do {
-            try await sut.publishMessage(testData, topic: longTopic)
+            try await sut.publishMessage(eventRequest, topic: longTopic)
         } catch {
             XCTFail("Should not throw error: \(error)")
         }
@@ -367,9 +390,10 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithUnicodeInTopic_DoesNotThrow() async {
         let testData = "test message".data(using: .utf8)!
         let unicodeTopic = "test/topic/with/unicode/🚀/📱"
-        
+        let eventRequest = EventRequest(guid: "12345", data: testData)
+
         do {
-            try await sut.publishMessage(testData, topic: unicodeTopic)
+            try await sut.publishMessage(eventRequest, topic: unicodeTopic)
         } catch {
             XCTFail("Should not throw error: \(error)")
         }
@@ -378,9 +402,10 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithNullBytesInData_HandlesCorrectly() async {
         let dataWithNulls = Data([0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x00, 0x57, 0x6F, 0x72, 0x6C, 0x64])
         let topic = "test/null/bytes"
-        
+        let eventRequest = EventRequest(guid: "12345", data: dataWithNulls)
+
         do {
-            try await sut.publishMessage(dataWithNulls, topic: topic)
+            try await sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTFail("Should not throw error: \(error)")
         }

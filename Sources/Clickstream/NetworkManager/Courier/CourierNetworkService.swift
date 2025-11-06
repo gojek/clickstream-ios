@@ -70,8 +70,8 @@ final class CourierNetworkService<C: CourierConnectable>: NetworkService {
 
 extension CourierNetworkService {
     
-    func publish(_ data: Data, topic: String) async throws {
-        try await _connectable?.publishMessage(data, topic: topic)
+    func publish(_ eventRequest: EventRequest, topic: String) async throws {
+        try await _connectable?.publishMessage(eventRequest, topic: topic)
     }
     
     func terminateConnection() {
@@ -91,15 +91,27 @@ extension CourierNetworkService {
 }
 
 extension CourierNetworkService {
-    func executeHTTPRequest() async throws -> Odpf_Raccoon_EventResponse {
+    func executeHTTPRequest(eventRequest: EventRequest) async throws -> Odpf_Raccoon_EventResponse {
+        guard var connectable = _connectable as? DefaultCourierHandler else {
+            throw CourierError.otherError
+        }
         do {
             let session = URLSession.shared
             var request = self.networkConfig.request
             request.httpMethod = "POST"
 
-            let (data, response) = try await session.data(for: self.networkConfig.request)
+            guard let eventRequestData = eventRequest.data else {
+                throw ConnectableError.parsingData
+            }
 
-            guard let httpResponse = response as? HTTPURLResponse, (200..<300).contains(httpResponse.statusCode) else {
+            var requestProto = try Odpf_Raccoon_EventRequest(serializedBytes: eventRequestData)
+            requestProto.sentTime = Google_Protobuf_Timestamp(date: Date())
+            request.httpBody = try requestProto.serializedData()
+
+            let (data, response) = try await session.data(for: request)
+
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200..<300).contains(httpResponse.statusCode) else {
                 throw CourierError.httpError
             }
 
