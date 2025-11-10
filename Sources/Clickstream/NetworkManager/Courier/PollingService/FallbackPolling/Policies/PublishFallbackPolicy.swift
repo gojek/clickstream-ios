@@ -11,14 +11,23 @@ import CourierCore
 
 final class PublishFallbackPolicy: BaseFallbackPolicy {
 
-    init(delay: TimeInterval) {
+    private let maxRetryCount: Int
+    private var currentRetryAttempt: Int = 0
+
+    init(delay: TimeInterval, maxRetryCount: Int) {
+        self.maxRetryCount = maxRetryCount
         super.init(delay: delay)
     }
 
     public override func onEvent(_ event: CourierEvent) {
         switch event.type {
         case .messageSend(let topic, let qos, let size):
-            schedule()
+            if currentRetryAttempt < maxRetryCount {
+                currentRetryAttempt += 1
+                schedule()
+            } else {
+                cancel()
+            }
 
         case .messageSendSuccess(let topic, let qos, let size):
             cancel()

@@ -109,8 +109,10 @@ extension DefaultCourierHandler: PollingMessageListener, PollingEventHandler {
 
     private func setupPollingFallbackService() async {
         if let networkClient = try? createNetworkClient() {
-            let policies = createFallbackPolicies(delay: 0, maxRetryCout: 0)
-            let config = CourierFallbackPollingConfig(pollingInterval: 0)
+            let policies = createFallbackPolicies(delay: courierConfig.pollingIntervalMs,
+                                                  maxRetryCout: courierConfig.pollingMaxRetryCount)
+
+            let config = CourierFallbackPollingConfig(pollingInterval: courierConfig.pollingIntervalMs)
 
             pollingService = createFallbackPollingService(networkClient: networkClient,
                                                           policies: policies,
@@ -134,7 +136,7 @@ extension DefaultCourierHandler: PollingMessageListener, PollingEventHandler {
     }
 
     private func createFallbackPolicies(delay: TimeInterval, maxRetryCout: Int) -> [FallbackPolicy] {
-        let publishPolicy = PublishFallbackPolicy(delay: delay)
+        let publishPolicy = PublishFallbackPolicy(delay: delay, maxRetryCount: maxRetryCout)
         return [publishPolicy]
     }
     
