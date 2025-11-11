@@ -13,11 +13,12 @@ import SwiftProtobuf
 class AnalyticsManager {
     
     private var clickstream: Clickstream?
+
     var networkOptions: ClickstreamNetworkOptions?
     var courierUserCredentials: ClickstreamClientIdentifiers?
-
+    var courierTopic: String?
     var isCourierConfigSet: Bool {
-        networkOptions != nil && courierUserCredentials != nil
+        networkOptions != nil && courierUserCredentials != nil && courierTopic != nil
     }
 
     /// Initialise Clickstream
@@ -100,10 +101,12 @@ class AnalyticsManager {
     }
     #endif
 
-    func setupCourierClient(userCredentials: ClickstreamClientIdentifiers) {
-        courierUserCredentials = userCredentials
-
-        clickstream?.provideClientIdentifiers(with: userCredentials)
+    func provideUserCredentials(with userCredentials: ClickstreamClientIdentifiers) {
+        guard let courierTopic, isCourierConfigSet else {
+            assertionFailure("Courier's topic is missing")
+            return
+        }
+        clickstream?.provideClientIdentifiers(with: userCredentials, topic: courierTopic)
     }
 }
 

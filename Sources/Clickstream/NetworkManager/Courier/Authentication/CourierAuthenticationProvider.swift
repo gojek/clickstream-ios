@@ -14,6 +14,10 @@ enum CourierApplicationState: String {
     case background, foreground
 }
 
+enum CourierConnectCacheType: Int {
+    case noop, inMemory, disk
+}
+
 final class CourierAuthenticationProvider: IConnectionServiceProvider {
 
     private let cachingType: CourierConnectCacheType
@@ -63,7 +67,6 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
     
     private let userCredentials: ClickstreamClientIdentifiers
 
-
     private var userProperties: [String: String]? {
         guard isConnectUserPropertiesEnabled else { return nil }
 
@@ -79,7 +82,6 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
     init(
         config: ClickstreamCourierConfig,
         userCredentials: ClickstreamClientIdentifiers,
-        cachingType: CourierConnectCacheType = .disk,
         userDefaults: UserDefaults = .init(suiteName: "com.clickstream.courier") ?? .standard,
         userDefaultsKey: String = "connect_auth_response",
         applicationState: CourierApplicationState = .foreground,
@@ -89,7 +91,7 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
         self.userCredentials = userCredentials
         self.extraIdProvider = { userCredentials.extraIdentifier }
 
-        self.cachingType = cachingType
+        self.cachingType = CourierConnectCacheType(rawValue: config.connectConfig.tokenCachingType) ?? .disk
         self.userDefaults = userDefaults
         self.userDefaultsKey = userDefaultsKey
 
@@ -98,7 +100,7 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
             let authResponse = try? JSONDecoder().decode(CourierConnect.self, from: data),
             Self.isTokenValid(authResponse: authResponse,
                               cachingType: cachingType,
-                              isTokenCacheExpiryEnabled: !config.connectConfig.isTokenCacheExpiryEnabled) {
+                              isTokenCacheExpiryEnabled: config.connectConfig.isTokenCacheExpiryEnabled) {
 
             self._cachedAuthResponse = Atomic(authResponse)
         } else {
@@ -115,7 +117,7 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
         if cachingType != .noop, let cachedCourierConnect = self.cachedAuthResponse,
             Self.isTokenValid(authResponse: cachedCourierConnect,
                               cachingType: self.cachingType,
-                              isTokenCacheExpiryEnabled: !self.config.connectConfig.isTokenCacheExpiryEnabled) {
+                              isTokenCacheExpiryEnabled: self.config.connectConfig.isTokenCacheExpiryEnabled) {
             
             let connectOptions = connectOptions(with: cachedCourierConnect)
             self.existingConnectOptions = connectOptions
@@ -125,15 +127,7 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
 
         Task {
             do {
-                let url = try constructURL()
-                let urlCachePolicy: URLRequest.CachePolicy = self.config.connectConfig.isCleanSessionEnabled ?
-                    .reloadIgnoringLocalCacheData : .returnCacheDataElseLoad
-
-                let courierConnect = try await self.executeRequest(urlCachePolicy: urlCachePolicy,
-                                                                   timeoutInterval: self.config.authenticationTimeoutInterval,
-                                                                   customHeaders: self.userCredentials.authenticationHeaders,
-                                                                   url: url)
-
+                let courierConnect = try await executeRequest(with: userCredentials.authURLRequest)
                 let connectOptions = connectOptions(with: courierConnect)
                 self.existingConnectOptions = connectOptions
                 completion(.success(connectOptions))
@@ -157,32 +151,19 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
         ConnectOptions(
             host: response.broker.host,
             port: UInt16(response.broker.port),
-            keepAlive: UInt16(config.connectConfig.pingIntervalMs),
+            keepAlive: UInt16(config.pingIntervalMs),
             clientId: clientId,
             username: userCredentials.userIdentifier,
             password: response.token,
-            isCleanSession: config.connectConfig.isCleanSessionEnabled,
+            isCleanSession: config.isCleanSessionEnabled,
             userProperties: userProperties,
             alpn: config.connectConfig.alpn
         )
     }
 
-    private func executeRequest(
-        urlCachePolicy: URLRequest.CachePolicy = .returnCacheDataElseLoad,
-        timeoutInterval: TimeInterval = 10,
-        customHeaders: [String: String]? = nil,
-        url: URL
-    ) async throws -> CourierConnect {
-        var request = URLRequest(url: url, cachePolicy: urlCachePolicy, timeoutInterval: timeoutInterval)
-
-        if let customHeaders {
-            customHeaders.forEach {
-                request.addValue($0.value, forHTTPHeaderField: $0.key)
-            }
-        }
-
+    private func executeRequest(with urlRequest: URLRequest) async throws -> CourierConnect {
         do {
-            let (data, response) = try await URLSession.shared.data(for: request)
+            let (data, response) = try await URLSession.shared.data(for: urlRequest)
             
             guard let httpResponse = response as? HTTPURLResponse, 200..<300 ~= httpResponse.statusCode else {
                 let statusCode: Int = (response as? HTTPURLResponse)?.statusCode ?? -1
@@ -194,28 +175,6 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
         } catch(let error) {
             throw AuthError.otherError(.init(domain: "com.clickstream.courier.auth", code: -1, userInfo: ["error": error.localizedDescription]))
         }
-    }
-
-    private func constructURL() throws -> URL {
-        let baseURL = config.connectConfig.baseURL
-        let urlPath = config.connectConfig.authURLPath
-        let urlQuery = config.connectConfig.authURLQueries
-        
-        guard !baseURL.isEmpty, !urlPath.isEmpty else {
-            throw AuthError.otherError(.init(domain: "com.clickstream.courier.auth", code: -1, userInfo: ["error": "Invalid auth url"]))
-        }
-
-        var urlString = "\(baseURL)\(urlPath)"
-
-        if let urlQuery, !urlQuery.isEmpty {
-            urlString.append("?\(urlQuery)")
-        }
-
-        guard let url = URL(string: urlString) else {
-            throw AuthError.otherError(.init(domain: "com.clickstream.courier.auth", code: -1, userInfo: ["error": "Invalid auth url"]))
-        }
-        
-        return url
     }
 }
 

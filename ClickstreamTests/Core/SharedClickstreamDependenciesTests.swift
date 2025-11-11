@@ -70,13 +70,14 @@ class SharedClickstreamDependenciesTests: XCTestCase {
         Clickstream.eventClassifier = ClickstreamEventClassification()
         
         // when
-        let connectConfig = ClickstreamCourierConnectConfig(baseURL: "https://auth.mqtt.com", authURLPath: "/token", authURLQueries: "source=clickstream")
+        let connectConfig = ClickstreamCourierConnectConfig()
         let courierConfig = ClickstreamCourierConfig(connectConfig: connectConfig)
         let networkOptions = ClickstreamNetworkOptions(courierConfig: courierConfig)
         let clickStreamDependencies = try! SharedClickstreamDependencies(with: dummyRequest, networkOptions: networkOptions)
-        let credentials = CourierIdentifiers(userIdentifier: "12345")
+        let credentials = CourierIdentifiers(userIdentifier: "12345", authURLRequest: URLRequest(url: .init(string: "some_url")!))
+        let topic = "clickstream/topic"
         
-        clickStreamDependencies.provideClientIdentifiers(with: credentials)
+        clickStreamDependencies.provideClientIdentifiers(with: credentials, topic: topic)
 
         // then
         XCTAssertNotNil(clickStreamDependencies.eventProcessor)

@@ -25,7 +25,8 @@ class CourierAuthenticationProviderTests: XCTestCase {
         userCredentials = CourierIdentifiers(
             userIdentifier: "testUser123",
             deviceIdentifier: "device456",
-            bundleIdentifier: "com.test.app"
+            bundleIdentifier: "com.test.app",
+            authURLRequest: URLRequest(url: .init(string: "some_url")!)
         )
     }
     
@@ -41,7 +42,6 @@ class CourierAuthenticationProviderTests: XCTestCase {
         let provider = CourierAuthenticationProvider(
             config: config,
             userCredentials: userCredentials,
-            cachingType: .noop,
             userDefaults: mockUserDefaults,
             networkTypeProvider: NetworkType.wifi
         )
@@ -65,7 +65,6 @@ class CourierAuthenticationProviderTests: XCTestCase {
         let provider = CourierAuthenticationProvider(
             config: config,
             userCredentials: userCredentials,
-            cachingType: .disk,
             userDefaults: mockUserDefaults,
             networkTypeProvider: NetworkType.wifi
         )
@@ -89,7 +88,6 @@ class CourierAuthenticationProviderTests: XCTestCase {
         let provider = CourierAuthenticationProvider(
             config: config,
             userCredentials: userCredentials,
-            cachingType: .disk,
             userDefaults: mockUserDefaults,
             networkTypeProvider: NetworkType.wifi
         )
@@ -103,13 +101,13 @@ class CourierAuthenticationProviderTests: XCTestCase {
             userIdentifier: "user123",
             deviceIdentifier: "device456",
             bundleIdentifier: "com.app.test",
-            extraIdentifier: "extra789"
+            extraIdentifier: "extra789",
+            authURLRequest: URLRequest(url: .init(string: "some_url")!)
         )
         
         let provider = CourierAuthenticationProvider(
             config: config,
             userCredentials: credentials,
-            cachingType: .noop,
             userDefaults: mockUserDefaults,
             networkTypeProvider: NetworkType.wifi
         )
@@ -121,7 +119,6 @@ class CourierAuthenticationProviderTests: XCTestCase {
         let provider = CourierAuthenticationProvider(
             config: config,
             userCredentials: userCredentials,
-            cachingType: .noop,
             userDefaults: mockUserDefaults,
             networkTypeProvider: NetworkType.wifi
         )
@@ -133,7 +130,6 @@ class CourierAuthenticationProviderTests: XCTestCase {
         let provider = CourierAuthenticationProvider(
             config: config,
             userCredentials: userCredentials,
-            cachingType: .disk,
             userDefaults: mockUserDefaults,
             networkTypeProvider: NetworkType.wifi
         )
