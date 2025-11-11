@@ -17,7 +17,6 @@ class ClickstreamNetworkOptionsTests: XCTestCase {
         XCTAssertTrue(options.isWebsocketEnabled)
         XCTAssertFalse(options.isCourierEnabled)
         XCTAssertTrue(options.courierEventTypes.isEmpty)
-        XCTAssertEqual(options.courierHttpFallbackDelayMs, 500.0)
     }
     
     func testCustomInitialization() {
@@ -25,14 +24,12 @@ class ClickstreamNetworkOptionsTests: XCTestCase {
         let options = ClickstreamNetworkOptions(
             isWebsocketEnabled: false,
             isCourierEnabled: true,
-            courierEventTypes: eventTypes,
-            httpFallbackDelayMs: 1000.0
+            courierEventTypes: eventTypes
         )
         
         XCTAssertFalse(options.isWebsocketEnabled)
         XCTAssertTrue(options.isCourierEnabled)
         XCTAssertEqual(options.courierEventTypes, eventTypes)
-        XCTAssertEqual(options.courierHttpFallbackDelayMs, 1000.0)
     }
     
     func testDecodingWithAllFields() throws {
@@ -40,8 +37,7 @@ class ClickstreamNetworkOptionsTests: XCTestCase {
         {
             "websocket_enabled": false,
             "courier_enabled": true,
-            "event_types": ["event1", "event2", "event3"],
-            "http_fallback_delay": 750.5
+            "event_types": ["event1", "event2", "event3"]
         }
         """
         
@@ -51,7 +47,6 @@ class ClickstreamNetworkOptionsTests: XCTestCase {
         XCTAssertFalse(options.isWebsocketEnabled)
         XCTAssertTrue(options.isCourierEnabled)
         XCTAssertEqual(options.courierEventTypes, Set(["event1", "event2", "event3"]))
-        XCTAssertEqual(options.courierHttpFallbackDelayMs, 750.5)
     }
     
     func testDecodingWithMissingFields() throws {
@@ -63,7 +58,6 @@ class ClickstreamNetworkOptionsTests: XCTestCase {
         XCTAssertTrue(options.isWebsocketEnabled)
         XCTAssertFalse(options.isCourierEnabled)
         XCTAssertTrue(options.courierEventTypes.isEmpty)
-        XCTAssertEqual(options.courierHttpFallbackDelayMs, 500.0)
     }
     
     func testDecodingWithPartialFields() throws {
@@ -80,54 +74,6 @@ class ClickstreamNetworkOptionsTests: XCTestCase {
         XCTAssertFalse(options.isWebsocketEnabled)
         XCTAssertFalse(options.isCourierEnabled)
         XCTAssertEqual(options.courierEventTypes, Set(["special_event"]))
-        XCTAssertEqual(options.courierHttpFallbackDelayMs, 500.0)
-    }
-    
-    func testDecodingHttpFallbackDelayAsInteger() throws {
-        let json = """
-        {
-            "http_fallback_delay": 1000
-        }
-        """
-        
-        let data = json.data(using: .utf8)!
-        let options = try JSONDecoder().decode(ClickstreamNetworkOptions.self, from: data)
-        
-        XCTAssertEqual(options.courierHttpFallbackDelayMs, 1000.0)
-    }
-    
-    func testDecodingHttpFallbackDelayAsDouble() throws {
-        let json = """
-        {
-            "http_fallback_delay": 1500.75
-        }
-        """
-        
-        let data = json.data(using: .utf8)!
-        let options = try JSONDecoder().decode(ClickstreamNetworkOptions.self, from: data)
-        
-        XCTAssertEqual(options.courierHttpFallbackDelayMs, 1500.75)
-    }
-    
-    func testEncoding() throws {
-        let eventTypes: Set<CourierEventIdentifier> = ["event1", "event2"]
-        let options = ClickstreamNetworkOptions(
-            isWebsocketEnabled: false,
-            isCourierEnabled: true,
-            courierEventTypes: eventTypes,
-            httpFallbackDelayMs: 800.5
-        )
-        
-        let data = try JSONEncoder().encode(options)
-        let json = try JSONSerialization.jsonObject(with: data) as! [String: Any]
-        
-        XCTAssertEqual(json["websocket_enabled"] as? Bool, false)
-        XCTAssertEqual(json["courier_enabled"] as? Bool, true)
-        XCTAssertEqual(json["http_fallback_delay"] as? Double, 800.5)
-        
-        let encodedEventTypesArray = json["event_types"] as? [String]
-        let encodedEventTypes = Set(encodedEventTypesArray ?? [])
-        XCTAssertEqual(encodedEventTypes, eventTypes)
     }
     
     func testGetNetworkTypeForCourierEvent() {
@@ -150,8 +96,8 @@ class ClickstreamNetworkOptionsTests: XCTestCase {
             courierEventTypes: eventTypes
         )
         
-        XCTAssertEqual(options.getNetworkType(for: "regular_event"), .websocket)
-        XCTAssertEqual(options.getNetworkType(for: "unknown_event"), .websocket)
+        XCTAssertEqual(options.getNetworkType(for: "regular_event"), .courier)
+        XCTAssertEqual(options.getNetworkType(for: "unknown_event"), .courier)
     }
     
     func testGetNetworkTypeWhenCourierDisabled() {
@@ -212,35 +158,5 @@ class ClickstreamNetworkOptionsTests: XCTestCase {
         let options = try JSONDecoder().decode(ClickstreamNetworkOptions.self, from: data)
         
         XCTAssertTrue(options.courierEventTypes.isEmpty)
-    }
-    
-    func testDecodingWithInvalidDelayFormat() throws {
-        let json = """
-        {
-            "http_fallback_delay": "invalid_format"
-        }
-        """
-        
-        let data = json.data(using: .utf8)!
-        let options = try JSONDecoder().decode(ClickstreamNetworkOptions.self, from: data)
-        
-        XCTAssertEqual(options.courierHttpFallbackDelayMs, 500.0)
-    }
-    
-    func testRoundTripEncodingDecoding() throws {
-        let originalOptions = ClickstreamNetworkOptions(
-            isWebsocketEnabled: false,
-            isCourierEnabled: true,
-            courierEventTypes: ["event1", "event2", "event3"],
-            httpFallbackDelayMs: 1250.75
-        )
-        
-        let encodedData = try JSONEncoder().encode(originalOptions)
-        let decodedOptions = try JSONDecoder().decode(ClickstreamNetworkOptions.self, from: encodedData)
-        
-        XCTAssertEqual(originalOptions.isWebsocketEnabled, decodedOptions.isWebsocketEnabled)
-        XCTAssertEqual(originalOptions.isCourierEnabled, decodedOptions.isCourierEnabled)
-        XCTAssertEqual(originalOptions.courierEventTypes, decodedOptions.courierEventTypes)
-        XCTAssertEqual(originalOptions.courierHttpFallbackDelayMs, decodedOptions.courierHttpFallbackDelayMs)
     }
 }

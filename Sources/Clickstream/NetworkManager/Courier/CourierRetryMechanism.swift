@@ -29,11 +29,7 @@ final class CourierRetryMechanism: Retryable {
         return ProcessInfo.processInfo.arguments.contains("testMode")
     }()
     #endif
-    
-    private lazy var retryFallbackDelay: TimeInterval = {
-        networkOptions.courierHttpFallbackDelayMs / 1000
-    }()
-    
+
     var isAvailble: Bool {
         
         let isReachable = reachability.isAvailable
@@ -160,12 +156,13 @@ extension CourierRetryMechanism {
             addToCache(with: eventRequest)
         }
 
-        guard let data = eventRequest.data, let topic, let networkService = networkService as? CourierNetworkService<DefaultCourierHandler> else {
+        guard let topic, let networkService = networkService as? CourierNetworkService<DefaultCourierHandler> else {
             return
         }
 
         Task {
             do {
+                // Publish MQTT package
                 try await networkService.publish(eventRequest, topic: topic)
                 
                 let guid = eventRequest.guid
@@ -191,23 +188,48 @@ extension CourierRetryMechanism {
                 #if ETE_TEST_SUITE_ENABLED
                 if testMode { FileManagerOverride.writeToFile() }
                 #endif
-            } catch(let error) {
-                print("Error: \(error.localizedDescription) for eventRequest guid \(eventRequest.guid)", .verbose)
-                #if TRACKER_ENABLED
-                let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchErrorResponse,
-                                                      eventBatchGUID: eventRequest.guid, // eventRequest.guid is the batch GUID
-                                                      reason: error.localizedDescription,
-                                                      eventCount: eventRequest.eventCount)
-                Tracker.sharedInstance?.record(event: healthEvent)
-                #if ETE_TEST_SUITE_ENABLED
-                Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "\(error)")
-                if testMode { FileManagerOverride.writeToFile() }
-                #endif
-                #endif
+            } catch(let courierError) {
+                guard networkOptions.courierConfig.fallbackPolicy.isEnabled else {
+                    handleFailedEventRequest(with: eventRequest, error: courierError)
+                    return
+                }
+
+                // Execute HTTP request
+                fallbackToHTTP(for: eventRequest, startTime: startTime)
             }
         }
     }
-    
+
+    private func fallbackToHTTP(for eventRequest: EventRequest, startTime: Date) {
+        guard let networkService = networkService as? CourierNetworkService<DefaultCourierHandler> else {
+            return
+        }
+
+        Task {
+            do {
+                let racoonResponse = try await networkService.executeHTTPRequest(eventRequest)
+                handleRacoonEventResponse(with: eventRequest, startTime: startTime, response: racoonResponse)
+            } catch(let error) {
+                handleFailedEventRequest(with: eventRequest, error: error)
+            }
+        }
+    }
+
+    private func handleFailedEventRequest(with eventRequest: EventRequest, error: Error) {
+        #if TRACKER_ENABLED
+        let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchErrorResponse,
+                                              eventBatchGUID: eventRequest.guid,
+                                              reason: error.localizedDescription,
+                                              eventCount: eventRequest.eventCount)
+
+        Tracker.sharedInstance?.record(event: healthEvent)
+        #if ETE_TEST_SUITE_ENABLED
+        Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "\(error)")
+        if testMode { FileManagerOverride.writeToFile() }
+        #endif
+        #endif
+    }
+
     private func handleRacoonEventResponse(with eventRequest: EventRequest, startTime: Date, response: Odpf_Raccoon_EventResponse) {
         if response.status == .success && response.code == .ok {
             if let guid = response.data["req_guid"] {

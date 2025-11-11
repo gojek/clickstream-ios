@@ -41,8 +41,7 @@ class ClickstreamTests: XCTestCase {
         let whitelistedEvents: Set<CourierEventIdentifier> = ["CSCourierEvent1", "CSCourierEvent2", "CSCourierEvent3"]
         let networkOptions = ClickstreamNetworkOptions(isWebsocketEnabled: true,
                                                        isCourierEnabled: true,
-                                                       courierEventTypes: whitelistedEvents,
-                                                       httpFallbackDelayMs: 500.0)
+                                                       courierEventTypes: whitelistedEvents)
 
         let clickStream = try! Clickstream.initialise(with: dummyRequest,
                                                       configurations: MockConstants.constraints,

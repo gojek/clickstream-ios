@@ -15,10 +15,9 @@ public struct ClickstreamCourierConfig: Decodable {
     public let connectConfig: ClickstreamCourierConnectConfig
     public let connectTimeoutPolicy: IConnectTimeoutPolicy
     public let iddleActivityPolicy: IdleActivityTimeoutPolicyProtocol
+    public let fallbackPolicy: ClickstreamCourierFallbackPolicy
 
     public let pingIntervalMs: TimeInterval
-    public var pollingIntervalMs: TimeInterval
-    public var pollingMaxRetryCount: Int
     public let isCleanSessionEnabled: Bool
     public let messagePersistenceTTLSeconds: TimeInterval
     public let messageCleanupInterval: TimeInterval
@@ -30,6 +29,7 @@ public struct ClickstreamCourierConfig: Decodable {
         case connectConfig = "connect_config"
         case connectTimeoutPolicy = "connect_timeout_policy"
         case iddleActivityPolicy = "iddle_activity_policy"
+        case fallbackPolicy = "fallback_policy"
         case pingIntervalMs = "ping_interval_ms"
         case pollingIntervalMs = "polling_interval_ms"
         case pollingMaxRetryCount = "polling_max_retry_count"
@@ -70,9 +70,8 @@ public struct ClickstreamCourierConfig: Decodable {
             iddleActivityPolicy = IdleActivityTimeoutPolicy()
         }
 
+        fallbackPolicy = ClickstreamCourierFallbackPolicy()
         pingIntervalMs = container.decodeTimeIntervalIfPresent(forKey: .pingIntervalMs) ?? 10
-        pollingIntervalMs = container.decodeTimeIntervalIfPresent(forKey: .pollingIntervalMs) ?? 200.0
-        pollingMaxRetryCount = (try? container.decodeIfPresent(Int.self, forKey: .pollingMaxRetryCount)) ?? 3
         isCleanSessionEnabled = (try? container.decodeIfPresent(Bool.self, forKey: .isCleanSessionEnabled)) ?? false
         messagePersistenceTTLSeconds = container.decodeTimeIntervalIfPresent(forKey: .messagePersistenceTTLSeconds) ?? 86400.0
         messageCleanupInterval = container.decodeTimeIntervalIfPresent(forKey: .messageCleanupInterval) ?? 10
@@ -84,9 +83,8 @@ public struct ClickstreamCourierConfig: Decodable {
                 connectConfig: ClickstreamCourierConnectConfig = ClickstreamCourierConnectConfig(),
                 connectTimeoutPolicy: IConnectTimeoutPolicy = ConnectTimeoutPolicy(),
                 iddleActivityPolicy: IdleActivityTimeoutPolicyProtocol = IdleActivityTimeoutPolicy(),
+                fallbackPolicy: ClickstreamCourierFallbackPolicy = ClickstreamCourierFallbackPolicy(),
                 pingIntervalMs: TimeInterval = 30.0,
-                pollingIntervalMs: TimeInterval = 200.0,
-                pollingMaxRetryCount: Int = 3,
                 isCleanSessionEnabled: Bool = false,
                 messagePersistenceTTLSeconds: TimeInterval = 86400.0,
                 messageCleanupInterval: TimeInterval = 10.0,
@@ -97,9 +95,8 @@ public struct ClickstreamCourierConfig: Decodable {
         self.connectConfig = connectConfig
         self.connectTimeoutPolicy = connectTimeoutPolicy
         self.iddleActivityPolicy = iddleActivityPolicy
+        self.fallbackPolicy = fallbackPolicy
         self.pingIntervalMs = pingIntervalMs
-        self.pollingIntervalMs = pollingIntervalMs
-        self.pollingMaxRetryCount = pollingMaxRetryCount
         self.isCleanSessionEnabled = isCleanSessionEnabled
         self.messagePersistenceTTLSeconds = messagePersistenceTTLSeconds
         self.messageCleanupInterval = messageCleanupInterval

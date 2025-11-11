@@ -91,10 +91,12 @@ extension CourierNetworkService {
 }
 
 extension CourierNetworkService {
-    func executeHTTPRequest(eventRequest: EventRequest) async throws -> Odpf_Raccoon_EventResponse {
-        guard var connectable = _connectable as? DefaultCourierHandler else {
-            throw CourierError.otherError
+
+    func executeHTTPRequest(_ eventRequest: EventRequest) async throws -> Odpf_Raccoon_EventResponse {
+        guard _connectable is DefaultCourierHandler else {
+            throw ConnectableError.failed
         }
+
         do {
             let session = URLSession.shared
             var request = self.networkConfig.request
@@ -110,8 +112,7 @@ extension CourierNetworkService {
 
             let (data, response) = try await session.data(for: request)
 
-            guard let httpResponse = response as? HTTPURLResponse,
-                  (200..<300).contains(httpResponse.statusCode) else {
+            guard let httpResponse = response as? HTTPURLResponse, (200..<300).contains(httpResponse.statusCode) else {
                 throw CourierError.httpError
             }
 
