@@ -105,8 +105,8 @@ class ClickstreamCourierConfigTests: XCTestCase {
         XCTAssertFalse(config.isMessagePersistenceEnabled)
         XCTAssertEqual(config.connectConfig.autoReconnectInterval, 5.0)
         XCTAssertEqual(config.connectConfig.maxAutoReconnectInterval, 10.0)
-        XCTAssertTrue(config.connectConfig.enableAuthenticationTimeout)
         XCTAssertEqual(config.connectConfig.authenticationTimeoutInterval, 20.0)
+        XCTAssertTrue(config.connectConfig.enableAuthenticationTimeout)
         XCTAssertEqual(config.messagePersistenceTTLSeconds, 86400.0)
         XCTAssertEqual(config.messageCleanupInterval, 10.0)
         XCTAssertFalse(config.shouldInitializeCoreDataPersistenceContext)
@@ -330,5 +330,184 @@ class ClickstreamCourierConfigTests: XCTestCase {
         
         XCTAssertNotNil(config.connectTimeoutPolicy)
         XCTAssertNotNil(config.iddleActivityPolicy)
+    }
+    
+    func testRetryPolicyDefaults() {
+        let config = ClickstreamCourierConfig()
+        
+        XCTAssertTrue(config.retryPolicy.isEnabled)
+        XCTAssertEqual(config.retryPolicy.delayMillis, 500.0)
+        XCTAssertEqual(config.retryPolicy.maxRetryCount, 3)
+        XCTAssertTrue(config.httpRetryPolicy.isEnabled)
+        XCTAssertEqual(config.httpRetryPolicy.delayMillis, 500.0)
+        XCTAssertEqual(config.httpRetryPolicy.maxRetryCount, 3)
+    }
+    
+    func testDecodingWithInvalidJSON() throws {
+        let json = """
+        {
+            "message_adapters": "invalid",
+            "ping_interval_ms": "not_a_number",
+            "message_persistence_ttl_seconds": [],
+            "message_cleanup_interval": {}
+        }
+        """.data(using: .utf8)!
+        
+        let config = try JSONDecoder().decode(ClickstreamCourierConfig.self, from: json)
+        
+        XCTAssertTrue(config.messageAdapters.isEmpty)
+        XCTAssertEqual(config.pingIntervalMs, 10.0)
+        XCTAssertEqual(config.messagePersistenceTTLSeconds, 86400.0)
+        XCTAssertEqual(config.messageCleanupInterval, 10.0)
+    }
+    
+    func testDecodingWithNegativeTimeValues() throws {
+        let json = """
+        {
+            "ping_interval_ms": -100,
+            "message_persistence_ttl_seconds": -500,
+            "message_cleanup_interval": -10
+        }
+        """.data(using: .utf8)!
+        
+        let config = try JSONDecoder().decode(ClickstreamCourierConfig.self, from: json)
+        
+        XCTAssertEqual(config.pingIntervalMs, -100)
+        XCTAssertEqual(config.messagePersistenceTTLSeconds, -500)
+        XCTAssertEqual(config.messageCleanupInterval, -10)
+    }
+    
+    func testDecodingWithLargeTimeValues() throws {
+        let json = """
+        {
+            "ping_interval_ms": 999999.99,
+            "message_persistence_ttl_seconds": 31536000,
+            "message_cleanup_interval": 3600.5
+        }
+        """.data(using: .utf8)!
+        
+        let config = try JSONDecoder().decode(ClickstreamCourierConfig.self, from: json)
+        
+        XCTAssertEqual(config.pingIntervalMs, 999999.99)
+        XCTAssertEqual(config.messagePersistenceTTLSeconds, 31536000)
+        XCTAssertEqual(config.messageCleanupInterval, 3600.5)
+    }
+    
+    func testInitWithCustomPolicies() {
+        let customConnectPolicy = ConnectTimeoutPolicy()
+        let customIdlePolicy = IdleActivityTimeoutPolicy()
+        let customRetryPolicy = ClickstreamCourierRetryPolicy(isEnabled: false, delayMillis: 1000.0, maxRetryCount: 5)
+        let customHttpRetryPolicy = ClickstreamCourierHTTPRetryPolicy(isEnabled: false, delayMillis: 2000.0, maxRetryCount: 2)
+        
+        let config = ClickstreamCourierConfig(
+            connectTimeoutPolicy: customConnectPolicy,
+            iddleActivityPolicy: customIdlePolicy,
+            retryPolicy: customRetryPolicy,
+            httpRetryPolicy: customHttpRetryPolicy
+        )
+        
+        XCTAssertFalse(config.retryPolicy.isEnabled)
+        XCTAssertEqual(config.retryPolicy.delayMillis, 1000.0)
+        XCTAssertEqual(config.retryPolicy.maxRetryCount, 5)
+        XCTAssertFalse(config.httpRetryPolicy.isEnabled)
+        XCTAssertEqual(config.httpRetryPolicy.delayMillis, 2000.0)
+        XCTAssertEqual(config.httpRetryPolicy.maxRetryCount, 2)
+    }
+    
+    func testDecodingWithZeroValues() throws {
+        let json = """
+        {
+            "ping_interval_ms": 0,
+            "message_persistence_ttl_seconds": 0,
+            "message_cleanup_interval": 0.0
+        }
+        """.data(using: .utf8)!
+        
+        let config = try JSONDecoder().decode(ClickstreamCourierConfig.self, from: json)
+        
+        XCTAssertEqual(config.pingIntervalMs, 0.0)
+        XCTAssertEqual(config.messagePersistenceTTLSeconds, 0.0)
+        XCTAssertEqual(config.messageCleanupInterval, 0.0)
+    }
+    
+    func testInitWithAllCustomParameters() {
+        let connectConfig = ClickstreamCourierConnectConfig()
+        let connectTimeoutPolicy = ConnectTimeoutPolicy()
+        let idlePolicy = IdleActivityTimeoutPolicy()
+        let retryPolicy = ClickstreamCourierRetryPolicy()
+        let httpRetryPolicy = ClickstreamCourierHTTPRetryPolicy()
+        
+        let config = ClickstreamCourierConfig(
+            messageAdapter: [],
+            connectConfig: connectConfig,
+            connectTimeoutPolicy: connectTimeoutPolicy,
+            iddleActivityPolicy: idlePolicy,
+            retryPolicy: retryPolicy,
+            httpRetryPolicy: httpRetryPolicy,
+            pingIntervalMs: 250.0,
+            isCleanSessionEnabled: true,
+            messagePersistenceTTLSeconds: 43200.0,
+            messageCleanupInterval: 5.0,
+            shouldInitializeCoreDataPersistenceContext: true,
+            isMessagePersistenceEnabled: true
+        )
+        
+        XCTAssertTrue(config.messageAdapters.isEmpty)
+        XCTAssertNotNil(config.connectConfig)
+        XCTAssertNotNil(config.connectTimeoutPolicy)
+        XCTAssertNotNil(config.iddleActivityPolicy)
+        XCTAssertNotNil(config.retryPolicy)
+        XCTAssertNotNil(config.httpRetryPolicy)
+        XCTAssertEqual(config.pingIntervalMs, 250.0)
+        XCTAssertTrue(config.isCleanSessionEnabled)
+        XCTAssertEqual(config.messagePersistenceTTLSeconds, 43200.0)
+        XCTAssertEqual(config.messageCleanupInterval, 5.0)
+        XCTAssertTrue(config.shouldInitializeCoreDataPersistenceContext)
+        XCTAssertTrue(config.isMessagePersistenceEnabled)
+    }
+    
+    func testDecodingWithExtraUnknownFields() throws {
+        let json = """
+        {
+            "message_adapters": ["json"],
+            "unknown_field": "value",
+            "extra_config": { "nested": true },
+            "ping_interval_ms": 150,
+            "deprecated_field": 999
+        }
+        """.data(using: .utf8)!
+        
+        let config = try JSONDecoder().decode(ClickstreamCourierConfig.self, from: json)
+        
+        XCTAssertEqual(config.messageAdapters.count, 1)
+        XCTAssertEqual(config.pingIntervalMs, 150.0)
+        XCTAssertFalse(config.isMessagePersistenceEnabled)
+    }
+    
+    func testDecodingWithDuplicateAdapters() throws {
+        let json = """
+        {
+            "message_adapters": ["json", "json", "data", "json"]
+        }
+        """.data(using: .utf8)!
+        
+        let config = try JSONDecoder().decode(ClickstreamCourierConfig.self, from: json)
+        XCTAssertEqual(config.messageAdapters.count, 4)
+    }
+    
+    func testDecodingWithFloatingPointBooleans() throws {
+        let json = """
+        {
+            "clean_session_enabled": 1.0,
+            "is_message_persistence_enabled": 0.0,
+            "should_initialize_core_data_persistence_context": 2.5
+        }
+        """.data(using: .utf8)!
+        
+        let config = try JSONDecoder().decode(ClickstreamCourierConfig.self, from: json)
+        
+        XCTAssertFalse(config.isCleanSessionEnabled)
+        XCTAssertFalse(config.isMessagePersistenceEnabled)
+        XCTAssertFalse(config.shouldInitializeCoreDataPersistenceContext)
     }
 }
