@@ -40,8 +40,13 @@ final class SharedNetworkManagerDependencies {
         DefaultAppStateNotifierService(with: networkQueue)
     }()
 
-    private lazy var defaultPersistence: DefaultDatabaseDAO<EventRequest> = {
+    private lazy var socketPersistence: DefaultDatabaseDAO<EventRequest> = {
         DefaultDatabaseDAO<EventRequest>(database: database,
+                                         performOnQueue: daoQueue)
+    }()
+
+    private lazy var courierPersistance: DefaultDatabaseDAO<CourierEventRequest> = {
+        DefaultDatabaseDAO<CourierEventRequest>(database: database,
                                          performOnQueue: daoQueue)
     }()
 
@@ -61,24 +66,24 @@ final class SharedNetworkManagerDependencies {
                                                      performOnQueue: networkQueue)
     }()
 
-    private lazy var websocketRetryMech: Retryable = {
+    private lazy var websocketRetryMech: WebsocketRetryMechanism = {
         WebsocketRetryMechanism(networkService: websocketNetworkService,
                                 reachability: reachability,
                                 deviceStatus: deviceStatus,
                                 appStateNotifier: appStateNotifier,
                                 performOnQueue: networkQueue,
-                                persistence: defaultPersistence,
+                                persistence: socketPersistence,
                                 keepAliveService: keepAliveService)
     }()
 
-    private lazy var courierRetryMech: Retryable = {
+    private lazy var courierRetryMech: CourierRetryMechanism = {
         CourierRetryMechanism(networkOptions: networkOptions,
                               networkService: courierNetworkService,
                               reachability: reachability,
                               deviceStatus: deviceStatus,
                               appStateNotifier: appStateNotifier,
                               performOnQueue: networkQueue,
-                              persistence: defaultPersistence)
+                              persistence: courierPersistance)
     }()
 
     private func getNetworkConfig() -> DefaultNetworkConfiguration {
@@ -106,8 +111,7 @@ final class SharedNetworkManagerDependencies {
     }
 
     func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers, topic: String) {
-        guard let courierRetryMech = self.courierRetryMech as? CourierRetryMechanism,
-              let courierIdentifiers = identifiers as? CourierIdentifiers else {
+        guard let courierIdentifiers = identifiers as? CourierIdentifiers else {
             return
         }
 
@@ -115,9 +119,6 @@ final class SharedNetworkManagerDependencies {
     }
     
     func removeClientIdentifiers() {
-        guard let courierRetryMech = self.courierRetryMech as? CourierRetryMechanism else {
-            return
-        }
         courierRetryMech.removeIdentifiers()
     }
 }

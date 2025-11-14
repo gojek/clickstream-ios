@@ -10,7 +10,9 @@ import Foundation
 import CourierCore
 
 final class CourierRetryMechanism: Retryable {
-    
+
+    typealias EventRequestType = CourierEventRequest
+
     private var networkOptions: ClickstreamNetworkOptions
     private var reachability: NetworkReachability
     private let networkService: NetworkService
@@ -19,7 +21,7 @@ final class CourierRetryMechanism: Retryable {
     private let appStateNotifier: AppStateNotifierService
     private var terminationCountDown: DispatchSourceTimer?
     private var networkServiceState: ConnectableState = .disconnected
-    private var persistence: DefaultDatabaseDAO<EventRequest>
+    private var persistence: DefaultDatabaseDAO<CourierEventRequest>
     private var retryTimer: DispatchSourceTimer?
     private var identifiers: CourierIdentifiers?
     private var topic: String?
@@ -80,7 +82,7 @@ final class CourierRetryMechanism: Retryable {
          deviceStatus: DefaultDeviceStatus,
          appStateNotifier: AppStateNotifierService,
          performOnQueue: SerialQueue,
-         persistence: DefaultDatabaseDAO<EventRequest>) {
+         persistence: DefaultDatabaseDAO<CourierEventRequest>) {
         self.networkOptions = networkOptions
         self.networkService = networkService
         self.reachability = reachability
@@ -152,7 +154,7 @@ final class CourierRetryMechanism: Retryable {
 
 extension CourierRetryMechanism {
     
-    func trackBatch(with eventRequest: EventRequest) {
+    func trackBatch(with eventRequest: CourierEventRequest) {
         // add the batch to the cache before sending the batch to the network.
         let startTime = Date()  // Used to calculate batch latency
         // QoS-0 don't support the caching
@@ -204,7 +206,7 @@ extension CourierRetryMechanism {
         }
     }
 
-    private func fallbackToHTTP(for eventRequest: EventRequest, startTime: Date) {
+    private func fallbackToHTTP(for eventRequest: CourierEventRequest, startTime: Date) {
         guard let networkService = networkService as? CourierNetworkService<DefaultCourierHandler> else {
             return
         }
@@ -219,7 +221,7 @@ extension CourierRetryMechanism {
         }
     }
 
-    private func handleFailedEventRequest(with eventRequest: EventRequest, error: Error) {
+    private func handleFailedEventRequest(with eventRequest: CourierEventRequest, error: Error) {
         #if TRACKER_ENABLED
         let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchErrorResponse,
                                               eventBatchGUID: eventRequest.guid,
@@ -234,7 +236,7 @@ extension CourierRetryMechanism {
         #endif
     }
 
-    private func handleRacoonEventResponse(with eventRequest: EventRequest, startTime: Date, response: Odpf_Raccoon_EventResponse) {
+    private func handleRacoonEventResponse(with eventRequest: CourierEventRequest, startTime: Date, response: Odpf_Raccoon_EventResponse) {
         if response.status == .success && response.code == .ok {
             if let guid = response.data["req_guid"] {
                 // remove the delivered batch from the cache.
@@ -402,7 +404,7 @@ extension CourierRetryMechanism {
 
 extension CourierRetryMechanism {
     
-    private func addToCache(with eventRequest: EventRequest) {
+    private func addToCache(with eventRequest: CourierEventRequest) {
         if var fetchedEventRequest = persistence.fetchOne(eventRequest.guid) {
             if fetchedEventRequest.retriesMade >= Clickstream.configurations.maxRetriesPerBatch {
                 persistence.deleteOne(eventRequest.guid)
@@ -487,7 +489,7 @@ extension CourierRetryMechanism {
 // MARK: - Track Clickstream health.
 extension CourierRetryMechanism {
     
-    func trackHealthAndPerformanceEvents(eventRequest: EventRequest, startTime: Date) {
+    func trackHealthAndPerformanceEvents(eventRequest: CourierEventRequest, startTime: Date) {
         #if TRACKER_ENABLED
         if Tracker.debugMode {
             guard eventRequest.eventType != Constants.EventType.instant else { return }

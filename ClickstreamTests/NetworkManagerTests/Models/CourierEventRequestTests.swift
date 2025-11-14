@@ -1,16 +1,16 @@
 //
-//  EventRequestTests.swift
-//  ClickStreamTests
+//  CourierEventRequestTests.swift
+//  ClickstreamTests
 //
-//  Created by Anirudh Vyas on 06/10/20.
-//  Copyright © 2020 Gojek. All rights reserved.
+//  Created by Luqman Fauzi on 14/11/25.
+//  Copyright © 2025 Gojek. All rights reserved.
 //
 
 @testable import Clickstream
 import XCTest
 import SwiftProtobuf
 
-class EventRequestTests: XCTestCase {
+class CourierEventRequestTests: XCTestCase {
 
     func test_batchSentTimeRefresh_whenMockDataWithOldTimeStampIsPassed() {
         let originalDate = Date()
@@ -20,7 +20,7 @@ class EventRequestTests: XCTestCase {
         }
         
         let protoData = try! eventRequestProto.serializedData()
-        var sut = EventRequest(guid: UUID().uuidString, data: protoData)
+        var sut = CourierEventRequest(guid: UUID().uuidString, data: protoData)
         
         Thread.sleep(forTimeInterval: 0.1)
         
@@ -33,13 +33,13 @@ class EventRequestTests: XCTestCase {
     }
     
     func test_batchSentTimeRefresh_whenDataIsNil() {
-        var sut = EventRequest(guid: UUID().uuidString, data: nil)
+        var sut = CourierEventRequest(guid: UUID().uuidString, data: nil)
         
         XCTAssertNoThrow(try sut.refreshBatchSentTimeStamp())
     }
     
     func test_bumpRetriesMade() {
-        var sut = EventRequest(guid: UUID().uuidString)
+        var sut = CourierEventRequest(guid: UUID().uuidString)
         let initialRetries = sut.retriesMade
         
         sut.bumpRetriesMade()
@@ -48,7 +48,7 @@ class EventRequestTests: XCTestCase {
     }
     
     func test_refreshCachingTimeStamp() {
-        var sut = EventRequest(guid: UUID().uuidString)
+        var sut = CourierEventRequest(guid: UUID().uuidString)
         let originalTimestamp = sut.timeStamp
         
         Thread.sleep(forTimeInterval: 0.1)
@@ -61,7 +61,7 @@ class EventRequestTests: XCTestCase {
         let guid = UUID().uuidString
         let testData = "test data".data(using: .utf8)
         
-        let sut = EventRequest(guid: guid, data: testData)
+        let sut = CourierEventRequest(guid: guid, data: testData)
         
         XCTAssertEqual(sut.guid, guid)
         XCTAssertEqual(sut.data, testData)
@@ -74,28 +74,24 @@ class EventRequestTests: XCTestCase {
     
     func test_equality() {
         let guid = UUID().uuidString
-        let sut1 = EventRequest(guid: guid)
-        let sut2 = EventRequest(guid: guid)
-        let sut3 = EventRequest(guid: UUID().uuidString)
+        let sut1 = CourierEventRequest(guid: guid)
+        let sut2 = CourierEventRequest(guid: guid)
+        let sut3 = CourierEventRequest(guid: UUID().uuidString)
         
         XCTAssertEqual(sut1, sut2)
         XCTAssertNotEqual(sut1, sut3)
     }
     
     func test_tableName() {
-        XCTAssertEqual(EventRequest.tableName, "eventRequest")
+        XCTAssertEqual(CourierEventRequest.tableName, "courier_eventRequest")
     }
     
     func test_primaryKey() {
-        XCTAssertEqual(EventRequest.primaryKey, "guid")
+        XCTAssertEqual(CourierEventRequest.primaryKey, "guid")
     }
     
     func test_tableMigrations() {
-        let migrations = EventRequest.tableMigrations
-        XCTAssertNotNil(migrations)
-        XCTAssertEqual(migrations?.count, 3)
-        XCTAssertEqual(migrations?[0].version, "addsIsInternalToEventRequest")
-        XCTAssertEqual(migrations?[1].version, "addsEventTypeToEventRequest")
-        XCTAssertEqual(migrations?[2].version, "addsEventCountToEventRequest")
+        let migrations = CourierEventRequest.tableMigrations
+        XCTAssertNil(migrations)
     }
 }

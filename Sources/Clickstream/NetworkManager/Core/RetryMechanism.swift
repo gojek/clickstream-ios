@@ -10,9 +10,11 @@ import Foundation
 
 protocol RetryableInputs {
     
+    associatedtype EventRequestType: EventRequestPersistable
+
     /// Call this function to flush eventBatches.
     /// - Parameter eventRequest: eventRequest Object to flush
-    func trackBatch(with eventRequest: EventRequest)
+    func trackBatch(with eventRequest: EventRequestType)
     
     func openConnectionForcefully()
     
@@ -34,6 +36,8 @@ protocol Retryable: RetryableInputs, RetryableOutputs {}
 /// This class is holds the retry logic for the SDK. NetworkBuilder routes the requests through RetryMechanism.
 final class DefaultRetryMechanism: Retryable {
     
+    typealias EventRequestType = EventRequest
+
     private var reachability: NetworkReachability
     private let networkService: NetworkService
     private let performQueue: SerialQueue

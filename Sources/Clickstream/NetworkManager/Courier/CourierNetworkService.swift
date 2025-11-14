@@ -70,7 +70,7 @@ final class CourierNetworkService<C: CourierConnectable>: NetworkService {
 
 extension CourierNetworkService {
     
-    func publish(_ eventRequest: EventRequest, topic: String) async throws {
+    func publish(_ eventRequest: CourierEventRequest, topic: String) async throws {
         try await _connectable?.publishMessage(eventRequest, topic: topic)
     }
     
@@ -92,7 +92,7 @@ extension CourierNetworkService {
 
 extension CourierNetworkService {
 
-    func executeHTTPRequest(_ eventRequest: EventRequest) async throws -> Odpf_Raccoon_EventResponse {
+    func executeHTTPRequest(_ eventRequest: CourierEventRequest) async throws -> Odpf_Raccoon_EventResponse {
         guard _connectable is DefaultCourierHandler else {
             throw ConnectableError.failed
         }

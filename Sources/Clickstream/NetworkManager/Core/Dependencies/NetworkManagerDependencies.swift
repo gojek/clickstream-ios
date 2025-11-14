@@ -59,7 +59,7 @@ final class NetworkManagerDependencies {
                                                     reachability: reachability)
     }()
     
-    private lazy var retryMech: Retryable = {
+    private lazy var retryMech: DefaultRetryMechanism = {
        return DefaultRetryMechanism(networkService: networkService,
                                     reachability: reachability,
                                     deviceStatus: deviceStatus,

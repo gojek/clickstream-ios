@@ -10,9 +10,9 @@ import Foundation
 import SwiftProtobuf
 import GRDB
 
-struct EventRequest: Codable, Equatable {
-    
-    var guid: String
+struct EventRequest: EventRequestDatabasePersistable {
+
+    let guid: String
     var data: Data?
     var timeStamp: Date
     var retriesMade: Int
@@ -21,8 +21,7 @@ struct EventRequest: Codable, Equatable {
     var isInternal: Bool?
     var eventCount: Int
     
-    init(guid: String,
-         data: Data? = nil) {
+    init(guid: String, data: Data? = nil) {
         self.guid = guid
         self.data = data
         self.timeStamp = Date()
@@ -32,51 +31,14 @@ struct EventRequest: Codable, Equatable {
         self.eventType = .realTime
         self.eventCount = 0
     }
-    
-    static func == (lhs: Self, rhs: Self) -> Bool {
-        return lhs.guid == rhs.guid
-    }
-    
-    mutating func bumpRetriesMade() {
-        retriesMade = (retriesMade + 1)
-    }
-    
-    mutating func refreshCachingTimeStamp() {
-        self.timeStamp = Date()
-    }
-    
-    mutating func refreshBatchSentTimeStamp() throws {
-        if let data = data {
-            var requestProto = try Odpf_Raccoon_EventRequest(serializedData: data)
-            requestProto.sentTime = Google_Protobuf_Timestamp(date: Date())
-            self.data = try requestProto.serializedData()
-        }
-    }
 }
 
-extension EventRequest: DatabasePersistable {
-    static var tableDefinition: (TableDefinition) -> Void {
-        get {
-            return { t in
-                t.primaryKey(["guid"])
-                t.column("guid")
-                t.column("timeStamp", .datetime).notNull()
-                t.column("data", .blob)
-                t.column("retriesMade", .text).notNull()
-                t.column("createdTimestamp", .datetime).notNull()
-                t.column("eventCount", .integer).notNull()
-            }
-        }
-    }
-    
-    static var description: String {
-        get {
-            return "eventRequest"
-        }
-    }
-    
-    static var primaryKey: String {
-        return "guid"
+// MARK: - DatabasePersistable
+// Every implementation must have its own table name & table migration handler
+extension EventRequest {
+
+    static var tableName: String {
+        return "eventRequest"
     }
     
     static var tableMigrations: [(version: VersionIdentifier, alteration: (TableAlteration) -> Void)]? {

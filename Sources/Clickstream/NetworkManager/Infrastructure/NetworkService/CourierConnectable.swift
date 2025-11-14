@@ -21,7 +21,7 @@ protocol CourierConnectableInputs {
     /// - Parameters:
     ///   - eventRequest: CS EventRequest
     ///   - topic: Courier's topic path
-    func publishMessage(_ eventRequest: EventRequest, topic: String) async throws
+    func publishMessage(_ eventRequest: CourierEventRequest, topic: String) async throws
 
     /// Disconnects the connection.
     func disconnect()

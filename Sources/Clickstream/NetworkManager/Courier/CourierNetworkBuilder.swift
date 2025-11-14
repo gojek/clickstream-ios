@@ -13,7 +13,7 @@ final class CourierNetworkBuilder: NetworkBuildable {
     typealias BatchType = CourierEventBatch
     
     private let networkConfigs: NetworkConfigurable
-    private let retryMech: Retryable
+    private let retryMech: CourierRetryMechanism
     private let performQueue: SerialQueue
     
     var isAvailable: Bool {
@@ -21,7 +21,7 @@ final class CourierNetworkBuilder: NetworkBuildable {
     }
     
     init(networkConfigs: NetworkConfigurable,
-         retryMech: Retryable,
+         retryMech: CourierRetryMechanism,
          performOnQueue: SerialQueue) {
         self.networkConfigs = networkConfigs
         self.retryMech = retryMech
@@ -38,8 +38,8 @@ extension CourierNetworkBuilder {
             do {
                 let data: Data = try eventBatch.proto.serializedData()
                 print("NetworkBuilder, trackedBatch with id: \(eventBatch.uuid) and itemsCount: \(eventBatch.events.count)")
-                var eventRequest = EventRequest(guid: eventBatch.uuid,
-                                                data: data)
+                var eventRequest = CourierEventRequest(guid: eventBatch.uuid,
+                                                       data: data)
                 
                 if eventBatch.events.first?.type == Constants.HealthEventType {
                     eventRequest.eventType = .internalEvent

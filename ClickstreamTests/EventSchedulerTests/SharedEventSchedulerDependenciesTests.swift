@@ -19,10 +19,11 @@ class SharedEventSchedulerDependenciesTests: XCTestCase {
     private var socketNetworkService: DefaultNetworkService<SocketHandlerMockSuccess>!
     private var courierNetworkService: DefaultNetworkService<SocketHandlerMockSuccess>!
     private var deviceStatus: DefaultDeviceStatus!
-    private var persistence: DefaultDatabaseDAO<EventRequest>!
+    private var socketPersistance: DefaultDatabaseDAO<EventRequest>!
+    private var courierPersistance: DefaultDatabaseDAO<CourierEventRequest>!
     private var keepAliveService: DefaultKeepAliveServiceWithSafeTimer!
     private var socketRetryMech: DefaultRetryMechanism!
-    private var courierRetryMech: DefaultRetryMechanism!
+    private var courierRetryMech: CourierRetryMechanism!
     private var socketNetworkBuildable: (any NetworkBuildable)!
     private var courierNetworkBuildable: (any NetworkBuildable)!
     
@@ -45,7 +46,8 @@ class SharedEventSchedulerDependenciesTests: XCTestCase {
         socketNetworkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: socketConfig, performOnQueue: mockQueue)
         courierNetworkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: courierConfig, performOnQueue: mockQueue)
         deviceStatus = DefaultDeviceStatus(performOnQueue: mockQueue)
-        persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
+        socketPersistance = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
+        courierPersistance = DefaultDatabaseDAO<CourierEventRequest>(database: database, performOnQueue: dbQueueMock)
         keepAliveService = DefaultKeepAliveServiceWithSafeTimer(
             with: mockQueue,
             duration: 2,
@@ -58,18 +60,18 @@ class SharedEventSchedulerDependenciesTests: XCTestCase {
             deviceStatus: deviceStatus,
             appStateNotifier: AppStateNotifierMock(state: .didBecomeActive),
             performOnQueue: mockQueue,
-            persistence: persistence,
+            persistence: socketPersistance,
             keepAliveService: keepAliveService
         )
         
-        courierRetryMech = DefaultRetryMechanism(
+        courierRetryMech = CourierRetryMechanism(
+            networkOptions: .init(isWebsocketEnabled: false, isCourierEnabled: true),
             networkService: courierNetworkService,
             reachability: NetworkReachabilityMock(isReachable: true),
             deviceStatus: deviceStatus,
             appStateNotifier: AppStateNotifierMock(state: .didBecomeActive),
             performOnQueue: mockQueue,
-            persistence: persistence,
-            keepAliveService: keepAliveService
+            persistence: courierPersistance
         )
         
         socketNetworkBuildable = DefaultNetworkBuilder(
@@ -78,7 +80,7 @@ class SharedEventSchedulerDependenciesTests: XCTestCase {
             performOnQueue: mockQueue
         )
         
-        courierNetworkBuildable = DefaultNetworkBuilder(
+        courierNetworkBuildable = CourierNetworkBuilder(
             networkConfigs: courierConfig,
             retryMech: courierRetryMech,
             performOnQueue: mockQueue
@@ -94,11 +96,11 @@ class SharedEventSchedulerDependenciesTests: XCTestCase {
         socketNetworkService = nil
         courierNetworkService = nil
         deviceStatus = nil
-        persistence = nil
+        socketPersistance = nil
+        courierPersistance = nil
         keepAliveService = nil
         socketRetryMech = nil
         courierRetryMech = nil
-        socketNetworkBuildable = nil
         super.tearDown()
     }
     
@@ -204,7 +206,7 @@ class SharedEventSchedulerDependenciesTests: XCTestCase {
             deviceStatus: deviceStatus,
             appStateNotifier: AppStateNotifierMock(state: .didBecomeActive),
             performOnQueue: mockQueue,
-            persistence: persistence,
+            persistence: socketPersistance,
             keepAliveService: keepAliveService
         )
         
@@ -214,7 +216,7 @@ class SharedEventSchedulerDependenciesTests: XCTestCase {
             deviceStatus: deviceStatus,
             appStateNotifier: AppStateNotifierMock(state: .didBecomeActive),
             performOnQueue: mockQueue,
-            persistence: persistence,
+            persistence: socketPersistance,
             keepAliveService: keepAliveService
         )
         
@@ -251,7 +253,7 @@ class SharedEventSchedulerDependenciesTests: XCTestCase {
             deviceStatus: deviceStatus,
             appStateNotifier: backgroundAppStateNotifier,
             performOnQueue: mockQueue,
-            persistence: persistence,
+            persistence: socketPersistance,
             keepAliveService: keepAliveService
         )
         
@@ -261,7 +263,7 @@ class SharedEventSchedulerDependenciesTests: XCTestCase {
             deviceStatus: deviceStatus,
             appStateNotifier: backgroundAppStateNotifier,
             performOnQueue: mockQueue,
-            persistence: persistence,
+            persistence: socketPersistance,
             keepAliveService: keepAliveService
         )
         

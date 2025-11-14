@@ -38,7 +38,7 @@ final class DefaultNetworkBuilder: NetworkBuildable {
     typealias BatchType = EventBatch
     
     private let networkConfigs: NetworkConfigurable
-    private let retryMech: Retryable
+    private let retryMech: DefaultRetryMechanism
     private let performQueue: SerialQueue
     
     var isAvailable: Bool {
@@ -46,7 +46,7 @@ final class DefaultNetworkBuilder: NetworkBuildable {
     }
     
     init(networkConfigs: NetworkConfigurable,
-         retryMech: Retryable,
+         retryMech: DefaultRetryMechanism,
          performOnQueue: SerialQueue) {
         self.networkConfigs = networkConfigs
         self.retryMech = retryMech

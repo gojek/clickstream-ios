@@ -36,7 +36,7 @@ final class DefaultCourierHandler: CourierHandler {
         self.userCredentials = userCredentials
     }
     
-    func publishMessage(_ eventRequest: EventRequest, topic: String) async throws {
+    func publishMessage(_ eventRequest: CourierEventRequest, topic: String) async throws {
         guard let data = eventRequest.data else {
             throw CourierError.encodingError
         }

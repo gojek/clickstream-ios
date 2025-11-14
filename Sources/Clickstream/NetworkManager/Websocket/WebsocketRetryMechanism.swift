@@ -2,7 +2,9 @@ import Foundation
 
 /// This class is holds the retry logic for the SDK. NetworkBuilder routes the requests through RetryMechanism.
 final class WebsocketRetryMechanism: Retryable {
-    
+
+    typealias EventRequestType = EventRequest
+
     private var reachability: NetworkReachability
     private let networkService: NetworkService
     private let performQueue: SerialQueue
