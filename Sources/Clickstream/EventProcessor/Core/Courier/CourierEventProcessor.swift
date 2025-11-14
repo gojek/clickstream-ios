@@ -1,23 +1,16 @@
 //
-//  EventProcessor.swift
+//  CourierEventProcessor.swift
 //  Clickstream
 //
-//  Created by Abhijeet Mallick on 03/06/20.
-//  Copyright © 2020 Gojek. All rights reserved.
+//  Created by Luqman Fauzi on 14/11/25.
+//  Copyright © 2025 Gojek. All rights reserved.
 //
 
 import Foundation
 import SwiftProtobuf
 
-protocol EventProcessorInput {
-    func createEvent(event: ClickstreamEvent)
-}
 
-protocol EventProcessorOutput { }
-
-protocol EventProcessor: EventProcessorInput, EventProcessorOutput { }
-
-final class DefaultEventProcessor: EventProcessor {
+final class CourierEventProcessor: EventProcessor {
     
     private let eventWarehouser: any EventWarehouser
     private let serialQueue: SerialQueue

@@ -9,11 +9,13 @@
 import Foundation
 
 protocol EventBatchCreatorInputs {
+    associatedtype EventType: EventPersistable
+    associatedtype BatchType: EventBatchPersistable where BatchType.EventType == EventType
     
     /// Creates an EventBatch Object and forwards it to the network.
     /// - Parameter events: array of events to the sent.
     @discardableResult
-    func forward(with events: [Event]) -> Bool
+    func forward(with events: [EventType]) -> Bool
     
     func requestForConnection()
     
@@ -22,7 +24,6 @@ protocol EventBatchCreatorInputs {
 }
 
 protocol EventBatchCreatorOutputs {
-    
     /// Informs whether an EventBatch can be forwarded or not.
     var canForward: Bool { get }
 }
@@ -33,27 +34,26 @@ protocol EventBatchCreator: EventBatchCreatorInputs, EventBatchCreatorOutputs { 
     This class is the interface between NetworkManager and the scheduler. Use this to forward requests to the network builder.
  */
 final class DefaultEventBatchCreator: EventBatchCreator {
+    typealias EventType = Event
+    typealias BatchType = EventBatch
     
-    private let networkBuilder: NetworkBuildable
+    private let networkBuilder: any NetworkBuildable
     private let performOnQueue: SerialQueue
     
-    init(with networkBuilder: NetworkBuildable,
+    init(with networkBuilder: any NetworkBuildable,
          performOnQueue: SerialQueue) {
         self.networkBuilder = networkBuilder
         self.performOnQueue = performOnQueue
     }
-}
-
-extension DefaultEventBatchCreator {
+    
     func forward(with events: [Event]) -> Bool {
-        if canForward {
-            let batch = EventBatch(uuid: UUID().uuidString, events: events)
-            networkBuilder.trackBatch(batch, completion: nil)
-            
-            self.trackHealthEvents(batch: batch, events: events)         
-            return true
-        }
-        return false
+        guard canForward else { return false }
+        
+        let batch = EventBatch(uuid: UUID().uuidString, events: events)
+        networkBuilder.trackBatch(batch, completion: nil)
+        
+        self.trackHealthEvents(batch: batch, events: events)
+        return true
     }
     
     func requestForConnection() {

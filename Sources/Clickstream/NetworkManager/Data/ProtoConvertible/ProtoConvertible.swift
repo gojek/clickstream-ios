@@ -11,5 +11,6 @@ import SwiftProtobuf
 
 protocol ProtoConvertible {
     associatedtype ProtoMessage: Message
+
     var proto: ProtoMessage { get }
 }

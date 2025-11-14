@@ -85,13 +85,13 @@ final class SharedNetworkManagerDependencies {
         DefaultNetworkConfiguration(request: request, networkOptions: networkOptions)
     }
 
-    func makeNetworkBuilder() -> NetworkBuildable {
+    func makeNetworkBuilder() -> WebsocketNetworkBuilder {
         WebsocketNetworkBuilder(networkConfigs: getNetworkConfig(),
                                 retryMech: websocketRetryMech,
                                 performOnQueue: networkQueue)
     }
 
-    func makeCourierNetworkBuilder() -> NetworkBuildable {
+    func makeCourierNetworkBuilder() -> CourierNetworkBuilder {
         CourierNetworkBuilder(networkConfigs: getNetworkConfig(),
                               retryMech: courierRetryMech,
                               performOnQueue: networkQueue)

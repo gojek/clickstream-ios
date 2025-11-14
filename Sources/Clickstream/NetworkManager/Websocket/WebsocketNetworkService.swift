@@ -59,7 +59,7 @@ extension WebsocketNetworkService {
                         return
                     }
                     do {
-                        let result = try T(serializedData: responseData) // Deserialise the proto data.
+                        let result = try T(serializedBytes: responseData) // Deserialise the proto data.
                         completion(.success(result))
                     } catch {
                         completion(Result.failure(ConnectableError.parsingData))

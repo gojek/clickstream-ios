@@ -24,7 +24,7 @@ class SharedNetworkManagerDependenciesTests: XCTestCase {
         let networkManagerDependencies = SharedNetworkManagerDependencies(with: dummyRequest,
                                                                           db: database,
                                                                           networkOptions: .init(isWebsocketEnabled: true, isCourierEnabled: false))
-        let networkBuilder: NetworkBuildable = networkManagerDependencies.makeNetworkBuilder()
+        let networkBuilder: any NetworkBuildable = networkManagerDependencies.makeNetworkBuilder()
 
         // then
         XCTAssertNotNil(networkBuilder)
@@ -42,7 +42,7 @@ class SharedNetworkManagerDependenciesTests: XCTestCase {
         let networkManagerDependencies = SharedNetworkManagerDependencies(with: dummyRequest,
                                                                           db: database,
                                                                           networkOptions: .init(isWebsocketEnabled: false, isCourierEnabled: true))
-        let networkBuilder: NetworkBuildable = networkManagerDependencies.makeCourierNetworkBuilder()
+        let networkBuilder: any NetworkBuildable = networkManagerDependencies.makeCourierNetworkBuilder()
 
         // then
         XCTAssertNotNil(networkBuilder)
@@ -51,7 +51,6 @@ class SharedNetworkManagerDependenciesTests: XCTestCase {
     
     func testConfigureCourierSession() {
         // given
-        let expectation = XCTestExpectation(description: "Courier session must be configured")
         let dummyRequest = URLRequest(url: URL(string: "dummy_url")!)
         let user = CourierIdentifiers(userIdentifier: "12345", authURLRequest: URLRequest(url: .init(string: "some_url")!))
         let topic = "clickstream/topic"
@@ -63,7 +62,7 @@ class SharedNetworkManagerDependenciesTests: XCTestCase {
         let networkManagerDependencies = SharedNetworkManagerDependencies(with: dummyRequest,
                                                                           db: database,
                                                                           networkOptions: .init(isWebsocketEnabled: false, isCourierEnabled: true))
-        let networkBuilder: NetworkBuildable = networkManagerDependencies.makeCourierNetworkBuilder()
+        let networkBuilder: any NetworkBuildable = networkManagerDependencies.makeCourierNetworkBuilder()
         networkManagerDependencies.provideClientIdentifiers(with: user, topic: topic)
 
         XCTAssertNotNil(networkBuilder)

@@ -70,17 +70,7 @@ public struct ClickstreamNetworkOptions: Decodable {
 
 extension ClickstreamNetworkOptions {
 
-    func getNetworkType(for event: String) -> ClickstreamNetworkType {
-        if isWebsocketEnabled && isCourierEnabled && courierEventTypes.contains(event) {
-            return .courier
-        }
-        if isCourierEnabled {
-            return .courier
-        }
-        return .websocket
-    }
-
-    func isConfigEnabled() -> Bool {
+    var isCourierExperimentFlowEnabled: Bool {
         // If both flags are `false`, config should be disabled
         if !isWebsocketEnabled && !isCourierEnabled {
             return false

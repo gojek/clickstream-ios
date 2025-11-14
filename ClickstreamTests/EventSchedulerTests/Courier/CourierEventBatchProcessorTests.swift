@@ -4,11 +4,12 @@ import XCTest
 
 final class CourierEventBatchProcessorTests: XCTestCase {
     
-    private var mockEventBatchCreator: MockEventBatchCreator!
+    private var mockNetworkBuilder: MockNetworkBuilder!
+    private var mockEventBatchCreator: CourierEventBatchCreator!
     private var mockSchedulerService: MockSchedulerService!
     private var mockAppStateNotifier: MockAppStateNotifierService!
     private var mockBatchSizeRegulator: MockBatchSizeRegulator!
-    private var mockPersistence: DefaultDatabaseDAO<Event>!
+    private var mockPersistence: DefaultDatabaseDAO<CourierEvent>!
     private var sut: CourierEventBatchProcessor!
     
     private let database = try! DefaultDatabase(qos: .WAL)
@@ -18,12 +19,12 @@ final class CourierEventBatchProcessorTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        mockEventBatchCreator = MockEventBatchCreator()
+        mockNetworkBuilder = MockNetworkBuilder()
+        mockEventBatchCreator = CourierEventBatchCreator(with: mockNetworkBuilder, performOnQueue: daoQueue)
         mockSchedulerService = MockSchedulerService()
         mockAppStateNotifier = MockAppStateNotifierService()
         mockBatchSizeRegulator = MockBatchSizeRegulator()
-        mockPersistence = DefaultDatabaseDAO<Event>(database: database,
-                                                    performOnQueue: daoQueue)
+        mockPersistence = DefaultDatabaseDAO<CourierEvent>(database: database, performOnQueue: daoQueue)
         
         sut = CourierEventBatchProcessor(
             with: mockEventBatchCreator,
@@ -53,28 +54,26 @@ final class CourierEventBatchProcessorTests: XCTestCase {
     }
     
     func testSendInstantly_shouldForwardEventAndReturnResult() {
-        mockEventBatchCreator.forwardResult = true
-        let event = Event.mock()
-        
+        mockNetworkBuilder.isAvailableValue = true
+
+        let event = CourierEvent.mock()
         let result = sut.sendInstantly(event: event)
         
         XCTAssertTrue(result)
-        XCTAssertEqual(mockEventBatchCreator.forwardCallCount, 1)
-        XCTAssertEqual(mockEventBatchCreator.lastForwardedEvents?.count, 1)
+        XCTAssertEqual(mockNetworkBuilder.trackBatchCallCount, 1)
     }
     
     func testSendP0_whenNoEvents_shouldNotForward() {
+        mockNetworkBuilder.isAvailableValue = true
         sut.sendP0(classificationType: "p0")
         
-        XCTAssertEqual(mockEventBatchCreator.forwardCallCount, 0)
+        XCTAssertEqual(mockNetworkBuilder.trackBatchCallCount, 0)
     }
 
     func testSchedulerSubscriber_whenCannotForward_shouldNotProcessEvents() {
-        mockEventBatchCreator.canForwardValue = false
-        
         sut.start()
                 
-        XCTAssertEqual(mockEventBatchCreator.forwardCallCount, 0)
+        XCTAssertEqual(mockNetworkBuilder.trackBatchCallCount, 0)
     }
     
     func testAppStateNotification_willResignActive_shouldStopTimer() {
@@ -96,37 +95,10 @@ final class CourierEventBatchProcessorTests: XCTestCase {
         
         XCTAssertEqual(mockSchedulerService.stopCallCount, 1)
         XCTAssertEqual(mockAppStateNotifier.stopCallCount, 1)
-        XCTAssertEqual(mockEventBatchCreator.stopCallCount, 1)
     }
 }
 
 // MARK: - Mock Classes
-private class MockEventBatchCreator: EventBatchCreator {
-    var canForwardValue = false
-    var forwardResult = false
-    var forwardCallCount = 0
-    var stopCallCount = 0
-    var requestForConnectionCallCount = 0
-    var lastForwardedEvents: [Event]?
-    
-    var canForward: Bool {
-        return canForwardValue
-    }
-    
-    func forward(with events: [Event]) -> Bool {
-        forwardCallCount += 1
-        lastForwardedEvents = events
-        return forwardResult
-    }
-    
-    func requestForConnection() {
-        requestForConnectionCallCount += 1
-    }
-    
-    func stop() {
-        stopCallCount += 1
-    }
-}
 
 private class MockSchedulerService: SchedulerService {
     var subscriber: ((Priority) -> Void)?

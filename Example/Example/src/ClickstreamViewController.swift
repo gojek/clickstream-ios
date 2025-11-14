@@ -86,7 +86,6 @@ class ClickstreamViewController: UIViewController {
             let defaultNetworkOptions = ClickstreamNetworkOptions(isWebsocketEnabled: false,
                                                                   isCourierEnabled: true,
                                                                   courierEventTypes: Set(whitelistedEvents),
-                                                                  httpFallbackDelayMs: 500,
                                                                   courierConfig: config)
 
             self?.analyticsManager.networkOptions = defaultNetworkOptions

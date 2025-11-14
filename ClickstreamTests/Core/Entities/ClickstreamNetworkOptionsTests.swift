@@ -75,49 +75,14 @@ class ClickstreamNetworkOptionsTests: XCTestCase {
         XCTAssertFalse(options.isCourierEnabled)
         XCTAssertEqual(options.courierEventTypes, Set(["special_event"]))
     }
-    
-    func testGetNetworkTypeForCourierEvent() {
-        let eventTypes: Set<CourierEventIdentifier> = ["courier_event", "special_event"]
-        let options = ClickstreamNetworkOptions(
-            isWebsocketEnabled: true,
-            isCourierEnabled: true,
-            courierEventTypes: eventTypes
-        )
-        
-        XCTAssertEqual(options.getNetworkType(for: "courier_event"), .courier)
-        XCTAssertEqual(options.getNetworkType(for: "special_event"), .courier)
-    }
-    
-    func testGetNetworkTypeForWebsocketEvent() {
-        let eventTypes: Set<CourierEventIdentifier> = ["courier_event"]
-        let options = ClickstreamNetworkOptions(
-            isWebsocketEnabled: true,
-            isCourierEnabled: true,
-            courierEventTypes: eventTypes
-        )
-        
-        XCTAssertEqual(options.getNetworkType(for: "regular_event"), .courier)
-        XCTAssertEqual(options.getNetworkType(for: "unknown_event"), .courier)
-    }
-    
-    func testGetNetworkTypeWhenCourierDisabled() {
-        let eventTypes: Set<CourierEventIdentifier> = ["courier_event"]
-        let options = ClickstreamNetworkOptions(
-            isWebsocketEnabled: true,
-            isCourierEnabled: false,
-            courierEventTypes: eventTypes
-        )
-        
-        XCTAssertEqual(options.getNetworkType(for: "courier_event"), .websocket)
-    }
-    
+
     func testIsConfigEnabledWhenWebsocketEnabled() {
         let options = ClickstreamNetworkOptions(
             isWebsocketEnabled: true,
             isCourierEnabled: false
         )
         
-        XCTAssertTrue(options.isConfigEnabled())
+        XCTAssertTrue(options.isCourierExperimentFlowEnabled)
     }
     
     func testIsConfigEnabledWhenCourierEnabled() {
@@ -126,7 +91,7 @@ class ClickstreamNetworkOptionsTests: XCTestCase {
             isCourierEnabled: true
         )
         
-        XCTAssertTrue(options.isConfigEnabled())
+        XCTAssertTrue(options.isCourierExperimentFlowEnabled)
     }
     
     func testIsConfigEnabledWhenBothEnabled() {
@@ -135,7 +100,7 @@ class ClickstreamNetworkOptionsTests: XCTestCase {
             isCourierEnabled: true
         )
         
-        XCTAssertTrue(options.isConfigEnabled())
+        XCTAssertTrue(options.isCourierExperimentFlowEnabled)
     }
     
     func testIsConfigDisabledWhenBothDisabled() {
@@ -144,7 +109,7 @@ class ClickstreamNetworkOptionsTests: XCTestCase {
             isCourierEnabled: false
         )
         
-        XCTAssertFalse(options.isConfigEnabled())
+        XCTAssertFalse(options.isCourierExperimentFlowEnabled)
     }
     
     func testDecodingWithInvalidEventTypesFormat() throws {

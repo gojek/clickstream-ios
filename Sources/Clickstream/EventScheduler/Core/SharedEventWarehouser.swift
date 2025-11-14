@@ -4,31 +4,37 @@ import Foundation
 final class SharedEventWarehouser: EventWarehouser {
     
     private let performQueue: SerialQueue
-    private let eventBatchProcessor: EventBatchProcessor
-    private let secondaryEventBatchProcessor: EventBatchProcessor?
-    private let persistence: DefaultDatabaseDAO<Event>
-    private let batchRegulator: BatchSizeRegulator
-    private let secondaryBatchRegulator: BatchSizeRegulator
+    private let socketPersistance: DefaultDatabaseDAO<Event>
+    private let courierPersistance: DefaultDatabaseDAO<CourierEvent>
+
+    private let socketBatchProcessor: DefaultEventBatchProcessor
+    private let courierBatchProcessor: CourierEventBatchProcessor?
+
+    private let socketBatchSizeRegulator: BatchSizeRegulator
+    private let courierBatchSizeRegulator: BatchSizeRegulator
+
     private let networkOptions: ClickstreamNetworkOptions
 
     private lazy var courierWhitelistedEvents: Set<String> = {
         Set(networkOptions.courierEventTypes.map { $0.lowercased() })
     }()
 
-    init(with eventBatchProcessor: EventBatchProcessor,
-         secondary secondaryEventBatchProcessor: EventBatchProcessor? = nil,
-         performOnQueue: SerialQueue,
-         persistence: DefaultDatabaseDAO<Event>,
-         batchSizeRegulator: BatchSizeRegulator,
-         secondaryBatchSizeRegulator: BatchSizeRegulator,
+    init(performOnQueue: SerialQueue,
+         socketPersistance: DefaultDatabaseDAO<Event>,
+         courierPersistance: DefaultDatabaseDAO<CourierEvent>,
+         socketBatchProcessor: DefaultEventBatchProcessor,
+         courierBatchProcessor: CourierEventBatchProcessor? = nil,
+         socketBatchSizeRegulator: BatchSizeRegulator,
+         courierBatchSizeRegulator: BatchSizeRegulator,
          networkOptions: ClickstreamNetworkOptions) {
 
-        self.eventBatchProcessor = eventBatchProcessor
-        self.secondaryEventBatchProcessor = secondaryEventBatchProcessor
         self.performQueue = performOnQueue
-        self.persistence = persistence
-        self.batchRegulator = batchSizeRegulator
-        self.secondaryBatchRegulator = secondaryBatchSizeRegulator
+        self.socketPersistance = socketPersistance
+        self.courierPersistance = courierPersistance
+        self.socketBatchProcessor = socketBatchProcessor
+        self.courierBatchProcessor = courierBatchProcessor
+        self.socketBatchSizeRegulator = socketBatchSizeRegulator
+        self.courierBatchSizeRegulator = courierBatchSizeRegulator
         self.networkOptions = networkOptions
 
         start()
@@ -36,90 +42,106 @@ final class SharedEventWarehouser: EventWarehouser {
     
     /// This method starts the event batch processor.
     private func start() {
-        self.eventBatchProcessor.start()
+        socketBatchProcessor.start()
+        courierBatchProcessor?.start()
     }
 
-    /// Determines if the event can be dispatch via Courier
+    /// Handle websocket-enabled event
+    /// - Parameter event: Event
+    private func handleSocketEvent(_ event: Event) {
+        if event.type == Constants.EventType.instant.rawValue {
+            _ = socketBatchProcessor.sendInstantly(event: event)
+        } else {
+            if event.type != Constants.EventType.p0Event.rawValue {
+                socketBatchSizeRegulator.observe(event)
+            }
+
+            socketPersistance.insert(event)
+
+            if event.type == Constants.EventType.p0Event.rawValue {
+                socketBatchProcessor.sendP0(classificationType: event.type)
+            }
+
+            trackEventVisualizer(event)
+        }
+    }
+
+    /// Handle courier-enabled event
+    /// - Parameter event: Event
+    private func handleCourierEvent(_ event: Event) {
+        let courierEvent = CourierEvent.initialise(from: event)
+
+        if event.type == Constants.EventType.instant.rawValue {
+            _ = courierBatchProcessor?.sendInstantly(event: courierEvent)
+        } else {
+            if event.type != Constants.EventType.p0Event.rawValue {
+                courierBatchSizeRegulator.observe(event)
+            }
+
+            // Transform
+            courierPersistance.insert(courierEvent)
+
+            if event.type == Constants.EventType.p0Event.rawValue {
+                courierBatchProcessor?.sendP0(classificationType: courierEvent.type)
+            }
+
+            trackEventVisualizer(courierEvent)
+        }
+    }
+
+    /// Track event for Visualiaser
+    /// - Parameter event: Event
+    private func trackEventVisualizer<T: EventPersistable>(_ event: T) {
+        #if EVENT_VISUALIZER_ENABLED
+        /// Update the status of the event to cached
+        /// to check if the delegate is connected, if not no event should be sent to client
+        if let stateViewer = Clickstream._stateViewer {
+            /// Updating the event state to client to cache based on eventGuid
+            stateViewer.updateStatus(providedEventGuid: event.guid, state: .cached)
+        }
+        #endif
+        #if TRACKER_ENABLED
+        let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventCached,
+                                              eventGUID: event.guid,
+                                              eventCount: 1)
+        if event.type != Constants.EventType.instant.rawValue {
+            Tracker.sharedInstance?.record(event: healthEvent)
+        }
+        #endif
+    }
+
+    /// Determines if an event is able to dispatch via Courier
     /// - Parameter event: Event
     /// - Returns: Boolean flag
-    private func isCourierWhitelistedEvent(_ event: Event) -> Bool {
+    private func isWhitelistedCourierEvent(_ event: Event) -> Bool {
+        guard networkOptions.isCourierEnabled else {
+            return false
+        }
+
         let data = event.eventProtoData
         guard let eventType = try? Odpf_Raccoon_Event(serializedBytes: data).type else {
             return false
         }
 
-        if networkOptions.isWebsocketEnabled && networkOptions.isCourierEnabled {
-            return courierWhitelistedEvents.contains(eventType)
-        } else {
-            return networkOptions.isCourierEnabled
-        }
-    }
-
-    /// Send `instant` event type
-    /// - Parameter event: Determines the event processor action given condition flag
-    private func sendInstantEvent(_ event: Event) {
-        if isCourierWhitelistedEvent(event) {
-            _ = secondaryEventBatchProcessor?.sendInstantly(event: event)
-        } else {
-            _ = eventBatchProcessor.sendInstantly(event: event)
-        }
-    }
-
-    /// Send `p0Event` event type
-    /// - Parameter event: Determines the event processor action given condition flag
-    private func sendP0Event(_ event: Event) {
-        if isCourierWhitelistedEvent(event) {
-            secondaryEventBatchProcessor?.sendP0(classificationType: event.type)
-        } else {
-            eventBatchProcessor.sendP0(classificationType: event.type)
-        }
-    }
-
-    private func observeBatchRegulator(_ event: Event) {
-        if isCourierWhitelistedEvent(event) {
-            secondaryBatchRegulator.observe(event)
-        } else {
-            batchRegulator.observe(event)
-        }
+        return courierWhitelistedEvents.contains(eventType)
     }
 }
 
 extension SharedEventWarehouser {
     
     func store(_ event: Event) {
-        performQueue.async { [weak self] in guard let checkedSelf = self else { return }
-            if event.type == Constants.EventType.instant.rawValue {
-                checkedSelf.sendInstantEvent(event)
-            } else {
-                if event.type != Constants.EventType.p0Event.rawValue {
-                    checkedSelf.observeBatchRegulator(event)
-                }
-                checkedSelf.persistence.insert(event)
-                if event.type == Constants.EventType.p0Event.rawValue {
-                    checkedSelf.sendP0Event(event)
-                }
-                #if EVENT_VISUALIZER_ENABLED
-                /// Update the status of the event to cached
-                /// to check if the delegate is connected, if not no event should be sent to client
-                if let stateViewer = Clickstream._stateViewer {
-                    /// Updating the event state to client to cache based on eventGuid
-                    stateViewer.updateStatus(providedEventGuid: event.guid, state: .cached)
-                }
-                #endif
-                #if TRACKER_ENABLED
-                let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventCached,
-                                                      eventGUID: event.guid,
-                                                      eventCount: 1)
-                if event.type != Constants.EventType.instant.rawValue {
-                    Tracker.sharedInstance?.record(event: healthEvent)
-                }
-                #endif
+        performQueue.async { [weak self] in
+            guard let checkedSelf = self else { return }
+            checkedSelf.handleSocketEvent(event)
+
+            if checkedSelf.isWhitelistedCourierEvent(event) {
+                checkedSelf.handleCourierEvent(event)
             }
         }
     }
     
     func stop() {
-        eventBatchProcessor.stop()
-        secondaryEventBatchProcessor?.stop()
+        socketBatchProcessor.stop()
+        courierBatchProcessor?.stop()
     }
 }

@@ -10,7 +10,7 @@ import Foundation
 
 final class EventProcessorDependencies {
     
-    private let eventWarehouser: EventWarehouser
+    private let eventWarehouser: any EventWarehouser
     private let eventSampler: EventSampler?
     
     private lazy var serialQueue: SerialQueue = {
@@ -21,13 +21,19 @@ final class EventProcessorDependencies {
         return DefaultEventClassifier()
     }()
     
-    init(with eventWarehouser: EventWarehouser, sampler: EventSampler? = nil) {
+    init(with eventWarehouser: any EventWarehouser, sampler: EventSampler? = nil) {
         self.eventWarehouser = eventWarehouser
         self.eventSampler = sampler
     }
     
-    func makeEventProcessor() -> EventProcessor {
+    func makeEventProcessor() -> any EventProcessor {
         return DefaultEventProcessor(performOnQueue: serialQueue,
+                                     classifier: classifier,
+                                     eventWarehouser: eventWarehouser, sampler: eventSampler)
+    }
+    
+    func makeCourierEventProcessor() -> any EventProcessor {
+        return CourierEventProcessor(performOnQueue: serialQueue,
                                      classifier: classifier,
                                      eventWarehouser: eventWarehouser, sampler: eventSampler)
     }

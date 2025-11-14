@@ -21,7 +21,7 @@ class NetworkManagerDependenciesTests: XCTestCase {
         // when
         let networkManagerDependencies = NetworkManagerDependencies(with: dummyRequest, db: database)
         
-        let networkBuilder: NetworkBuildable = networkManagerDependencies.makeNetworkBuilder()
+        let networkBuilder: any NetworkBuildable = networkManagerDependencies.makeNetworkBuilder()
         
         // then
         XCTAssertNotNil(networkBuilder)

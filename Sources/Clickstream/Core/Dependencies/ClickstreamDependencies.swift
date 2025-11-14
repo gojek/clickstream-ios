@@ -10,8 +10,8 @@ import Foundation
 
 protocol ClickstreamDependencies {
     var isSocketConnected: Bool { get }
-    var networkBuilder: NetworkBuildable { get }
-    var eventWarehouser: EventWarehouser { get }
+    var networkBuilder: any NetworkBuildable { get }
+    var eventWarehouser: any EventWarehouser { get }
     var eventProcessor: EventProcessor { get }
     var eventSampler: EventSampler? { get }
 }
@@ -39,7 +39,7 @@ final class DefaultClickstreamDependencies: ClickstreamDependencies {
         A NetworkBuildable instance. This instance acts as the only source of NetworkBuildable,
         hence ensuring only one instane is tied to the Clickstream class.
      */
-    lazy var networkBuilder: NetworkBuildable = {
+    lazy var networkBuilder: any NetworkBuildable = {
         networkManagerDependencies = NetworkManagerDependencies(with: request,
                                                                 db: database)
         return networkManagerDependencies.makeNetworkBuilder()
@@ -49,7 +49,7 @@ final class DefaultClickstreamDependencies: ClickstreamDependencies {
         This instance acts as the only source of EventWarehouser,
         hence ensuring only one instane is tied to the Clickstream class.
      */
-    lazy var eventWarehouser: EventWarehouser = {
+    lazy var eventWarehouser: any EventWarehouser = {
         return EventSchedulerDependencies(with: networkBuilder,
                                           db: database).makeEventWarehouser()
     }()

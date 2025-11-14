@@ -85,8 +85,8 @@ public final class Clickstream {
     private weak var delegate: ClickstreamDelegate?
     
     // MARK: - Building blocks of the SDK.
-    private let networkBuilder: NetworkBuildable
-    private let secondaryNetworkBuilder: NetworkBuildable?
+    private let networkBuilder: any NetworkBuildable
+    private let secondaryNetworkBuilder: (any NetworkBuildable)?
     private let eventProcessor: EventProcessor
     private let eventWarehouser: EventWarehouser
     
@@ -96,8 +96,8 @@ public final class Clickstream {
     ///   - eventWarehouser: event warehouser instance
     ///   - eventProcessor: event processor instance
     ///   - dataSource: dataSource for Clickstream
-    private init(networkBuilder: NetworkBuildable,
-                 secondaryNetworkBuilder: NetworkBuildable? = nil,
+    private init(networkBuilder: any NetworkBuildable,
+                 secondaryNetworkBuilder: (any NetworkBuildable)? = nil,
                  eventWarehouser: EventWarehouser,
                  eventProcessor: EventProcessor,
                  delegate: ClickstreamDelegate? = nil) {
@@ -256,14 +256,14 @@ public final class Clickstream {
             // All the dependency injections pertaining to the clickstream blocks happen here!
             // Load default dependencies.
             do {
-                if let networkOptions, networkOptions.isConfigEnabled() {
+                if let networkOptions, networkOptions.isCourierExperimentFlowEnabled {
                     // This will be the main `ClickstreamDependencies` until the flag is safely removed.
                     let dependencies = try SharedClickstreamDependencies(with: request,
                                                                          samplerConfiguration: samplerConfiguration,
                                                                          networkOptions: networkOptions)
 
                     sharedInstance = Clickstream(networkBuilder: dependencies.networkBuilder,
-                                                 secondaryNetworkBuilder: dependencies.secondaryNetworkBuilder,
+                                                 secondaryNetworkBuilder: dependencies.courierNetworkBuilder,
                                                  eventWarehouser: dependencies.eventWarehouser,
                                                  eventProcessor: dependencies.eventProcessor,
                                                  delegate: delegate)

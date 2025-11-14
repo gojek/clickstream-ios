@@ -69,6 +69,10 @@ final class CourierRetryMechanism: Retryable {
         #endif
         return isReachable && isConnected && !isOnLowPower
     }
+
+    private var isCourierConnectable: Bool {
+        networkOptions.isCourierEnabled && identifiers != nil
+    }
     
     init(networkOptions: ClickstreamNetworkOptions,
          networkService: NetworkService,
@@ -324,6 +328,9 @@ extension CourierRetryMechanism {
 extension CourierRetryMechanism {
     
     private func terminateConnection() {
+        guard isCourierConnectable else {
+            return
+        }
         networkService.terminateConnection()
         stopObservingFailedBatches()
     }
@@ -349,6 +356,7 @@ extension CourierRetryMechanism {
     }
     
     private func establishConnection(keepTrying: Bool = false) {
+        // Only establish connection when Courier identifiers available
         guard let identifiers else {
             return
         }
@@ -439,7 +447,7 @@ extension CourierRetryMechanism {
     
     
     private func retryFailedBatches() {
-        guard isAvailble else {
+        guard isAvailble && isCourierConnectable else {
             stopObservingFailedBatches()
             return
         }

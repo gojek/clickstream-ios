@@ -9,6 +9,7 @@
 import Foundation
 
 protocol NetworkBuildableInputs {
+    associatedtype BatchType: EventBatchPersistable
     
     /**
      Call this function to track an eventBatch.
@@ -18,7 +19,7 @@ protocol NetworkBuildableInputs {
      - parameter eventBatch: EventBatch to be forwarded.
      - parameter completion: completion callback
      */
-    func trackBatch(_ eventBatch: EventBatch, completion: ((Error?)->())?)
+    func trackBatch<T: EventBatchPersistable>(_ eventBatch: T, completion: ((_ error: Error?) -> Void)?)
     
     func openConnectionForcefully()
     
@@ -34,6 +35,7 @@ protocol NetworkBuildable: NetworkBuildableInputs, NetworkBuildableOutputs { }
 
 /// This is the class which the scheduler will communicate with in order to get the network related tasks done
 final class DefaultNetworkBuilder: NetworkBuildable {
+    typealias BatchType = EventBatch
     
     private let networkConfigs: NetworkConfigurable
     private let retryMech: Retryable
@@ -54,8 +56,8 @@ final class DefaultNetworkBuilder: NetworkBuildable {
 
 extension DefaultNetworkBuilder {
     
-    func trackBatch(_ eventBatch: EventBatch, completion: ((Error?)->())?) {
-        
+    func trackBatch<T: EventBatchPersistable>(_ eventBatch: T, completion: ((_ error: Error?) -> Void)?) {
+
         performQueue.async { [weak self] in guard let checkedSelf = self else { return }
             do {
                 let data: Data = try eventBatch.proto.serializedData()
@@ -106,7 +108,7 @@ extension DefaultNetworkBuilder {
 
 // MARK: - Track Clickstream health.
 extension DefaultNetworkBuilder {
-    private func trackHealthEvents(eventBatch: EventBatch, eventBatchData: Data) {
+    private func trackHealthEvents<T: EventBatchPersistable>(eventBatch: T, eventBatchData: Data) {
         #if TRACKER_ENABLED
         guard Tracker.debugMode else { return }
         let eventGUIDs: [String] = eventBatch.events.compactMap { $0.guid }

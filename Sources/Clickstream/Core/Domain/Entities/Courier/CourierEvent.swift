@@ -1,16 +1,16 @@
 //
-//  Event.swift
+//  CourierStorableEvent.swift
 //  Clickstream
 //
-//  Created by Anirudh Vyas on 22/04/20.
-//  Copyright © 2020 Gojek. All rights reserved.
+//  Created by Luqman Fauzi on 13/11/25.
+//  Copyright © 2025 Gojek. All rights reserved.
 //
 
 import Foundation
 import SwiftProtobuf
 import GRDB
 
-struct Event: EventDatabasePersistable {
+struct CourierEvent: EventDatabasePersistable {
     var guid: String
     var timestamp: Date
     var type: PriorityType
@@ -27,13 +27,22 @@ struct Event: EventDatabasePersistable {
 
 // MARK: - DatabasePersistable
 // Every implementation must have its own table name & table migration handler
-extension Event {
+extension CourierEvent {
 
     static var tableName: String {
-        return "event"
+        return "courier_event"
     }
 
     static var tableMigrations: [(version: VersionIdentifier, alteration: (TableAlteration) -> Void)]? {
         return nil
+    }
+}
+
+extension CourierEvent {
+    static func initialise(from event: Event) -> Self {
+        CourierEvent(guid: event.guid,
+                     timestamp: event.timestamp,
+                     type: event.type,
+                     eventProtoData: event.eventProtoData)
     }
 }

@@ -69,7 +69,7 @@ final class NetworkManagerDependencies {
                                     keepAliveService: keepAliveService)
     }()
     
-    func makeNetworkBuilder() -> NetworkBuildable {
+    func makeNetworkBuilder() -> any NetworkBuildable {
         return DefaultNetworkBuilder(networkConfigs: getNetworkConfig(), retryMech: retryMech, performOnQueue: networkQueue)
     }
     

@@ -18,7 +18,7 @@ class NetworkServiceTests: XCTestCase {
         let sut = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
         
         //when
-        _ = sut.initiateConnection(connectionStatusListener: { result in
+        sut.initiateConnection(connectionStatusListener: { result in
             switch result {
             case .success(let state):
                 XCTAssertEqual(state, .connected)
@@ -38,7 +38,7 @@ class NetworkServiceTests: XCTestCase {
         let sut = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
         
         //when
-        _ = sut.initiateConnection(connectionStatusListener: { result in
+        sut.initiateConnection(connectionStatusListener: { result in
             switch result {
             case .success(let state):
                 if state == .connected {
@@ -75,7 +75,7 @@ class NetworkServiceTests: XCTestCase {
                 XCTFail("Should not throw an error")
             }
         }
-        _ = sut.initiateConnection(connectionStatusListener: statusListener)
+        sut.initiateConnection(connectionStatusListener: statusListener)
         
         //then
         wait(for: [expectation], timeout: 2.0)

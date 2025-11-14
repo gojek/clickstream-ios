@@ -46,7 +46,7 @@ final class SharedClickstreamDependencies: ClickstreamDependencies {
         A NetworkBuildable instance. This instance acts as the only source of NetworkBuildable, 
         hence ensuring only one instane is tied to the Clickstream class.
      */
-    lazy var networkBuilder: NetworkBuildable = {
+    lazy var networkBuilder: any NetworkBuildable = {
         return networkManagerDependencies.makeNetworkBuilder()
     }()
 
@@ -55,7 +55,7 @@ final class SharedClickstreamDependencies: ClickstreamDependencies {
         A NetworkBuildable instance. This instance acts as the only source of Courier's NetworkBuildable,
         hence ensuring only one instane is tied to the Clickstream class.
      */
-    lazy var secondaryNetworkBuilder: NetworkBuildable = {
+    lazy var courierNetworkBuilder: any NetworkBuildable = {
         return networkManagerDependencies.makeCourierNetworkBuilder()
     }()
 
@@ -64,9 +64,9 @@ final class SharedClickstreamDependencies: ClickstreamDependencies {
         hence ensuring only one instane is tied to the Clickstream class.
      */
     lazy var eventWarehouser: EventWarehouser = {
-        EventSchedulerDependencies(
-            with: networkBuilder,
-            secondary: secondaryNetworkBuilder,
+        SharedEventSchedulerDependencies(
+            socketNetworkBuilder: networkBuilder,
+            courierNetworkBuilder: courierNetworkBuilder,
             db: database
         ).makeSharedEventWarehouser(with: networkOptions)
     }()
@@ -76,7 +76,7 @@ final class SharedClickstreamDependencies: ClickstreamDependencies {
         This instance acts as the only source of EventProcessor, hence ensuring only one instane is tied to the Clickstream class.
      */
     lazy var eventProcessor: EventProcessor = {
-        return EventProcessorDependencies(with: eventWarehouser, sampler: eventSampler).makeEventProcessor()
+        return EventProcessorDependencies(with: eventWarehouser, sampler: eventSampler).makeCourierEventProcessor()
     }()
 
     lazy var eventSampler: EventSampler? = {

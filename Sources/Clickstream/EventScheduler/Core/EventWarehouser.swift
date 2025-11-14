@@ -22,11 +22,11 @@ protocol EventWarehouser {
 final class DefaultEventWarehouser: EventWarehouser {
     
     private let performQueue: SerialQueue
-    private let eventBatchProcessor: EventBatchProcessor
+    private let eventBatchProcessor: DefaultEventBatchProcessor
     private let persistence: DefaultDatabaseDAO<Event>
     private let batchRegulator: BatchSizeRegulator
     
-    init(with eventBatchProcessor: EventBatchProcessor,
+    init(with eventBatchProcessor: DefaultEventBatchProcessor,
          performOnQueue: SerialQueue,
          persistence: DefaultDatabaseDAO<Event>,
          batchSizeRegulator: BatchSizeRegulator) {

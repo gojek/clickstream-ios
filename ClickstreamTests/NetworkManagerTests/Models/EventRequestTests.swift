@@ -28,7 +28,7 @@ class EventRequestTests: XCTestCase {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             try! sut.refreshBatchSentTimeStamp()
-            let deserialisedProto = try! Odpf_Raccoon_EventRequest(serializedData: sut.data!)
+            let deserialisedProto = try! Odpf_Raccoon_EventRequest(serializedBytes: sut.data!)
             XCTAssertLessThan(originalTime.seconds, deserialisedProto.sentTime.seconds)
             expectation.fulfill()
         }

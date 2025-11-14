@@ -24,7 +24,7 @@ final class CourierEventBatchCreatorTests: XCTestCase {
     
     func testForward_whenCanForward_shouldTrackBatchAndReturnTrue() {
         mockNetworkBuilder.isAvailableValue = true
-        let events = [Event.mock(), Event.mock()]
+        let events = [CourierEvent.mock(), CourierEvent.mock()]
         
         let result = sut.forward(with: events)
         
@@ -35,7 +35,7 @@ final class CourierEventBatchCreatorTests: XCTestCase {
     
     func testForward_whenCannotForward_shouldReturnFalse() {
         mockNetworkBuilder.isAvailableValue = false
-        let events = [Event.mock()]
+        let events = [CourierEvent.mock()]
         
         let result = sut.forward(with: events)
         
@@ -45,7 +45,7 @@ final class CourierEventBatchCreatorTests: XCTestCase {
     
     func testForward_shouldCreateBatchWithUniqueUUID() {
         mockNetworkBuilder.isAvailableValue = true
-        let events = [Event.mock()]
+        let events = [CourierEvent.mock()]
         
         _ = sut.forward(with: events)
         
@@ -75,20 +75,22 @@ final class CourierEventBatchCreatorTests: XCTestCase {
 }
 
 // MARK: - Mock Classes
-private class MockNetworkBuilder: NetworkBuildable {
+class MockNetworkBuilder: NetworkBuildable {
+    typealias BatchType = CourierEventBatch
+    
     var isAvailableValue = false
     var trackBatchCallCount = 0
     var openConnectionForcefullyCallCount = 0
     var stopTrackingCallCount = 0
-    var lastTrackedBatch: EventBatch?
+    var lastTrackedBatch: CourierEventBatch?
     
     var isAvailable: Bool {
         return isAvailableValue
     }
     
-    func trackBatch(_ batch: EventBatch, completion: ((Error?) -> ())?) {
+    func trackBatch<T: EventBatchPersistable>(_ eventBatch: T, completion: ((_ error: Error?) -> Void)?) {
         trackBatchCallCount += 1
-        lastTrackedBatch = batch
+        lastTrackedBatch = eventBatch as? CourierEventBatch
     }
     
     func openConnectionForcefully() {
@@ -100,8 +102,8 @@ private class MockNetworkBuilder: NetworkBuildable {
     }
 }
 
-extension Event {
-    static func mock(type: String = "test_event", guid: String = UUID().uuidString) -> Event {
-        return Event(guid: guid, timestamp: Date(), type: type, eventProtoData: Data())
+extension CourierEvent {
+    static func mock(type: String = "test_event", guid: String = UUID().uuidString) -> Self {
+        return CourierEvent(guid: guid, timestamp: Date(), type: type, eventProtoData: Data())
     }
 }

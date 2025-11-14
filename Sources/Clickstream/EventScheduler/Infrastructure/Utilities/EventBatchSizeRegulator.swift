@@ -22,15 +22,20 @@ final class DefaultBatchSizeRegulator: BatchSizeRegulator {
     
     private var totalDataFlow: Int = 0
     private var totalEventCount: Int = 0
-    
+    private let userDefaultKey: String
+
+    init(userDefaultKey: String = "regulatedNumberOfItemsPerBatch") {
+        self.userDefaultKey = userDefaultKey
+    }
+
     func regulatedNumberOfItemsPerBatch(expectedBatchSize: Double) -> Int {
         if self.totalEventCount > 0 && self.totalDataFlow > 0 {
             let avgSizeOfEvents = self.totalDataFlow/self.totalEventCount
             let regulatedNumberOfItemsPerBatch = Int(expectedBatchSize)/avgSizeOfEvents
-            UserDefaults.standard.set(regulatedNumberOfItemsPerBatch, forKey: "regulatedNumberOfItemsPerBatch")
+            UserDefaults.standard.set(regulatedNumberOfItemsPerBatch, forKey: self.userDefaultKey)
             UserDefaults.standard.synchronize()
         }
-        return UserDefaults.standard.integer(forKey: "regulatedNumberOfItemsPerBatch")
+        return UserDefaults.standard.integer(forKey: self.userDefaultKey)
     }
         
     func observe(_ event: Event) {

@@ -5,27 +5,26 @@ import Foundation
     This class is the interface between NetworkManager and the scheduler. Use this to forward requests to the network builder.
  */
 final class CourierEventBatchCreator: EventBatchCreator {
+    typealias EventType = CourierEvent
+    typealias BatchType = CourierEventBatch
     
-    private let networkBuilder: NetworkBuildable
+    private let networkBuilder: any NetworkBuildable
     private let performOnQueue: SerialQueue
     
-    init(with networkBuilder: NetworkBuildable,
+    init(with networkBuilder: any NetworkBuildable,
          performOnQueue: SerialQueue) {
         self.networkBuilder = networkBuilder
         self.performOnQueue = performOnQueue
     }
-}
-
-extension CourierEventBatchCreator {
-    func forward(with events: [Event]) -> Bool {
-        if canForward {
-            let batch = EventBatch(uuid: UUID().uuidString, events: events)
-            networkBuilder.trackBatch(batch, completion: nil)
-            
-            self.trackHealthEvents(batch: batch, events: events)
-            return true
-        }
-        return false
+    
+    func forward(with events: [CourierEvent]) -> Bool {
+        guard canForward else { return false }
+        
+        let batch = CourierEventBatch(uuid: UUID().uuidString, events: events)
+        networkBuilder.trackBatch(batch, completion: nil)
+        
+        self.trackHealthEvents(batch: batch, events: events)
+        return true
     }
     
     func requestForConnection() {
@@ -45,7 +44,7 @@ extension CourierEventBatchCreator {
 
 // MARK: - Track Clickstream health.
 extension CourierEventBatchCreator {
-    private func trackHealthEvents(batch: EventBatch, events: [Event]) {
+    private func trackHealthEvents(batch: CourierEventBatch, events: [CourierEvent]) {
         #if TRACKER_ENABLED
         // We are checking only first event's type since batches are created on the basis of evemt priority i.e. realTime, healthEvent etc.
         if events.first?.type != TrackerConstant.HealthEventType && events.first?.type != Constants.EventType.instant.rawValue {

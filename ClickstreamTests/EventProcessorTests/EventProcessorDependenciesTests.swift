@@ -29,7 +29,7 @@ class EventProcessorDependenciesTests: XCTestCase {
 
         let retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: mockQueue, persistence: persistence, keepAliveService: keepAliveService)
         
-        let networkBuilder: NetworkBuildable = DefaultNetworkBuilder.init(networkConfigs: config, retryMech: retryMech, performOnQueue: mockQueue)
+        let networkBuilder: any NetworkBuildable = DefaultNetworkBuilder.init(networkConfigs: config, retryMech: retryMech, performOnQueue: mockQueue)
         
         let eventBatchCreator = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: mockQueue)
         
