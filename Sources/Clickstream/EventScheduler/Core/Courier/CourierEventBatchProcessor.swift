@@ -9,7 +9,7 @@ final class CourierEventBatchProcessor: EventBatchProcessor {
     private let eventBatchCreator: CourierEventBatchCreator
     private var schedulerService: SchedulerService
     private let appStateNotifier: AppStateNotifierService
-    private let batchSizeRegulator: BatchSizeRegulator
+    private let batchSizeRegulator: CourierBatchSizeRegulator
     private let persistence: DefaultDatabaseDAO<CourierEvent>
     
     /// Variable to make sure app is launched after being force closed/killed
@@ -18,7 +18,7 @@ final class CourierEventBatchProcessor: EventBatchProcessor {
     init(with eventBatchCreator: CourierEventBatchCreator,
          schedulerService: SchedulerService,
          appStateNotifier: AppStateNotifierService,
-         batchSizeRegulator: BatchSizeRegulator,
+         batchSizeRegulator: CourierBatchSizeRegulator,
          persistence: DefaultDatabaseDAO<CourierEvent>) {
         self.eventBatchCreator = eventBatchCreator
         self.schedulerService = schedulerService

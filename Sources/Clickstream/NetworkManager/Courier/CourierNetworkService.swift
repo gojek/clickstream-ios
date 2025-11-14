@@ -13,7 +13,7 @@ import CourierCore
 
 final class CourierNetworkService<C: CourierConnectable>: NetworkService {
     
-    private let connectableAccessQueue = DispatchQueue(label: Constants.QueueIdentifiers.connectableAccess.rawValue,
+    private let connectableAccessQueue = DispatchQueue(label: Constants.CourierQueueIdentifiers.connectableAccess.rawValue,
                                                        attributes: .concurrent)
     
     private let performQueue: SerialQueue

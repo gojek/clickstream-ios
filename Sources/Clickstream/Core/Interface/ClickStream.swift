@@ -85,10 +85,14 @@ public final class Clickstream {
     private weak var delegate: ClickstreamDelegate?
     
     // MARK: - Building blocks of the SDK.
-    private let networkBuilder: any NetworkBuildable
-    private let secondaryNetworkBuilder: (any NetworkBuildable)?
-    private let eventProcessor: EventProcessor
-    private let eventWarehouser: EventWarehouser
+    private let socketNetworkBuilder: any NetworkBuildable
+    private let courierNetworkBuilder: any NetworkBuildable
+
+    private let socketEventProcessor: EventProcessor
+    private let courierEventProcessor: EventProcessor
+
+    private let socketEventWarehouser: any EventWarehouser
+    private let courierEventWarehouser: any EventWarehouser
     
     /// Private initialiser for the Clickstream Interface.
     /// - Parameters:
@@ -96,15 +100,23 @@ public final class Clickstream {
     ///   - eventWarehouser: event warehouser instance
     ///   - eventProcessor: event processor instance
     ///   - dataSource: dataSource for Clickstream
-    private init(networkBuilder: any NetworkBuildable,
-                 secondaryNetworkBuilder: (any NetworkBuildable)? = nil,
-                 eventWarehouser: EventWarehouser,
-                 eventProcessor: EventProcessor,
+    private init(socketNetworkBuilder: any NetworkBuildable,
+                 courierNetworkBuilder: any NetworkBuildable,
+                 socketEventWarehouser: any EventWarehouser,
+                 courierEventWarehouser: any EventWarehouser,
+                 socketEventProcessor: EventProcessor,
+                 courierEventProcessor: EventProcessor,
                  delegate: ClickstreamDelegate? = nil) {
-        self.networkBuilder = networkBuilder
-        self.secondaryNetworkBuilder = secondaryNetworkBuilder
-        self.eventWarehouser = eventWarehouser
-        self.eventProcessor = eventProcessor
+
+        self.socketNetworkBuilder = socketNetworkBuilder
+        self.courierNetworkBuilder = courierNetworkBuilder
+
+        self.socketEventWarehouser = socketEventWarehouser
+        self.courierEventWarehouser = courierEventWarehouser
+
+        self.socketEventProcessor = socketEventProcessor
+        self.courierEventProcessor = courierEventProcessor
+
         self.delegate = delegate
     }
     
@@ -136,7 +148,8 @@ public final class Clickstream {
     
     /// Stops the Clickstream tracking.
     public static func stopTracking() {
-        sharedInstance?.eventWarehouser.stop()
+        sharedInstance?.socketEventWarehouser.stop()
+        sharedInstance?.courierEventWarehouser.stop()
     }
     
     /// Destroys the Clickstream instance.
@@ -153,7 +166,8 @@ public final class Clickstream {
     ///     message:- product proto message for an event which needs to be tracked.
     ///     timestamp:- timestamp of the event
     public func trackEvent(with event: ClickstreamEvent) {
-        self.eventProcessor.createEvent(event: event)
+        socketEventProcessor.createEvent(event: event)
+        courierEventProcessor.createEvent(event: event)
     }
     
     /// Initializes an instance of the API with the given configurations.
@@ -178,7 +192,8 @@ public final class Clickstream {
                                                      priorityEventsEnabled: Bool = false,
                                                      appPrefix: String,
                                                      samplerConfiguration: EventSamplerConfiguration? = nil,
-                                                     networkOptions: ClickstreamNetworkOptions? = nil) throws -> Clickstream? {
+                                                     courierSamplerConfiguration: EventSamplerConfiguration? = nil,
+                                                     networkOptions: ClickstreamNetworkOptions) throws -> Clickstream? {
         do {
             return try initializeClickstream(
                 with: request,
@@ -190,6 +205,7 @@ public final class Clickstream {
                 priorityEventsEnabled: priorityEventsEnabled,
                 appPrefix: appPrefix,
                 samplerConfiguration: samplerConfiguration,
+                courierSamplerConfiguration: courierSamplerConfiguration,
                 networkOptions: networkOptions)
         } catch {
             print("Cannot initialise Clickstream. Dependencies could not be initialised.",.critical)
@@ -206,7 +222,8 @@ public final class Clickstream {
                                                      timerCrashFixFlag: Bool = false,
                                                      appPrefix: String,
                                                      samplerConfiguration: EventSamplerConfiguration? = nil,
-                                                     networkOptions: ClickstreamNetworkOptions? = nil) throws -> Clickstream? {
+                                                     courierSamplerConfiguration: EventSamplerConfiguration? = nil,
+                                                     networkOptions: ClickstreamNetworkOptions) throws -> Clickstream? {
         do {
             return try initializeClickstream(
                 with: request,
@@ -217,6 +234,7 @@ public final class Clickstream {
                 timerCrashFixFlag: timerCrashFixFlag,
                 appPrefix: appPrefix,
                 samplerConfiguration: samplerConfiguration,
+                courierSamplerConfiguration: courierSamplerConfiguration,
                 networkOptions: networkOptions)
         } catch {
             print("Cannot initialise Clickstream. Dependencies could not be initialised.",.critical)
@@ -235,7 +253,8 @@ public final class Clickstream {
                                       priorityEventsEnabled: Bool = false,
                                       appPrefix: String,
                                       samplerConfiguration: EventSamplerConfiguration? = nil,
-                                      networkOptions: ClickstreamNetworkOptions? = nil) throws -> Clickstream? {
+                                      courierSamplerConfiguration: EventSamplerConfiguration? = nil,
+                                      networkOptions: ClickstreamNetworkOptions) throws -> Clickstream? {
 
         let semaphore = DispatchSemaphore(value: 1)
         defer {
@@ -256,29 +275,20 @@ public final class Clickstream {
             // All the dependency injections pertaining to the clickstream blocks happen here!
             // Load default dependencies.
             do {
-                if let networkOptions, networkOptions.isCourierExperimentFlowEnabled {
-                    // This will be the main `ClickstreamDependencies` until the flag is safely removed.
-                    let dependencies = try SharedClickstreamDependencies(with: request,
-                                                                         samplerConfiguration: samplerConfiguration,
-                                                                         networkOptions: networkOptions)
+                let dependencies = try DefaultClickstreamDependencies(with: request,
+                                                                      samplerConfiguration: samplerConfiguration,
+                                                                      courierSamplerConfiguration: courierSamplerConfiguration,
+                                                                      networkOptions: networkOptions)
 
-                    sharedInstance = Clickstream(networkBuilder: dependencies.networkBuilder,
-                                                 secondaryNetworkBuilder: dependencies.courierNetworkBuilder,
-                                                 eventWarehouser: dependencies.eventWarehouser,
-                                                 eventProcessor: dependencies.eventProcessor,
-                                                 delegate: delegate)
+                sharedInstance = Clickstream(socketNetworkBuilder: dependencies.socketNetworkBuilder,
+                                             courierNetworkBuilder: dependencies.courierNetworkBuilder,
+                                             socketEventWarehouser: dependencies.socketEventWarehouser,
+                                             courierEventWarehouser: dependencies.courierEventWarehouser,
+                                             socketEventProcessor: dependencies.socketEventProcessor,
+                                             courierEventProcessor: dependencies.courierEventProcessor,
+                                             delegate: delegate)
 
-                    sharedInstance?.dependencies = dependencies
-                } else {
-                    let dependencies = try DefaultClickstreamDependencies(with: request, samplerConfiguration: samplerConfiguration)
-
-                    sharedInstance = Clickstream(networkBuilder: dependencies.networkBuilder,
-                                                 eventWarehouser: dependencies.eventWarehouser,
-                                                 eventProcessor: dependencies.eventProcessor,
-                                                 delegate: delegate)
-
-                    sharedInstance?.dependencies = dependencies // saving a copy of dependencies
-                }
+                sharedInstance?.dependencies = dependencies
             } catch {
                 print("Cannot initialise Clickstream. Dependencies could not be initialised.",.critical)
                 // Relay the database error.
@@ -355,17 +365,10 @@ extension Clickstream {
     /// Courier client's user credentials provider
     /// - Parameter identifiers: A client's credentials
     public func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers, topic: String) {
-        guard let dependencies = dependencies as? SharedClickstreamDependencies else {
-            return
-        }
-
-        dependencies.provideClientIdentifiers(with: identifiers, topic: topic)
+        dependencies?.provideCourierClientIdentifiers(with: identifiers, topic: topic)
     }
 
     public func removeClientIdentifiers() {
-        guard let dependencies = dependencies as? SharedClickstreamDependencies else {
-            return
-        }
-        dependencies.removeClientIdentifiers()
+        dependencies?.removeCourierClientIdentifiers()
     }
 }

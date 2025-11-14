@@ -9,10 +9,12 @@
 import Foundation
 
 protocol EventWarehouser {
-    
+
+    associatedtype EventType = EventPersistable
+
     /// Call this to schedule an event.
     /// - Parameter event: event object
-    func store(_ event: Event)
+    func store(_ event: EventType)
     
     /// Call this to stop the scheduler tasks. Meant to be called only when you need to stop tasks and purge resources.
     func stop()
@@ -20,16 +22,18 @@ protocol EventWarehouser {
 
 /// A class resposible to split the event based on the type. 
 final class DefaultEventWarehouser: EventWarehouser {
-    
+
+    typealias EventType = Event
+
     private let performQueue: SerialQueue
     private let eventBatchProcessor: DefaultEventBatchProcessor
     private let persistence: DefaultDatabaseDAO<Event>
-    private let batchRegulator: BatchSizeRegulator
+    private let batchRegulator: DefaultBatchSizeRegulator
     
     init(with eventBatchProcessor: DefaultEventBatchProcessor,
          performOnQueue: SerialQueue,
          persistence: DefaultDatabaseDAO<Event>,
-         batchSizeRegulator: BatchSizeRegulator) {
+         batchSizeRegulator: DefaultBatchSizeRegulator) {
         self.eventBatchProcessor = eventBatchProcessor
         self.performQueue = performOnQueue
         self.persistence = persistence

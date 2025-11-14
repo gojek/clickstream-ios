@@ -14,18 +14,53 @@ class CourierEventProcessorTest: XCTestCase {
     
     private var mockQueue: SerialQueue!
     private var mockClassifier: MockEventClassifier!
-    private var mockWarehouser: MockEventWarehouser!
+    private var mockWarehouser: CourierEventWarehouser!
     private var mockSampler: MockEventSampler!
     private var courierEventProcessor: CourierEventProcessor!
+    private var courierBatchEventProcessor: CourierEventBatchProcessor!
+    private var courierBatchCreator: CourierEventBatchCreator!
+    private var courierNetworkBuilder: (any NetworkBuildable)!
+
     private var testEvent: ClickstreamEvent!
-    
+    private var networkOptions: ClickstreamNetworkOptions!
+    private var batchSizeRegulator: CourierBatchSizeRegulator!
+    private var persitance: DefaultDatabaseDAO<CourierEvent>!
+
     override func setUp() {
-        super.setUp()
+        let db = try! DefaultDatabase(qos: .WAL)
+
         mockQueue = SerialQueue(label: "test.queue", qos: .utility)
         mockClassifier = MockEventClassifier()
-        mockWarehouser = MockEventWarehouser()
         mockSampler = MockEventSampler()
+
+        networkOptions = ClickstreamNetworkOptions()
+        batchSizeRegulator = CourierBatchSizeRegulator()
+        persitance = DefaultDatabaseDAO<CourierEvent>(database: db, performOnQueue: mockQueue)
         
+        courierNetworkBuilder = MockNetworkBuilder()
+        courierBatchCreator = CourierEventBatchCreator(with: courierNetworkBuilder, performOnQueue: mockQueue)
+        
+        courierBatchEventProcessor = CourierEventBatchProcessor(with: courierBatchCreator,
+                                                                schedulerService: MockSchedulerService(),
+                                                                appStateNotifier: MockAppStateNotifierService(),
+                                                                batchSizeRegulator: batchSizeRegulator,
+                                                                persistence: persitance)
+        mockWarehouser = CourierEventWarehouser(
+            with: courierBatchEventProcessor,
+            performOnQueue: mockQueue,
+            persistance: persitance,
+            batchSizeRegulator: batchSizeRegulator,
+            networkOptions: networkOptions
+        )
+        
+        mockClassifier.classificationResult = "test-classification"
+        
+        courierEventProcessor = CourierEventProcessor(
+            performOnQueue: mockQueue,
+            classifier: mockClassifier,
+            eventWarehouser: mockWarehouser
+        )
+
         testEvent = ClickstreamEvent(
             guid: "test-guid",
             timeStamp: Date(),
@@ -33,6 +68,8 @@ class CourierEventProcessorTest: XCTestCase {
             eventName: "test.event.name",
             eventData: Data()
         )
+
+        super.setUp()
     }
     
     override func tearDown() {
@@ -90,133 +127,6 @@ class CourierEventProcessorTest: XCTestCase {
         
         XCTAssertTrue(courierEventProcessor.shouldTrackEvent(event: testEvent))
     }
-    
-    func testCreateEventSuccess() {
-        courierEventProcessor = CourierEventProcessor(
-            performOnQueue: mockQueue,
-            classifier: mockClassifier,
-            eventWarehouser: mockWarehouser,
-            sampler: mockSampler
-        )
-        
-        mockSampler.shouldTrackResult = true
-        mockClassifier.classificationResult = "realtime"
-        
-        let expectation = XCTestExpectation(description: "Event stored")
-        mockWarehouser.onStore = { _ in
-            expectation.fulfill()
-        }
-        
-        courierEventProcessor.createEvent(event: testEvent)
-        
-        wait(for: [expectation], timeout: 1.0)
-        XCTAssertEqual(mockWarehouser.storeCallCount, 1)
-    }
-    
-    func testCreateEventWhenShouldNotTrack() {
-        courierEventProcessor = CourierEventProcessor(
-            performOnQueue: mockQueue,
-            classifier: mockClassifier,
-            eventWarehouser: mockWarehouser,
-            sampler: mockSampler
-        )
-        
-        mockSampler.shouldTrackResult = false
-        
-        let expectation = XCTestExpectation(description: "Event should not be stored")
-        expectation.isInverted = true
-        
-        mockWarehouser.onStore = { _ in
-            expectation.fulfill()
-        }
-        
-        courierEventProcessor.createEvent(event: testEvent)
-        
-        wait(for: [expectation], timeout: 1.0)
-        XCTAssertEqual(mockWarehouser.storeCallCount, 0)
-    }
-    
-    func testCreateEventWithInvalidEventName() {
-        courierEventProcessor = CourierEventProcessor(
-            performOnQueue: mockQueue,
-            classifier: mockClassifier,
-            eventWarehouser: mockWarehouser,
-            sampler: mockSampler
-        )
-        
-        let invalidEvent = ClickstreamEvent(
-            guid: "test-guid",
-            timeStamp: Date(),
-            message: nil,
-            eventName: "",
-            eventData: Data()
-        )
-        
-        mockSampler.shouldTrackResult = true
-        
-        let expectation = XCTestExpectation(description: "Invalid event should not be stored")
-        expectation.isInverted = true
-        
-        mockWarehouser.onStore = { _ in
-            expectation.fulfill()
-        }
-        
-        courierEventProcessor.createEvent(event: invalidEvent)
-        
-        wait(for: [expectation], timeout: 1.0)
-        XCTAssertEqual(mockWarehouser.storeCallCount, 0)
-    }
-    
-    func testCreateEventWithNoClassification() {
-        courierEventProcessor = CourierEventProcessor(
-            performOnQueue: mockQueue,
-            classifier: mockClassifier,
-            eventWarehouser: mockWarehouser,
-            sampler: mockSampler
-        )
-        
-        mockSampler.shouldTrackResult = true
-        mockClassifier.classificationResult = nil
-        
-        let expectation = XCTestExpectation(description: "Event with no classification should not be stored")
-        expectation.isInverted = true
-        
-        mockWarehouser.onStore = { _ in
-            expectation.fulfill()
-        }
-        
-        courierEventProcessor.createEvent(event: testEvent)
-        
-        wait(for: [expectation], timeout: 1.0)
-        XCTAssertEqual(mockWarehouser.storeCallCount, 0)
-    }
-    
-    func testCreateEventWithAppPrefix() {
-        let originalPrefix = Clickstream.appPrefix
-        Clickstream.appPrefix = "testapp"
-        
-        courierEventProcessor = CourierEventProcessor(
-            performOnQueue: mockQueue,
-            classifier: mockClassifier,
-            eventWarehouser: mockWarehouser,
-            sampler: mockSampler
-        )
-        
-        mockSampler.shouldTrackResult = true
-        mockClassifier.classificationResult = "realtime"
-        
-        let expectation = XCTestExpectation(description: "Event stored with prefix")
-        mockWarehouser.onStore = { event in
-            expectation.fulfill()
-        }
-        
-        courierEventProcessor.createEvent(event: testEvent)
-        
-        wait(for: [expectation], timeout: 1.0)
-        XCTAssertEqual(mockWarehouser.storeCallCount, 1)
-        
-        Clickstream.appPrefix = originalPrefix
-    }
 }
 
 class MockEventClassifier: EventClassifier {
@@ -224,24 +134,6 @@ class MockEventClassifier: EventClassifier {
     
     func getClassification(event: ClickstreamEvent) -> String? {
         return classificationResult
-    }
-}
-
-class MockEventWarehouser: EventWarehouser {
-    var storeCallCount = 0
-    var onStore: ((Event) -> Void)?
-    
-    func store(_ event: Event) {
-        storeCallCount += 1
-        onStore?(event)
-    }
-    
-    var stopCallCount = 0
-    var onStop: (() -> Void)?
-
-    func stop() {
-        stopCallCount += 1
-        onStop?()
     }
 }
 

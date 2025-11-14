@@ -19,14 +19,14 @@ protocol EventProcessor: EventProcessorInput, EventProcessorOutput { }
 
 final class DefaultEventProcessor: EventProcessor {
     
-    private let eventWarehouser: any EventWarehouser
+    private let eventWarehouser: DefaultEventWarehouser
     private let serialQueue: SerialQueue
     private let classifier: EventClassifier
     private let sampler: EventSampler?
     
     init(performOnQueue: SerialQueue,
          classifier: EventClassifier,
-         eventWarehouser: any EventWarehouser,
+         eventWarehouser: DefaultEventWarehouser,
          sampler: EventSampler? = nil) {
         self.serialQueue = performOnQueue
         self.classifier = classifier

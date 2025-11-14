@@ -15,7 +15,11 @@ class ClickstreamTests: XCTestCase {
     func testInitialiseClickstream() {
         // when
         let dummyRequest = URLRequest(url: URL(string: "dummy_url")!)
-        let clickStream = try! Clickstream.initialise(with: dummyRequest, configurations: MockConstants.constraints, eventClassification: MockConstants.eventClassification, appPrefix: "")
+        let clickStream = try! Clickstream.initialise(with: dummyRequest,
+                                                      configurations: MockConstants.constraints,
+                                                      eventClassification: MockConstants.eventClassification,
+                                                      appPrefix: "",
+                                                      networkOptions: ClickstreamNetworkOptions())
         
         // then
         XCTAssertNotNil(clickStream)

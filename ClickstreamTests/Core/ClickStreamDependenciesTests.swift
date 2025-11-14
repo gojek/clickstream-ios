@@ -12,6 +12,7 @@ import XCTest
 class ClickstreamDependenciesTests: XCTestCase {
     
     private var dummyRequest: URLRequest!
+    private var networkOptions: ClickstreamNetworkOptions!
     private var constraints: ClickstreamConstraints!
     private var eventClassifier: ClickstreamEventClassification!
     private var prioritiesMock: [Priority]!
@@ -19,6 +20,7 @@ class ClickstreamDependenciesTests: XCTestCase {
     override func setUp() {
         // given
         dummyRequest = URLRequest(url: URL(string: "dummy_url")!)
+        networkOptions = ClickstreamNetworkOptions()
         self.prioritiesMock = [Priority(priority: 0, identifier: "realTime", maxBatchSize: 50000.0, maxTimeBetweenTwoBatches: 1),
         Priority(priority: 1, identifier: "standard")]
         
@@ -37,18 +39,20 @@ class ClickstreamDependenciesTests: XCTestCase {
     
     func testNetworkBuilder() {
         // when
-        let clickStreamDependencies = try! DefaultClickstreamDependencies(with: dummyRequest)
+        let clickStreamDependencies = try! DefaultClickstreamDependencies(with: dummyRequest, networkOptions: networkOptions)
         
         // then
-        XCTAssertNotNil(clickStreamDependencies.networkBuilder)
+        XCTAssertNotNil(clickStreamDependencies.socketNetworkBuilder)
+        XCTAssertNotNil(clickStreamDependencies.courierNetworkBuilder)
     }
     
     func testEventWarehouser() {
         // when
-        let clickStreamDependencies = try! DefaultClickstreamDependencies(with: dummyRequest)
-        
+        let clickStreamDependencies = try! DefaultClickstreamDependencies(with: dummyRequest, networkOptions: networkOptions)
+
         // then
-        XCTAssertNotNil(clickStreamDependencies.eventWarehouser)
+        XCTAssertNotNil(clickStreamDependencies.socketEventWarehouser)
+        XCTAssertNotNil(clickStreamDependencies.courierEventWarehouser)
     }
     
     func testEventProcessor() {
@@ -57,9 +61,10 @@ class ClickstreamDependenciesTests: XCTestCase {
         Clickstream.eventClassifier = ClickstreamEventClassification()
         
         // when
-        let clickStreamDependencies = try! DefaultClickstreamDependencies(with: dummyRequest)
-        
+        let clickStreamDependencies = try! DefaultClickstreamDependencies(with: dummyRequest, networkOptions: networkOptions)
+
         // then
-        XCTAssertNotNil(clickStreamDependencies.eventProcessor)
+        XCTAssertNotNil(clickStreamDependencies.socketEventProcessor)
+        XCTAssertNotNil(clickStreamDependencies.courierEventProcessor)
     }
 }

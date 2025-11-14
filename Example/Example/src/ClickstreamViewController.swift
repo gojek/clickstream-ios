@@ -32,7 +32,7 @@ class ClickstreamViewController: UIViewController {
     @IBAction func connectClickstream(_ sender: UIButton) {
         if segementedTab.selectedSegmentIndex == 0 {
             // Websocket
-            analyticsManager.initialiseClickstream()
+            analyticsManager.initialiseClickstream(networkOptions: .init(isWebsocketEnabled: true))
         } else {
             // Courier
             guard let networkOptions = analyticsManager.networkOptions,

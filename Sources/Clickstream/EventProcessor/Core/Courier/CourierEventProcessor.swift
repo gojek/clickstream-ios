@@ -11,15 +11,15 @@ import SwiftProtobuf
 
 
 final class CourierEventProcessor: EventProcessor {
-    
-    private let eventWarehouser: any EventWarehouser
+
+    private let eventWarehouser: CourierEventWarehouser
     private let serialQueue: SerialQueue
     private let classifier: EventClassifier
     private let sampler: EventSampler?
-    
+
     init(performOnQueue: SerialQueue,
          classifier: EventClassifier,
-         eventWarehouser: any EventWarehouser,
+         eventWarehouser: CourierEventWarehouser,
          sampler: EventSampler? = nil) {
         self.serialQueue = performOnQueue
         self.classifier = classifier
@@ -36,34 +36,34 @@ final class CourierEventProcessor: EventProcessor {
     
     func createEvent(event: ClickstreamEvent) {
         self.serialQueue.async { [weak self] in guard let checkedSelf = self else { return }
-            if checkedSelf.shouldTrackEvent(event: event) {
+            guard checkedSelf.shouldTrackEvent(event: event) else {
+                return
+            }
 
-                #if EVENT_VISUALIZER_ENABLED
-                /// Sent event data to client with state received
-                /// to check if the delegate is connected, if not no event should be sent to client
-                if let message = event.message, let stateViewer = Clickstream._stateViewer {
-                    /// creating the EventData object and setting the status to received.
-                    let eventsData = EventData(msg: message, state: .received)
-                    /// Sending the eventData object to client
-                    stateViewer.sendEvent(eventsData)
-                }
-                #endif
-                // Create an Event instance and forward it to the scheduler.
-                    if let event = checkedSelf.constructEvent(event: event) {
-                        checkedSelf.eventWarehouser.store(event)
-                    }
+            #if EVENT_VISUALIZER_ENABLED
+            /// Sent event data to client with state received
+            /// to check if the delegate is connected, if not no event should be sent to client
+            if let message = event.message, let stateViewer = Clickstream._stateViewer {
+                /// creating the EventData object and setting the status to received.
+                let eventsData = EventData(msg: message, state: .received)
+                /// Sending the eventData object to client
+                stateViewer.sendEvent(eventsData)
+            }
+            #endif
+            // Create an Event instance and forward it to the scheduler.
+            if let event = checkedSelf.constructEvent(event: event) {
+                checkedSelf.eventWarehouser.store(event)
             }
         }
     }
     
-    private func constructEvent(event: ClickstreamEvent) -> Event? {
-        
+    private func constructEvent(event: ClickstreamEvent) -> CourierEvent? {
         guard var typeOfEvent: String = event.eventName.components(separatedBy: ".").last?.lowercased() else { return nil }
+
         /// Check if appPrefix does not contain gojek
         if Clickstream.appPrefix != "" {
             typeOfEvent = Clickstream.appPrefix + "-" + typeOfEvent
         }
-
         
         guard let classification = classifier.getClassification(event: event) else {
             return nil
@@ -75,10 +75,10 @@ final class CourierEventProcessor: EventProcessor {
                 $0.eventBytes = event.eventData
                 $0.type = typeOfEvent
             }
-            return try Event(guid: event.guid,
-                             timestamp: event.timeStamp,
-                             type: classification,
-                             eventProtoData: csEvent.serializedData())
+            return try CourierEvent(guid: event.guid,
+                                    timestamp: event.timeStamp,
+                                    type: classification,
+                                    eventProtoData: csEvent.serializedData())
         } catch {
             return nil
         }

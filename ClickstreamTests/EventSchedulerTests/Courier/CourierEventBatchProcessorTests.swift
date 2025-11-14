@@ -8,7 +8,7 @@ final class CourierEventBatchProcessorTests: XCTestCase {
     private var mockEventBatchCreator: CourierEventBatchCreator!
     private var mockSchedulerService: MockSchedulerService!
     private var mockAppStateNotifier: MockAppStateNotifierService!
-    private var mockBatchSizeRegulator: MockBatchSizeRegulator!
+    private var mockBatchSizeRegulator: CourierBatchSizeRegulator!
     private var mockPersistence: DefaultDatabaseDAO<CourierEvent>!
     private var sut: CourierEventBatchProcessor!
     
@@ -23,7 +23,7 @@ final class CourierEventBatchProcessorTests: XCTestCase {
         mockEventBatchCreator = CourierEventBatchCreator(with: mockNetworkBuilder, performOnQueue: daoQueue)
         mockSchedulerService = MockSchedulerService()
         mockAppStateNotifier = MockAppStateNotifierService()
-        mockBatchSizeRegulator = MockBatchSizeRegulator()
+        mockBatchSizeRegulator = CourierBatchSizeRegulator()
         mockPersistence = DefaultDatabaseDAO<CourierEvent>(database: database, performOnQueue: daoQueue)
         
         sut = CourierEventBatchProcessor(
@@ -100,7 +100,7 @@ final class CourierEventBatchProcessorTests: XCTestCase {
 
 // MARK: - Mock Classes
 
-private class MockSchedulerService: SchedulerService {
+class MockSchedulerService: SchedulerService {
     var subscriber: ((Priority) -> Void)?
     var startCallCount = 0
     var stopCallCount = 0
@@ -114,7 +114,7 @@ private class MockSchedulerService: SchedulerService {
     }
 }
 
-private class MockAppStateNotifierService: AppStateNotifierService {
+class MockAppStateNotifierService: AppStateNotifierService {
     var stateChangeHandler: ((AppStateNotificationType) -> Void)?
     var startCallCount = 0
     var stopCallCount = 0

@@ -28,7 +28,7 @@ class EventProcessorTest: XCTestCase {
     private var keepAliveService: DefaultKeepAliveServiceWithSafeTimer!
     private let dbQueueMock = SerialQueue(label: "com.mock.gojek.clickstream.network", qos: .utility, attributes: .concurrent)
     private let database = try! DefaultDatabase(qos: .WAL)
-    private let batchSizeRegulator = BatchSizeRegulatorMock()
+    private let batchSizeRegulator = DefaultBatchSizeRegulator()
     
     override func setUp() {
         //given

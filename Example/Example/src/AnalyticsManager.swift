@@ -22,7 +22,7 @@ class AnalyticsManager {
     }
 
     /// Initialise Clickstream
-    func initialiseClickstream(networkOptions: ClickstreamNetworkOptions? = nil) {
+    func initialiseClickstream(networkOptions: ClickstreamNetworkOptions) {
         Clickstream.setLogLevel(.verbose)
         do {
             let header = createHeader()

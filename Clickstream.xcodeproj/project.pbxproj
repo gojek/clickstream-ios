@@ -211,20 +211,12 @@
 		D872F6042E8F8646006F077E /* WebsocketRetryMechanism.swift in Sources */ = {isa = PBXBuildFile; fileRef = D872F5FA2E8F8646006F077E /* WebsocketRetryMechanism.swift */; };
 		D872F6062E8F8646006F077E /* WebsocketNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D872F5F92E8F8646006F077E /* WebsocketNetworkService.swift */; };
 		D872F6092E8F8646006F077E /* WebsocketNetworkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D872F5F62E8F8646006F077E /* WebsocketNetworkBuilder.swift */; };
-		D872F60E2E8F86C2006F077E /* SharedNetworkManagerDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = D872F60D2E8F86C2006F077E /* SharedNetworkManagerDependencies.swift */; };
-		D872F60F2E8F86C2006F077E /* SharedNetworkManagerDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = D872F60D2E8F86C2006F077E /* SharedNetworkManagerDependencies.swift */; };
-		D872F6122E8F8899006F077E /* SharedClickstreamDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = D872F6112E8F8899006F077E /* SharedClickstreamDependencies.swift */; };
-		D872F6132E8F8899006F077E /* SharedClickstreamDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = D872F6112E8F8899006F077E /* SharedClickstreamDependencies.swift */; };
 		D872F61A2E8FAF87006F077E /* ClickstreamNetworkOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D872F6192E8FAF87006F077E /* ClickstreamNetworkOptions.swift */; };
-		D872F6202E8FB7D0006F077E /* SharedClickstreamDependenciesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D872F61F2E8FB7D0006F077E /* SharedClickstreamDependenciesTests.swift */; };
-		D872F6222E8FB810006F077E /* SharedNetworkManagerDependenciesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D872F6212E8FB810006F077E /* SharedNetworkManagerDependenciesTests.swift */; };
 		D872F6232E8FB8F5006F077E /* ClickstreamNetworkOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D872F6192E8FAF87006F077E /* ClickstreamNetworkOptions.swift */; };
 		D8A7F7BD2EC5EFFB00DFC9AE /* CourierEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7BC2EC5EFFB00DFC9AE /* CourierEvent.swift */; };
 		D8A7F7BE2EC5EFFB00DFC9AE /* CourierEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7BC2EC5EFFB00DFC9AE /* CourierEvent.swift */; };
 		D8A7F7C02EC5F00300DFC9AE /* CourierEventBatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7BF2EC5F00300DFC9AE /* CourierEventBatch.swift */; };
 		D8A7F7C12EC5F00300DFC9AE /* CourierEventBatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7BF2EC5F00300DFC9AE /* CourierEventBatch.swift */; };
-		D8A7F7C32EC6071500DFC9AE /* SharedEventSchedulerDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7C22EC6071500DFC9AE /* SharedEventSchedulerDependencies.swift */; };
-		D8A7F7C42EC6071500DFC9AE /* SharedEventSchedulerDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7C22EC6071500DFC9AE /* SharedEventSchedulerDependencies.swift */; };
 		D8A7F7C62EC696A400DFC9AE /* EventPersistable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7C52EC696A400DFC9AE /* EventPersistable.swift */; };
 		D8A7F7C72EC696A400DFC9AE /* EventPersistable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7C52EC696A400DFC9AE /* EventPersistable.swift */; };
 		D8A7F7CA2EC6AE3900DFC9AE /* CourierEventProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7C92EC6AE3900DFC9AE /* CourierEventProcessor.swift */; };
@@ -236,7 +228,6 @@
 		D8A7F7D62EC6B94500DFC9AE /* CourierEventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7D42EC6B94500DFC9AE /* CourierEventTests.swift */; };
 		D8A7F7D72EC6B94500DFC9AE /* CourierEventBatchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7D32EC6B94500DFC9AE /* CourierEventBatchTests.swift */; };
 		D8A7F7D92EC6BDA900DFC9AE /* CourierEventProcessorTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7D82EC6BDA900DFC9AE /* CourierEventProcessorTest.swift */; };
-		D8A7F7DD2EC6C0C200DFC9AE /* SharedEventSchedulerDependenciesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7DC2EC6C0C200DFC9AE /* SharedEventSchedulerDependenciesTests.swift */; };
 		D8A7F7E22EC6C64B00DFC9AE /* CourierEventRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7E12EC6C64B00DFC9AE /* CourierEventRequest.swift */; };
 		D8A7F7E32EC6C64B00DFC9AE /* CourierEventRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7E12EC6C64B00DFC9AE /* CourierEventRequest.swift */; };
 		D8A7F7E72EC6C67400DFC9AE /* EventRequestPersistable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7E52EC6C67400DFC9AE /* EventRequestPersistable.swift */; };
@@ -258,10 +249,10 @@
 		D8E4B8A32EAA00060001D3D6 /* CourierEventBatchProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E4B8A22EAA00060001D3D6 /* CourierEventBatchProcessorTests.swift */; };
 		D8F38D502E94CCD300C4281E /* ClickstreamNetworkOptionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D4F2E94CCD300C4281E /* ClickstreamNetworkOptionsTests.swift */; };
 		D8F38D552E950B9500C4281E /* CourierEventBatchCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D512E950B9500C4281E /* CourierEventBatchCreator.swift */; };
-		D8F38D562E950B9500C4281E /* SharedEventWarehouser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D532E950B9500C4281E /* SharedEventWarehouser.swift */; };
+		D8F38D562E950B9500C4281E /* CourierEventWarehouser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D532E950B9500C4281E /* CourierEventWarehouser.swift */; };
 		D8F38D572E950B9500C4281E /* CourierEventBatchProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D522E950B9500C4281E /* CourierEventBatchProcessor.swift */; };
 		D8F38D582E950B9500C4281E /* CourierEventBatchCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D512E950B9500C4281E /* CourierEventBatchCreator.swift */; };
-		D8F38D592E950B9500C4281E /* SharedEventWarehouser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D532E950B9500C4281E /* SharedEventWarehouser.swift */; };
+		D8F38D592E950B9500C4281E /* CourierEventWarehouser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D532E950B9500C4281E /* CourierEventWarehouser.swift */; };
 		D8F38D5A2E950B9500C4281E /* CourierEventBatchProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D522E950B9500C4281E /* CourierEventBatchProcessor.swift */; };
 		D8F38D632E950C5D00C4281E /* CourierRetryMechanism.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D612E950C5D00C4281E /* CourierRetryMechanism.swift */; };
 		D8F38D642E950C5D00C4281E /* CourierNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D602E950C5D00C4281E /* CourierNetworkService.swift */; };
@@ -444,14 +435,9 @@
 		D872F5F62E8F8646006F077E /* WebsocketNetworkBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsocketNetworkBuilder.swift; sourceTree = "<group>"; };
 		D872F5F92E8F8646006F077E /* WebsocketNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsocketNetworkService.swift; sourceTree = "<group>"; };
 		D872F5FA2E8F8646006F077E /* WebsocketRetryMechanism.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsocketRetryMechanism.swift; sourceTree = "<group>"; };
-		D872F60D2E8F86C2006F077E /* SharedNetworkManagerDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedNetworkManagerDependencies.swift; sourceTree = "<group>"; };
-		D872F6112E8F8899006F077E /* SharedClickstreamDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedClickstreamDependencies.swift; sourceTree = "<group>"; };
 		D872F6192E8FAF87006F077E /* ClickstreamNetworkOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickstreamNetworkOptions.swift; sourceTree = "<group>"; };
-		D872F61F2E8FB7D0006F077E /* SharedClickstreamDependenciesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedClickstreamDependenciesTests.swift; sourceTree = "<group>"; };
-		D872F6212E8FB810006F077E /* SharedNetworkManagerDependenciesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedNetworkManagerDependenciesTests.swift; sourceTree = "<group>"; };
 		D8A7F7BC2EC5EFFB00DFC9AE /* CourierEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierEvent.swift; sourceTree = "<group>"; };
 		D8A7F7BF2EC5F00300DFC9AE /* CourierEventBatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierEventBatch.swift; sourceTree = "<group>"; };
-		D8A7F7C22EC6071500DFC9AE /* SharedEventSchedulerDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedEventSchedulerDependencies.swift; sourceTree = "<group>"; };
 		D8A7F7C52EC696A400DFC9AE /* EventPersistable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventPersistable.swift; sourceTree = "<group>"; };
 		D8A7F7C92EC6AE3900DFC9AE /* CourierEventProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierEventProcessor.swift; sourceTree = "<group>"; };
 		D8A7F7CC2EC6B5F800DFC9AE /* EventBatchPersistable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBatchPersistable.swift; sourceTree = "<group>"; };
@@ -459,7 +445,6 @@
 		D8A7F7D32EC6B94500DFC9AE /* CourierEventBatchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierEventBatchTests.swift; sourceTree = "<group>"; };
 		D8A7F7D42EC6B94500DFC9AE /* CourierEventTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierEventTests.swift; sourceTree = "<group>"; };
 		D8A7F7D82EC6BDA900DFC9AE /* CourierEventProcessorTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierEventProcessorTest.swift; sourceTree = "<group>"; };
-		D8A7F7DC2EC6C0C200DFC9AE /* SharedEventSchedulerDependenciesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedEventSchedulerDependenciesTests.swift; sourceTree = "<group>"; };
 		D8A7F7E12EC6C64B00DFC9AE /* CourierEventRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierEventRequest.swift; sourceTree = "<group>"; };
 		D8A7F7E52EC6C67400DFC9AE /* EventRequestPersistable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventRequestPersistable.swift; sourceTree = "<group>"; };
 		D8A7F7E82EC6C6DC00DFC9AE /* EventRequestDatabasePersistable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventRequestDatabasePersistable.swift; sourceTree = "<group>"; };
@@ -475,7 +460,7 @@
 		D8F38D4F2E94CCD300C4281E /* ClickstreamNetworkOptionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickstreamNetworkOptionsTests.swift; sourceTree = "<group>"; };
 		D8F38D512E950B9500C4281E /* CourierEventBatchCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierEventBatchCreator.swift; sourceTree = "<group>"; };
 		D8F38D522E950B9500C4281E /* CourierEventBatchProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierEventBatchProcessor.swift; sourceTree = "<group>"; };
-		D8F38D532E950B9500C4281E /* SharedEventWarehouser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedEventWarehouser.swift; sourceTree = "<group>"; };
+		D8F38D532E950B9500C4281E /* CourierEventWarehouser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierEventWarehouser.swift; sourceTree = "<group>"; };
 		D8F38D5F2E950C5D00C4281E /* CourierNetworkBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierNetworkBuilder.swift; sourceTree = "<group>"; };
 		D8F38D602E950C5D00C4281E /* CourierNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierNetworkService.swift; sourceTree = "<group>"; };
 		D8F38D612E950C5D00C4281E /* CourierRetryMechanism.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierRetryMechanism.swift; sourceTree = "<group>"; };
@@ -753,7 +738,6 @@
 				BDE467442A5BD24400BFA976 /* Mocks */,
 				BDE467462A5BD24400BFA976 /* ClickStreamTests.swift */,
 				BDE467472A5BD24400BFA976 /* ClickStreamDependenciesTests.swift */,
-				D872F61F2E8FB7D0006F077E /* SharedClickstreamDependenciesTests.swift */,
 				BDE467482A5BD24400BFA976 /* Entities */,
 			);
 			path = Core;
@@ -785,7 +769,6 @@
 				BDE4674C2A5BD24500BFA976 /* Mocks */,
 				BDE467502A5BD24500BFA976 /* EventBatchProcessorTests.swift */,
 				BDE467512A5BD24500BFA976 /* EventSchedulerDependenciesTests.swift */,
-				D8A7F7DC2EC6C0C200DFC9AE /* SharedEventSchedulerDependenciesTests.swift */,
 				BDE467522A5BD24500BFA976 /* AppStateNotifierServiceTests.swift */,
 				BDE467532A5BD24500BFA976 /* Utilities */,
 				BDE467552A5BD24500BFA976 /* SchedulerServiceTests.swift */,
@@ -843,9 +826,9 @@
 		BDE467602A5BD24500BFA976 /* NetworkManagerTests */ = {
 			isa = PBXGroup;
 			children = (
+				BDE467642A5BD24500BFA976 /* Core */,
 				D859DC3C2E9F512E008D900F /* Courier */,
 				BDE467612A5BD24500BFA976 /* Mocks */,
-				BDE467642A5BD24500BFA976 /* Core */,
 				BDE467662A5BD24500BFA976 /* Models */,
 				BDE467682A5BD24500BFA976 /* Utilities */,
 				BDE4676B2A5BD24500BFA976 /* Infrastructure */,
@@ -866,7 +849,6 @@
 			isa = PBXGroup;
 			children = (
 				BDE467652A5BD24500BFA976 /* NetworkManagerDependenciesTests.swift */,
-				D872F6212E8FB810006F077E /* SharedNetworkManagerDependenciesTests.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -941,7 +923,6 @@
 			isa = PBXGroup;
 			children = (
 				BDE467922A5BD72000BFA976 /* NetworkManagerDependencies.swift */,
-				D872F60D2E8F86C2006F077E /* SharedNetworkManagerDependencies.swift */,
 			);
 			path = Dependencies;
 			sourceTree = "<group>";
@@ -1047,7 +1028,6 @@
 			isa = PBXGroup;
 			children = (
 				BDE467AB2A5BD72000BFA976 /* ClickstreamDependencies.swift */,
-				D872F6112E8F8899006F077E /* SharedClickstreamDependencies.swift */,
 			);
 			path = Dependencies;
 			sourceTree = "<group>";
@@ -1141,8 +1121,6 @@
 				BDE467E22A5BD72000BFA976 /* EventSchedulerDependencies.swift */,
 				BDE467E32A5BD72000BFA976 /* EventWarehouser.swift */,
 				BDE467E42A5BD72000BFA976 /* EventBatchProcessor.swift */,
-				D8A7F7C22EC6071500DFC9AE /* SharedEventSchedulerDependencies.swift */,
-				D8F38D532E950B9500C4281E /* SharedEventWarehouser.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -1359,6 +1337,7 @@
 			children = (
 				D8F38D512E950B9500C4281E /* CourierEventBatchCreator.swift */,
 				D8F38D522E950B9500C4281E /* CourierEventBatchProcessor.swift */,
+				D8F38D532E950B9500C4281E /* CourierEventWarehouser.swift */,
 			);
 			path = Courier;
 			sourceTree = "<group>";
@@ -1668,7 +1647,6 @@
 				BDE4682F2A5BD72000BFA976 /* EventRequest.pb.swift in Sources */,
 				BD6BDB8029FBC1360006B04A /* UITableViewExtensions.swift in Sources */,
 				BD6BDB9429FBC1360006B04A /* HealthMeta.pb.swift in Sources */,
-				D872F60F2E8F86C2006F077E /* SharedNetworkManagerDependencies.swift in Sources */,
 				BD6BDB9629FBC1360006B04A /* Health.pb.swift in Sources */,
 				BDE467FD2A5BD72000BFA976 /* NetworkManagerDependencies.swift in Sources */,
 				D8A7F7CA2EC6AE3900DFC9AE /* CourierEventProcessor.swift in Sources */,
@@ -1687,7 +1665,6 @@
 				BDE468792A5BD72000BFA976 /* EventProcessor.swift in Sources */,
 				D8F38D8C2E9CB06B00C4281E /* Decoding+TimeInterval.swift in Sources */,
 				BDE468252A5BD72000BFA976 /* Logger.swift in Sources */,
-				D872F6132E8F8899006F077E /* SharedClickstreamDependencies.swift in Sources */,
 				BDE468352A5BD72000BFA976 /* Event.pb.swift in Sources */,
 				D8A7F7F92EC6D73600DFC9AE /* ClickstreamCourierHTTPRetryPolicy.swift in Sources */,
 				D8A7F7E32EC6C64B00DFC9AE /* CourierEventRequest.swift in Sources */,
@@ -1706,9 +1683,8 @@
 				BDE4686F2A5BD72000BFA976 /* DatabaseHandler.swift in Sources */,
 				D8F38D992E9CC33800C4281E /* CourierConnect.swift in Sources */,
 				BDE468632A5BD72000BFA976 /* EventWarehouser.swift in Sources */,
-				D8A7F7C42EC6071500DFC9AE /* SharedEventSchedulerDependencies.swift in Sources */,
 				D8F38D552E950B9500C4281E /* CourierEventBatchCreator.swift in Sources */,
-				D8F38D562E950B9500C4281E /* SharedEventWarehouser.swift in Sources */,
+				D8F38D562E950B9500C4281E /* CourierEventWarehouser.swift in Sources */,
 				D8F38D572E950B9500C4281E /* CourierEventBatchProcessor.swift in Sources */,
 				BDE468052A5BD72000BFA976 /* Connectable.swift in Sources */,
 				BDE467FB2A5BD72000BFA976 /* RetryMechanism.swift in Sources */,
@@ -1784,7 +1760,7 @@
 				BDE4682A2A5BD72000BFA976 /* Event.swift in Sources */,
 				D8F38D922E9CB0CF00C4281E /* CourierMessageAdapterType.swift in Sources */,
 				D8F38D582E950B9500C4281E /* CourierEventBatchCreator.swift in Sources */,
-				D8F38D592E950B9500C4281E /* SharedEventWarehouser.swift in Sources */,
+				D8F38D592E950B9500C4281E /* CourierEventWarehouser.swift in Sources */,
 				D8E4B8962EA89DDC0001D3D6 /* CourierHandler.swift in Sources */,
 				D8F38D5A2E950B9500C4281E /* CourierEventBatchProcessor.swift in Sources */,
 				BDE4676F2A5BD24500BFA976 /* MockConstants.swift in Sources */,
@@ -1798,7 +1774,6 @@
 				9A0BBA8E2BC3CA5500F7DC01 /* PerformanceTracer.swift in Sources */,
 				BDE467852A5BD24500BFA976 /* NetworkManagerDependenciesTests.swift in Sources */,
 				BDE467822A5BD24500BFA976 /* EventProcessorDependenciesTests.swift in Sources */,
-				D872F6202E8FB7D0006F077E /* SharedClickstreamDependenciesTests.swift in Sources */,
 				D8A7F7BD2EC5EFFB00DFC9AE /* CourierEvent.swift in Sources */,
 				BDE467872A5BD24500BFA976 /* KeepAliveServiceTests.swift in Sources */,
 				BDE468162A5BD72000BFA976 /* EventRequest.swift in Sources */,
@@ -1807,11 +1782,9 @@
 				BDE4681E2A5BD72000BFA976 /* ClickStreamEventClassification.swift in Sources */,
 				BDE467722A5BD24500BFA976 /* EventBatchTests.swift in Sources */,
 				BDE468642A5BD72000BFA976 /* EventWarehouser.swift in Sources */,
-				D872F6122E8F8899006F077E /* SharedClickstreamDependencies.swift in Sources */,
 				BD6BDB9129FBC1360006B04A /* Notifiable.swift in Sources */,
 				BD6BDB9729FBC1360006B04A /* Health.pb.swift in Sources */,
 				BD6BDB7B29FBC1360006B04A /* EventDetailsViewController.swift in Sources */,
-				D872F60E2E8F86C2006F077E /* SharedNetworkManagerDependencies.swift in Sources */,
 				BDE467702A5BD24500BFA976 /* ClickStreamTests.swift in Sources */,
 				BDE468622A5BD72000BFA976 /* EventSchedulerDependencies.swift in Sources */,
 				D8A7F7E22EC6C64B00DFC9AE /* CourierEventRequest.swift in Sources */,
@@ -1832,8 +1805,6 @@
 				D8A7F7FB2EC6DDE300DFC9AE /* CourierRetryMechnismTests.swift in Sources */,
 				BDE4687A2A5BD72000BFA976 /* EventProcessor.swift in Sources */,
 				BDE468042A5BD72000BFA976 /* NetworkService.swift in Sources */,
-				D8A7F7DD2EC6C0C200DFC9AE /* SharedEventSchedulerDependenciesTests.swift in Sources */,
-				D872F6222E8FB810006F077E /* SharedNetworkManagerDependenciesTests.swift in Sources */,
 				BDE468142A5BD72000BFA976 /* ProtoConvertible.swift in Sources */,
 				D8F38D882E9CB01E00C4281E /* CourierIdleActivityTimeoutPolicy.swift in Sources */,
 				BDE468282A5BD72000BFA976 /* DeviceInfo.swift in Sources */,
@@ -1905,7 +1876,6 @@
 				BD6BDB7329FBC1360006B04A /* EventVisualizerLandingViewController.swift in Sources */,
 				69CF74B02E8CE5EC008438D0 /* EventSampler.swift in Sources */,
 				BDE467FE2A5BD72000BFA976 /* NetworkManagerDependencies.swift in Sources */,
-				D8A7F7C32EC6071500DFC9AE /* SharedEventSchedulerDependencies.swift in Sources */,
 				BDE467762A5BD24500BFA976 /* DatabaseMock.swift in Sources */,
 				D872F61A2E8FAF87006F077E /* ClickstreamNetworkOptions.swift in Sources */,
 				BDDC872329E6AF580024ED8C /* FileManagerOverride.swift in Sources */,
