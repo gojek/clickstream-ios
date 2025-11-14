@@ -248,6 +248,7 @@
 		D8A7F7F62EC6D72D00DFC9AE /* ClickstreamCourierRetryPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7F42EC6D72D00DFC9AE /* ClickstreamCourierRetryPolicy.swift */; };
 		D8A7F7F82EC6D73600DFC9AE /* ClickstreamCourierHTTPRetryPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7F72EC6D73600DFC9AE /* ClickstreamCourierHTTPRetryPolicy.swift */; };
 		D8A7F7F92EC6D73600DFC9AE /* ClickstreamCourierHTTPRetryPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7F72EC6D73600DFC9AE /* ClickstreamCourierHTTPRetryPolicy.swift */; };
+		D8A7F7FB2EC6DDE300DFC9AE /* CourierRetryMechnismTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7FA2EC6DDE300DFC9AE /* CourierRetryMechnismTests.swift */; };
 		D8E4B8962EA89DDC0001D3D6 /* CourierHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E4B8952EA89DDC0001D3D6 /* CourierHandler.swift */; };
 		D8E4B8972EA89DDC0001D3D6 /* CourierHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E4B8952EA89DDC0001D3D6 /* CourierHandler.swift */; };
 		D8E4B8992EA89DF10001D3D6 /* CourierConnectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E4B8982EA89DF10001D3D6 /* CourierConnectable.swift */; };
@@ -465,6 +466,7 @@
 		D8A7F7EB2EC6CCFB00DFC9AE /* CourierEventRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierEventRequestTests.swift; sourceTree = "<group>"; };
 		D8A7F7F42EC6D72D00DFC9AE /* ClickstreamCourierRetryPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickstreamCourierRetryPolicy.swift; sourceTree = "<group>"; };
 		D8A7F7F72EC6D73600DFC9AE /* ClickstreamCourierHTTPRetryPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickstreamCourierHTTPRetryPolicy.swift; sourceTree = "<group>"; };
+		D8A7F7FA2EC6DDE300DFC9AE /* CourierRetryMechnismTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierRetryMechnismTests.swift; sourceTree = "<group>"; };
 		D8E4B8952EA89DDC0001D3D6 /* CourierHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierHandler.swift; sourceTree = "<group>"; };
 		D8E4B8982EA89DF10001D3D6 /* CourierConnectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierConnectable.swift; sourceTree = "<group>"; };
 		D8E4B89B2EA9EF940001D3D6 /* CourierHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierHandlerTests.swift; sourceTree = "<group>"; };
@@ -893,6 +895,7 @@
 				BDE4676C2A5BD24500BFA976 /* NetworkBuilderTests.swift */,
 				BDE4676D2A5BD24500BFA976 /* NetworkServiceTests.swift */,
 				BDE4676E2A5BD24500BFA976 /* RetryMechanismTests.swift */,
+				D8A7F7FA2EC6DDE300DFC9AE /* CourierRetryMechnismTests.swift */,
 				D8E4B89B2EA9EF940001D3D6 /* CourierHandlerTests.swift */,
 			);
 			path = Infrastructure;
@@ -1826,6 +1829,7 @@
 				D859DC412E9F51C6008D900F /* CourierConnectTimeoutPolicyTests.swift in Sources */,
 				D859DC3E2E9F5147008D900F /* CourierExtensionTests.swift in Sources */,
 				BDE468242A5BD72000BFA976 /* JSONStringDecoder.swift in Sources */,
+				D8A7F7FB2EC6DDE300DFC9AE /* CourierRetryMechnismTests.swift in Sources */,
 				BDE4687A2A5BD72000BFA976 /* EventProcessor.swift in Sources */,
 				BDE468042A5BD72000BFA976 /* NetworkService.swift in Sources */,
 				D8A7F7DD2EC6C0C200DFC9AE /* SharedEventSchedulerDependenciesTests.swift in Sources */,

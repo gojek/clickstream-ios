@@ -34,13 +34,25 @@ struct EventRequest: EventRequestDatabasePersistable {
 }
 
 // MARK: - DatabasePersistable
-// Every implementation must have its own table name & table migration handler
+// Every implementation must have its own table name, schema, and migration handler
 extension EventRequest {
 
     static var tableName: String {
         return "eventRequest"
     }
-    
+
+    static var tableDefinition: (TableDefinition) -> Void {
+        return { t in
+            t.primaryKey(["guid"])
+            t.column("guid")
+            t.column("timeStamp", .datetime).notNull()
+            t.column("data", .blob)
+            t.column("retriesMade", .text).notNull()
+            t.column("createdTimestamp", .datetime).notNull()
+            t.column("eventCount", .integer).notNull()
+        }
+    }
+
     static var tableMigrations: [(version: VersionIdentifier, alteration: (TableAlteration) -> Void)]? {
         
         let addsIsInternal: (TableAlteration) -> Void = { t in

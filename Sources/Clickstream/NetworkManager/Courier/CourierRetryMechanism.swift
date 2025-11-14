@@ -194,14 +194,8 @@ extension CourierRetryMechanism {
                 #if ETE_TEST_SUITE_ENABLED
                 if testMode { FileManagerOverride.writeToFile() }
                 #endif
-            } catch(let courierError) {
-                guard networkOptions.courierConfig.fallbackPolicy.isEnabled else {
-                    handleFailedEventRequest(with: eventRequest, error: courierError)
-                    return
-                }
-
-                // Execute HTTP request
-                fallbackToHTTP(for: eventRequest, startTime: startTime)
+            } catch {
+                debugPrint("Filed to publish event Courier \(error)")
             }
         }
     }
@@ -447,7 +441,6 @@ extension CourierRetryMechanism {
         retryTimer = nil
     }
     
-    
     private func retryFailedBatches() {
         guard isAvailble && isCourierConnectable else {
             stopObservingFailedBatches()
@@ -479,9 +472,36 @@ extension CourierRetryMechanism {
                     } catch {
                         print("Failed to update batch time on retry. Description: \(error)",.critical)
                     }
-                    checkedSelf.trackBatch(with: _batch)
+                    checkedSelf.retryFailedBatch(with: _batch)
                 }
             }
+        }
+    }
+
+    private func retryFailedBatch(with eventRequest: CourierEventRequest) {
+        var failedRequest: CourierEventRequest = eventRequest
+
+        let isCourierRetryEnabled = networkOptions.courierConfig.retryPolicy.isEnabled
+        let courierRetryMaxCount = networkOptions.courierConfig.retryPolicy.maxRetryCount
+
+        let isHttpRetryEnbled = networkOptions.courierConfig.httpRetryPolicy.isEnabled
+        let httpMaxRetryCount = networkOptions.courierConfig.httpRetryPolicy.maxRetryCount
+
+        if isCourierRetryEnabled && failedRequest.retryCount < courierRetryMaxCount {
+            // Update retryCount to DB
+            failedRequest.retryCount += 1
+            persistence.update(failedRequest)
+
+            // Send event via Courier
+            trackBatch(with: eventRequest)
+        } else if isHttpRetryEnbled && eventRequest.retryCount < httpMaxRetryCount {
+            // Update retryCount to DB
+            failedRequest.retryCount += 1
+            persistence.update(failedRequest)
+
+            // Send event via HTTP
+            let startTime = Date()
+            fallbackToHTTP(for: eventRequest, startTime: startTime)
         }
     }
 }

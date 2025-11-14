@@ -19,6 +19,7 @@ struct CourierEventRequest: EventRequestDatabasePersistable {
     var eventType: Constants.EventType?
     var isInternal: Bool?
     var eventCount: Int
+    var retryCount: Int
     
     init(guid: String, data: Data? = nil) {
         self.guid = guid
@@ -29,15 +30,29 @@ struct CourierEventRequest: EventRequestDatabasePersistable {
         self.isInternal = false
         self.eventType = .realTime
         self.eventCount = 0
+        self.retryCount = 0
     }
 }
 
 // MARK: - DatabasePersistable
-// Every implementation must have its own table name & table migration handler
+// Every implementation must have its own table name, schema, and migration handler
 extension CourierEventRequest {
-    
+
     static var tableName: String {
         return "courier_eventRequest"
+    }
+
+    static var tableDefinition: (TableDefinition) -> Void {
+        return { t in
+            t.primaryKey(["guid"])
+            t.column("guid")
+            t.column("timeStamp", .datetime).notNull()
+            t.column("data", .blob)
+            t.column("retriesMade", .text).notNull()
+            t.column("createdTimestamp", .datetime).notNull()
+            t.column("eventCount", .integer).notNull()
+            t.column("retryCount", .integer).notNull()
+        }
     }
 
     static var tableMigrations: [(version: VersionIdentifier, alteration: (TableAlteration) -> Void)]? {
