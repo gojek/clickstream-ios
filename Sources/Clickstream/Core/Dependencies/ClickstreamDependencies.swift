@@ -107,7 +107,7 @@ final class DefaultClickstreamDependencies: ClickstreamDependencies {
             socketEventWarehouser: socketEventWarehouser,
             courierEventWarehouser: courierEventWarehouser,
             socketEventSampler: socketEventSampler,
-            courierEventSampler: courierEventSampler
+            networkOptions: networkOptions,
         ).makeEventProcessor()
     }()
     
@@ -116,7 +116,7 @@ final class DefaultClickstreamDependencies: ClickstreamDependencies {
             socketEventWarehouser: socketEventWarehouser,
             courierEventWarehouser: courierEventWarehouser,
             socketEventSampler: socketEventSampler,
-            courierEventSampler: courierEventSampler
+            networkOptions: networkOptions,
         ).makeCourierEventProcessor()
     }()
 
@@ -137,11 +137,13 @@ extension DefaultClickstreamDependencies {
     /// - Parameter identifiers: Client's user identifiers
     /// - Parameter topic: Courier's topic path
     func provideCourierClientIdentifiers(with identifiers: ClickstreamClientIdentifiers, topic: String) {
+        courierEventProcessor.setClientIdentifiers(identifiers)
         networkManagerDependencies.provideClientIdentifiers(with: identifiers, topic: topic)
     }
 
     /// Remove client identifier upon user's session is revoked
     public func removeCourierClientIdentifiers() {
+        courierEventProcessor.removeClientIdentifiers()
         networkManagerDependencies.removeClientIdentifiers()
     }
 }

@@ -39,7 +39,7 @@ struct CourierEventRequest: EventRequestDatabasePersistable {
 extension CourierEventRequest {
 
     static var tableName: String {
-        return "courier_eventRequest"
+        return "courierEventRequest"
     }
 
     static var tableDefinition: (TableDefinition) -> Void {

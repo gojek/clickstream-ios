@@ -344,7 +344,7 @@ extension CourierRetryMechanism {
         Clickstream.connectionState = .closing
         terminationCountDown = DispatchSource.makeTimerSource(flags: .strict, queue: performQueue)
         // This gives the breathing space for flushing the events.
-        terminationCountDown?.schedule(deadline: .now() + Clickstream.configurations.connectionTerminationTimerWaitTime)
+        terminationCountDown?.schedule(deadline: .now() + Clickstream.courierConfigurations.connectionTerminationTimerWaitTime)
         terminationCountDown?.setEventHandler(handler: { [weak self] in guard let checkedSelf = self else { return }
             checkedSelf.terminateConnection()
         })
@@ -400,7 +400,7 @@ extension CourierRetryMechanism {
     
     private func addToCache(with eventRequest: CourierEventRequest) {
         if var fetchedEventRequest = persistence.fetchOne(eventRequest.guid) {
-            if fetchedEventRequest.retriesMade >= Clickstream.configurations.maxRetriesPerBatch {
+            if fetchedEventRequest.retriesMade >= Clickstream.courierConfigurations.maxRetriesPerBatch {
                 persistence.deleteOne(eventRequest.guid)
                 #if TRACKER_ENABLED
                 if Tracker.debugMode {
@@ -427,8 +427,8 @@ extension CourierRetryMechanism {
     private func startObservingFailedBatches() {
         guard retryTimer == nil else { return }
         retryTimer = DispatchSource.makeTimerSource(flags: .strict, queue: performQueue)
-        retryTimer?.schedule(deadline: .now() + Clickstream.configurations.maxRequestAckTimeout,
-                             repeating: Clickstream.configurations.maxRequestAckTimeout)
+        retryTimer?.schedule(deadline: .now() + Clickstream.courierConfigurations.maxRequestAckTimeout,
+                             repeating: Clickstream.courierConfigurations.maxRequestAckTimeout)
         retryTimer?.setEventHandler(handler: { [weak self] in
             guard let checkedSelf = self else { return }
             checkedSelf.retryFailedBatches()
@@ -450,7 +450,7 @@ extension CourierRetryMechanism {
         if let failedRequests = persistence.fetchAll(), !failedRequests.isEmpty {
             let date = Date()
             let timedOutRequests = failedRequests.filter {
-                (date.timeIntervalSince1970 - $0.timeStamp.timeIntervalSince1970) >= Clickstream.configurations.maxRequestAckTimeout
+                (date.timeIntervalSince1970 - $0.timeStamp.timeIntervalSince1970) >= Clickstream.courierConfigurations.maxRequestAckTimeout
             }
             
             // If no timedOut requests are found then do nothing and return.
@@ -483,25 +483,31 @@ extension CourierRetryMechanism {
 
         let isCourierRetryEnabled = networkOptions.courierConfig.retryPolicy.isEnabled
         let courierRetryMaxCount = networkOptions.courierConfig.retryPolicy.maxRetryCount
+        let courierRetryDelaySeconds = networkOptions.courierConfig.retryPolicy.delayMillis / 1000
 
         let isHttpRetryEnbled = networkOptions.courierConfig.httpRetryPolicy.isEnabled
         let httpMaxRetryCount = networkOptions.courierConfig.httpRetryPolicy.maxRetryCount
+        let httpRetryDelaySeconds = networkOptions.courierConfig.httpRetryPolicy.delayMillis / 1000
 
         if isCourierRetryEnabled && failedRequest.retryCount < courierRetryMaxCount {
-            // Update retryCount to DB
-            failedRequest.retryCount += 1
-            persistence.update(failedRequest)
+            performQueue.asyncAfter(deadline: .now() + courierRetryDelaySeconds, flags: .barrier) {
+                // Update retryCount to DB
+                failedRequest.retryCount += 1
+                self.persistence.update(failedRequest)
 
-            // Send event via Courier
-            trackBatch(with: eventRequest)
+                // Send event via Courier
+                self.trackBatch(with: eventRequest)
+            }
         } else if isHttpRetryEnbled && eventRequest.retryCount < httpMaxRetryCount {
-            // Update retryCount to DB
-            failedRequest.retryCount += 1
-            persistence.update(failedRequest)
+            performQueue.asyncAfter(deadline: .now() + httpRetryDelaySeconds, flags: .barrier) {
+                // Update retryCount to DB
+                failedRequest.retryCount += 1
+                self.persistence.update(failedRequest)
 
-            // Send event via HTTP
-            let startTime = Date()
-            fallbackToHTTP(for: eventRequest, startTime: startTime)
+                // Send event via HTTP
+                let startTime = Date()
+                self.fallbackToHTTP(for: eventRequest, startTime: startTime)
+            }
         }
     }
 }

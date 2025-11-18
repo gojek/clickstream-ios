@@ -30,7 +30,7 @@ struct CourierEvent: EventDatabasePersistable {
 extension CourierEvent {
 
     static var tableName: String {
-        return "courier_event"
+        return "courierEvent"
     }
 
     static var tableMigrations: [(version: VersionIdentifier, alteration: (TableAlteration) -> Void)]? {

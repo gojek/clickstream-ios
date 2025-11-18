@@ -83,7 +83,7 @@ class CourierEventRequestTests: XCTestCase {
     }
     
     func test_tableName() {
-        XCTAssertEqual(CourierEventRequest.tableName, "courier_eventRequest")
+        XCTAssertEqual(CourierEventRequest.tableName, "courierEventRequest")
     }
     
     func test_primaryKey() {

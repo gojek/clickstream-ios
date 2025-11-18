@@ -95,12 +95,13 @@ class EventProcessorDependenciesTests: XCTestCase {
 
         let courieEventWarehouser = CourierEventWarehouser(with: courierBatchProcessor,
                                                            performOnQueue: mockQueue,
-                                                           persistance: courierEventPersistence,
+                                                           persistence: courierEventPersistence,
                                                            batchSizeRegulator: CourierBatchSizeRegulator(),
                                                            networkOptions: networkOptions)
                 
         let eventProcessorDependencies = EventProcessorDependencies(socketEventWarehouser: socketEventWarehouser,
-                                                                    courierEventWarehouser: courieEventWarehouser)
+                                                                    courierEventWarehouser: courieEventWarehouser,
+                                                                    networkOptions: ClickstreamNetworkOptions())
 
         let socketEventProcessor = eventProcessorDependencies.makeEventProcessor()
         let courierEventProcessor = eventProcessorDependencies.makeCourierEventProcessor()

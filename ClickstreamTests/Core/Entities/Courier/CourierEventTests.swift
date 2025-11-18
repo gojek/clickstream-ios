@@ -90,7 +90,7 @@ final class CourierEventTests: XCTestCase {
     }
     
     func testEventTableName() {
-        XCTAssertEqual(CourierEvent.tableName, "courier_event")
+        XCTAssertEqual(CourierEvent.tableName, "courierEvent")
     }
     
     func testEventTableMigrations() {

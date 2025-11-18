@@ -55,7 +55,7 @@ final class EventSchedulerDependencies {
     }()
 
     private lazy var courierSchedulerService: SchedulerService = {
-        return DefaultSchedulerService(with: Clickstream.configurations.priorities, performOnQueue: courierSchedulerQueue)
+        return DefaultSchedulerService(with: Clickstream.courierConfigurations.priorities, performOnQueue: courierSchedulerQueue)
     }()
     
     private lazy var socketAppStateNotifier: AppStateNotifierService = {
@@ -125,7 +125,7 @@ final class EventSchedulerDependencies {
         CourierEventWarehouser(
             with: courierBatchProcessor,
             performOnQueue: courierwarehouserQueue,
-            persistance: courierPersistence,
+            persistence: courierPersistence,
             batchSizeRegulator: courierBatchSizeRegulator,
             networkOptions: networkOptions
         )

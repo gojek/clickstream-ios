@@ -15,7 +15,6 @@ class CourierEventProcessorTest: XCTestCase {
     private var mockQueue: SerialQueue!
     private var mockClassifier: MockEventClassifier!
     private var mockWarehouser: CourierEventWarehouser!
-    private var mockSampler: MockEventSampler!
     private var courierEventProcessor: CourierEventProcessor!
     private var courierBatchEventProcessor: CourierEventBatchProcessor!
     private var courierBatchCreator: CourierEventBatchCreator!
@@ -25,13 +24,14 @@ class CourierEventProcessorTest: XCTestCase {
     private var networkOptions: ClickstreamNetworkOptions!
     private var batchSizeRegulator: CourierBatchSizeRegulator!
     private var persitance: DefaultDatabaseDAO<CourierEvent>!
+    private var courierIdentifiers: CourierIdentifiers!
 
     override func setUp() {
         let db = try! DefaultDatabase(qos: .WAL)
 
+        networkOptions = ClickstreamNetworkOptions()
         mockQueue = SerialQueue(label: "test.queue", qos: .utility)
         mockClassifier = MockEventClassifier()
-        mockSampler = MockEventSampler()
 
         networkOptions = ClickstreamNetworkOptions()
         batchSizeRegulator = CourierBatchSizeRegulator()
@@ -48,7 +48,7 @@ class CourierEventProcessorTest: XCTestCase {
         mockWarehouser = CourierEventWarehouser(
             with: courierBatchEventProcessor,
             performOnQueue: mockQueue,
-            persistance: persitance,
+            persistence: persitance,
             batchSizeRegulator: batchSizeRegulator,
             networkOptions: networkOptions
         )
@@ -58,7 +58,8 @@ class CourierEventProcessorTest: XCTestCase {
         courierEventProcessor = CourierEventProcessor(
             performOnQueue: mockQueue,
             classifier: mockClassifier,
-            eventWarehouser: mockWarehouser
+            eventWarehouser: mockWarehouser,
+            networkOptions: networkOptions
         )
 
         testEvent = ClickstreamEvent(
@@ -68,6 +69,9 @@ class CourierEventProcessorTest: XCTestCase {
             eventName: "test.event.name",
             eventData: Data()
         )
+        
+        courierIdentifiers = CourierIdentifiers(userIdentifier: "12345",
+                                                authURLRequest: .init(url: .init(string: "courier_auth_url")!))
 
         super.setUp()
     }
@@ -77,7 +81,6 @@ class CourierEventProcessorTest: XCTestCase {
         mockQueue = nil
         mockClassifier = nil
         mockWarehouser = nil
-        mockSampler = nil
         testEvent = nil
         super.tearDown()
     }
@@ -87,7 +90,7 @@ class CourierEventProcessorTest: XCTestCase {
             performOnQueue: mockQueue,
             classifier: mockClassifier,
             eventWarehouser: mockWarehouser,
-            sampler: mockSampler
+            networkOptions: networkOptions
         )
         
         XCTAssertNotNil(courierEventProcessor)
@@ -97,35 +100,62 @@ class CourierEventProcessorTest: XCTestCase {
         courierEventProcessor = CourierEventProcessor(
             performOnQueue: mockQueue,
             classifier: mockClassifier,
-            eventWarehouser: mockWarehouser
+            eventWarehouser: mockWarehouser,
+            networkOptions: networkOptions
         )
         
         XCTAssertNotNil(courierEventProcessor)
     }
     
-    func testShouldTrackEventWithSampler() {
+    func testShouldTrackEventValid() {
+        let networkOptions = ClickstreamNetworkOptions(isCourierEnabled: true, courierEventTypes: [""])
         courierEventProcessor = CourierEventProcessor(
             performOnQueue: mockQueue,
             classifier: mockClassifier,
             eventWarehouser: mockWarehouser,
-            sampler: mockSampler
+            networkOptions: networkOptions
         )
         
-        mockSampler.shouldTrackResult = true
+        courierEventProcessor.setClientIdentifiers(courierIdentifiers)
         XCTAssertTrue(courierEventProcessor.shouldTrackEvent(event: testEvent))
-        
-        mockSampler.shouldTrackResult = false
-        XCTAssertFalse(courierEventProcessor.shouldTrackEvent(event: testEvent))
     }
     
-    func testShouldTrackEventWithoutSampler() {
+    func testShouldTrackEventInvalidIdentifiers() {
+        let networkOptions = ClickstreamNetworkOptions(isCourierEnabled: true, courierEventTypes: [""])
         courierEventProcessor = CourierEventProcessor(
             performOnQueue: mockQueue,
             classifier: mockClassifier,
-            eventWarehouser: mockWarehouser
+            eventWarehouser: mockWarehouser,
+            networkOptions: networkOptions
         )
-        
-        XCTAssertTrue(courierEventProcessor.shouldTrackEvent(event: testEvent))
+
+        courierEventProcessor.setClientIdentifiers(nil)
+        XCTAssertFalse(courierEventProcessor.shouldTrackEvent(event: testEvent))
+    }
+
+    func testShouldTrackEventInvalidNetworkOptionsCourierDisabled() {
+        let networkOptions = ClickstreamNetworkOptions(isCourierEnabled: false, courierEventTypes: [""])
+        courierEventProcessor = CourierEventProcessor(
+            performOnQueue: mockQueue,
+            classifier: mockClassifier,
+            eventWarehouser: mockWarehouser,
+            networkOptions: networkOptions
+        )
+
+        courierEventProcessor.setClientIdentifiers(courierIdentifiers)
+        XCTAssertFalse(courierEventProcessor.shouldTrackEvent(event: testEvent))
+    }
+
+    func testShouldTrackEventInvalidNetworkOptionsEventTypesEmpty() {
+        let networkOptions = ClickstreamNetworkOptions(isCourierEnabled: true, courierEventTypes: [])
+        courierEventProcessor = CourierEventProcessor(
+            performOnQueue: mockQueue,
+            classifier: mockClassifier,
+            eventWarehouser: mockWarehouser,
+            networkOptions: networkOptions
+        )
+        courierEventProcessor.setClientIdentifiers(courierIdentifiers)
+        XCTAssertFalse(courierEventProcessor.shouldTrackEvent(event: testEvent))
     }
 }
 
@@ -134,13 +164,5 @@ class MockEventClassifier: EventClassifier {
     
     func getClassification(event: ClickstreamEvent) -> String? {
         return classificationResult
-    }
-}
-
-class MockEventSampler: EventSampler {
-    var shouldTrackResult = true
-    
-    func shouldTrack(event: ClickstreamEvent) -> Bool {
-        return shouldTrackResult
     }
 }

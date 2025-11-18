@@ -38,21 +38,27 @@ final class CourierEventBatchProcessor: EventBatchProcessor {
         self.schedulerService.subscriber = { [weak self] (priority) in guard let checkedSelf = self else { return }
             if checkedSelf.eventBatchCreator.canForward {
                 /// Flush events when the app is launched for the first time
-                if Clickstream.configurations.flushOnAppLaunch && !checkedSelf.hasFlushOnAppLaunchExecutedOnce {
+                if Clickstream.courierConfigurations.flushOnAppLaunch && !checkedSelf.hasFlushOnAppLaunchExecutedOnce {
                     checkedSelf.flush(with: priority)
                     checkedSelf.hasFlushOnAppLaunchExecutedOnce = true
                 } else {
-                    if let maxBatchSize = priority.maxBatchSize {
-                        let numberOfEventsToBeFetched = checkedSelf.batchSizeRegulator.regulatedNumberOfItemsPerBatch(expectedBatchSize: maxBatchSize)
-                        if let events = checkedSelf.persistence.deleteWhere(CourierEvent.Columns.type,
-                                                                            value: priority.identifier,
-                                                                            n: numberOfEventsToBeFetched),
-                           !events.isEmpty {
-                            _ = checkedSelf.eventBatchCreator.forward(with: events)
-                        }
-                    } else {
+                    guard let maxBatchSize = priority.maxBatchSize else {
                         checkedSelf.flush(with: priority)
+                        return
                     }
+
+                    let numberOfEventsToBeFetched = checkedSelf
+                        .batchSizeRegulator
+                        .regulatedNumberOfItemsPerBatch(expectedBatchSize: maxBatchSize)
+
+                    let events = checkedSelf.persistence.deleteWhere(CourierEvent.Columns.type,
+                                                                     value: priority.identifier,
+                                                                     n: numberOfEventsToBeFetched)
+                    guard let events, !events.isEmpty else {
+                        return
+                    }
+
+                    _ = checkedSelf.eventBatchCreator.forward(with: events)
                 }
             }
         }
@@ -84,13 +90,14 @@ final class CourierEventBatchProcessor: EventBatchProcessor {
     }
     
     private func flush(with priority: Priority) {
-        guard eventBatchCreator.canForward,
-              let events = persistence.deleteAll() else { return }
-        
+        guard eventBatchCreator.canForward, let events = persistence.deleteAll() else {
+            return
+        }
+
         _ = eventBatchCreator.forward(with: events)
 
         #if TRACKER_ENABLED
-        if Tracker.debugMode && Clickstream.configurations.flushOnAppLaunch && !hasFlushOnAppLaunchExecutedOnce {
+        if Tracker.debugMode && Clickstream.courierConfigurations.flushOnAppLaunch && !hasFlushOnAppLaunchExecutedOnce {
             let eventGUIDs = events.map { $0.guid }
             let eventGUIDString = "\(eventGUIDs.joined(separator: ", "))"
             let healthAnalysisEvent = HealthAnalysisEvent(eventName: .ClickstreamFlushOnForeground, events: eventGUIDString)
@@ -101,7 +108,7 @@ final class CourierEventBatchProcessor: EventBatchProcessor {
     
     /// flushing events. If `flushOnBackground` flag is set then flush.
     private func flushAll() {
-        guard Clickstream.configurations.flushOnBackground else {
+        guard Clickstream.courierConfigurations.flushOnBackground else {
             return
         }
 

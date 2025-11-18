@@ -17,6 +17,7 @@ class ClickstreamTests: XCTestCase {
         let dummyRequest = URLRequest(url: URL(string: "dummy_url")!)
         let clickStream = try! Clickstream.initialise(with: dummyRequest,
                                                       configurations: MockConstants.constraints,
+                                                      courierConfigurations: MockConstants.courierConstraints,
                                                       eventClassification: MockConstants.eventClassification,
                                                       appPrefix: "",
                                                       networkOptions: ClickstreamNetworkOptions())
@@ -31,6 +32,7 @@ class ClickstreamTests: XCTestCase {
         let networkOptions = ClickstreamNetworkOptions(isWebsocketEnabled: true)
         let clickStream = try! Clickstream.initialise(with: dummyRequest,
                                                       configurations: MockConstants.constraints,
+                                                      courierConfigurations: MockConstants.courierConstraints,
                                                       eventClassification: MockConstants.eventClassification,
                                                       appPrefix: "",
                                                       networkOptions: networkOptions)
@@ -49,6 +51,7 @@ class ClickstreamTests: XCTestCase {
 
         let clickStream = try! Clickstream.initialise(with: dummyRequest,
                                                       configurations: MockConstants.constraints,
+                                                      courierConfigurations: MockConstants.courierConstraints,
                                                       eventClassification: MockConstants.eventClassification,
                                                       appPrefix: "",
                                                       networkOptions: networkOptions)

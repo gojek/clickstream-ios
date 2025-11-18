@@ -15,7 +15,13 @@ struct MockConstants {
         let standardPriority = Priority(priority: 1, identifier: "standard", maxCacheSize: 1000000)
         return ClickstreamConstraints(maxConnectionRetries: 10, maxConnectionRetryInterval: 30, maxRetryIntervalPostPrematureDisconnection: 30, maxRetriesPostPrematureDisconnection: 10, maxPingInterval: 15, priorities: [realTimePriority, standardPriority], flushOnBackground: true, connectionTerminationTimerWaitTime: 2, maxRequestAckTimeout: 6, maxRetriesPerBatch: 20, maxRetryCacheSize: 5000000, connectionRetryDuration: 3)
     }()
-    
+
+    static let courierConstraints: ClickstreamCourierConstraints = {
+        let realTimePriority = Priority(priority: 0, identifier: "realTime", maxBatchSize: 50000, maxTimeBetweenTwoBatches: 10, maxCacheSize: 5000000)
+        let standardPriority = Priority(priority: 1, identifier: "standard", maxCacheSize: 1000000)
+        return ClickstreamCourierConstraints(priorities: [realTimePriority, standardPriority], flushOnBackground: true, connectionTerminationTimerWaitTime: 2, maxRequestAckTimeout: 6, maxRetriesPerBatch: 20, maxRetryCacheSize: 5000000, connectionRetryDuration: 3)
+    }()
+
     static let eventClassification: ClickstreamEventClassification = {
         let testRealtimeEvent = ClickstreamEventClassification.EventClassifier(identifier: "ClickstreamTestRealtime", eventNames: ["gojek.clickstream.products.events.AdCardEvent"], csEventNames: ["GoChat", "GoPay"])
         let testStandardEvent = ClickstreamEventClassification.EventClassifier(identifier: "ClickstreamTestStandard", eventNames: ["GoChat", "GoPay"], csEventNames: ["GoChat", "GoPay"])

@@ -239,7 +239,8 @@
 		D8A7F7F62EC6D72D00DFC9AE /* ClickstreamCourierRetryPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7F42EC6D72D00DFC9AE /* ClickstreamCourierRetryPolicy.swift */; };
 		D8A7F7F82EC6D73600DFC9AE /* ClickstreamCourierHTTPRetryPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7F72EC6D73600DFC9AE /* ClickstreamCourierHTTPRetryPolicy.swift */; };
 		D8A7F7F92EC6D73600DFC9AE /* ClickstreamCourierHTTPRetryPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7F72EC6D73600DFC9AE /* ClickstreamCourierHTTPRetryPolicy.swift */; };
-		D8A7F7FB2EC6DDE300DFC9AE /* CourierRetryMechnismTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7FA2EC6DDE300DFC9AE /* CourierRetryMechnismTests.swift */; };
+		D8A7F7FE2ECC0BFC00DFC9AE /* ClickStreamCourierConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7FD2ECC0BFC00DFC9AE /* ClickStreamCourierConstraints.swift */; };
+		D8A7F7FF2ECC0BFC00DFC9AE /* ClickStreamCourierConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7FD2ECC0BFC00DFC9AE /* ClickStreamCourierConstraints.swift */; };
 		D8E4B8962EA89DDC0001D3D6 /* CourierHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E4B8952EA89DDC0001D3D6 /* CourierHandler.swift */; };
 		D8E4B8972EA89DDC0001D3D6 /* CourierHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E4B8952EA89DDC0001D3D6 /* CourierHandler.swift */; };
 		D8E4B8992EA89DF10001D3D6 /* CourierConnectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E4B8982EA89DF10001D3D6 /* CourierConnectable.swift */; };
@@ -451,7 +452,7 @@
 		D8A7F7EB2EC6CCFB00DFC9AE /* CourierEventRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierEventRequestTests.swift; sourceTree = "<group>"; };
 		D8A7F7F42EC6D72D00DFC9AE /* ClickstreamCourierRetryPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickstreamCourierRetryPolicy.swift; sourceTree = "<group>"; };
 		D8A7F7F72EC6D73600DFC9AE /* ClickstreamCourierHTTPRetryPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickstreamCourierHTTPRetryPolicy.swift; sourceTree = "<group>"; };
-		D8A7F7FA2EC6DDE300DFC9AE /* CourierRetryMechnismTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierRetryMechnismTests.swift; sourceTree = "<group>"; };
+		D8A7F7FD2ECC0BFC00DFC9AE /* ClickStreamCourierConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickStreamCourierConstraints.swift; sourceTree = "<group>"; };
 		D8E4B8952EA89DDC0001D3D6 /* CourierHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierHandler.swift; sourceTree = "<group>"; };
 		D8E4B8982EA89DF10001D3D6 /* CourierConnectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierConnectable.swift; sourceTree = "<group>"; };
 		D8E4B89B2EA9EF940001D3D6 /* CourierHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierHandlerTests.swift; sourceTree = "<group>"; };
@@ -877,7 +878,6 @@
 				BDE4676C2A5BD24500BFA976 /* NetworkBuilderTests.swift */,
 				BDE4676D2A5BD24500BFA976 /* NetworkServiceTests.swift */,
 				BDE4676E2A5BD24500BFA976 /* RetryMechanismTests.swift */,
-				D8A7F7FA2EC6DDE300DFC9AE /* CourierRetryMechnismTests.swift */,
 				D8E4B89B2EA9EF940001D3D6 /* CourierHandlerTests.swift */,
 			);
 			path = Infrastructure;
@@ -1046,6 +1046,7 @@
 			isa = PBXGroup;
 			children = (
 				BDE467AE2A5BD72000BFA976 /* ClickStreamConstraints.swift */,
+				D8A7F7FD2ECC0BFC00DFC9AE /* ClickStreamCourierConstraints.swift */,
 				BDE467AF2A5BD72000BFA976 /* ClickStreamEventClassification.swift */,
 				D872F6192E8FAF87006F077E /* ClickstreamNetworkOptions.swift */,
 			);
@@ -1620,6 +1621,7 @@
 				D872F6092E8F8646006F077E /* WebsocketNetworkBuilder.swift in Sources */,
 				BD6BDB7629FBC1360006B04A /* EventsListViewModel.swift in Sources */,
 				BD6BDB7429FBC1360006B04A /* EventsListViewController.swift in Sources */,
+				D8A7F7FF2ECC0BFC00DFC9AE /* ClickStreamCourierConstraints.swift in Sources */,
 				BDE468232A5BD72000BFA976 /* JSONStringDecoder.swift in Sources */,
 				BD6BDB9829FBC1360006B04A /* CSLocationDTO.swift in Sources */,
 				BDE468132A5BD72000BFA976 /* ProtoConvertible.swift in Sources */,
@@ -1767,6 +1769,7 @@
 				BDE468022A5BD72000BFA976 /* SocketHandler.swift in Sources */,
 				BD6BDB6F29FBC1360006B04A /* EventsListingTableViewCell.swift in Sources */,
 				BDE4677A2A5BD24500BFA976 /* DispatchQueue+Detection.swift in Sources */,
+				D8A7F7FE2ECC0BFC00DFC9AE /* ClickStreamCourierConstraints.swift in Sources */,
 				D8F38D852E9CAFF300C4281E /* CourierConnectTimeoutPolicy.swift in Sources */,
 				BD6BDB9B29FBC1360006B04A /* ClickStreamHealthConfigurations.swift in Sources */,
 				BDE467882A5BD24500BFA976 /* DeviceStatusNotifierTests.swift in Sources */,
@@ -1802,7 +1805,6 @@
 				D859DC412E9F51C6008D900F /* CourierConnectTimeoutPolicyTests.swift in Sources */,
 				D859DC3E2E9F5147008D900F /* CourierExtensionTests.swift in Sources */,
 				BDE468242A5BD72000BFA976 /* JSONStringDecoder.swift in Sources */,
-				D8A7F7FB2EC6DDE300DFC9AE /* CourierRetryMechnismTests.swift in Sources */,
 				BDE4687A2A5BD72000BFA976 /* EventProcessor.swift in Sources */,
 				BDE468042A5BD72000BFA976 /* NetworkService.swift in Sources */,
 				BDE468142A5BD72000BFA976 /* ProtoConvertible.swift in Sources */,

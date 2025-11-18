@@ -46,7 +46,8 @@ public final class Clickstream {
     
     /// Holds the configurations for the sdk.
     internal static var configurations: ClickstreamConstraints = ClickstreamConstraints()
-    
+    internal static var courierConfigurations: ClickstreamCourierConstraints = ClickstreamCourierConstraints()
+
     /// Holds the event classification for the sdk.
     internal static var eventClassifier: ClickstreamEventClassification = ClickstreamEventClassification()
 
@@ -185,6 +186,7 @@ public final class Clickstream {
     #if TRACKER_ENABLED
     @discardableResult public static func initialise(with request: URLRequest,
                                                      configurations: ClickstreamConstraints,
+                                                     courierConfigurations: ClickstreamCourierConstraints,
                                                      eventClassification: ClickstreamEventClassification,
                                                      delegate: ClickstreamDelegate? = nil,
                                                      updateConnectionStatus: Bool = false,
@@ -198,6 +200,7 @@ public final class Clickstream {
             return try initializeClickstream(
                 with: request,
                 configurations: configurations,
+                courierConfigurations: courierConfigurations,
                 eventClassification: eventClassification,
                 delegate: delegate,
                 updateConnectionStatus: updateConnectionStatus,
@@ -216,6 +219,7 @@ public final class Clickstream {
     #else
     @discardableResult public static func initialise(with request: URLRequest,
                                                      configurations: ClickstreamConstraints,
+                                                     courierConfigurations: ClickstreamCourierConstraints,
                                                      eventClassification: ClickstreamEventClassification,
                                                      delegate: ClickstreamDelegate? = nil,
                                                      updateConnectionStatus: Bool = false,
@@ -228,6 +232,7 @@ public final class Clickstream {
             return try initializeClickstream(
                 with: request,
                 configurations: configurations,
+                courierConfigurations: courierConfigurations,
                 eventClassification: eventClassification,
                 delegate: delegate,
                 updateConnectionStatus: updateConnectionStatus,
@@ -246,6 +251,7 @@ public final class Clickstream {
     
     static func initializeClickstream(with request: URLRequest,
                                       configurations: ClickstreamConstraints,
+                                      courierConfigurations: ClickstreamCourierConstraints,
                                       eventClassification: ClickstreamEventClassification,
                                       delegate: ClickstreamDelegate? = nil,
                                       updateConnectionStatus: Bool = false,
@@ -266,6 +272,7 @@ public final class Clickstream {
             
             // Assign the configurations.
             Clickstream.configurations = configurations
+            Clickstream.courierConfigurations = courierConfigurations
             Clickstream.eventClassifier = eventClassification
             Clickstream.updateConnectionStatus = updateConnectionStatus
             Clickstream.timerCrashFixFlag = timerCrashFixFlag
