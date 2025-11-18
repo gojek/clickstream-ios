@@ -26,7 +26,7 @@ fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAP
 ///An `EventRequest` allows you to push more than one events(batch). The events
 ///are wrapped inside `events` repeated field. All of the fields on `EventRequest`
 ///are required.
-struct Odpf_Raccoon_EventRequest {
+struct Odpf_Raccoon_EventRequest: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.

@@ -17,14 +17,23 @@ public struct ClickstreamEvent {
     private(set) var eventName: String // Full event name
     private(set) var eventData: Data // Event in serialized data form
     private(set) var csEventName: String?
-    
-    public init(guid: String, timeStamp: Date, message: Message?, eventName: String, eventData: Data, csEventName: String? = nil) {
+    private(set) var product: String
+
+    public init(guid: String,
+                timeStamp: Date,
+                message: Message?,
+                eventName: String,
+                eventData: Data,
+                csEventName: String? = nil,
+                product: String = "Undefined PDG") {
+
         self.guid = guid
         self.timeStamp = timeStamp
         self.message = message
         self.eventName = eventName
         self.eventData = eventData
         self.csEventName = csEventName
+        self.product = product
     }
 }
 

@@ -71,9 +71,21 @@ final class CourierEventProcessor: EventProcessor {
         
         do {
             // Constructing the Odpf_Raccoon_Event
+            // TODO: - Add event's metadata
+            // Add 2 properties to Event's metadata (key TBC)
+            //  -> "clickstream_network_source":
+            //      Websocket (event processor),
+            //      Courier (event processor),
+            //      Courier_HTTP (network layer)
+            //  -> "is_courier_enabled": Boolen
+            let fileDescriptorSet = try Google_Protobuf_DescriptorProto(serializedBytes: event.eventData)
+
             let csEvent = Odpf_Raccoon_Event.with {
                 $0.eventBytes = event.eventData
                 $0.type = typeOfEvent
+                $0.eventName = event.eventName
+                $0.product = event.product
+                $0.eventTimestamp = Google_Protobuf_Timestamp(date: event.timeStamp)
             }
             return try CourierEvent(guid: event.guid,
                                     timestamp: event.timeStamp,

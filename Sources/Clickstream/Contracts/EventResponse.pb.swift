@@ -22,18 +22,18 @@ fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAP
 
 enum Odpf_Raccoon_Status: SwiftProtobuf.Enum {
   typealias RawValue = Int
-  case unknownStatus // = 0
+  case unspecified // = 0
   case success // = 1
   case error // = 2
   case UNRECOGNIZED(Int)
 
   init() {
-    self = .unknownStatus
+    self = .unspecified
   }
 
   init?(rawValue: Int) {
     switch rawValue {
-    case 0: self = .unknownStatus
+    case 0: self = .unspecified
     case 1: self = .success
     case 2: self = .error
     default: self = .UNRECOGNIZED(rawValue)
@@ -42,7 +42,7 @@ enum Odpf_Raccoon_Status: SwiftProtobuf.Enum {
 
   var rawValue: Int {
     switch self {
-    case .unknownStatus: return 0
+    case .unspecified: return 0
     case .success: return 1
     case .error: return 2
     case .UNRECOGNIZED(let i): return i
@@ -56,7 +56,7 @@ enum Odpf_Raccoon_Status: SwiftProtobuf.Enum {
 extension Odpf_Raccoon_Status: CaseIterable {
   // The compiler won't synthesize support with the UNRECOGNIZED case.
   static var allCases: [Odpf_Raccoon_Status] = [
-    .unknownStatus,
+    .unspecified,
     .success,
     .error,
   ]
@@ -68,8 +68,8 @@ enum Odpf_Raccoon_Code: SwiftProtobuf.Enum {
   typealias RawValue = Int
 
   ///
-  ///`UNQKNOWN_CODE` indicates no appropriate/existing code can describe it.
-  case unknownCode // = 0
+  ///`CODE_UNSPECIFIED` indicates no appropriate/existing code can describe it.
+  case unspecified // = 0
 
   ///
   ///`OK` indicates the request is processed successfully.
@@ -99,12 +99,12 @@ enum Odpf_Raccoon_Code: SwiftProtobuf.Enum {
   case UNRECOGNIZED(Int)
 
   init() {
-    self = .unknownCode
+    self = .unspecified
   }
 
   init?(rawValue: Int) {
     switch rawValue {
-    case 0: self = .unknownCode
+    case 0: self = .unspecified
     case 1: self = .ok
     case 2: self = .badRequest
     case 3: self = .internalError
@@ -116,7 +116,7 @@ enum Odpf_Raccoon_Code: SwiftProtobuf.Enum {
 
   var rawValue: Int {
     switch self {
-    case .unknownCode: return 0
+    case .unspecified: return 0
     case .ok: return 1
     case .badRequest: return 2
     case .internalError: return 3
@@ -133,7 +133,7 @@ enum Odpf_Raccoon_Code: SwiftProtobuf.Enum {
 extension Odpf_Raccoon_Code: CaseIterable {
   // The compiler won't synthesize support with the UNRECOGNIZED case.
   static var allCases: [Odpf_Raccoon_Code] = [
-    .unknownCode,
+    .unspecified,
     .ok,
     .badRequest,
     .internalError,
@@ -144,7 +144,7 @@ extension Odpf_Raccoon_Code: CaseIterable {
 
 #endif  // swift(>=4.2)
 
-struct Odpf_Raccoon_EventResponse {
+struct Odpf_Raccoon_EventResponse: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -155,13 +155,13 @@ struct Odpf_Raccoon_EventResponse {
   ///Only 3 values are valid. `SUCCESS` means the the request is processed
   ///successfully. `ERROR` means the request failed to be processed. `UNKNOWN_STATUS` 
   ///means Raccoon unable to determine whether the request is success or not.
-  var status: Odpf_Raccoon_Status = .unknownStatus
+  var status: Odpf_Raccoon_Status = .unspecified
 
   ///
   ///`code` gives more detail of what happened to the request.
   ///
   ///Details of available `code` can be seen below.
-  var code: Odpf_Raccoon_Code = .unknownCode
+  var code: Odpf_Raccoon_Code = .unspecified
 
   ///
   ///`sent_time` is UNIX timestamp populated by Raccoon by the time the response is sent.
@@ -191,20 +191,20 @@ fileprivate let _protobuf_package = "odpf.raccoon"
 
 extension Odpf_Raccoon_Status: SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    0: .same(proto: "UNKNOWN_STATUS"),
-    1: .same(proto: "SUCCESS"),
-    2: .same(proto: "ERROR"),
+    0: .same(proto: "STATUS_UNSPECIFIED"),
+    1: .same(proto: "STATUS_SUCCESS"),
+    2: .same(proto: "STATUS_ERROR"),
   ]
 }
 
 extension Odpf_Raccoon_Code: SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    0: .same(proto: "UNKNOWN_CODE"),
-    1: .same(proto: "OK"),
-    2: .same(proto: "BAD_REQUEST"),
-    3: .same(proto: "INTERNAL_ERROR"),
-    4: .same(proto: "MAX_CONNECTION_LIMIT_REACHED"),
-    5: .same(proto: "MAX_USER_LIMIT_REACHED"),
+    0: .same(proto: "CODE_UNSPECIFIED"),
+    1: .same(proto: "CODE_OK"),
+    2: .same(proto: "CODE_BAD_REQUEST"),
+    3: .same(proto: "CODE_INTERNAL_ERROR"),
+    4: .same(proto: "CODE_MAX_CONNECTION_LIMIT_REACHED"),
+    5: .same(proto: "CODE_MAX_USER_LIMIT_REACHED"),
   ]
 }
 
@@ -232,10 +232,10 @@ extension Odpf_Raccoon_EventResponse: SwiftProtobuf.Message, SwiftProtobuf._Mess
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if self.status != .unknownStatus {
+    if self.status != .unspecified {
       try visitor.visitSingularEnumField(value: self.status, fieldNumber: 1)
     }
-    if self.code != .unknownCode {
+    if self.code != .unspecified {
       try visitor.visitSingularEnumField(value: self.code, fieldNumber: 2)
     }
     if self.sentTime != 0 {

@@ -20,14 +20,14 @@ fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAP
   typealias Version = _2
 }
 
-struct Odpf_Raccoon_Event {
+struct Odpf_Raccoon_Event: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
   ///
-  ///`eventBytes` is where you put bytes serialized event.
-  var eventBytes: Data = SwiftProtobuf.Internal.emptyData
+  ///`event_bytes` is where you put bytes serialized event.
+  var eventBytes: Data = Data()
 
   ///
   ///`type` denotes an event type that the producer of this proto message may set.
@@ -37,9 +37,36 @@ struct Odpf_Raccoon_Event {
   ///ingestion systems to distribute or perform other functions.
   var type: String = String()
 
+  ///
+  ///`event_name` denotes the name of the event.
+  ///Example: "BookingConfirmed", "HomePageLoaded", etc.
+  var eventName: String = String()
+
+  ///
+  ///`product` denotes the product or business from which the event originates.
+  ///Example: "GOFOOD", "GOBIZ", "GOPAY".
+ var product: String = String()
+
+  ///
+  ///`event_timestamp` denotes the exact time the event occurred
+  ///on the client or producer side.
+  ///Note:
+  ///This is not the time when the event is sent to Raccoon;
+  ///that is represented separately by `SendEventRequest.sent_time`.
+  var eventTimestamp: SwiftProtobuf.Google_Protobuf_Timestamp {
+    get {return _eventTimestamp ?? SwiftProtobuf.Google_Protobuf_Timestamp()}
+    set {_eventTimestamp = newValue}
+  }
+  /// Returns true if `eventTimestamp` has been explicitly set.
+  var hasEventTimestamp: Bool {return self._eventTimestamp != nil}
+  /// Clears the value of `eventTimestamp`. Subsequent reads from it will return its default value.
+  mutating func clearEventTimestamp() {self._eventTimestamp = nil}
+
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
+
+  fileprivate var _eventTimestamp: SwiftProtobuf.Google_Protobuf_Timestamp? = nil
 }
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
@@ -49,33 +76,58 @@ fileprivate let _protobuf_package = "odpf.raccoon"
 extension Odpf_Raccoon_Event: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Event"
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "eventBytes"),
+    1: .standard(proto: "event_bytes"),
     2: .same(proto: "type"),
+    3: .standard(proto: "event_name"),
+    4: .standard(proto: "product"),
+    5: .standard(proto: "event_timestamp")
   ]
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try decoder.decodeSingularBytesField(value: &self.eventBytes)
-      case 2: try decoder.decodeSingularStringField(value: &self.type)
+      case 1: try { try decoder.decodeSingularBytesField(value: &self.eventBytes) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.type) }()
+      case 3: try { try decoder.decodeSingularStringField(value: &self.eventName) }()
+      case 4: try { try decoder.decodeSingularStringField(value: &self.product) }()
+      case 5: try { try decoder.decodeSingularMessageField(value: &self._eventTimestamp) }()
       default: break
       }
     }
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
     if !self.eventBytes.isEmpty {
       try visitor.visitSingularBytesField(value: self.eventBytes, fieldNumber: 1)
     }
     if !self.type.isEmpty {
       try visitor.visitSingularStringField(value: self.type, fieldNumber: 2)
     }
+    if !self.eventName.isEmpty {
+      try visitor.visitSingularStringField(value: self.eventName, fieldNumber: 3)
+    }
+    if !self.product.isEmpty {
+      try visitor.visitSingularStringField(value: self.product, fieldNumber: 4)
+    }
+    try { if let v = self._eventTimestamp {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 5)
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
   static func ==(lhs: Odpf_Raccoon_Event, rhs: Odpf_Raccoon_Event) -> Bool {
     if lhs.eventBytes != rhs.eventBytes {return false}
     if lhs.type != rhs.type {return false}
+    if lhs.eventName != rhs.eventName {return false}
+    if lhs.product != rhs.product {return false}
+    if lhs._eventTimestamp != rhs._eventTimestamp {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
