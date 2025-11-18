@@ -8,7 +8,7 @@ platform :ios do
   # Lane to run the unit_tests.
     lane :unit_test do
 
-        update_cocoapods(repo_update: true)
+        update_cocoapods(repo_update: false)
 
         run_tests(
             workspace: "#{library_name}.xcworkspace",
@@ -55,6 +55,6 @@ platform :ios do
         library_name
   end
 
-  TEST_SIMULATORS = ["iPhone 8 Plus"]
+  TEST_SIMULATORS = ["iPhone 16 Pro"]
 
 end

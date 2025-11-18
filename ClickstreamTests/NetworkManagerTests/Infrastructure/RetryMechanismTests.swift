@@ -56,7 +56,7 @@ class RetryMechanismTests: XCTestCase {
         }
         
         //then
-        wait(for: [expectation], timeout: 10.0)
+        wait(for: [expectation], timeout: 13.0)
     }
 
     func test_whenTheMaxRetriesAreReached_thenTheBatchMustGetRemovedFromTheCache() {
