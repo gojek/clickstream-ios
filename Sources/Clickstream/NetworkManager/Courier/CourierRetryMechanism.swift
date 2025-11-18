@@ -298,7 +298,7 @@ extension CourierRetryMechanism {
     }
 
     func openConnectionForcefully() {
-        establishConnection(keepTrying: true)
+        establishConnection()
     }
     
     func stopTracking() {
@@ -351,7 +351,7 @@ extension CourierRetryMechanism {
         terminationCountDown?.resume()
     }
     
-    private func establishConnection(keepTrying: Bool = false) {
+    private func establishConnection() {
         // Only establish connection when Courier identifiers available
         guard let identifiers else {
             return
@@ -368,7 +368,7 @@ extension CourierRetryMechanism {
         }
 
         Task {
-            await networkService.initiateSecondaryConnection(connectionStatusListener: { [weak self] result in
+            await networkService.initiateCourierConnection(connectionStatusListener: { [weak self] result in
                 guard let checkedSelf = self else {
                     return
                 }
@@ -391,7 +391,7 @@ extension CourierRetryMechanism {
                 case .failure:
                     checkedSelf.stopObservingFailedBatches()
                 }
-            }, keepTrying: keepTrying, identifiers: identifiers, eventHandler: self)
+            }, identifiers: identifiers, eventHandler: self)
         }
     }
 }
@@ -479,15 +479,18 @@ extension CourierRetryMechanism {
     }
 
     private func retryFailedBatch(with eventRequest: CourierEventRequest) {
+        guard let courierConfig = networkOptions.courierConfig else {
+            return
+        }
         var failedRequest: CourierEventRequest = eventRequest
 
-        let isCourierRetryEnabled = networkOptions.courierConfig.retryPolicy.isEnabled
-        let courierRetryMaxCount = networkOptions.courierConfig.retryPolicy.maxRetryCount
-        let courierRetryDelaySeconds = networkOptions.courierConfig.retryPolicy.delayMillis / 1000
+        let isCourierRetryEnabled = courierConfig.retryPolicy.isEnabled
+        let courierRetryMaxCount = courierConfig.retryPolicy.maxRetryCount
+        let courierRetryDelaySeconds = courierConfig.retryPolicy.delayMillis / 1000
 
-        let isHttpRetryEnbled = networkOptions.courierConfig.httpRetryPolicy.isEnabled
-        let httpMaxRetryCount = networkOptions.courierConfig.httpRetryPolicy.maxRetryCount
-        let httpRetryDelaySeconds = networkOptions.courierConfig.httpRetryPolicy.delayMillis / 1000
+        let isHttpRetryEnbled = courierConfig.httpRetryPolicy.isEnabled
+        let httpMaxRetryCount = courierConfig.httpRetryPolicy.maxRetryCount
+        let httpRetryDelaySeconds = courierConfig.httpRetryPolicy.delayMillis / 1000
 
         if isCourierRetryEnabled && failedRequest.retryCount < courierRetryMaxCount {
             performQueue.asyncAfter(deadline: .now() + courierRetryDelaySeconds, flags: .barrier) {
@@ -505,8 +508,7 @@ extension CourierRetryMechanism {
                 self.persistence.update(failedRequest)
 
                 // Send event via HTTP
-                let startTime = Date()
-                self.fallbackToHTTP(for: eventRequest, startTime: startTime)
+                self.fallbackToHTTP(for: eventRequest, startTime: Date())
             }
         }
     }
@@ -535,7 +537,7 @@ extension CourierRetryMechanism: ICourierEventHandler {
 
     func onEvent(_ event: CourierCore.CourierEvent) {
         switch event.type {
-        case .messageSendSuccess:
+        case .messageSend, .messageSendSuccess:
             return
         case .messageSendFailure(_, _, let error, _):
             return

@@ -19,7 +19,7 @@ public struct ClickstreamNetworkOptions: Decodable {
     public let isWebsocketEnabled: Bool
     public let isCourierEnabled: Bool
     public let courierEventTypes: Set<CourierEventIdentifier>
-    public var courierConfig: ClickstreamCourierConfig
+    public var courierConfig: ClickstreamCourierConfig?
 
     enum CodingKeys: String, CodingKey {
         case isWebsocketEnabled = "websocket_enabled"
@@ -30,13 +30,11 @@ public struct ClickstreamNetworkOptions: Decodable {
 
     public init(isWebsocketEnabled: Bool = true,
                 isCourierEnabled: Bool = false,
-                courierEventTypes: Set<CourierEventIdentifier> = [],
-                courierConfig: ClickstreamCourierConfig = ClickstreamCourierConfig()) {
+                courierEventTypes: Set<CourierEventIdentifier> = []) {
 
         self.isWebsocketEnabled = isWebsocketEnabled
         self.isCourierEnabled = isCourierEnabled
         self.courierEventTypes = courierEventTypes
-        self.courierConfig = courierConfig
     }
 
     public init(from decoder: Decoder) throws {
@@ -59,22 +57,5 @@ public struct ClickstreamNetworkOptions: Decodable {
         } else {
             self.courierEventTypes = []
         }
-
-        if let courierConfig = try? container.decodeIfPresent(ClickstreamCourierConfig.self, forKey: .courierConfig) {
-            self.courierConfig = courierConfig
-        } else {
-            self.courierConfig = ClickstreamCourierConfig()
-        }
-    }
-}
-
-extension ClickstreamNetworkOptions {
-
-    var isCourierExperimentFlowEnabled: Bool {
-        // If both flags are `false`, config should be disabled
-        if !isWebsocketEnabled && !isCourierEnabled {
-            return false
-        }
-        return true
     }
 }

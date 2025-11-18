@@ -38,7 +38,7 @@ final class WebsocketNetworkService<C: Connectable>: NetworkService {
 
 extension WebsocketNetworkService {
 
-    func initiateConnection(connectionStatusListener: ConnectionStatus?,
+    func initiateWebsocketConnection(connectionStatusListener: ConnectionStatus?,
                             keepTrying: Bool = false) {
         guard _connectable == nil else { return }
         self.connectionCallback = connectionStatusListener

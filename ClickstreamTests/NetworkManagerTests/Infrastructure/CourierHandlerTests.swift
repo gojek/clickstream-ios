@@ -10,6 +10,7 @@ final class CourierHandlerTests: XCTestCase {
     private var sut: DefaultCourierHandler!
     private var mockConfig: ClickstreamCourierConfig!
     private var mockCredentials: ClickstreamClientIdentifiers!
+    private var mockEventHandler: ICourierEventHandler!
     private var cancellables: Set<CourierCore.AnyCancellable>!
     
     override func setUp() {
@@ -17,6 +18,7 @@ final class CourierHandlerTests: XCTestCase {
         cancellables = []
         mockConfig = createMockConfig()
         mockCredentials = createMockCredentials()
+        mockEventHandler = MockCourierEventHandler()
         sut = DefaultCourierHandler(config: mockConfig, userCredentials: mockCredentials)
     }
     
@@ -69,8 +71,8 @@ final class CourierHandlerTests: XCTestCase {
         let request = createValidURLRequest()
         
         await sut.setup(request: request, 
-                       keepTrying: false, 
-                       connectionCallback: nil)
+                        connectionCallback: nil,
+                        eventHandler: mockEventHandler)
         
         XCTAssertNotNil(sut)
     }
@@ -79,8 +81,8 @@ final class CourierHandlerTests: XCTestCase {
         let request = createValidURLRequest()
         
         await sut.setup(request: request, 
-                       keepTrying: false, 
-                       connectionCallback: nil)
+                        connectionCallback: nil,
+                        eventHandler: mockEventHandler)
         
         XCTAssertNoThrow(sut.disconnect())
     }
@@ -127,7 +129,7 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_AfterDisconnect_ThrowsError() async {
         let request = createValidURLRequest()
         let topic = "clickstream/topic"
-        await sut.setup(request: request, keepTrying: false, connectionCallback: nil)
+        await sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
         
         sut.disconnect()
         
@@ -156,8 +158,8 @@ final class CourierHandlerTests: XCTestCase {
     
     func testPublishMessage_ConcurrentCalls_HandlesCorrectly() async {
         let request = createValidURLRequest()
-        await sut.setup(request: request, keepTrying: false, connectionCallback: nil)
-        
+        await sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
+
         let testData1 = "message1".data(using: .utf8)!
         let testData2 = "message2".data(using: .utf8)!
         let topic = "clickstream/topic"
@@ -199,8 +201,8 @@ final class CourierHandlerTests: XCTestCase {
         let request = createValidURLRequest()
         
         for _ in 0..<10 {
-            await sut.setup(request: request, keepTrying: false, connectionCallback: nil)
-            
+            await sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
+
             let testData = "test".data(using: .utf8)!
             let topic = "clickstream/topic"
             let eventRequest = CourierEventRequest(guid: "12345", data: testData)
@@ -305,8 +307,8 @@ final class CourierHandlerTests: XCTestCase {
     
     func testPublishMessage_AfterDisconnectWithParameters_ThrowsError() async {
         let request = createValidURLRequest()
-        await sut.setup(request: request, keepTrying: false, connectionCallback: nil)
-        
+        await sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
+
         sut.disconnect()
         
         let testData = "test message".data(using: .utf8)!
@@ -335,8 +337,8 @@ final class CourierHandlerTests: XCTestCase {
     
     func testPublishMessage_ConcurrentCallsWithParameters_HandlesCorrectly() async {
         let request = createValidURLRequest()
-        await sut.setup(request: request, keepTrying: false, connectionCallback: nil)
-        
+        await sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
+
         let testData1 = "message1".data(using: .utf8)!
         let testData2 = "message2".data(using: .utf8)!
         let topic1 = "test/topic1"
@@ -459,5 +461,13 @@ extension CourierHandlerTests {
             return URLRequest(url: URL(string: "about:blank")!)
         }
         return URLRequest(url: url)
+    }
+}
+
+fileprivate class MockCourierEventHandler: ICourierEventHandler {
+
+    var _onEvent: ((_ event: CourierCore.CourierEvent) -> Void)?
+    func onEvent(_ event: CourierCore.CourierEvent) {
+        _onEvent?(event)
     }
 }

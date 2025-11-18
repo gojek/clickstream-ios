@@ -42,7 +42,8 @@ final class EventProcessorDependencies {
         return DefaultEventProcessor(performOnQueue: socketSerialQueue,
                                      classifier: classifier,
                                      eventWarehouser: socketEventWarehouser,
-                                     sampler: socketEventSampler)
+                                     sampler: socketEventSampler,
+                                     networkOptions: networkOptions)
     }
 
     func makeCourierEventProcessor() -> CourierEventProcessor {

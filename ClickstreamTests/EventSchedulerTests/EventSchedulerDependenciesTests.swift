@@ -18,7 +18,7 @@ class EventSchedulerDependenciesTests: XCTestCase {
     private var realTimeEvent: Event!
     private var config: DefaultNetworkConfiguration!
 
-    private var socketNetworkService: DefaultNetworkService<SocketHandlerMockSuccess>!
+    private var socketNetworkService: WebsocketNetworkService<SocketHandlerMockSuccess>!
     private var courierNetworkService: CourierNetworkService<DefaultCourierHandler>!
 
     private var deviceStatus: DefaultDeviceStatus!
@@ -49,7 +49,7 @@ class EventSchedulerDependenciesTests: XCTestCase {
         }
         config = DefaultNetworkConfiguration(request: URLRequest(url: url))
         
-        socketNetworkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: mockQueue)
+        socketNetworkService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: mockQueue)
         courierNetworkService = CourierNetworkService<DefaultCourierHandler>(with: config, performOnQueue: mockQueue)
 
         deviceStatus = DefaultDeviceStatus(performOnQueue: mockQueue)
@@ -166,7 +166,7 @@ class EventSchedulerDependenciesTests: XCTestCase {
         }
         
         let alternativeConfig = DefaultNetworkConfiguration(request: URLRequest(url: alternativeUrl))
-        let alternativeNetworkService = DefaultNetworkService<SocketHandlerMockSuccess>(
+        let alternativeNetworkService = WebsocketNetworkService<SocketHandlerMockSuccess>(
             with: alternativeConfig,
             performOnQueue: mockQueue
         )
@@ -303,7 +303,7 @@ class EventSchedulerDependenciesTests: XCTestCase {
     
     func testEventWarehouseWithHighPriorityQueue() {
         let highPriorityQueue = SerialQueue(label: "com.test.high.priority", qos: .userInitiated)
-        let highPriorityNetworkService = DefaultNetworkService<SocketHandlerMockSuccess>(
+        let highPriorityNetworkService = WebsocketNetworkService<SocketHandlerMockSuccess>(
             with: config,
             performOnQueue: highPriorityQueue
         )

@@ -29,13 +29,11 @@ protocol CourierConnectableInputs {
     /// Sets up a connectable
     /// - Parameters:
     ///   - request: URLRequest which the connectable must connect to.
-    ///   - keepTrying: A control flag which tells the connectable to keep trying till the connection is not established.
     ///   - connectionCallback: A callback to update about the connection status.
     ///   - eventHandler: Courier's event handler delegate
     func setup(request: URLRequest,
-               keepTrying: Bool,
                connectionCallback: ConnectionStatus?,
-               eventHandler: ICourierEventHandler?) async
+               eventHandler: ICourierEventHandler) async
 }
 
 protocol CourierConnectableOutputs {

@@ -15,10 +15,10 @@ class NetworkServiceTests: XCTestCase {
         //given
         let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         let expectation = self.expectation(description: "Should return correct data")
-        let sut = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
+        let sut = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
         
         //when
-        sut.initiateConnection(connectionStatusListener: { result in
+        sut.initiateWebsocketConnection(connectionStatusListener: { result in
             switch result {
             case .success(let state):
                 XCTAssertEqual(state, .connected)
@@ -35,10 +35,10 @@ class NetworkServiceTests: XCTestCase {
         //given
         let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         let expectation = self.expectation(description: "Should return correct data")
-        let sut = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
+        let sut = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
         
         //when
-        sut.initiateConnection(connectionStatusListener: { result in
+        sut.initiateWebsocketConnection(connectionStatusListener: { result in
             switch result {
             case .success(let state):
                 if state == .connected {
@@ -59,7 +59,7 @@ class NetworkServiceTests: XCTestCase {
         let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         let expectation = self.expectation(description: "Should return malformed url error")
         
-        let sut = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
+        let sut = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
         
         //when
         let statusListener: ConnectionStatus = { result in
@@ -75,7 +75,7 @@ class NetworkServiceTests: XCTestCase {
                 XCTFail("Should not throw an error")
             }
         }
-        sut.initiateConnection(connectionStatusListener: statusListener)
+        sut.initiateWebsocketConnection(connectionStatusListener: statusListener)
         
         //then
         wait(for: [expectation], timeout: 2.0)

@@ -29,11 +29,14 @@ class AnalyticsManager {
             let request = self.urlRequest(headerParamaters: header)
             
             let configurations = ClickstreamConstraints(maxConnectionRetries: 5)
+            let courierConfigurations = ClickstreamCourierConstraints()
+
             let classification = ClickstreamEventClassification(eventTypes: [.init(identifier: "instant", eventNames: [], csEventNames: [])])
 
             self.clickstream = try Clickstream.initialise(
                 with: request ?? URLRequest(url: URL(string: "")!),
                 configurations: configurations,
+                courierConfigurations: courierConfigurations,
                 eventClassification: classification,
                 appPrefix: "",
                 networkOptions: networkOptions

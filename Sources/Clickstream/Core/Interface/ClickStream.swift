@@ -55,7 +55,7 @@ public final class Clickstream {
     /// Clickstream shared instance.
     private static var sharedInstance: Clickstream?
     
-    private var dependencies: ClickstreamDependencies?
+    private var dependencies: DefaultClickstreamDependencies?
     #if EVENT_VISUALIZER_ENABLED
     /// internal stored static variable which is a delegate
     /// to sent the events to client for visualization.
@@ -194,7 +194,6 @@ public final class Clickstream {
                                                      priorityEventsEnabled: Bool = false,
                                                      appPrefix: String,
                                                      samplerConfiguration: EventSamplerConfiguration? = nil,
-                                                     courierSamplerConfiguration: EventSamplerConfiguration? = nil,
                                                      networkOptions: ClickstreamNetworkOptions) throws -> Clickstream? {
         do {
             return try initializeClickstream(
@@ -208,7 +207,6 @@ public final class Clickstream {
                 priorityEventsEnabled: priorityEventsEnabled,
                 appPrefix: appPrefix,
                 samplerConfiguration: samplerConfiguration,
-                courierSamplerConfiguration: courierSamplerConfiguration,
                 networkOptions: networkOptions)
         } catch {
             print("Cannot initialise Clickstream. Dependencies could not be initialised.",.critical)
@@ -226,7 +224,6 @@ public final class Clickstream {
                                                      timerCrashFixFlag: Bool = false,
                                                      appPrefix: String,
                                                      samplerConfiguration: EventSamplerConfiguration? = nil,
-                                                     courierSamplerConfiguration: EventSamplerConfiguration? = nil,
                                                      networkOptions: ClickstreamNetworkOptions) throws -> Clickstream? {
         do {
             return try initializeClickstream(
@@ -239,7 +236,6 @@ public final class Clickstream {
                 timerCrashFixFlag: timerCrashFixFlag,
                 appPrefix: appPrefix,
                 samplerConfiguration: samplerConfiguration,
-                courierSamplerConfiguration: courierSamplerConfiguration,
                 networkOptions: networkOptions)
         } catch {
             print("Cannot initialise Clickstream. Dependencies could not be initialised.",.critical)
@@ -259,7 +255,6 @@ public final class Clickstream {
                                       priorityEventsEnabled: Bool = false,
                                       appPrefix: String,
                                       samplerConfiguration: EventSamplerConfiguration? = nil,
-                                      courierSamplerConfiguration: EventSamplerConfiguration? = nil,
                                       networkOptions: ClickstreamNetworkOptions) throws -> Clickstream? {
 
         let semaphore = DispatchSemaphore(value: 1)
@@ -284,7 +279,6 @@ public final class Clickstream {
             do {
                 let dependencies = try DefaultClickstreamDependencies(with: request,
                                                                       samplerConfiguration: samplerConfiguration,
-                                                                      courierSamplerConfiguration: courierSamplerConfiguration,
                                                                       networkOptions: networkOptions)
 
                 sharedInstance = Clickstream(socketNetworkBuilder: dependencies.socketNetworkBuilder,

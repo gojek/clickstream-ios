@@ -50,10 +50,9 @@ final class CourierNetworkService<C: CourierConnectable>: NetworkService {
     ///   - connectionStatusListener: A callback connection listerner
     ///   - keepTrying: A flag to rery connect attempts
     ///   - identifiers: Client's user identifiers
-    func initiateSecondaryConnection(connectionStatusListener: ConnectionStatus?,
-                                     keepTrying: Bool,
-                                     identifiers: ClickstreamClientIdentifiers,
-                                     eventHandler: ICourierEventHandler? = nil) async {
+    func initiateCourierConnection(connectionStatusListener: ConnectionStatus?,
+                                   identifiers: ClickstreamClientIdentifiers,
+                                   eventHandler: ICourierEventHandler) async {
 
         guard _connectable == nil, let courierConfig = networkConfig.networkOptions?.courierConfig else { return }
 
@@ -62,7 +61,6 @@ final class CourierNetworkService<C: CourierConnectable>: NetworkService {
         _connectable = C(config: courierConfig, userCredentials: identifiers)
 
         await connectable?.setup(request: networkConfig.request,
-                                 keepTrying: keepTrying,
                                  connectionCallback: self.connectionCallback,
                                  eventHandler: eventHandler)
     }
@@ -108,6 +106,10 @@ extension CourierNetworkService {
 
             var requestProto = try Odpf_Raccoon_EventRequest(serializedBytes: eventRequestData)
             requestProto.sentTime = Google_Protobuf_Timestamp(date: Date())
+            requestProto.events = requestProto.events.map({ racoonEvent in
+                // TODO: - Update request's events with meta.clickstream_network_source = "courier_http"
+                return racoonEvent
+            })
             request.httpBody = try requestProto.serializedData()
 
             let (data, response) = try await session.data(for: request)

@@ -83,11 +83,11 @@ class ClickstreamViewController: UIViewController {
 
         configView.didSaveConfig = { [weak self] (config, userCredentials, topic) in
             let whitelistedEvents = ["User"]
-            let defaultNetworkOptions = ClickstreamNetworkOptions(isWebsocketEnabled: false,
+            var defaultNetworkOptions = ClickstreamNetworkOptions(isWebsocketEnabled: false,
                                                                   isCourierEnabled: true,
-                                                                  courierEventTypes: Set(whitelistedEvents),
-                                                                  courierConfig: config)
+                                                                  courierEventTypes: Set(whitelistedEvents))
 
+            defaultNetworkOptions.courierConfig = config
             self?.analyticsManager.networkOptions = defaultNetworkOptions
             self?.analyticsManager.courierUserCredentials = userCredentials
             self?.analyticsManager.courierTopic = topic

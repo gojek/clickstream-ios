@@ -14,7 +14,7 @@ import Foundation
 /// - maxRetryIntervalPostPrematureDisconnection
 /// - maxRetriesPostPrematureDisconnection
 /// - maxPingInterval: TimeInterval
-public struct ClickstreamCourierConstraints: ClickstreamConstraintsContract {
+public struct ClickstreamCourierConstraints: ClickstreamConstraintsContract, Decodable {
 
     /// This array holds all priority configs.
     private(set) var priorities: [Priority]
@@ -61,5 +61,31 @@ public struct ClickstreamCourierConstraints: ClickstreamConstraintsContract {
         self.connectionRetryDuration = connectionRetryDuration
         self.flushOnAppLaunch = flushOnAppLaunch
         self.minBatteryLevelPercent = minBatteryLevelPercent
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case priorities
+        case flushOnBackground
+        case connectionTerminationTimerWaitTime
+        case maxRequestAckTimeout
+        case maxRetriesPerBatch
+        case maxRetryCacheSize
+        case connectionRetryDuration
+        case flushOnAppLaunch
+        case minBatteryLevelPercent
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        priorities = try container.decodeIfPresent([Priority].self, forKey: .priorities) ?? [Priority()]
+        flushOnBackground = try container.decodeIfPresent(Bool.self, forKey: .flushOnBackground) ?? true
+        connectionTerminationTimerWaitTime = try container.decodeIfPresent(TimeInterval.self, forKey: .connectionTerminationTimerWaitTime) ?? 8
+        maxRequestAckTimeout = try container.decodeIfPresent(TimeInterval.self, forKey: .maxRequestAckTimeout) ?? 6
+        maxRetriesPerBatch = try container.decodeIfPresent(Int.self, forKey: .maxRetriesPerBatch) ?? 20
+        maxRetryCacheSize = try container.decodeIfPresent(Int.self, forKey: .maxRetryCacheSize) ?? 5000000
+        connectionRetryDuration = try container.decodeIfPresent(TimeInterval.self, forKey: .connectionRetryDuration) ?? 3
+        flushOnAppLaunch = try container.decodeIfPresent(Bool.self, forKey: .flushOnAppLaunch) ?? false
+        minBatteryLevelPercent = try container.decodeIfPresent(Float.self, forKey: .minBatteryLevelPercent) ?? 10
     }
 }

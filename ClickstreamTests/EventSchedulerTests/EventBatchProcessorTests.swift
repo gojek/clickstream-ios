@@ -32,7 +32,7 @@ class EventBatchProcessorTests: XCTestCase {
         
         let prioritiesMock = [Priority(priority: 0, identifier: "realTime", maxBatchSize: 50000.0, maxTimeBetweenTwoBatches: 1)]
 
-        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
+        let networkService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         let eventPersistence = DefaultDatabaseDAO<Event>(database: database, performOnQueue: dbQueueMock)
         
@@ -76,7 +76,7 @@ class EventBatchProcessorTests: XCTestCase {
         let prioritiesMock = [Priority(priority: 0, identifier: "realTime", maxBatchSize: 5000.0, maxTimeBetweenTwoBatches: 10),
                               Priority(priority: 1, identifier: "standard", maxBatchSize: 5000.0)]
         
-        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
+        let networkService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
         
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         let eventPersistence = DefaultDatabaseDAO<Event>(database: database, performOnQueue: dbQueueMock)

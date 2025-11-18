@@ -34,7 +34,7 @@ class RetryMechanismTests: XCTestCase {
         SerialQueue.registerDetection(of: mockQueue) //Registers a queue to be detected.
         
         let deviceStatus = DefaultDeviceStatus(performOnQueue: mockQueue)
-        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
+        let networkService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         let keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: mockQueue, duration: 2, reachability: NetworkReachabilityMock(isReachable: false))
 
@@ -69,7 +69,7 @@ class RetryMechanismTests: XCTestCase {
         SerialQueue.registerDetection(of: mockQueue) //Registers a queue to be detected.
         
         let deviceStatus = DefaultDeviceStatus(performOnQueue: mockQueue)
-        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
+        let networkService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         let keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: mockQueue, duration: 2, reachability: NetworkReachabilityMock(isReachable: false))
 

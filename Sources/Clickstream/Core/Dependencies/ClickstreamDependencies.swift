@@ -8,35 +8,14 @@
 
 import Foundation
 
-protocol ClickstreamDependencies {
-    var isSocketConnected: Bool { get }
-    var isCourierConnected: Bool { get }
-
-    var socketNetworkBuilder: any NetworkBuildable { get }
-    var courierNetworkBuilder: any NetworkBuildable { get }
-
-    var socketEventWarehouser: DefaultEventWarehouser { get }
-    var courierEventWarehouser: CourierEventWarehouser { get }
-
-    var socketEventProcessor: DefaultEventProcessor { get }
-    var courierEventProcessor: CourierEventProcessor { get }
-
-    var socketEventSampler: EventSampler? { get }
-    var courierEventSampler: EventSampler? { get }
-
-    func provideCourierClientIdentifiers(with identifiers: ClickstreamClientIdentifiers, topic: String)
-    func removeCourierClientIdentifiers()
-}
-
 /// A class that generates all the dependencies of the Clickstream SDK.
-final class DefaultClickstreamDependencies: ClickstreamDependencies {
+final class DefaultClickstreamDependencies {
     
     private let request: URLRequest
     private let database: Database
     private var networkManagerDependencies: NetworkManagerDependencies!
 
     private let samplerConfiguration: EventSamplerConfiguration?
-    private let courierSamplerConfiguration: EventSamplerConfiguration?
 
     private let networkOptions: ClickstreamNetworkOptions
     
@@ -50,11 +29,9 @@ final class DefaultClickstreamDependencies: ClickstreamDependencies {
 
     init(with request: URLRequest,
          samplerConfiguration: EventSamplerConfiguration? = nil,
-         courierSamplerConfiguration: EventSamplerConfiguration? = nil,
          networkOptions: ClickstreamNetworkOptions) throws {
 
         self.request = request
-        self.courierSamplerConfiguration = courierSamplerConfiguration
         self.samplerConfiguration = samplerConfiguration
         self.networkOptions = networkOptions
 
@@ -121,11 +98,6 @@ final class DefaultClickstreamDependencies: ClickstreamDependencies {
     }()
 
     lazy var socketEventSampler: EventSampler? = {
-        guard let samplerConfiguration else { return nil }
-        return DefaultEventSampler(config: samplerConfiguration)
-    }()
-
-    lazy var courierEventSampler: EventSampler? = {
         guard let samplerConfiguration else { return nil }
         return DefaultEventSampler(config: samplerConfiguration)
     }()

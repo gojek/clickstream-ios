@@ -48,16 +48,9 @@ final class DefaultCourierHandler: CourierHandler {
         courierClient?.disconnect()
     }
 
-    func setup(request: URLRequest,
-               keepTrying: Bool,
-               connectionCallback: ConnectionStatus?,
-               eventHandler: ICourierEventHandler? = nil) async {
-
+    func setup(request: URLRequest, connectionCallback: ConnectionStatus?, eventHandler: ICourierEventHandler) async {
         courierClient = await getCourierClient()
-
-        if let eventHandler {
-            courierClient?.addEventHandler(eventHandler)
-        }
+        courierClient?.addEventHandler(eventHandler)
 
         await connect(connectionCallback: connectionCallback)
     }

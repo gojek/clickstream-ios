@@ -110,7 +110,7 @@ public struct ClickstreamConstraints: ClickstreamConstraintsContract {
 }
 
 /// This struct will hold the priorities defined in the ClickstreamConstraints.
-public struct Priority {
+public struct Priority: Decodable {
     private(set) var priority: Int = 0
     private(set) var identifier: PriorityType = "realTime"
     private(set) var maxBatchSize: Double? = 50000

@@ -14,7 +14,7 @@ class EventProcessorTest: XCTestCase {
 
     private let processorQueueMock = SerialQueue(label: "com.mock.gojek.clickstream.processor", qos: .utility)
     private var config: DefaultNetworkConfiguration!
-    private var networkService: DefaultNetworkService<SocketHandlerMockSuccess>!
+    private var networkService: WebsocketNetworkService<SocketHandlerMockSuccess>!
     private var retryMech: DefaultRetryMechanism!
     private var networkBuilder: DefaultNetworkBuilder!
     private var prioritiesMock: [Priority]!
@@ -34,7 +34,7 @@ class EventProcessorTest: XCTestCase {
         //given
         /// Network builder
         config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
-        networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
+        networkService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
         persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         eventPersistence = DefaultDatabaseDAO<Event>(database: database, performOnQueue: dbQueueMock)
 

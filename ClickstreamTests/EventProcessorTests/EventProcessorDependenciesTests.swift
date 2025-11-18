@@ -23,7 +23,7 @@ class EventProcessorDependenciesTests: XCTestCase {
         let rechability = NetworkReachabilityMock(isReachable: true)
         let appStateNotifier = AppStateNotifierMock(state: .didBecomeActive)
 
-        let socketNetworkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: mockQueue)
+        let socketNetworkService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: mockQueue)
         let courierNetworkService = CourierNetworkService<DefaultCourierHandler>(with: config, performOnQueue: mockQueue)
 
         let deviceStatus = DefaultDeviceStatus(performOnQueue: mockQueue)

@@ -317,7 +317,7 @@ extension WebsocketRetryMechanism {
         }
         
         performQueue.async { [weak self] in guard let checkedSelf = self else { return }
-            checkedSelf.networkService.initiateConnection(connectionStatusListener: { result in
+            checkedSelf.networkService.initiateWebsocketConnection(connectionStatusListener: { result in
 
                 NotificationCenter.default.post(name: Constants.SocketConnectionNotification,
                                                 object: [Constants.Strings.didConnect: self?.networkService.isConnected])
