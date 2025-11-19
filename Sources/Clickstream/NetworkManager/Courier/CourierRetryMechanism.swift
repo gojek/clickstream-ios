@@ -170,34 +170,38 @@ extension CourierRetryMechanism {
             do {
                 // Publish MQTT package
                 try await networkService.publish(eventRequest, topic: topic)
-                
-                let guid = eventRequest.guid
-                removeFromCache(with: guid)
-                
-                #if ETE_TEST_SUITE_ENABLED
-                Clickstream.ackEvent = AckEventDetails(guid: guid, status: "Success")
-                #endif
-                if let eventType = eventRequest.eventType, !(eventType == .internalEvent) {
-                    trackHealthAndPerformanceEvents(eventRequest: eventRequest, startTime: startTime)
-                }
-                #if EVENT_VISUALIZER_ENABLED
-                /// Update status of the event batch to acknowledged from network
-                /// to check if the delegate is connected, if not no event should be sent to client
-                if let stateViewer = Clickstream._stateViewer {
-                    /// Updating the event state to acknowledged based on eventBatchGuid.
-                    /// The eventBatchID passed in NetworkBuilder would be used to map events and
-                    /// then update the state respectively.
-                    stateViewer.updateStatus(eventBatchID: guid, state: .ackReceived)
-                }
-                #endif
 
-                #if ETE_TEST_SUITE_ENABLED
-                if testMode { FileManagerOverride.writeToFile() }
-                #endif
+                handlePublisedEventRequest(eventRequest: eventRequest, startTime: startTime)
             } catch {
                 debugPrint("Filed to publish event Courier \(error)")
             }
         }
+    }
+    
+    private func handlePublisedEventRequest(eventRequest: CourierEventRequest, startTime: Date) {
+        let guid = eventRequest.guid
+        removeFromCache(with: guid)
+
+        #if ETE_TEST_SUITE_ENABLED
+        Clickstream.ackEvent = AckEventDetails(guid: guid, status: "Success")
+        #endif
+        if let eventType = eventRequest.eventType, !(eventType == .internalEvent) {
+            trackHealthAndPerformanceEvents(eventRequest: eventRequest, startTime: startTime)
+        }
+        #if EVENT_VISUALIZER_ENABLED
+        /// Update status of the event batch to acknowledged from network
+        /// to check if the delegate is connected, if not no event should be sent to client
+        if let stateViewer = Clickstream._stateViewer {
+            /// Updating the event state to acknowledged based on eventBatchGuid.
+            /// The eventBatchID passed in NetworkBuilder would be used to map events and
+            /// then update the state respectively.
+            stateViewer.updateStatus(eventBatchID: guid, state: .ackReceived)
+        }
+        #endif
+
+        #if ETE_TEST_SUITE_ENABLED
+        if testMode { FileManagerOverride.writeToFile() }
+        #endif
     }
 
     private func fallbackToHTTP(for eventRequest: CourierEventRequest, startTime: Date) {
@@ -492,20 +496,18 @@ extension CourierRetryMechanism {
         let httpMaxRetryCount = courierConfig.httpRetryPolicy.maxRetryCount
         let httpRetryDelaySeconds = courierConfig.httpRetryPolicy.delayMillis / 1000
 
-        if isCourierRetryEnabled && failedRequest.retryCount < courierRetryMaxCount {
+        if isCourierRetryEnabled && failedRequest.retriesMade < courierRetryMaxCount {
             performQueue.asyncAfter(deadline: .now() + courierRetryDelaySeconds, flags: .barrier) {
                 // Update retryCount to DB
-                failedRequest.retryCount += 1
-                self.persistence.update(failedRequest)
+                failedRequest.bumpRetriesMade()
 
                 // Send event via Courier
                 self.trackBatch(with: eventRequest)
             }
-        } else if isHttpRetryEnbled && eventRequest.retryCount < httpMaxRetryCount {
+        } else if isHttpRetryEnbled && eventRequest.retriesMade < (httpMaxRetryCount + courierRetryMaxCount) {
             performQueue.asyncAfter(deadline: .now() + httpRetryDelaySeconds, flags: .barrier) {
                 // Update retryCount to DB
-                failedRequest.retryCount += 1
-                self.persistence.update(failedRequest)
+                failedRequest.bumpRetriesMade()
 
                 // Send event via HTTP
                 self.fallbackToHTTP(for: eventRequest, startTime: Date())

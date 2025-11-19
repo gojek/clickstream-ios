@@ -99,6 +99,7 @@ extension CourierNetworkService {
             let session = URLSession.shared
             var request = self.networkConfig.request
             request.httpMethod = "POST"
+            request.setValue("application/proto", forHTTPHeaderField: "Content-Type")
 
             guard let eventRequestData = eventRequest.data else {
                 throw ConnectableError.parsingData

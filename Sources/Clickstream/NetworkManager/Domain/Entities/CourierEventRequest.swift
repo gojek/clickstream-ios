@@ -19,7 +19,6 @@ struct CourierEventRequest: EventRequestDatabasePersistable {
     var eventType: Constants.EventType?
     var isInternal: Bool?
     var eventCount: Int
-    var retryCount: Int
     
     init(guid: String, data: Data? = nil) {
         self.guid = guid
@@ -30,7 +29,6 @@ struct CourierEventRequest: EventRequestDatabasePersistable {
         self.isInternal = false
         self.eventType = .realTime
         self.eventCount = 0
-        self.retryCount = 0
     }
 }
 
@@ -50,8 +48,9 @@ extension CourierEventRequest {
             t.column("data", .blob)
             t.column("retriesMade", .text).notNull()
             t.column("createdTimestamp", .datetime).notNull()
+            t.column("eventType", .text).notNull()
+            t.column("isInternal", .boolean).notNull()
             t.column("eventCount", .integer).notNull()
-            t.column("retryCount", .integer).notNull()
         }
     }
 
