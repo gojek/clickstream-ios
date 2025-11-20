@@ -38,9 +38,6 @@ final class DefaultEventProcessor: EventProcessor {
     }
     
     func shouldTrackEvent(event: ClickstreamEvent) -> Bool {
-        guard networkOptions.isWebsocketEnabled else {
-            return false
-        }
         if let eventSampler = sampler {
             return eventSampler.shouldTrack(event: event)
         }
