@@ -38,7 +38,7 @@ class EventProcessorDependenciesTests: XCTestCase {
         
         let networkOptions = ClickstreamNetworkOptions()
 
-        let socketRetryMech = DefaultRetryMechanism(
+        let socketRetryMech = WebsocketRetryMechanism(
             networkService: socketNetworkService,
             reachability: rechability,
             deviceStatus: deviceStatus,
@@ -58,7 +58,7 @@ class EventProcessorDependenciesTests: XCTestCase {
             persistence: courierPersistence
         )
         
-        let socketNetworkBuilder = DefaultNetworkBuilder(networkConfigs: config,
+        let socketNetworkBuilder = WebsocketNetworkBuilder(networkConfigs: config,
                                                          retryMech: socketRetryMech,
                                                          performOnQueue: mockQueue)
         

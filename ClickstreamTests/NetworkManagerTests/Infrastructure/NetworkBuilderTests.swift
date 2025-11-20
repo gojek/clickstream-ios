@@ -32,10 +32,10 @@ class NetworkBuilderTests: XCTestCase {
         let networkService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: mockQueue)
         let keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: mockQueue, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
-        let retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: mockQueue, persistence: persistence, keepAliveService: keepAliveService)
+        let retryMech = WebsocketRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: mockQueue, persistence: persistence, keepAliveService: keepAliveService)
         
         //when
-        let sut = DefaultNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: mockQueue)
+        let sut = WebsocketNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: mockQueue)
         
         sut.trackBatch(self.eventBatchMock, completion: { (error) in
             XCTAssertNil(error)
@@ -58,10 +58,10 @@ class NetworkBuilderTests: XCTestCase {
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         let keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: mockQueue, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
 
-        let retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: mockQueue, persistence: persistence, keepAliveService: keepAliveService)
+        let retryMech = WebsocketRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: mockQueue, persistence: persistence, keepAliveService: keepAliveService)
         
         //when
-        let sut = DefaultNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: mockQueue)
+        let sut = WebsocketNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: mockQueue)
         SerialQueue.main.asyncAfter(deadline: .now() + 2.0) {
             XCTAssertEqual(sut.isAvailable, true)
             expectation.fulfill()
@@ -85,10 +85,10 @@ class NetworkBuilderTests: XCTestCase {
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         let keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: mockQueue, duration: 10, reachability: NetworkReachabilityMock(isReachable: true))
 
-        let retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .willResignActive), performOnQueue: mockQueue, persistence: persistence, keepAliveService: keepAliveService)
+        let retryMech = WebsocketRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .willResignActive), performOnQueue: mockQueue, persistence: persistence, keepAliveService: keepAliveService)
         
         //when
-        let sut = DefaultNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: mockQueue)
+        let sut = WebsocketNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: mockQueue)
         SerialQueue.main.asyncAfter(deadline: .now() + 10) {
             XCTAssertEqual(sut.isAvailable, false)
             expectation.fulfill()

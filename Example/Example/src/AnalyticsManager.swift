@@ -79,7 +79,8 @@ class AnalyticsManager {
                 timeStamp: Date(),
                 message: message,
                 eventName: type(of: message).protoMessageName,
-                eventData: try message.serializedData())
+                eventData: try message.serializedData(),
+                product: "CSSampleApp")
             clickstream.trackEvent(with: eventDTO)
         } catch {
             print(error.localizedDescription)
@@ -110,6 +111,7 @@ class AnalyticsManager {
             return
         }
         clickstream?.provideClientIdentifiers(with: userCredentials, topic: courierTopic)
+        debugPrint("[clickstream-sqlite] \(NSHomeDirectory())/Library/Application Support/clickstream_wal/db.sqlite")
     }
 }
 

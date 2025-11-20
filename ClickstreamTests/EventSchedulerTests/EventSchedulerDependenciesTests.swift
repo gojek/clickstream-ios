@@ -28,10 +28,10 @@ class EventSchedulerDependenciesTests: XCTestCase {
 
     private var keepAliveService: DefaultKeepAliveServiceWithSafeTimer!
 
-    private var socketRetryMech: DefaultRetryMechanism!
+    private var socketRetryMech: WebsocketRetryMechanism!
     private var courierRetryMech: CourierRetryMechanism!
 
-    private var socketNetworkBuilder: DefaultNetworkBuilder!
+    private var socketNetworkBuilder: WebsocketNetworkBuilder!
     private var courierNetworkBuilder: CourierNetworkBuilder!
 
     override func setUp() {
@@ -63,7 +63,7 @@ class EventSchedulerDependenciesTests: XCTestCase {
             reachability: NetworkReachabilityMock(isReachable: true)
         )
 
-        socketRetryMech = DefaultRetryMechanism(
+        socketRetryMech = WebsocketRetryMechanism(
             networkService: socketNetworkService,
             reachability: NetworkReachabilityMock(isReachable: true),
             deviceStatus: deviceStatus,
@@ -83,7 +83,7 @@ class EventSchedulerDependenciesTests: XCTestCase {
             persistence: courierPersistence
         )
         
-        socketNetworkBuilder = DefaultNetworkBuilder(
+        socketNetworkBuilder = WebsocketNetworkBuilder(
             networkConfigs: config,
             retryMech: socketRetryMech,
             performOnQueue: mockQueue
@@ -170,7 +170,7 @@ class EventSchedulerDependenciesTests: XCTestCase {
             with: alternativeConfig,
             performOnQueue: mockQueue
         )
-        let alternativeRetryMech = DefaultRetryMechanism(
+        let alternativeRetryMech = WebsocketRetryMechanism(
             networkService: alternativeNetworkService,
             reachability: NetworkReachabilityMock(isReachable: true),
             deviceStatus: deviceStatus,
@@ -179,7 +179,7 @@ class EventSchedulerDependenciesTests: XCTestCase {
             persistence: socketPersistence,
             keepAliveService: keepAliveService
         )
-        let alternativeNetworkBuildable = DefaultNetworkBuilder(
+        let alternativeNetworkBuildable = WebsocketNetworkBuilder(
             networkConfigs: alternativeConfig,
             retryMech: alternativeRetryMech,
             performOnQueue: mockQueue
@@ -213,7 +213,7 @@ class EventSchedulerDependenciesTests: XCTestCase {
     }
     
     func testEventWarehouseWithUnreachableNetwork() {
-        let unreachableRetryMech = DefaultRetryMechanism(
+        let unreachableRetryMech = WebsocketRetryMechanism(
             networkService: socketNetworkService,
             reachability: NetworkReachabilityMock(isReachable: false),
             deviceStatus: deviceStatus,
@@ -222,7 +222,7 @@ class EventSchedulerDependenciesTests: XCTestCase {
             persistence: socketPersistence,
             keepAliveService: keepAliveService
         )
-        let unreachableNetworkBuildable = DefaultNetworkBuilder(
+        let unreachableNetworkBuildable = WebsocketNetworkBuilder(
             networkConfigs: config,
             retryMech: unreachableRetryMech,
             performOnQueue: mockQueue
@@ -241,7 +241,7 @@ class EventSchedulerDependenciesTests: XCTestCase {
     }
     
     func testEventWarehouseWithInactiveAppState() {
-        let inactiveRetryMech = DefaultRetryMechanism(
+        let inactiveRetryMech = WebsocketRetryMechanism(
             networkService: socketNetworkService,
             reachability: NetworkReachabilityMock(isReachable: true),
             deviceStatus: deviceStatus,
@@ -250,7 +250,7 @@ class EventSchedulerDependenciesTests: XCTestCase {
             persistence: socketPersistence,
             keepAliveService: keepAliveService
         )
-        let inactiveNetworkBuildable = DefaultNetworkBuilder(
+        let inactiveNetworkBuildable = WebsocketNetworkBuilder(
             networkConfigs: config,
             retryMech: inactiveRetryMech,
             performOnQueue: mockQueue
@@ -274,7 +274,7 @@ class EventSchedulerDependenciesTests: XCTestCase {
             duration: 10,
             reachability: NetworkReachabilityMock(isReachable: true)
         )
-        let customRetryMech = DefaultRetryMechanism(
+        let customRetryMech = WebsocketRetryMechanism(
             networkService: socketNetworkService,
             reachability: NetworkReachabilityMock(isReachable: true),
             deviceStatus: deviceStatus,
@@ -283,7 +283,7 @@ class EventSchedulerDependenciesTests: XCTestCase {
             persistence: socketPersistence,
             keepAliveService: customKeepAliveService
         )
-        let customNetworkBuildable = DefaultNetworkBuilder(
+        let customNetworkBuildable = WebsocketNetworkBuilder(
             networkConfigs: config,
             retryMech: customRetryMech,
             performOnQueue: mockQueue
@@ -307,7 +307,7 @@ class EventSchedulerDependenciesTests: XCTestCase {
             with: config,
             performOnQueue: highPriorityQueue
         )
-        let highPriorityRetryMech = DefaultRetryMechanism(
+        let highPriorityRetryMech = WebsocketRetryMechanism(
             networkService: highPriorityNetworkService,
             reachability: NetworkReachabilityMock(isReachable: true),
             deviceStatus: DefaultDeviceStatus(performOnQueue: highPriorityQueue),
@@ -320,7 +320,7 @@ class EventSchedulerDependenciesTests: XCTestCase {
                 reachability: NetworkReachabilityMock(isReachable: true)
             )
         )
-        let highPriorityNetworkBuildable = DefaultNetworkBuilder(
+        let highPriorityNetworkBuildable = WebsocketNetworkBuilder(
             networkConfigs: config,
             retryMech: highPriorityRetryMech,
             performOnQueue: highPriorityQueue

@@ -67,7 +67,8 @@ class CourierEventProcessorTest: XCTestCase {
             timeStamp: Date(),
             message: nil,
             eventName: "test.event.name",
-            eventData: Data()
+            eventData: Data(),
+            product: "CSTestProduct"
         )
         
         courierIdentifiers = CourierIdentifiers(userIdentifier: "12345",

@@ -25,7 +25,7 @@ public struct ClickstreamEvent {
                 eventName: String,
                 eventData: Data,
                 csEventName: String? = nil,
-                product: String = "Undefined PDG") {
+                product: String) {
 
         self.guid = guid
         self.timeStamp = timeStamp

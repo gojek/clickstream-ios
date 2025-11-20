@@ -38,8 +38,8 @@ class EventBatchProcessorTests: XCTestCase {
         
         let keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: schedulerQueueMock, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
       
-        let retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: DefaultDeviceStatus(performOnQueue: schedulerQueueMock), appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: schedulerQueueMock, persistence: persistence, keepAliveService: keepAliveService)
-        let networkBuilder = DefaultNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: schedulerQueueMock)
+        let retryMech = WebsocketRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: DefaultDeviceStatus(performOnQueue: schedulerQueueMock), appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: schedulerQueueMock, persistence: persistence, keepAliveService: keepAliveService)
+        let networkBuilder = WebsocketNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: schedulerQueueMock)
         let eventBatchCreator = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock)
         let schedulerServiceMock = DefaultSchedulerService(with: prioritiesMock, performOnQueue: schedulerQueueMock)
         
@@ -83,8 +83,8 @@ class EventBatchProcessorTests: XCTestCase {
         
         let keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: schedulerQueueMock, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
 
-        let retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: DefaultDeviceStatus(performOnQueue: schedulerQueueMock), appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: schedulerQueueMock, persistence: persistence, keepAliveService: keepAliveService)
-        let networkBuilder = DefaultNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: schedulerQueueMock)
+        let retryMech = WebsocketRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: DefaultDeviceStatus(performOnQueue: schedulerQueueMock), appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: schedulerQueueMock, persistence: persistence, keepAliveService: keepAliveService)
+        let networkBuilder = WebsocketNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: schedulerQueueMock)
         let eventBatchCreator = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock)
         let schedulerServiceMock = DefaultSchedulerService(with: prioritiesMock, performOnQueue: schedulerQueueMock)
         

@@ -15,8 +15,8 @@ class EventProcessorTest: XCTestCase {
     private let processorQueueMock = SerialQueue(label: "com.mock.gojek.clickstream.processor", qos: .utility)
     private var config: DefaultNetworkConfiguration!
     private var networkService: WebsocketNetworkService<SocketHandlerMockSuccess>!
-    private var retryMech: DefaultRetryMechanism!
-    private var networkBuilder: DefaultNetworkBuilder!
+    private var retryMech: WebsocketRetryMechanism!
+    private var networkBuilder: WebsocketNetworkBuilder!
     private var prioritiesMock: [Priority]!
     private var eventBatchCreator: DefaultEventBatchCreator!
     private var schedulerServiceMock: DefaultSchedulerService!
@@ -40,8 +40,8 @@ class EventProcessorTest: XCTestCase {
 
         keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: processorQueueMock, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
 
-        retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: DefaultDeviceStatus(performOnQueue: processorQueueMock), appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: processorQueueMock, persistence: persistence, keepAliveService: keepAliveService)
-        networkBuilder = DefaultNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: processorQueueMock)
+        retryMech = WebsocketRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: DefaultDeviceStatus(performOnQueue: processorQueueMock), appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: processorQueueMock, persistence: persistence, keepAliveService: keepAliveService)
+        networkBuilder = WebsocketNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: processorQueueMock)
         
         /// Event Splitter
         prioritiesMock = [Priority(priority: 0, identifier: "realTime", maxBatchSize: 50000.0, maxTimeBetweenTwoBatches: 1)]
