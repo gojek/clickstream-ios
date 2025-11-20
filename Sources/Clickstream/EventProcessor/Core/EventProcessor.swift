@@ -47,22 +47,14 @@ final class DefaultEventProcessor: EventProcessor {
         return true
     }
     
-    private func constructEventWithMetadata(_ event: ClickstreamEvent) -> ClickstreamEvent {
-        var updatedEvent = event
-        // TODO: - Append meta.clickstream_network_source = "websocket"
-        return updatedEvent
-    }
-    
     func createEvent(event: ClickstreamEvent) {
         self.serialQueue.async { [weak self] in guard let checkedSelf = self else { return }
             if checkedSelf.shouldTrackEvent(event: event) {
 
-                let updatedEvent = checkedSelf.constructEventWithMetadata(event)
-
                 #if EVENT_VISUALIZER_ENABLED
                 /// Sent event data to client with state received
                 /// to check if the delegate is connected, if not no event should be sent to client
-                if let message = updatedEvent.message, let stateViewer = Clickstream._stateViewer {
+                if let message = event.message, let stateViewer = Clickstream._stateViewer {
                     /// creating the EventData object and setting the status to received.
                     let eventsData = EventData(msg: message, state: .received)
                     /// Sending the eventData object to client
@@ -70,7 +62,7 @@ final class DefaultEventProcessor: EventProcessor {
                 }
                 #endif
                 // Create an Event instance and forward it to the scheduler.
-                    if let event = checkedSelf.constructEvent(event: updatedEvent) {
+                    if let event = checkedSelf.constructEvent(event: event) {
                         checkedSelf.eventWarehouser.store(event)
                     }
             }

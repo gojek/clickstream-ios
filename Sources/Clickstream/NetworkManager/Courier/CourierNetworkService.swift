@@ -107,10 +107,6 @@ extension CourierNetworkService {
 
             var requestProto = try Odpf_Raccoon_EventRequest(serializedBytes: eventRequestData)
             requestProto.sentTime = Google_Protobuf_Timestamp(date: Date())
-            requestProto.events = requestProto.events.map({ racoonEvent in
-                // TODO: - Update request's events with meta.clickstream_network_source = "courier_http"
-                return racoonEvent
-            })
             request.httpBody = try requestProto.serializedData()
 
             let (data, response) = try await session.data(for: request)

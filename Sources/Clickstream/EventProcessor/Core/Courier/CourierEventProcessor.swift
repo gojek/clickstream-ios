@@ -48,12 +48,10 @@ final class CourierEventProcessor: EventProcessor {
                 return
             }
 
-            let updatedEvent = checkedSelf.constructEventWithMetadata(event)
-
             #if EVENT_VISUALIZER_ENABLED
             /// Sent event data to client with state received
             /// to check if the delegate is connected, if not no event should be sent to client
-            if let message = updatedEvent.message, let stateViewer = Clickstream._stateViewer {
+            if let message = event.message, let stateViewer = Clickstream._stateViewer {
                 /// creating the EventData object and setting the status to received.
                 let eventsData = EventData(msg: message, state: .received)
                 /// Sending the eventData object to client
@@ -61,24 +59,12 @@ final class CourierEventProcessor: EventProcessor {
             }
             #endif
             // Create an Event instance and forward it to the scheduler.
-            if let event = checkedSelf.constructEvent(event: updatedEvent) {
+            if let event = checkedSelf.constructEvent(event: event) {
                 checkedSelf.eventWarehouser.store(event)
             }
         }
     }
-    
-    private func constructEventWithMetadata(_ event: ClickstreamEvent) -> ClickstreamEvent {
-        var updatedEvent = event
-        // TODO: - Append meta.clickstream_network_source = "courier"
 
-
-        if networkOptions.isCourierEnabled {
-
-        }
-
-        return updatedEvent
-    }
-    
     private func constructEvent(event: ClickstreamEvent) -> CourierEvent? {
         guard var typeOfEvent: String = event.eventName.components(separatedBy: ".").last?.lowercased() else { return nil }
 
