@@ -13,7 +13,7 @@ import CourierCore
 class CourierAuthenticationProviderTests: XCTestCase {
     
     var mockUserDefaults: UserDefaults!
-    var config: ClickstreamCourierConfig!
+    var config: ClickstreamCourierClientConfig!
     var userCredentials: CourierIdentifiers!
     
     override func setUp() {
@@ -21,7 +21,7 @@ class CourierAuthenticationProviderTests: XCTestCase {
         mockUserDefaults = UserDefaults(suiteName: "test.courier.auth")
         mockUserDefaults.removePersistentDomain(forName: "test.courier.auth")
         
-        config = ClickstreamCourierConfig()
+        config = ClickstreamCourierClientConfig()
         userCredentials = CourierIdentifiers(
             userIdentifier: "testUser123",
             deviceIdentifier: "device456",

@@ -203,7 +203,6 @@
 		D859DC482E9F5224008D900F /* ClickstreamCourierUserCredentialsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D859DC472E9F5224008D900F /* ClickstreamCourierUserCredentialsTests.swift */; };
 		D859DC4A2E9F5280008D900F /* CourierConnectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D859DC492E9F5280008D900F /* CourierConnectTests.swift */; };
 		D859DC4D2E9F52B7008D900F /* ClickstreamCourierConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D859DC4C2E9F52B7008D900F /* ClickstreamCourierConfigTests.swift */; };
-		D859DC4F2E9F52F0008D900F /* ClickstreamCourierConnectConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D859DC4E2E9F52F0008D900F /* ClickstreamCourierConnectConfigTests.swift */; };
 		D859DC532E9F58D9008D900F /* CourierAuthenticationProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D859DC522E9F58D9008D900F /* CourierAuthenticationProviderTests.swift */; };
 		D872F5FD2E8F8646006F077E /* WebsocketRetryMechanism.swift in Sources */ = {isa = PBXBuildFile; fileRef = D872F5FA2E8F8646006F077E /* WebsocketRetryMechanism.swift */; };
 		D872F5FF2E8F8646006F077E /* WebsocketNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D872F5F92E8F8646006F077E /* WebsocketNetworkService.swift */; };
@@ -263,8 +262,6 @@
 		D8F38D682E950C5D00C4281E /* CourierNetworkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D5F2E950C5D00C4281E /* CourierNetworkBuilder.swift */; };
 		D8F38D792E98C43700C4281E /* ClickstreamCourierConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D782E98C43700C4281E /* ClickstreamCourierConfig.swift */; };
 		D8F38D7A2E98C43700C4281E /* ClickstreamCourierConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D782E98C43700C4281E /* ClickstreamCourierConfig.swift */; };
-		D8F38D802E98F4C900C4281E /* ClickstreamCourierConnectConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D7F2E98F4C900C4281E /* ClickstreamCourierConnectConfig.swift */; };
-		D8F38D812E98F4C900C4281E /* ClickstreamCourierConnectConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D7F2E98F4C900C4281E /* ClickstreamCourierConnectConfig.swift */; };
 		D8F38D842E9CAFF300C4281E /* CourierConnectTimeoutPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D832E9CAFF300C4281E /* CourierConnectTimeoutPolicy.swift */; };
 		D8F38D852E9CAFF300C4281E /* CourierConnectTimeoutPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D832E9CAFF300C4281E /* CourierConnectTimeoutPolicy.swift */; };
 		D8F38D872E9CB01E00C4281E /* CourierIdleActivityTimeoutPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D862E9CB01E00C4281E /* CourierIdleActivityTimeoutPolicy.swift */; };
@@ -431,7 +428,6 @@
 		D859DC472E9F5224008D900F /* ClickstreamCourierUserCredentialsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickstreamCourierUserCredentialsTests.swift; sourceTree = "<group>"; };
 		D859DC492E9F5280008D900F /* CourierConnectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierConnectTests.swift; sourceTree = "<group>"; };
 		D859DC4C2E9F52B7008D900F /* ClickstreamCourierConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickstreamCourierConfigTests.swift; sourceTree = "<group>"; };
-		D859DC4E2E9F52F0008D900F /* ClickstreamCourierConnectConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickstreamCourierConnectConfigTests.swift; sourceTree = "<group>"; };
 		D859DC522E9F58D9008D900F /* CourierAuthenticationProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierAuthenticationProviderTests.swift; sourceTree = "<group>"; };
 		D872F5F62E8F8646006F077E /* WebsocketNetworkBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsocketNetworkBuilder.swift; sourceTree = "<group>"; };
 		D872F5F92E8F8646006F077E /* WebsocketNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsocketNetworkService.swift; sourceTree = "<group>"; };
@@ -466,7 +462,6 @@
 		D8F38D602E950C5D00C4281E /* CourierNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierNetworkService.swift; sourceTree = "<group>"; };
 		D8F38D612E950C5D00C4281E /* CourierRetryMechanism.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierRetryMechanism.swift; sourceTree = "<group>"; };
 		D8F38D782E98C43700C4281E /* ClickstreamCourierConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickstreamCourierConfig.swift; sourceTree = "<group>"; };
-		D8F38D7F2E98F4C900C4281E /* ClickstreamCourierConnectConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickstreamCourierConnectConfig.swift; sourceTree = "<group>"; };
 		D8F38D832E9CAFF300C4281E /* CourierConnectTimeoutPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierConnectTimeoutPolicy.swift; sourceTree = "<group>"; };
 		D8F38D862E9CB01E00C4281E /* CourierIdleActivityTimeoutPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierIdleActivityTimeoutPolicy.swift; sourceTree = "<group>"; };
 		D8F38D8B2E9CB06B00C4281E /* Decoding+TimeInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Decoding+TimeInterval.swift"; sourceTree = "<group>"; };
@@ -1240,7 +1235,6 @@
 			isa = PBXGroup;
 			children = (
 				D859DC4C2E9F52B7008D900F /* ClickstreamCourierConfigTests.swift */,
-				D859DC4E2E9F52F0008D900F /* ClickstreamCourierConnectConfigTests.swift */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -1361,7 +1355,6 @@
 			isa = PBXGroup;
 			children = (
 				D8F38D782E98C43700C4281E /* ClickstreamCourierConfig.swift */,
-				D8F38D7F2E98F4C900C4281E /* ClickstreamCourierConnectConfig.swift */,
 				D8A7F7F42EC6D72D00DFC9AE /* ClickstreamCourierRetryPolicy.swift */,
 				D8A7F7F72EC6D73600DFC9AE /* ClickstreamCourierHTTPRetryPolicy.swift */,
 			);
@@ -1530,9 +1523,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1711,7 +1708,6 @@
 				D8A7F7E72EC6C67400DFC9AE /* EventRequestPersistable.swift in Sources */,
 				BD6BDB7C29FBC1360006B04A /* FilterViewController.swift in Sources */,
 				BDE468112A5BD72000BFA976 /* KeepAliveService.swift in Sources */,
-				D8F38D812E98F4C900C4281E /* ClickstreamCourierConnectConfig.swift in Sources */,
 				BD6BDB8E29FBC1360006B04A /* TrackerConstants.swift in Sources */,
 				BDE468332A5BD72000BFA976 /* EventResponse.pb.swift in Sources */,
 				69CF74B82E8CE75A008438D0 /* EventSamplerConfiguration.swift in Sources */,
@@ -1817,7 +1813,6 @@
 				BD6BDB9329FBC1360006B04A /* AppVersionChecker.swift in Sources */,
 				D8A7F7C62EC696A400DFC9AE /* EventPersistable.swift in Sources */,
 				BD6BDB9D29FBC1360006B04A /* HealthTrackerDTO.swift in Sources */,
-				D8F38D802E98F4C900C4281E /* ClickstreamCourierConnectConfig.swift in Sources */,
 				BDE468062A5BD72000BFA976 /* Connectable.swift in Sources */,
 				BDE468222A5BD72000BFA976 /* Reachability+Extension.swift in Sources */,
 				BD6BDB7D29FBC1360006B04A /* FilterViewController.swift in Sources */,
@@ -1880,7 +1875,6 @@
 				BD6BDB8129FBC1360006B04A /* UITableViewExtensions.swift in Sources */,
 				D859DC3B2E9F50B2008D900F /* CourierAuthenticationProvider.swift in Sources */,
 				BD6BDB7129FBC1360006B04A /* EventVisualizerLandingViewModel.swift in Sources */,
-				D859DC4F2E9F52F0008D900F /* ClickstreamCourierConnectConfigTests.swift in Sources */,
 				BDE467792A5BD24500BFA976 /* AppStateNotifierServiceTests.swift in Sources */,
 				BDE468362A5BD72000BFA976 /* Event.pb.swift in Sources */,
 			);

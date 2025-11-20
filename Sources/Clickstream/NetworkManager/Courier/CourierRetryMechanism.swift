@@ -156,9 +156,6 @@ final class CourierRetryMechanism: Retryable {
 extension CourierRetryMechanism {
     
     func trackBatch(with eventRequest: CourierEventRequest) {
-        // add the batch to the cache before sending the batch to the network.
-        let startTime = Date()  // Used to calculate batch latency
-        // QoS-0 don't support the caching
         if let eventType = eventRequest.eventType, eventType != .instant {
             addToCache(with: eventRequest)
         }
@@ -167,19 +164,24 @@ extension CourierRetryMechanism {
             return
         }
 
-        Task {
-            do {
-                // Publish MQTT package
-                try await networkService.publish(eventRequest, topic: topic)
+        performQueue.async(flags: .barrier) { [weak self] in
+            guard let checkedSelf = self else { return }
 
-                handlePublisedEventRequest(eventRequest: eventRequest, startTime: startTime)
-            } catch {
-                debugPrint("Filed to publish event Courier \(error)")
+            Task {
+                do {
+                    try await networkService.publish(eventRequest, topic: topic)
+
+                    if eventRequest.eventType == .instant {
+                        checkedSelf.handlePublisedEventRequest(eventRequest: eventRequest)
+                    }
+                } catch {
+                    debugPrint("Filed to publish event Courier \(error)")
+                }
             }
         }
     }
     
-    private func handlePublisedEventRequest(eventRequest: CourierEventRequest, startTime: Date) {
+    private func handlePublisedEventRequest(eventRequest: CourierEventRequest) {
         let guid = eventRequest.guid
         removeFromCache(with: guid)
 
@@ -187,7 +189,7 @@ extension CourierRetryMechanism {
         Clickstream.ackEvent = AckEventDetails(guid: guid, status: "Success")
         #endif
         if let eventType = eventRequest.eventType, !(eventType == .internalEvent) {
-            trackHealthAndPerformanceEvents(eventRequest: eventRequest, startTime: startTime)
+            trackHealthAndPerformanceEvents(eventRequest: eventRequest, startTime: eventRequest.timeStamp)
         }
         #if EVENT_VISUALIZER_ENABLED
         /// Update status of the event batch to acknowledged from network
@@ -484,18 +486,15 @@ extension CourierRetryMechanism {
     }
 
     private func retryFailedBatch(with eventRequest: CourierEventRequest) {
-        guard let courierConfig = networkOptions.courierConfig else {
-            return
-        }
         var failedRequest: CourierEventRequest = eventRequest
 
-        let isCourierRetryEnabled = courierConfig.retryPolicy.isEnabled
-        let courierRetryMaxCount = courierConfig.retryPolicy.maxRetryCount
-        let courierRetryDelaySeconds = courierConfig.retryPolicy.delayMillis / 1000
+        let isCourierRetryEnabled = networkOptions.courierRetryPolicy.isEnabled
+        let courierRetryMaxCount = networkOptions.courierRetryPolicy.maxRetryCount
+        let courierRetryDelaySeconds = networkOptions.courierRetryPolicy.delayMillis / 1000
 
-        let isHttpRetryEnbled = courierConfig.httpRetryPolicy.isEnabled
-        let httpMaxRetryCount = courierConfig.httpRetryPolicy.maxRetryCount
-        let httpRetryDelaySeconds = courierConfig.httpRetryPolicy.delayMillis / 1000
+        let isHttpRetryEnbled = networkOptions.courierRetryHTTPPolicy.isEnabled
+        let httpMaxRetryCount = networkOptions.courierRetryHTTPPolicy.maxRetryCount
+        let httpRetryDelaySeconds = networkOptions.courierRetryHTTPPolicy.delayMillis / 1000
         
         let combinedMaxCount = courierRetryMaxCount + httpMaxRetryCount
 
@@ -560,9 +559,12 @@ extension CourierRetryMechanism: ICourierEventHandler {
     func onEvent(_ event: CourierCore.CourierEvent) {
         switch event.type {
         case .messageSend, .messageSendSuccess:
-            return
-        case .messageSendFailure(_, _, let error, _):
-            return
+            // On received puback
+            guard let lastEventRequest = persistence.fetchFirst(1)?.first else {
+                return
+            }
+
+            handlePublisedEventRequest(eventRequest: lastEventRequest)
         default:
             return
         }

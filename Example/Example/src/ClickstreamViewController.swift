@@ -32,7 +32,7 @@ class ClickstreamViewController: UIViewController {
     @IBAction func connectClickstream(_ sender: UIButton) {
         if segementedTab.selectedSegmentIndex == 0 {
             // Websocket
-            analyticsManager.initialiseClickstream(networkOptions: .init(isWebsocketEnabled: true))
+            analyticsManager.initialiseClickstream(networkOptions: .init(isWebsocketEnabled: true, isCourierEnabled: false))
         } else {
             // Courier
             guard let networkOptions = analyticsManager.networkOptions,
@@ -83,11 +83,11 @@ class ClickstreamViewController: UIViewController {
 
         configView.didSaveConfig = { [weak self] (config, userCredentials, topic) in
             let whitelistedEvents = ["User"]
-            var defaultNetworkOptions = ClickstreamNetworkOptions(isWebsocketEnabled: false,
+            let defaultNetworkOptions = ClickstreamNetworkOptions(isWebsocketEnabled: false,
                                                                   isCourierEnabled: true,
-                                                                  courierEventTypes: Set(whitelistedEvents))
+                                                                  courierEventTypes: Set(whitelistedEvents),
+                                                                  courierConfig: config)
 
-            defaultNetworkOptions.courierConfig = config
             self?.analyticsManager.networkOptions = defaultNetworkOptions
             self?.analyticsManager.courierUserCredentials = userCredentials
             self?.analyticsManager.courierTopic = topic

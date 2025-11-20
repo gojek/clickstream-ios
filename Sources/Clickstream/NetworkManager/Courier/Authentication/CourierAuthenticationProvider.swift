@@ -24,7 +24,7 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
     private let userDefaults: UserDefaults
     private let userDefaultsKey: String
 
-    private let config: ClickstreamCourierConfig
+    private let config: ClickstreamCourierClientConfig
 
     private let isConnectUserPropertiesEnabled: Bool
     private let networkTypeProvider: NetworkType
@@ -80,7 +80,7 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
     }
 
     init(
-        config: ClickstreamCourierConfig,
+        config: ClickstreamCourierClientConfig,
         userCredentials: ClickstreamClientIdentifiers,
         userDefaults: UserDefaults = .init(suiteName: "com.clickstream.courier") ?? .standard,
         userDefaultsKey: String = "connect_auth_response",
@@ -91,7 +91,7 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
         self.userCredentials = userCredentials
         self.extraIdProvider = { userCredentials.extraIdentifier }
 
-        self.cachingType = CourierConnectCacheType(rawValue: config.connectConfig.tokenCachingType) ?? .disk
+        self.cachingType = CourierConnectCacheType(rawValue: config.courierTokenCacheType) ?? .disk
         self.userDefaults = userDefaults
         self.userDefaultsKey = userDefaultsKey
 
@@ -100,7 +100,7 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
             let authResponse = try? JSONDecoder().decode(CourierConnect.self, from: data),
             Self.isTokenValid(authResponse: authResponse,
                               cachingType: cachingType,
-                              isTokenCacheExpiryEnabled: config.connectConfig.isTokenCacheExpiryEnabled) {
+                              isTokenCacheExpiryEnabled: config.courierTokenCacheExpiryEnabled) {
 
             self._cachedAuthResponse = Atomic(authResponse)
         } else {
@@ -108,7 +108,7 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
             self._cachedAuthResponse = Atomic(nil)
         }
 
-        self.isConnectUserPropertiesEnabled = config.connectConfig.isConnectUserPropertiesEnabled
+        self.isConnectUserPropertiesEnabled = true
         self.applicationState = applicationState
         self.networkTypeProvider = networkTypeProvider
     }
@@ -117,7 +117,7 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
         if cachingType != .noop, let cachedCourierConnect = self.cachedAuthResponse,
             Self.isTokenValid(authResponse: cachedCourierConnect,
                               cachingType: self.cachingType,
-                              isTokenCacheExpiryEnabled: self.config.connectConfig.isTokenCacheExpiryEnabled) {
+                              isTokenCacheExpiryEnabled: self.config.courierTokenCacheExpiryEnabled) {
             
             let connectOptions = connectOptions(with: cachedCourierConnect)
             self.existingConnectOptions = connectOptions
@@ -151,13 +151,13 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
         ConnectOptions(
             host: response.broker.host,
             port: UInt16(response.broker.port),
-            keepAlive: UInt16(config.pingIntervalMs),
+            keepAlive: UInt16(config.courierPingIntervalMillis),
             clientId: clientId,
             username: userCredentials.userIdentifier,
             password: response.token,
-            isCleanSession: config.isCleanSessionEnabled,
+            isCleanSession: config.courierIsCleanSessionEnabled,
             userProperties: userProperties,
-            alpn: config.connectConfig.alpn
+            alpn: ["mqtt"]
         )
     }
 

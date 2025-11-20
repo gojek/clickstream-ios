@@ -8,7 +8,7 @@ import CourierMQTT
 final class CourierHandlerTests: XCTestCase {
     
     private var sut: DefaultCourierHandler!
-    private var mockConfig: ClickstreamCourierConfig!
+    private var mockConfig: ClickstreamCourierClientConfig!
     private var mockCredentials: ClickstreamClientIdentifiers!
     private var mockEventHandler: ICourierEventHandler!
     private var cancellables: Set<CourierCore.AnyCancellable>!
@@ -416,27 +416,14 @@ final class CourierHandlerTests: XCTestCase {
 
 extension CourierHandlerTests {
     
-    private func createMockConfig() -> ClickstreamCourierConfig {
-        ClickstreamCourierConfig(
-            messageAdapter: [],
-            connectConfig: .init(),
-            connectTimeoutPolicy: ConnectTimeoutPolicy(),
-            iddleActivityPolicy: IdleActivityTimeoutPolicy(),
-            messagePersistenceTTLSeconds: 300,
-            messageCleanupInterval: 100,
-            isMessagePersistenceEnabled: false
-        )
+    private func createMockConfig() -> ClickstreamCourierClientConfig {
+        ClickstreamCourierClientConfig()
     }
     
-    private func createMockConfigWithDifferentValues() -> ClickstreamCourierConfig {
-        ClickstreamCourierConfig(
-            messageAdapter: [],
-            connectConfig: .init(),
-            connectTimeoutPolicy: ConnectTimeoutPolicy(isEnabled: true),
-            iddleActivityPolicy: IdleActivityTimeoutPolicy(isEnabled: true),
-            messagePersistenceTTLSeconds: 500,
-            messageCleanupInterval: 200,
-            isMessagePersistenceEnabled: false
+    private func createMockConfigWithDifferentValues() -> ClickstreamCourierClientConfig {
+        ClickstreamCourierClientConfig(
+            courierMessageAdapter: [],
+            courierPingIntervalMillis: 500
         )
     }
     

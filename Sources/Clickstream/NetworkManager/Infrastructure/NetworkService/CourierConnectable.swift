@@ -15,7 +15,7 @@ protocol CourierConnectableInputs {
     /// - Parameters:
     ///   - performOnQueue: A queue instance on which the tasks are performed.
     ///   - userCredentials: Client's user credentials
-    init(config: ClickstreamCourierConfig, userCredentials: ClickstreamClientIdentifiers)
+    init(config: ClickstreamCourierClientConfig, userCredentials: ClickstreamClientIdentifiers)
 
     /// Publish Event Request message to Courier
     /// - Parameters:

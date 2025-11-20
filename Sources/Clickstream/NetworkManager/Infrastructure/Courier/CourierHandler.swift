@@ -17,12 +17,12 @@ protocol CourierHandler: CourierConnectable { }
 final class DefaultCourierHandler: CourierHandler {
 
     private var courierClient: CourierClient?
-    private var courierConfig: ClickstreamCourierConfig
+    private var config: ClickstreamCourierClientConfig
     private var userCredentials: ClickstreamClientIdentifiers
     private var cancellables: Set<CourierCore.AnyCancellable> = []
 
     private lazy var authServiceProvider: IConnectionServiceProvider = {
-        CourierAuthenticationProvider(config: courierConfig,
+        CourierAuthenticationProvider(config: config,
                                       userCredentials: userCredentials,
                                       networkTypeProvider: Reachability.getNetworkType())
     }()
@@ -31,8 +31,8 @@ final class DefaultCourierHandler: CourierHandler {
         .init(courierClient?.connectionState == .connected)
     }
 
-    init(config: ClickstreamCourierConfig, userCredentials: ClickstreamClientIdentifiers) {
-        self.courierConfig = config
+    init(config: ClickstreamCourierClientConfig, userCredentials: ClickstreamClientIdentifiers) {
+        self.config = config
         self.userCredentials = userCredentials
     }
     
@@ -59,18 +59,27 @@ final class DefaultCourierHandler: CourierHandler {
 extension DefaultCourierHandler {
 
     private func getCourierClient() async -> CourierClient {
+        let connectPolicy = ConnectTimeoutPolicy(isEnabled: config.courierConnectTimeoutPolicyEnabled,
+                                                 timerInterval: TimeInterval(config.courierConnectTimeoutPolicyIntervalMillis),
+                                                 timeout: TimeInterval(config.courierInactivityPolicyTimeoutMillis))
+
+        let idleActivityPolicy = IdleActivityTimeoutPolicy.init(isEnabled: config.courierInactivityPolicyEnabled,
+                                                                timerInterval: TimeInterval(config.courierInactivityPolicyIntervalMillis),
+                                                                inactivityTimeout: TimeInterval(config.courierInactivityPolicyTimeoutMillis),
+                                                                readTimeout: TimeInterval(config.courierInactivityPolicyReadTimeoutMillis))
+
         let mqttConfig = MQTTClientConfig(authService: authServiceProvider,
-                                          messageAdapters: courierConfig.messageAdapters,
-                                          isMessagePersistenceEnabled: courierConfig.isMessagePersistenceEnabled,
-                                          autoReconnectInterval: UInt16(courierConfig.connectConfig.autoReconnectInterval),
-                                          maxAutoReconnectInterval: UInt16(courierConfig.connectConfig.maxAutoReconnectInterval),
-                                          enableAuthenticationTimeout: courierConfig.connectConfig.enableAuthenticationTimeout,
-                                          authenticationTimeoutInterval: courierConfig.connectConfig.authenticationTimeoutInterval,
-                                          connectTimeoutPolicy: courierConfig.connectTimeoutPolicy,
-                                          idleActivityTimeoutPolicy: courierConfig.iddleActivityPolicy,
-                                          messagePersistenceTTLSeconds: courierConfig.messagePersistenceTTLSeconds,
-                                          messageCleanupInterval: courierConfig.messageCleanupInterval,
-                                          shouldInitializeCoreDataPersistenceContext: courierConfig.shouldInitializeCoreDataPersistenceContext)
+                                          messageAdapters: config.courierMessageAdapter,
+                                          isMessagePersistenceEnabled: config.courierMessagePersistenceEnabled,
+                                          autoReconnectInterval: UInt16(config.courierAutoReconnectIntervalSecs),
+                                          maxAutoReconnectInterval: UInt16(config.courierAutoReconnectMaxIntervalSecs),
+                                          enableAuthenticationTimeout: config.courierAuthTimeoutEnabled,
+                                          authenticationTimeoutInterval: TimeInterval(config.courierAuthTimeoutIntervalSecs),
+                                          connectTimeoutPolicy: connectPolicy,
+                                          idleActivityTimeoutPolicy: idleActivityPolicy,
+                                          messagePersistenceTTLSeconds: TimeInterval(config.courierMessagePersistenceTTLSecs),
+                                          messageCleanupInterval: TimeInterval(config.courierMessageCleanupInterval),
+                                          shouldInitializeCoreDataPersistenceContext: config.courierInitCoreDataPersistenceContextEnabled)
 
         return CourierClientFactory().makeMQTTClient(config: mqttConfig)
     }

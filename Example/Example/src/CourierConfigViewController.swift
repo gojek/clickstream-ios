@@ -37,10 +37,10 @@ final class CourierConfigViewController: UITableViewController {
     @IBOutlet weak var iddlePolicyTimeoutTextField: UITextField!
     @IBOutlet weak var iddlePolicyReadTimeoutTextField: UITextField!
 
-    private var config: ClickstreamCourierConfig?
+    private var config: ClickstreamCourierClientConfig?
     private var userCredentials: ClickstreamClientIdentifiers?
 
-    var didSaveConfig: ((_ config: ClickstreamCourierConfig, _ userCredentials: ClickstreamClientIdentifiers, _ topic: String) -> Void)?
+    var didSaveConfig: ((_ config: ClickstreamCourierClientConfig, _ userCredentials: ClickstreamClientIdentifiers, _ topic: String) -> Void)?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -91,7 +91,7 @@ final class CourierConfigViewController: UITableViewController {
         let messageAdapter = EnvelopeMessageAdapter(messageAdapters: [JSONMessageAdapter(jsonDecoder: decoder), DataMessageAdapter()],
                                                     isToMessageEnabled: false)
 
-        config = ClickstreamCourierConfig(messageAdapter: [messageAdapter])
+        self.config = ClickstreamCourierClientConfig(courierMessageAdapter: [messageAdapter])
 
         userIdTextField.text = userCredentials?.userIdentifier.description
         deviceIdTextField.text = userCredentials?.deviceIdentifier.description
@@ -103,7 +103,7 @@ final class CourierConfigViewController: UITableViewController {
         topicTextField.text = topic
 
         guard let config else { return }
-        for adapter in config.messageAdapters {
+        for adapter in config.courierMessageAdapter {
             switch adapter {
             case is JSONMessageAdapter:
                 adapterJSONEnabled.isOn = true
@@ -118,14 +118,14 @@ final class CourierConfigViewController: UITableViewController {
             }
         }
         
-        connectPolicyEnabledSwitch.isOn = config.connectTimeoutPolicy.isEnabled
-        connectPolicyTimerIntervalTextField.text = config.connectTimeoutPolicy.timerInterval.description
-        connectPolicyTimeoutTextField.text = config.connectTimeoutPolicy.timeout.description
+        connectPolicyEnabledSwitch.isOn = config.courierConnectTimeoutPolicyEnabled
+        connectPolicyTimerIntervalTextField.text = config.courierConnectTimeoutPolicyIntervalMillis.description
+        connectPolicyTimeoutTextField.text = config.courierConnectTimeoutPolicyIntervalMillis.description
         
-        iddlePolicyEnabledSwitch.isOn = config.iddleActivityPolicy.isEnabled
-        iddlePolicyTimerIntervalTextField.text = config.iddleActivityPolicy.timerInterval.description
-        iddlePolicyTimeoutTextField.text = config.iddleActivityPolicy.timerInterval.description
-        iddlePolicyReadTimeoutTextField.text = config.iddleActivityPolicy.readTimeout.description
+        iddlePolicyEnabledSwitch.isOn = config.courierInactivityPolicyEnabled
+        iddlePolicyTimerIntervalTextField.text = config.courierInactivityPolicyIntervalMillis.description
+        iddlePolicyTimeoutTextField.text = config.courierInactivityPolicyTimeoutMillis.description
+        iddlePolicyReadTimeoutTextField.text = config.courierInactivityPolicyReadTimeoutMillis.description
     }
 
     @IBAction func onTapSaveButton(_ sender: UIBarButtonItem) {
