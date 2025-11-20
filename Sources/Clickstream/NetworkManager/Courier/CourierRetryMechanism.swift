@@ -101,6 +101,7 @@ final class CourierRetryMechanism: Retryable {
         appStateNotifier.start { [weak self] (stateNotification) in guard let checkedSelf = self else { return }
             switch stateNotification {
             case .willResignActive:
+                checkedSelf.flushAllEventRequestsIfNeeded()
                 checkedSelf.prepareForTerminatingConnection()
             case .didBecomeActive:
                 checkedSelf.cancelTerminationCountDown()
@@ -495,23 +496,42 @@ extension CourierRetryMechanism {
         let isHttpRetryEnbled = courierConfig.httpRetryPolicy.isEnabled
         let httpMaxRetryCount = courierConfig.httpRetryPolicy.maxRetryCount
         let httpRetryDelaySeconds = courierConfig.httpRetryPolicy.delayMillis / 1000
+        
+        let combinedMaxCount = courierRetryMaxCount + httpMaxRetryCount
 
         if isCourierRetryEnabled && failedRequest.retriesMade < courierRetryMaxCount {
-            performQueue.asyncAfter(deadline: .now() + courierRetryDelaySeconds, flags: .barrier) {
+            performQueue.asyncAfter(deadline: .now() + courierRetryDelaySeconds, flags: .barrier) { [weak self] in
+                guard let checkedSelf = self else { return }
+
                 // Update retryCount to DB
                 failedRequest.bumpRetriesMade()
+                checkedSelf.persistence.update(failedRequest)
 
                 // Send event via Courier
-                self.trackBatch(with: eventRequest)
+                checkedSelf.trackBatch(with: failedRequest)
             }
-        } else if isHttpRetryEnbled && eventRequest.retriesMade < (httpMaxRetryCount + courierRetryMaxCount) {
-            performQueue.asyncAfter(deadline: .now() + httpRetryDelaySeconds, flags: .barrier) {
+        } else if isHttpRetryEnbled && eventRequest.retriesMade < combinedMaxCount {
+            performQueue.asyncAfter(deadline: .now() + httpRetryDelaySeconds, flags: .barrier) { [weak self] in
+                guard let checkedSelf = self else { return }
+
                 // Update retryCount to DB
                 failedRequest.bumpRetriesMade()
+                checkedSelf.persistence.update(failedRequest)
 
                 // Send event via HTTP
-                self.fallbackToHTTP(for: eventRequest, startTime: Date())
+                checkedSelf.fallbackToHTTP(for: failedRequest, startTime: Date())
             }
+        } else if isCourierRetryEnabled && isHttpRetryEnbled && eventRequest.retriesMade >= combinedMaxCount {
+            // Delete event request if `isCourierRetryEnabled` & `isHttpRetryEnbled` enabled & has reached `combinedMaxCount`
+            removeFromCache(with: eventRequest.guid)
+        }
+    }
+    
+    private func flushAllEventRequestsIfNeeded() {
+        let combinedDataSize = persistence.fetchAll()?.compactMap({ $0.data }).reduce(0, { $0 + $1.count }) ?? 0
+
+        if combinedDataSize > Clickstream.courierConfigurations.maxRetryCacheSize {
+            persistence.deleteAll()
         }
     }
 }

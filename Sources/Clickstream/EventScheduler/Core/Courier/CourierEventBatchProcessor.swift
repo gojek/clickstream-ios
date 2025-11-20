@@ -114,13 +114,7 @@ final class CourierEventBatchProcessor: EventBatchProcessor {
 
         stopObservingNotifications()
 
-        var shouldFlush = false
-        if let events = persistence.fetchAll(),
-           !events.isEmpty {
-            shouldFlush = true
-        }
-        
-        if shouldFlush == false {
+        guard let events = persistence.fetchAll(), !events.isEmpty else {
             return
         }
 
