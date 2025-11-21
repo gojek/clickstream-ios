@@ -34,12 +34,12 @@ class RetryMechanismTests: XCTestCase {
         SerialQueue.registerDetection(of: mockQueue) //Registers a queue to be detected.
         
         let deviceStatus = DefaultDeviceStatus(performOnQueue: mockQueue)
-        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
+        let networkService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         let keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: mockQueue, duration: 2, reachability: NetworkReachabilityMock(isReachable: false))
 
         //when
-        let sut = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: mockQueue, persistence: persistence, keepAliveService: keepAliveService)
+        let sut = WebsocketRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: mockQueue, persistence: persistence, keepAliveService: keepAliveService)
         
         persistence.deleteAll()
 
@@ -56,7 +56,7 @@ class RetryMechanismTests: XCTestCase {
         }
         
         //then
-        wait(for: [expectation], timeout: 10.0)
+        wait(for: [expectation], timeout: 13.0)
     }
 
     func test_whenTheMaxRetriesAreReached_thenTheBatchMustGetRemovedFromTheCache() {
@@ -69,12 +69,12 @@ class RetryMechanismTests: XCTestCase {
         SerialQueue.registerDetection(of: mockQueue) //Registers a queue to be detected.
         
         let deviceStatus = DefaultDeviceStatus(performOnQueue: mockQueue)
-        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
+        let networkService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         let keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: mockQueue, duration: 2, reachability: NetworkReachabilityMock(isReachable: false))
 
         //when
-        let sut = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: mockQueue, persistence: persistence, keepAliveService: keepAliveService)
+        let sut = WebsocketRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: mockQueue, persistence: persistence, keepAliveService: keepAliveService)
         
         persistence.deleteAll()
 

@@ -19,9 +19,11 @@ class NetworkManagerDependenciesTests: XCTestCase {
         Clickstream.configurations = MockConstants.constraints
         Clickstream.eventClassifier = MockConstants.eventClassification
         // when
-        let networkManagerDependencies = NetworkManagerDependencies(with: dummyRequest, db: database)
+        let networkManagerDependencies = NetworkManagerDependencies(with: dummyRequest,
+                                                                    db: database,
+                                                                    networkOptions: ClickstreamNetworkOptions())
         
-        let networkBuilder: NetworkBuildable = networkManagerDependencies.makeNetworkBuilder()
+        let networkBuilder: any NetworkBuildable = networkManagerDependencies.makeNetworkBuilder()
         
         // then
         XCTAssertNotNil(networkBuilder)

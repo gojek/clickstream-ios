@@ -9,7 +9,10 @@
 import Foundation
 
 protocol BatchSizeRegulatorInputs {
-    func observe(_ event: Event)
+    
+    associatedtype EventType = EventPersistable
+
+    func observe(_ event: EventType)
 }
 
 protocol BatchSizeRegulatorOutputs {
@@ -22,7 +25,7 @@ final class DefaultBatchSizeRegulator: BatchSizeRegulator {
     
     private var totalDataFlow: Int = 0
     private var totalEventCount: Int = 0
-    
+
     func regulatedNumberOfItemsPerBatch(expectedBatchSize: Double) -> Int {
         if self.totalEventCount > 0 && self.totalDataFlow > 0 {
             let avgSizeOfEvents = self.totalDataFlow/self.totalEventCount
@@ -38,3 +41,25 @@ final class DefaultBatchSizeRegulator: BatchSizeRegulator {
         self.totalEventCount += 1
     }
 }
+
+final class CourierBatchSizeRegulator: BatchSizeRegulator {
+    
+    private var totalDataFlow: Int = 0
+    private var totalEventCount: Int = 0
+
+    func regulatedNumberOfItemsPerBatch(expectedBatchSize: Double) -> Int {
+        if self.totalEventCount > 0 && self.totalDataFlow > 0 {
+            let avgSizeOfEvents = self.totalDataFlow/self.totalEventCount
+            let regulatedNumberOfItemsPerBatch = Int(expectedBatchSize)/avgSizeOfEvents
+            UserDefaults.standard.set(regulatedNumberOfItemsPerBatch, forKey: "regulatedNumberOfItemsPerBatchCourier")
+            UserDefaults.standard.synchronize()
+        }
+        return UserDefaults.standard.integer(forKey: "regulatedNumberOfItemsPerBatchCourier")
+    }
+        
+    func observe(_ event: CourierEvent) {
+        self.totalDataFlow += event.eventProtoData.count
+        self.totalEventCount += 1
+    }
+}
+

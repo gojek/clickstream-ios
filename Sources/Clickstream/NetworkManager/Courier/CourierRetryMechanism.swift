@@ -10,7 +10,9 @@ import Foundation
 import CourierCore
 
 final class CourierRetryMechanism: Retryable {
-    
+
+    typealias EventRequestType = CourierEventRequest
+
     private var networkOptions: ClickstreamNetworkOptions
     private var reachability: NetworkReachability
     private let networkService: NetworkService
@@ -19,7 +21,7 @@ final class CourierRetryMechanism: Retryable {
     private let appStateNotifier: AppStateNotifierService
     private var terminationCountDown: DispatchSourceTimer?
     private var networkServiceState: ConnectableState = .disconnected
-    private var persistence: DefaultDatabaseDAO<EventRequest>
+    private var persistence: DefaultDatabaseDAO<CourierEventRequest>
     private var retryTimer: DispatchSourceTimer?
     private var identifiers: CourierIdentifiers?
     private var topic: String?
@@ -69,6 +71,10 @@ final class CourierRetryMechanism: Retryable {
         #endif
         return isReachable && isConnected && !isOnLowPower
     }
+
+    private var isCourierConnectable: Bool {
+        networkOptions.isCourierEnabled && identifiers != nil
+    }
     
     init(networkOptions: ClickstreamNetworkOptions,
          networkService: NetworkService,
@@ -76,7 +82,7 @@ final class CourierRetryMechanism: Retryable {
          deviceStatus: DefaultDeviceStatus,
          appStateNotifier: AppStateNotifierService,
          performOnQueue: SerialQueue,
-         persistence: DefaultDatabaseDAO<EventRequest>) {
+         persistence: DefaultDatabaseDAO<CourierEventRequest>) {
         self.networkOptions = networkOptions
         self.networkService = networkService
         self.reachability = reachability
@@ -95,6 +101,7 @@ final class CourierRetryMechanism: Retryable {
         appStateNotifier.start { [weak self] (stateNotification) in guard let checkedSelf = self else { return }
             switch stateNotification {
             case .willResignActive:
+                checkedSelf.flushAllEventRequestsIfNeeded()
                 checkedSelf.prepareForTerminatingConnection()
             case .didBecomeActive:
                 checkedSelf.cancelTerminationCountDown()
@@ -148,10 +155,7 @@ final class CourierRetryMechanism: Retryable {
 
 extension CourierRetryMechanism {
     
-    func trackBatch(with eventRequest: EventRequest) {
-        // add the batch to the cache before sending the batch to the network.
-        let startTime = Date()  // Used to calculate batch latency
-        // QoS-0 don't support the caching
+    func trackBatch(with eventRequest: CourierEventRequest) {
         if let eventType = eventRequest.eventType, eventType != .instant {
             addToCache(with: eventRequest)
         }
@@ -160,47 +164,50 @@ extension CourierRetryMechanism {
             return
         }
 
-        Task {
-            do {
-                // Publish MQTT package
-                try await networkService.publish(eventRequest, topic: topic)
-                
-                let guid = eventRequest.guid
-                removeFromCache(with: guid)
-                
-                #if ETE_TEST_SUITE_ENABLED
-                Clickstream.ackEvent = AckEventDetails(guid: guid, status: "Success")
-                #endif
-                if let eventType = eventRequest.eventType, !(eventType == .internalEvent) {
-                    trackHealthAndPerformanceEvents(eventRequest: eventRequest, startTime: startTime)
-                }
-                #if EVENT_VISUALIZER_ENABLED
-                /// Update status of the event batch to acknowledged from network
-                /// to check if the delegate is connected, if not no event should be sent to client
-                if let stateViewer = Clickstream._stateViewer {
-                    /// Updating the event state to acknowledged based on eventBatchGuid.
-                    /// The eventBatchID passed in NetworkBuilder would be used to map events and
-                    /// then update the state respectively.
-                    stateViewer.updateStatus(eventBatchID: guid, state: .ackReceived)
-                }
-                #endif
+        performQueue.async(flags: .barrier) { [weak self] in
+            guard let checkedSelf = self else { return }
 
-                #if ETE_TEST_SUITE_ENABLED
-                if testMode { FileManagerOverride.writeToFile() }
-                #endif
-            } catch(let courierError) {
-                guard networkOptions.courierConfig.fallbackPolicy.isEnabled else {
-                    handleFailedEventRequest(with: eventRequest, error: courierError)
-                    return
-                }
+            Task {
+                do {
+                    try await networkService.publish(eventRequest, topic: topic)
 
-                // Execute HTTP request
-                fallbackToHTTP(for: eventRequest, startTime: startTime)
+                    if eventRequest.eventType == .instant {
+                        checkedSelf.handlePublisedEventRequest(eventRequest: eventRequest)
+                    }
+                } catch {
+                    debugPrint("Filed to publish event Courier \(error)")
+                }
             }
         }
     }
+    
+    private func handlePublisedEventRequest(eventRequest: CourierEventRequest) {
+        let guid = eventRequest.guid
+        removeFromCache(with: guid)
 
-    private func fallbackToHTTP(for eventRequest: EventRequest, startTime: Date) {
+        #if ETE_TEST_SUITE_ENABLED
+        Clickstream.ackEvent = AckEventDetails(guid: guid, status: "Success")
+        #endif
+        if let eventType = eventRequest.eventType, !(eventType == .internalEvent) {
+            trackHealthAndPerformanceEvents(eventRequest: eventRequest, startTime: eventRequest.timeStamp)
+        }
+        #if EVENT_VISUALIZER_ENABLED
+        /// Update status of the event batch to acknowledged from network
+        /// to check if the delegate is connected, if not no event should be sent to client
+        if let stateViewer = Clickstream._stateViewer {
+            /// Updating the event state to acknowledged based on eventBatchGuid.
+            /// The eventBatchID passed in NetworkBuilder would be used to map events and
+            /// then update the state respectively.
+            stateViewer.updateStatus(eventBatchID: guid, state: .ackReceived)
+        }
+        #endif
+
+        #if ETE_TEST_SUITE_ENABLED
+        if testMode { FileManagerOverride.writeToFile() }
+        #endif
+    }
+
+    private func fallbackToHTTP(for eventRequest: CourierEventRequest, startTime: Date) {
         guard let networkService = networkService as? CourierNetworkService<DefaultCourierHandler> else {
             return
         }
@@ -215,7 +222,7 @@ extension CourierRetryMechanism {
         }
     }
 
-    private func handleFailedEventRequest(with eventRequest: EventRequest, error: Error) {
+    private func handleFailedEventRequest(with eventRequest: CourierEventRequest, error: Error) {
         #if TRACKER_ENABLED
         let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchErrorResponse,
                                               eventBatchGUID: eventRequest.guid,
@@ -230,7 +237,7 @@ extension CourierRetryMechanism {
         #endif
     }
 
-    private func handleRacoonEventResponse(with eventRequest: EventRequest, startTime: Date, response: Odpf_Raccoon_EventResponse) {
+    private func handleRacoonEventResponse(with eventRequest: CourierEventRequest, startTime: Date, response: Odpf_Raccoon_EventResponse) {
         if response.status == .success && response.code == .ok {
             if let guid = response.data["req_guid"] {
                 // remove the delivered batch from the cache.
@@ -298,7 +305,7 @@ extension CourierRetryMechanism {
     }
 
     func openConnectionForcefully() {
-        establishConnection(keepTrying: true)
+        establishConnection()
     }
     
     func stopTracking() {
@@ -324,6 +331,9 @@ extension CourierRetryMechanism {
 extension CourierRetryMechanism {
     
     private func terminateConnection() {
+        guard isCourierConnectable else {
+            return
+        }
         networkService.terminateConnection()
         stopObservingFailedBatches()
     }
@@ -341,14 +351,15 @@ extension CourierRetryMechanism {
         Clickstream.connectionState = .closing
         terminationCountDown = DispatchSource.makeTimerSource(flags: .strict, queue: performQueue)
         // This gives the breathing space for flushing the events.
-        terminationCountDown?.schedule(deadline: .now() + Clickstream.configurations.connectionTerminationTimerWaitTime)
+        terminationCountDown?.schedule(deadline: .now() + Clickstream.courierConfigurations.connectionTerminationTimerWaitTime)
         terminationCountDown?.setEventHandler(handler: { [weak self] in guard let checkedSelf = self else { return }
             checkedSelf.terminateConnection()
         })
         terminationCountDown?.resume()
     }
     
-    private func establishConnection(keepTrying: Bool = false) {
+    private func establishConnection() {
+        // Only establish connection when Courier identifiers available
         guard let identifiers else {
             return
         }
@@ -364,7 +375,7 @@ extension CourierRetryMechanism {
         }
 
         Task {
-            await networkService.initiateSecondaryConnection(connectionStatusListener: { [weak self] result in
+            await networkService.initiateCourierConnection(connectionStatusListener: { [weak self] result in
                 guard let checkedSelf = self else {
                     return
                 }
@@ -387,16 +398,16 @@ extension CourierRetryMechanism {
                 case .failure:
                     checkedSelf.stopObservingFailedBatches()
                 }
-            }, keepTrying: keepTrying, identifiers: identifiers, eventHandler: self)
+            }, identifiers: identifiers, eventHandler: self)
         }
     }
 }
 
 extension CourierRetryMechanism {
     
-    private func addToCache(with eventRequest: EventRequest) {
+    private func addToCache(with eventRequest: CourierEventRequest) {
         if var fetchedEventRequest = persistence.fetchOne(eventRequest.guid) {
-            if fetchedEventRequest.retriesMade >= Clickstream.configurations.maxRetriesPerBatch {
+            if fetchedEventRequest.retriesMade >= Clickstream.courierConfigurations.maxRetriesPerBatch {
                 persistence.deleteOne(eventRequest.guid)
                 #if TRACKER_ENABLED
                 if Tracker.debugMode {
@@ -423,8 +434,8 @@ extension CourierRetryMechanism {
     private func startObservingFailedBatches() {
         guard retryTimer == nil else { return }
         retryTimer = DispatchSource.makeTimerSource(flags: .strict, queue: performQueue)
-        retryTimer?.schedule(deadline: .now() + Clickstream.configurations.maxRequestAckTimeout,
-                             repeating: Clickstream.configurations.maxRequestAckTimeout)
+        retryTimer?.schedule(deadline: .now() + Clickstream.courierConfigurations.maxRequestAckTimeout,
+                             repeating: Clickstream.courierConfigurations.maxRequestAckTimeout)
         retryTimer?.setEventHandler(handler: { [weak self] in
             guard let checkedSelf = self else { return }
             checkedSelf.retryFailedBatches()
@@ -437,9 +448,8 @@ extension CourierRetryMechanism {
         retryTimer = nil
     }
     
-    
     private func retryFailedBatches() {
-        guard isAvailble else {
+        guard isAvailble && isCourierConnectable else {
             stopObservingFailedBatches()
             return
         }
@@ -447,7 +457,7 @@ extension CourierRetryMechanism {
         if let failedRequests = persistence.fetchAll(), !failedRequests.isEmpty {
             let date = Date()
             let timedOutRequests = failedRequests.filter {
-                (date.timeIntervalSince1970 - $0.timeStamp.timeIntervalSince1970) >= Clickstream.configurations.maxRequestAckTimeout
+                (date.timeIntervalSince1970 - $0.timeStamp.timeIntervalSince1970) >= Clickstream.courierConfigurations.maxRequestAckTimeout
             }
             
             // If no timedOut requests are found then do nothing and return.
@@ -469,9 +479,58 @@ extension CourierRetryMechanism {
                     } catch {
                         print("Failed to update batch time on retry. Description: \(error)",.critical)
                     }
-                    checkedSelf.trackBatch(with: _batch)
+                    checkedSelf.retryFailedBatch(with: _batch)
                 }
             }
+        }
+    }
+
+    private func retryFailedBatch(with eventRequest: CourierEventRequest) {
+        var failedRequest: CourierEventRequest = eventRequest
+
+        let isCourierRetryEnabled = networkOptions.courierRetryPolicy.isEnabled
+        let courierRetryMaxCount = networkOptions.courierRetryPolicy.maxRetryCount
+        let courierRetryDelaySeconds = networkOptions.courierRetryPolicy.delayMillis / 1000
+
+        let isHttpRetryEnbled = networkOptions.courierRetryHTTPPolicy.isEnabled
+        let httpMaxRetryCount = networkOptions.courierRetryHTTPPolicy.maxRetryCount
+        let httpRetryDelaySeconds = networkOptions.courierRetryHTTPPolicy.delayMillis / 1000
+        
+        let combinedMaxCount = courierRetryMaxCount + httpMaxRetryCount
+
+        if isCourierRetryEnabled && failedRequest.retriesMade < courierRetryMaxCount {
+            performQueue.asyncAfter(deadline: .now() + courierRetryDelaySeconds, flags: .barrier) { [weak self] in
+                guard let checkedSelf = self else { return }
+
+                // Update retryCount to DB
+                failedRequest.bumpRetriesMade()
+                checkedSelf.persistence.update(failedRequest)
+
+                // Send event via Courier
+                checkedSelf.trackBatch(with: failedRequest)
+            }
+        } else if isHttpRetryEnbled && eventRequest.retriesMade < combinedMaxCount {
+            performQueue.asyncAfter(deadline: .now() + httpRetryDelaySeconds, flags: .barrier) { [weak self] in
+                guard let checkedSelf = self else { return }
+
+                // Update retryCount to DB
+                failedRequest.bumpRetriesMade()
+                checkedSelf.persistence.update(failedRequest)
+
+                // Send event via HTTP
+                checkedSelf.fallbackToHTTP(for: failedRequest, startTime: Date())
+            }
+        } else if isCourierRetryEnabled && isHttpRetryEnbled && eventRequest.retriesMade >= combinedMaxCount {
+            // Delete event request if `isCourierRetryEnabled` & `isHttpRetryEnbled` enabled & has reached `combinedMaxCount`
+            removeFromCache(with: eventRequest.guid)
+        }
+    }
+    
+    private func flushAllEventRequestsIfNeeded() {
+        let combinedDataSize = persistence.fetchAll()?.compactMap({ $0.data }).reduce(0, { $0 + $1.count }) ?? 0
+
+        if combinedDataSize > Clickstream.courierConfigurations.maxRetryCacheSize {
+            persistence.deleteAll()
         }
     }
 }
@@ -479,7 +538,7 @@ extension CourierRetryMechanism {
 // MARK: - Track Clickstream health.
 extension CourierRetryMechanism {
     
-    func trackHealthAndPerformanceEvents(eventRequest: EventRequest, startTime: Date) {
+    func trackHealthAndPerformanceEvents(eventRequest: CourierEventRequest, startTime: Date) {
         #if TRACKER_ENABLED
         if Tracker.debugMode {
             guard eventRequest.eventType != Constants.EventType.instant else { return }
@@ -499,10 +558,13 @@ extension CourierRetryMechanism: ICourierEventHandler {
 
     func onEvent(_ event: CourierCore.CourierEvent) {
         switch event.type {
-        case .messageSendSuccess:
-            return
-        case .messageSendFailure(_, _, let error, _):
-            return
+        case .messageSend, .messageSendSuccess:
+            // On received puback
+            guard let lastEventRequest = persistence.fetchFirst(1)?.first else {
+                return
+            }
+
+            handlePublisedEventRequest(eventRequest: lastEventRequest)
         default:
             return
         }

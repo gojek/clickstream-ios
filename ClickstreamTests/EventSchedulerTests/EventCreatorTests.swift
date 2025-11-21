@@ -21,13 +21,13 @@ class EventCreatorTests: XCTestCase {
         //given
         let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         
-        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: networkQueue)
+        let networkService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: networkQueue)
         let deviceStatus = DefaultDeviceStatus(performOnQueue: networkQueue)
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         let keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: schedulerQueueMock, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
 
-        let retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: networkQueue, persistence: persistence,keepAliveService: keepAliveService)
-        let networkBuilder = DefaultNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: networkQueue)
+        let retryMech = WebsocketRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: networkQueue, persistence: persistence,keepAliveService: keepAliveService)
+        let networkBuilder = WebsocketNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: networkQueue)
         //when
         let sut = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock)
         //then
@@ -41,12 +41,12 @@ class EventCreatorTests: XCTestCase {
         let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         
         let deviceStatus = DefaultDeviceStatus(performOnQueue: networkQueue)
-        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: networkQueue)
+        let networkService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: networkQueue)
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         let keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: schedulerQueueMock, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
 
-        let retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: false), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: networkQueue, persistence: persistence, keepAliveService: keepAliveService)
-        let networkBuilder = DefaultNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: networkQueue)
+        let retryMech = WebsocketRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: false), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: networkQueue, persistence: persistence, keepAliveService: keepAliveService)
+        let networkBuilder = WebsocketNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: networkQueue)
         //when
         let sut = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock)
         //then
@@ -59,12 +59,12 @@ class EventCreatorTests: XCTestCase {
         
         let deviceStatus = DefaultDeviceStatus(performOnQueue: networkQueue)
         let event = Event(guid: "", timestamp: Date(), type: "realTime", eventProtoData: Data())
-        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: networkQueue)
+        let networkService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: networkQueue)
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         let keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: schedulerQueueMock, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
 
-        let retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: networkQueue, persistence: persistence, keepAliveService: keepAliveService)
-        let networkBuilder = DefaultNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: networkQueue)
+        let retryMech = WebsocketRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: networkQueue, persistence: persistence, keepAliveService: keepAliveService)
+        let networkBuilder = WebsocketNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: networkQueue)
         //when
         let sut = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock)
         
@@ -80,12 +80,12 @@ class EventCreatorTests: XCTestCase {
         
         let event = Event(guid: "", timestamp: Date(), type: "realTime", eventProtoData: Data())
         let deviceStatus = DefaultDeviceStatus(performOnQueue: networkQueue)
-        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: networkQueue)
+        let networkService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: networkQueue)
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         let keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: schedulerQueueMock, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
 
-        let retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: false), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: networkQueue, persistence: persistence, keepAliveService: keepAliveService)
-        let networkBuilder = DefaultNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: networkQueue)
+        let retryMech = WebsocketRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: false), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: networkQueue, persistence: persistence, keepAliveService: keepAliveService)
+        let networkBuilder = WebsocketNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: networkQueue)
         //when
         let sut = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock)
         

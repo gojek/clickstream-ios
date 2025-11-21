@@ -1,5 +1,5 @@
 //
-//  ClickstreamCourierConfig.swift
+//  ClickstreamCourierClientConfig.swift
 //  Clickstream
 //
 //  Created by Luqman Fauzi on 10/10/25.
@@ -9,98 +9,74 @@
 import Foundation
 import CourierMQTT
 
-public struct ClickstreamCourierConfig: Decodable {
-    public let messageAdapters: [MessageAdapter]
 
-    public let connectConfig: ClickstreamCourierConnectConfig
-    public let connectTimeoutPolicy: IConnectTimeoutPolicy
-    public let iddleActivityPolicy: IdleActivityTimeoutPolicyProtocol
-    public let fallbackPolicy: ClickstreamCourierFallbackPolicy
+public struct ClickstreamCourierClientConfig {
 
-    public let pingIntervalMs: TimeInterval
-    public let isCleanSessionEnabled: Bool
-    public let messagePersistenceTTLSeconds: TimeInterval
-    public let messageCleanupInterval: TimeInterval
-    public let shouldInitializeCoreDataPersistenceContext: Bool
-    public let isMessagePersistenceEnabled: Bool
+    public let courierMessageAdapter: [MessageAdapter]
+    public let courierPingIntervalMillis: Int
+    public let courierAuthTimeoutEnabled: Bool
+    public let courierAuthTimeoutIntervalSecs: Int
+    public let courierAutoReconnectIntervalSecs: Int
+    public let courierAutoReconnectMaxIntervalSecs: Int
+    public let courierTokenCacheType: Int
+    public let courierTokenCacheExpiryEnabled: Bool
+    public let courierTokenExpiryMins: Int
+    public let courierMessageCleanupInterval: Int
+    public let courierIsCleanSessionEnabled: Bool
+    public let courierMessagePersistenceEnabled: Bool
+    public let courierMessagePersistenceTTLSecs: Int
+    public let courierInitCoreDataPersistenceContextEnabled: Bool
+    public let courierConnectTimeoutPolicyEnabled: Bool
+    public let courierConnectTimeoutPolicyIntervalMillis: Int
+    public let courierConnectTimeoutPolicyMaxRetryCount: Int
+    public let courierInactivityPolicyEnabled: Bool
+    public let courierInactivityPolicyIntervalMillis: Int
+    public let courierInactivityPolicyTimeoutMillis: Int
+    public let courierInactivityPolicyReadTimeoutMillis: Int
 
-    enum CodingKeys: String, CodingKey {
-        case messageAdapters = "message_adapters"
-        case connectConfig = "connect_config"
-        case connectTimeoutPolicy = "connect_timeout_policy"
-        case iddleActivityPolicy = "iddle_activity_policy"
-        case fallbackPolicy = "fallback_policy"
-        case pingIntervalMs = "ping_interval_ms"
-        case pollingIntervalMs = "polling_interval_ms"
-        case pollingMaxRetryCount = "polling_max_retry_count"
-        case isCleanSessionEnabled = "clean_session_enabled"
-        case messagePersistenceTTLSeconds = "message_persistence_ttl_seconds"
-        case messageCleanupInterval = "message_cleanup_interval"
-        case isMessagePersistenceEnabled = "is_message_persistence_enabled"
-        case shouldInitializeCoreDataPersistenceContext = "should_initialize_core_data_persistence_context"
-    }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        
-        if let adapters = try? container.decodeIfPresent([String].self, forKey: .messageAdapters) {
-            messageAdapters = adapters.compactMap {
-                guard let type = CourierMessageAdapterType(rawValue: $0) else { return nil }
-                return CourierMessageAdapterType.mapped(from: type)
-            }
-        } else {
-            messageAdapters = []
-        }
-
-        if let config = try? container.decodeIfPresent(ClickstreamCourierConnectConfig.self, forKey: .connectConfig) {
-            connectConfig = config
-        } else {
-            connectConfig = ClickstreamCourierConnectConfig()
-        }
-
-        if let connectPolicy = try? container.decodeIfPresent(CourierConnectTimeoutPolicy.self, forKey: .connectTimeoutPolicy) {
-            connectTimeoutPolicy = connectPolicy
-        } else {
-            connectTimeoutPolicy = ConnectTimeoutPolicy()
-        }
-
-        if let iddlePolicy = try? container.decodeIfPresent(CourierIdleActivityTimeoutPolicy.self, forKey: .iddleActivityPolicy) {
-            iddleActivityPolicy = iddlePolicy
-        } else {
-            iddleActivityPolicy = IdleActivityTimeoutPolicy()
-        }
-
-        fallbackPolicy = ClickstreamCourierFallbackPolicy()
-        pingIntervalMs = container.decodeTimeIntervalIfPresent(forKey: .pingIntervalMs) ?? 10
-        isCleanSessionEnabled = (try? container.decodeIfPresent(Bool.self, forKey: .isCleanSessionEnabled)) ?? false
-        messagePersistenceTTLSeconds = container.decodeTimeIntervalIfPresent(forKey: .messagePersistenceTTLSeconds) ?? 86400.0
-        messageCleanupInterval = container.decodeTimeIntervalIfPresent(forKey: .messageCleanupInterval) ?? 10
-        shouldInitializeCoreDataPersistenceContext = (try? container.decodeIfPresent(Bool.self, forKey: .shouldInitializeCoreDataPersistenceContext)) ?? false
-        isMessagePersistenceEnabled = (try? container.decode(Bool.self, forKey: .isMessagePersistenceEnabled)) ?? false
-    }
-
-    public init(messageAdapter: [MessageAdapter] = [],
-                connectConfig: ClickstreamCourierConnectConfig = ClickstreamCourierConnectConfig(),
-                connectTimeoutPolicy: IConnectTimeoutPolicy = ConnectTimeoutPolicy(),
-                iddleActivityPolicy: IdleActivityTimeoutPolicyProtocol = IdleActivityTimeoutPolicy(),
-                fallbackPolicy: ClickstreamCourierFallbackPolicy = ClickstreamCourierFallbackPolicy(),
-                pingIntervalMs: TimeInterval = 30.0,
-                isCleanSessionEnabled: Bool = false,
-                messagePersistenceTTLSeconds: TimeInterval = 86400.0,
-                messageCleanupInterval: TimeInterval = 10.0,
-                shouldInitializeCoreDataPersistenceContext: Bool = false,
-                isMessagePersistenceEnabled: Bool = false) {
-
-        self.messageAdapters = messageAdapter
-        self.connectConfig = connectConfig
-        self.connectTimeoutPolicy = connectTimeoutPolicy
-        self.iddleActivityPolicy = iddleActivityPolicy
-        self.fallbackPolicy = fallbackPolicy
-        self.pingIntervalMs = pingIntervalMs
-        self.isCleanSessionEnabled = isCleanSessionEnabled
-        self.messagePersistenceTTLSeconds = messagePersistenceTTLSeconds
-        self.messageCleanupInterval = messageCleanupInterval
-        self.shouldInitializeCoreDataPersistenceContext = shouldInitializeCoreDataPersistenceContext
-        self.isMessagePersistenceEnabled = isMessagePersistenceEnabled
+    public init(
+        courierMessageAdapter: [MessageAdapter] = [],
+        courierPingIntervalMillis: Int = 30,
+        courierAuthTimeoutEnabled: Bool = true,
+        courierAuthTimeoutIntervalSecs: Int = 20,
+        courierAutoReconnectIntervalSecs: Int = 5,
+        courierAutoReconnectMaxIntervalSecs: Int = 10,
+        courierTokenCacheType: Int = 2,
+        courierTokenCacheExpiryEnabled: Bool = true,
+        courierTokenExpiryMins: Int = 360,
+        courierMessageCleanupInterval: Int = 10,
+        courierIsCleanSessionEnabled: Bool = false,
+        courierMessagePersistenceEnabled: Bool = false,
+        courierMessagePersistenceTTLSecs: Int = 86400,
+        courierInitCoreDataPersistenceContextEnabled: Bool = false,
+        courierConnectTimeoutPolicyEnabled: Bool = false,
+        courierConnectTimeoutPolicyIntervalMillis: Int = 16,
+        courierConnectTimeoutPolicyMaxRetryCount: Int = 10,
+        courierInactivityPolicyEnabled: Bool = false,
+        courierInactivityPolicyIntervalMillis: Int = 12,
+        courierInactivityPolicyTimeoutMillis: Int = 10,
+        courierInactivityPolicyReadTimeoutMillis: Int = 40
+    ) {
+        self.courierMessageAdapter = courierMessageAdapter
+        self.courierPingIntervalMillis = courierPingIntervalMillis
+        self.courierAuthTimeoutEnabled = courierAuthTimeoutEnabled
+        self.courierAuthTimeoutIntervalSecs = courierAuthTimeoutIntervalSecs
+        self.courierAutoReconnectIntervalSecs = courierAutoReconnectIntervalSecs
+        self.courierAutoReconnectMaxIntervalSecs = courierAutoReconnectMaxIntervalSecs
+        self.courierTokenCacheType = courierTokenCacheType
+        self.courierTokenCacheExpiryEnabled = courierTokenCacheExpiryEnabled
+        self.courierTokenExpiryMins = courierTokenExpiryMins
+        self.courierMessageCleanupInterval = courierMessageCleanupInterval
+        self.courierIsCleanSessionEnabled = courierIsCleanSessionEnabled
+        self.courierMessagePersistenceEnabled = courierMessagePersistenceEnabled
+        self.courierMessagePersistenceTTLSecs = courierMessagePersistenceTTLSecs
+        self.courierInitCoreDataPersistenceContextEnabled = courierInitCoreDataPersistenceContextEnabled
+        self.courierConnectTimeoutPolicyEnabled = courierConnectTimeoutPolicyEnabled
+        self.courierConnectTimeoutPolicyIntervalMillis = courierConnectTimeoutPolicyIntervalMillis
+        self.courierConnectTimeoutPolicyMaxRetryCount = courierConnectTimeoutPolicyMaxRetryCount
+        self.courierInactivityPolicyEnabled = courierInactivityPolicyEnabled
+        self.courierInactivityPolicyIntervalMillis = courierInactivityPolicyIntervalMillis
+        self.courierInactivityPolicyTimeoutMillis = courierInactivityPolicyTimeoutMillis
+        self.courierInactivityPolicyReadTimeoutMillis = courierInactivityPolicyReadTimeoutMillis
     }
 }

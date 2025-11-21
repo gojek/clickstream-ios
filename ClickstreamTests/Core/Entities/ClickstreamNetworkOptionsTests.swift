@@ -11,152 +11,86 @@ import XCTest
 
 class ClickstreamNetworkOptionsTests: XCTestCase {
     
-    func testDefaultInitialization() {
+    func testDefaultInitializationWithAllProperties() {
         let options = ClickstreamNetworkOptions()
         
         XCTAssertTrue(options.isWebsocketEnabled)
         XCTAssertFalse(options.isCourierEnabled)
         XCTAssertTrue(options.courierEventTypes.isEmpty)
+        XCTAssertNotNil(options.courierRetryPolicy)
+        XCTAssertNotNil(options.courierRetryHTTPPolicy)
+        XCTAssertNotNil(options.courierConfig)
+        XCTAssertNotNil(options.clickstreamConstraints)
     }
     
-    func testCustomInitialization() {
-        let eventTypes: Set<CourierEventIdentifier> = ["event1", "event2"]
+    func testFullCustomInitialization() {
+        let eventTypes: Set<CourierEventIdentifier> = ["event1", "event2", "event3"]
+        let retryPolicy = ClickstreamCourierRetryPolicy()
+        let httpRetryPolicy = ClickstreamCourierHTTPRetryPolicy()
+        let courierConfig = ClickstreamCourierClientConfig()
+        let constraints = ClickstreamCourierConstraints()
+        
         let options = ClickstreamNetworkOptions(
             isWebsocketEnabled: false,
             isCourierEnabled: true,
-            courierEventTypes: eventTypes
+            courierEventTypes: eventTypes,
+            courierRetryPolicy: retryPolicy,
+            courierRetryHTTPPolicy: httpRetryPolicy,
+            courierConfig: courierConfig,
+            clickstreamConstraints: constraints
         )
         
         XCTAssertFalse(options.isWebsocketEnabled)
         XCTAssertTrue(options.isCourierEnabled)
         XCTAssertEqual(options.courierEventTypes, eventTypes)
+        XCTAssertEqual(options.courierRetryPolicy.isEnabled, retryPolicy.isEnabled)
+        XCTAssertEqual(options.courierRetryHTTPPolicy.isEnabled, httpRetryPolicy.isEnabled)
+        XCTAssertEqual(options.courierConfig.courierPingIntervalMillis, courierConfig.courierPingIntervalMillis)
+        XCTAssertEqual(options.clickstreamConstraints.maxRequestAckTimeout, constraints.maxRequestAckTimeout)
     }
     
-    func testDecodingWithAllFields() throws {
-        let json = """
-        {
-            "websocket_enabled": false,
-            "courier_enabled": true,
-            "event_types": ["event1", "event2", "event3"]
-        }
-        """
-        
-        let data = json.data(using: .utf8)!
-        let options = try JSONDecoder().decode(ClickstreamNetworkOptions.self, from: data)
+    func testPartialCustomInitialization() {
+        let eventTypes: Set<CourierEventIdentifier> = ["custom_event"]
+        let options = ClickstreamNetworkOptions(
+            isWebsocketEnabled: false,
+            courierEventTypes: eventTypes
+        )
         
         XCTAssertFalse(options.isWebsocketEnabled)
+        XCTAssertFalse(options.isCourierEnabled)
+        XCTAssertEqual(options.courierEventTypes, eventTypes)
+        XCTAssertNotNil(options.courierRetryPolicy)
+        XCTAssertNotNil(options.courierRetryHTTPPolicy)
+        XCTAssertNotNil(options.courierConfig)
+        XCTAssertNotNil(options.clickstreamConstraints)
+    }
+    
+    func testEmptyEventTypesSet() {
+        let options = ClickstreamNetworkOptions(
+            isCourierEnabled: true,
+            courierEventTypes: Set<CourierEventIdentifier>()
+        )
+        
         XCTAssertTrue(options.isCourierEnabled)
-        XCTAssertEqual(options.courierEventTypes, Set(["event1", "event2", "event3"]))
-    }
-    
-    func testDecodingWithMissingFields() throws {
-        let json = "{}"
-        
-        let data = json.data(using: .utf8)!
-        let options = try JSONDecoder().decode(ClickstreamNetworkOptions.self, from: data)
-        
-        XCTAssertTrue(options.isWebsocketEnabled)
-        XCTAssertFalse(options.isCourierEnabled)
         XCTAssertTrue(options.courierEventTypes.isEmpty)
+        XCTAssertEqual(options.courierEventTypes.count, 0)
     }
     
-    func testDecodingWithPartialFields() throws {
-        let json = """
-        {
-            "websocket_enabled": false,
-            "event_types": ["special_event"]
-        }
-        """
+    func testLargeEventTypesSet() {
+        let eventTypes: Set<CourierEventIdentifier> = Set((1...100).map { "event_\($0)" })
+        let options = ClickstreamNetworkOptions(courierEventTypes: eventTypes)
         
-        let data = json.data(using: .utf8)!
-        let options = try JSONDecoder().decode(ClickstreamNetworkOptions.self, from: data)
-        
-        XCTAssertFalse(options.isWebsocketEnabled)
-        XCTAssertFalse(options.isCourierEnabled)
-        XCTAssertEqual(options.courierEventTypes, Set(["special_event"]))
+        XCTAssertEqual(options.courierEventTypes.count, 100)
+        XCTAssertTrue(options.courierEventTypes.contains("event_1"))
+        XCTAssertTrue(options.courierEventTypes.contains("event_100"))
     }
     
-    func testGetNetworkTypeForCourierEvent() {
-        let eventTypes: Set<CourierEventIdentifier> = ["courier_event", "special_event"]
-        let options = ClickstreamNetworkOptions(
-            isWebsocketEnabled: true,
-            isCourierEnabled: true,
-            courierEventTypes: eventTypes
-        )
+    func testCourierEventIdentifierTypeAlias() {
+        let eventId: CourierEventIdentifier = "test_event"
+        let eventTypes: Set<CourierEventIdentifier> = [eventId]
+        let options = ClickstreamNetworkOptions(courierEventTypes: eventTypes)
         
-        XCTAssertEqual(options.getNetworkType(for: "courier_event"), .courier)
-        XCTAssertEqual(options.getNetworkType(for: "special_event"), .courier)
-    }
-    
-    func testGetNetworkTypeForWebsocketEvent() {
-        let eventTypes: Set<CourierEventIdentifier> = ["courier_event"]
-        let options = ClickstreamNetworkOptions(
-            isWebsocketEnabled: true,
-            isCourierEnabled: true,
-            courierEventTypes: eventTypes
-        )
-        
-        XCTAssertEqual(options.getNetworkType(for: "regular_event"), .courier)
-        XCTAssertEqual(options.getNetworkType(for: "unknown_event"), .courier)
-    }
-    
-    func testGetNetworkTypeWhenCourierDisabled() {
-        let eventTypes: Set<CourierEventIdentifier> = ["courier_event"]
-        let options = ClickstreamNetworkOptions(
-            isWebsocketEnabled: true,
-            isCourierEnabled: false,
-            courierEventTypes: eventTypes
-        )
-        
-        XCTAssertEqual(options.getNetworkType(for: "courier_event"), .websocket)
-    }
-    
-    func testIsConfigEnabledWhenWebsocketEnabled() {
-        let options = ClickstreamNetworkOptions(
-            isWebsocketEnabled: true,
-            isCourierEnabled: false
-        )
-        
-        XCTAssertTrue(options.isConfigEnabled())
-    }
-    
-    func testIsConfigEnabledWhenCourierEnabled() {
-        let options = ClickstreamNetworkOptions(
-            isWebsocketEnabled: false,
-            isCourierEnabled: true
-        )
-        
-        XCTAssertTrue(options.isConfigEnabled())
-    }
-    
-    func testIsConfigEnabledWhenBothEnabled() {
-        let options = ClickstreamNetworkOptions(
-            isWebsocketEnabled: true,
-            isCourierEnabled: true
-        )
-        
-        XCTAssertTrue(options.isConfigEnabled())
-    }
-    
-    func testIsConfigDisabledWhenBothDisabled() {
-        let options = ClickstreamNetworkOptions(
-            isWebsocketEnabled: false,
-            isCourierEnabled: false
-        )
-        
-        XCTAssertFalse(options.isConfigEnabled())
-    }
-    
-    func testDecodingWithInvalidEventTypesFormat() throws {
-        let json = """
-        {
-            "event_types": "invalid_format"
-        }
-        """
-        
-        let data = json.data(using: .utf8)!
-        let options = try JSONDecoder().decode(ClickstreamNetworkOptions.self, from: data)
-        
-        XCTAssertTrue(options.courierEventTypes.isEmpty)
+        XCTAssertTrue(options.courierEventTypes.contains(eventId))
+        XCTAssertTrue(eventId is String)
     }
 }

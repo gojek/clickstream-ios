@@ -3,21 +3,23 @@ import Foundation
 
 /// This is the brains of the Scheduler block. This block is responsible for scheduling the events through the EventBatchCreator.
 final class CourierEventBatchProcessor: EventBatchProcessor {
+    typealias EventType = CourierEvent
+    typealias BatchCreatorType = CourierEventBatchCreator
     
-    private let eventBatchCreator: EventBatchCreator
+    private let eventBatchCreator: CourierEventBatchCreator
     private var schedulerService: SchedulerService
     private let appStateNotifier: AppStateNotifierService
-    private let batchSizeRegulator: BatchSizeRegulator
-    private let persistence: DefaultDatabaseDAO<Event>
+    private let batchSizeRegulator: CourierBatchSizeRegulator
+    private let persistence: DefaultDatabaseDAO<CourierEvent>
     
     /// Variable to make sure app is launched after being force closed/killed
     private var hasFlushOnAppLaunchExecutedOnce: Bool = false
     
-    init(with eventBatchCreator: EventBatchCreator,
+    init(with eventBatchCreator: CourierEventBatchCreator,
          schedulerService: SchedulerService,
          appStateNotifier: AppStateNotifierService,
-         batchSizeRegulator: BatchSizeRegulator,
-         persistence: DefaultDatabaseDAO<Event>) {
+         batchSizeRegulator: CourierBatchSizeRegulator,
+         persistence: DefaultDatabaseDAO<CourierEvent>) {
         self.eventBatchCreator = eventBatchCreator
         self.schedulerService = schedulerService
         self.appStateNotifier = appStateNotifier
@@ -36,21 +38,27 @@ final class CourierEventBatchProcessor: EventBatchProcessor {
         self.schedulerService.subscriber = { [weak self] (priority) in guard let checkedSelf = self else { return }
             if checkedSelf.eventBatchCreator.canForward {
                 /// Flush events when the app is launched for the first time
-                if Clickstream.configurations.flushOnAppLaunch && !checkedSelf.hasFlushOnAppLaunchExecutedOnce {
+                if Clickstream.courierConfigurations.flushOnAppLaunch && !checkedSelf.hasFlushOnAppLaunchExecutedOnce {
                     checkedSelf.flush(with: priority)
                     checkedSelf.hasFlushOnAppLaunchExecutedOnce = true
                 } else {
-                    if let maxBatchSize = priority.maxBatchSize {
-                        let numberOfEventsToBeFetched = checkedSelf.batchSizeRegulator.regulatedNumberOfItemsPerBatch(expectedBatchSize: maxBatchSize)
-                        if let events = checkedSelf.persistence.deleteWhere(Event.Columns.type,
-                                                                            value: priority.identifier,
-                                                                            n: numberOfEventsToBeFetched),
-                           !events.isEmpty {
-                            checkedSelf.eventBatchCreator.forward(with: events)
-                        }
-                    } else {
+                    guard let maxBatchSize = priority.maxBatchSize else {
                         checkedSelf.flush(with: priority)
+                        return
                     }
+
+                    let numberOfEventsToBeFetched = checkedSelf
+                        .batchSizeRegulator
+                        .regulatedNumberOfItemsPerBatch(expectedBatchSize: maxBatchSize)
+
+                    let events = checkedSelf.persistence.deleteWhere(CourierEvent.Columns.type,
+                                                                     value: priority.identifier,
+                                                                     n: numberOfEventsToBeFetched)
+                    guard let events, !events.isEmpty else {
+                        return
+                    }
+
+                    _ = checkedSelf.eventBatchCreator.forward(with: events)
                 }
             }
         }
@@ -82,75 +90,72 @@ final class CourierEventBatchProcessor: EventBatchProcessor {
     }
     
     private func flush(with priority: Priority) {
-        if eventBatchCreator.canForward,
-            let events = persistence.deleteAll() {
-            eventBatchCreator.forward(with:events)
-            #if TRACKER_ENABLED
-            // Track health events only for Clickstream Flush On Foreground
-            if Tracker.debugMode && Clickstream.configurations.flushOnAppLaunch && !hasFlushOnAppLaunchExecutedOnce {
-                let eventGUIDs = events.map { $0.guid }
-                let eventGUIDString = "\(eventGUIDs.joined(separator: ", "))"
-                let healthAnalysisEvent = HealthAnalysisEvent(eventName: .ClickstreamFlushOnForeground, events: eventGUIDString)
-                Tracker.sharedInstance?.record(event: healthAnalysisEvent)
-            }
-            #endif
+        guard eventBatchCreator.canForward, let events = persistence.deleteAll() else {
+            return
         }
+
+        _ = eventBatchCreator.forward(with: events)
+
+        #if TRACKER_ENABLED
+        if Tracker.debugMode && Clickstream.courierConfigurations.flushOnAppLaunch && !hasFlushOnAppLaunchExecutedOnce {
+            let eventGUIDs = events.map { $0.guid }
+            let eventGUIDString = "\(eventGUIDs.joined(separator: ", "))"
+            let healthAnalysisEvent = HealthAnalysisEvent(eventName: .ClickstreamFlushOnForeground, events: eventGUIDString)
+            Tracker.sharedInstance?.record(event: healthAnalysisEvent)
+        }
+        #endif
     }
     
     /// flushing events. If `flushOnBackground` flag is set then flush.
     private func flushAll() {
-        
-        if Clickstream.configurations.flushOnBackground {
-            stopObservingNotifications()
-            
-            var shouldFlush = false
-            if let events = persistence.fetchAll(),
+        guard Clickstream.courierConfigurations.flushOnBackground else {
+            return
+        }
+
+        stopObservingNotifications()
+
+        guard let events = persistence.fetchAll(), !events.isEmpty else {
+            return
+        }
+
+        if !eventBatchCreator.canForward {
+            NotificationCenter.default.addObserver(self,
+                                           selector: #selector(respondToNotification(with:)),
+                                           name: Constants.CourierConnectionNotification,
+                                           object: nil)
+            eventBatchCreator.requestForConnection()
+        } else {
+            var eventsToBeFlushed = [CourierEvent]()
+            if let events = persistence.deleteAll(),
                !events.isEmpty {
-                shouldFlush = true
+                eventsToBeFlushed.append(contentsOf: events)
             }
             
-            if shouldFlush == false {
-                return
-            }
-            
-            if !eventBatchCreator.canForward {
-                NotificationCenter.default.addObserver(self,
-                                               selector: #selector(respondToNotification(with:)),
-                                               name: Constants.CourierConnectionNotification,
-                                               object: nil)
-                eventBatchCreator.requestForConnection()
-            } else {
-                var eventsToBeFlushed = [Event]()
-                if let events = persistence.deleteAll(),
-                   !events.isEmpty {
-                    eventsToBeFlushed.append(contentsOf: events)
+            if !eventsToBeFlushed.isEmpty {
+                _ = eventBatchCreator.forward(with: eventsToBeFlushed)
+                #if TRACKER_ENABLED
+                if Tracker.debugMode {
+                    let eventGUIDs = eventsToBeFlushed.map { $0.guid }
+                    let eventGUIDString = "\(eventGUIDs.joined(separator: ", "))"
+                    let healthAnalysisEvent = HealthAnalysisEvent(eventName: .ClickstreamFlushOnBackground,
+                                                                  events: eventGUIDString)
+                    Tracker.sharedInstance?.record(event: healthAnalysisEvent)
                 }
-                
-                if !eventsToBeFlushed.isEmpty {
-                    eventBatchCreator.forward(with: eventsToBeFlushed)
-                    #if TRACKER_ENABLED
-                    if Tracker.debugMode {
-                        let eventGUIDs = eventsToBeFlushed.map { $0.guid }
-                        let eventGUIDString = "\(eventGUIDs.joined(separator: ", "))"
-                        let healthAnalysisEvent = HealthAnalysisEvent(eventName: .ClickstreamFlushOnBackground,
-                                                                      events: eventGUIDString)
-                        Tracker.sharedInstance?.record(event: healthAnalysisEvent)
-                    }
-                    #endif
-                }
+                #endif
             }
         }
+
     }
     
-    func sendInstantly(event: Event) -> Bool {
+    func sendInstantly(event: CourierEvent) -> Bool {
         return self.eventBatchCreator.forward(with: [event])
     }
     
     func sendP0(classificationType: String) {
-        if let events = self.persistence.deleteWhere(Event.Columns.type, value: classificationType),
-           !events.isEmpty {
-            self.eventBatchCreator.forward(with: events)
-        }
+        guard let events = self.persistence.deleteWhere(CourierEvent.Columns.type, value: classificationType),
+              !events.isEmpty else { return }
+        
+        _ = self.eventBatchCreator.forward(with: events)
     }
     
     private func stopObservingNotifications() {
@@ -181,12 +186,14 @@ final class CourierEventBatchProcessor: EventBatchProcessor {
 }
 
 private extension CourierEventBatchProcessor {
-    
     func flushObservabilityEvents() {
         #if TRACKER_ENABLED
-        if eventBatchCreator.canForward, let events = Tracker.sharedInstance?.sendHealthEventsToInternalParty(), !events.isEmpty {
-            eventBatchCreator.forward(with: events)
-        }
+        guard eventBatchCreator.canForward,
+              let events = Tracker.sharedInstance?.sendHealthEventsToInternalParty(),
+              !events.isEmpty else { return }
+        
+        let courierEvents = events.map({ CourierEvent.initialise(from: $0) })
+        _ = eventBatchCreator.forward(with: courierEvents)
         #endif
     }
 }

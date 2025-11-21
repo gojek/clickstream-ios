@@ -11,80 +11,30 @@ import Foundation
 /// Event type identifier for courier
 public typealias CourierEventIdentifier = String
 
-enum ClickstreamNetworkType {
-    case websocket, courier
-}
+public struct ClickstreamNetworkOptions {
 
-public struct ClickstreamNetworkOptions: Decodable {
     public let isWebsocketEnabled: Bool
     public let isCourierEnabled: Bool
     public let courierEventTypes: Set<CourierEventIdentifier>
-    public var courierConfig: ClickstreamCourierConfig
-
-    enum CodingKeys: String, CodingKey {
-        case isWebsocketEnabled = "websocket_enabled"
-        case isCourierEnabled = "courier_enabled"
-        case courierEventTypes = "event_types"
-        case courierConfig = "courier_config"
-    }
+    public let courierRetryPolicy: ClickstreamCourierRetryPolicy
+    public let courierRetryHTTPPolicy: ClickstreamCourierHTTPRetryPolicy
+    public let courierConfig: ClickstreamCourierClientConfig
+    public let clickstreamConstraints: ClickstreamCourierConstraints
 
     public init(isWebsocketEnabled: Bool = true,
                 isCourierEnabled: Bool = false,
                 courierEventTypes: Set<CourierEventIdentifier> = [],
-                courierConfig: ClickstreamCourierConfig = ClickstreamCourierConfig()) {
+                courierRetryPolicy: ClickstreamCourierRetryPolicy = .init(),
+                courierRetryHTTPPolicy: ClickstreamCourierHTTPRetryPolicy = .init(),
+                courierConfig: ClickstreamCourierClientConfig = .init(),
+                clickstreamConstraints: ClickstreamCourierConstraints = .init()) {
 
         self.isWebsocketEnabled = isWebsocketEnabled
         self.isCourierEnabled = isCourierEnabled
         self.courierEventTypes = courierEventTypes
+        self.courierRetryPolicy = courierRetryPolicy
+        self.courierRetryHTTPPolicy = courierRetryHTTPPolicy
         self.courierConfig = courierConfig
-    }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-
-        if let isWebsocketEnabled = try? container.decode(Bool.self, forKey: .isWebsocketEnabled) {
-            self.isWebsocketEnabled = isWebsocketEnabled
-        } else {
-            self.isWebsocketEnabled = true
-        }
-
-        if let isCourierEnabled = try? container.decode(Bool.self, forKey: .isCourierEnabled) {
-            self.isCourierEnabled = isCourierEnabled
-        } else {
-            self.isCourierEnabled = false
-        }
-
-        if let courierEventTypes = try? container.decodeIfPresent([String].self, forKey: .courierEventTypes) {
-            self.courierEventTypes = Set(courierEventTypes)
-        } else {
-            self.courierEventTypes = []
-        }
-
-        if let courierConfig = try? container.decodeIfPresent(ClickstreamCourierConfig.self, forKey: .courierConfig) {
-            self.courierConfig = courierConfig
-        } else {
-            self.courierConfig = ClickstreamCourierConfig()
-        }
-    }
-}
-
-extension ClickstreamNetworkOptions {
-
-    func getNetworkType(for event: String) -> ClickstreamNetworkType {
-        if isWebsocketEnabled && isCourierEnabled && courierEventTypes.contains(event) {
-            return .courier
-        }
-        if isCourierEnabled {
-            return .courier
-        }
-        return .websocket
-    }
-
-    func isConfigEnabled() -> Bool {
-        // If both flags are `false`, config should be disabled
-        if !isWebsocketEnabled && !isCourierEnabled {
-            return false
-        }
-        return true
+        self.clickstreamConstraints = clickstreamConstraints
     }
 }

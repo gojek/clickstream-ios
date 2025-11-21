@@ -10,25 +10,46 @@ import Foundation
 
 final class EventProcessorDependencies {
     
-    private let eventWarehouser: EventWarehouser
-    private let eventSampler: EventSampler?
-    
-    private lazy var serialQueue: SerialQueue = {
+    private let networkOptions: ClickstreamNetworkOptions
+    private let socketEventWarehouser: DefaultEventWarehouser
+    private let courierEventWarehouser: CourierEventWarehouser
+
+    private let socketEventSampler: EventSampler?
+
+    private lazy var socketSerialQueue: SerialQueue = {
         return SerialQueue(label: Constants.QueueIdentifiers.processor.rawValue)
+    }()
+    
+    private lazy var courierSerialQueue: SerialQueue = {
+        return SerialQueue(label: Constants.CourierQueueIdentifiers.processor.rawValue)
     }()
     
     private lazy var classifier: EventClassifier = {
         return DefaultEventClassifier()
     }()
     
-    init(with eventWarehouser: EventWarehouser, sampler: EventSampler? = nil) {
-        self.eventWarehouser = eventWarehouser
-        self.eventSampler = sampler
+    init(socketEventWarehouser: DefaultEventWarehouser,
+         courierEventWarehouser: CourierEventWarehouser,
+         socketEventSampler: EventSampler? = nil,
+         networkOptions: ClickstreamNetworkOptions) {
+        self.socketEventWarehouser = socketEventWarehouser
+        self.courierEventWarehouser = courierEventWarehouser
+        self.socketEventSampler = socketEventSampler
+        self.networkOptions = networkOptions
     }
-    
-    func makeEventProcessor() -> EventProcessor {
-        return DefaultEventProcessor(performOnQueue: serialQueue,
+
+    func makeEventProcessor() -> DefaultEventProcessor {
+        return DefaultEventProcessor(performOnQueue: socketSerialQueue,
                                      classifier: classifier,
-                                     eventWarehouser: eventWarehouser, sampler: eventSampler)
+                                     eventWarehouser: socketEventWarehouser,
+                                     sampler: socketEventSampler,
+                                     networkOptions: networkOptions)
+    }
+
+    func makeCourierEventProcessor() -> CourierEventProcessor {
+        return CourierEventProcessor(performOnQueue: courierSerialQueue,
+                                     classifier: classifier,
+                                     eventWarehouser: courierEventWarehouser,
+                                     networkOptions: networkOptions)
     }
 }

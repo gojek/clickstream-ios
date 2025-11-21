@@ -2,7 +2,9 @@ import Foundation
 
 /// This class is holds the retry logic for the SDK. NetworkBuilder routes the requests through RetryMechanism.
 final class WebsocketRetryMechanism: Retryable {
-    
+
+    typealias EventRequestType = EventRequest
+
     private var reachability: NetworkReachability
     private let networkService: NetworkService
     private let performQueue: SerialQueue
@@ -315,7 +317,7 @@ extension WebsocketRetryMechanism {
         }
         
         performQueue.async { [weak self] in guard let checkedSelf = self else { return }
-            checkedSelf.networkService.initiateConnection(connectionStatusListener: { result in
+            checkedSelf.networkService.initiateWebsocketConnection(connectionStatusListener: { result in
 
                 NotificationCenter.default.post(name: Constants.SocketConnectionNotification,
                                                 object: [Constants.Strings.didConnect: self?.networkService.isConnected])

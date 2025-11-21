@@ -15,13 +15,13 @@ protocol CourierConnectableInputs {
     /// - Parameters:
     ///   - performOnQueue: A queue instance on which the tasks are performed.
     ///   - userCredentials: Client's user credentials
-    init(config: ClickstreamCourierConfig, userCredentials: ClickstreamClientIdentifiers)
+    init(config: ClickstreamCourierClientConfig, userCredentials: ClickstreamClientIdentifiers)
 
     /// Publish Event Request message to Courier
     /// - Parameters:
     ///   - eventRequest: CS EventRequest
     ///   - topic: Courier's topic path
-    func publishMessage(_ eventRequest: EventRequest, topic: String) async throws
+    func publishMessage(_ eventRequest: CourierEventRequest, topic: String) async throws
 
     /// Disconnects the connection.
     func disconnect()
@@ -29,13 +29,11 @@ protocol CourierConnectableInputs {
     /// Sets up a connectable
     /// - Parameters:
     ///   - request: URLRequest which the connectable must connect to.
-    ///   - keepTrying: A control flag which tells the connectable to keep trying till the connection is not established.
     ///   - connectionCallback: A callback to update about the connection status.
     ///   - eventHandler: Courier's event handler delegate
     func setup(request: URLRequest,
-               keepTrying: Bool,
                connectionCallback: ConnectionStatus?,
-               eventHandler: ICourierEventHandler?) async
+               eventHandler: ICourierEventHandler) async
 }
 
 protocol CourierConnectableOutputs {

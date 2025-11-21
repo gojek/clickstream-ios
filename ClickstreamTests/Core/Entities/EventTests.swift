@@ -11,27 +11,100 @@ import XCTest
 
 class EventTests: XCTestCase {
 
-    func testEventIntialization() {
-        // given
+    func testEventInitialization() {
+        let guid = UUID().uuidString
         let timestamp = Date()
-        let type = "ClickstreamTestRealtime"
-        let eventProtoData = Data()
+        let type = "realtime"
+        let eventProtoData = "test data".data(using: .utf8)!
         
-        // when
-        let event = Event(guid: "", timestamp: timestamp, type: type, eventProtoData: eventProtoData)
+        let event = Event(guid: guid, timestamp: timestamp, type: type, eventProtoData: eventProtoData)
         
-        // then
+        XCTAssertEqual(event.guid, guid)
         XCTAssertEqual(event.timestamp, timestamp)
         XCTAssertEqual(event.type, type)
         XCTAssertEqual(event.eventProtoData, eventProtoData)
     }
     
-    func test_eventComparision_basedOnTimestamp() {
-        // given
-        let firstEvent = Event(guid: "", timestamp: Date(), type: "ClickstreamTestRealtime", eventProtoData: Data())
-        let secondEvent = Event(guid: "", timestamp: Date.init(timeInterval: 1, since: Date()), type: "ClickstreamTestRealtime", eventProtoData: Data())
+    func testEventInitializationWithEmptyData() {
+        let guid = ""
+        let timestamp = Date()
+        let type = "realtime"
+        let eventProtoData = Data()
         
-        // then
+        let event = Event(guid: guid, timestamp: timestamp, type: type, eventProtoData: eventProtoData)
+        
+        XCTAssertEqual(event.guid, guid)
+        XCTAssertEqual(event.timestamp, timestamp)
+        XCTAssertEqual(event.type, type)
+        XCTAssertTrue(event.eventProtoData.isEmpty)
+    }
+    
+    func testEventComparison_basedOnTimestamp() {
+        let baseDate = Date()
+        let firstEvent = Event(guid: "1", timestamp: baseDate, type: "realtime", eventProtoData: Data())
+        let secondEvent = Event(guid: "2", timestamp: Date(timeInterval: 1, since: baseDate), type: "realtime", eventProtoData: Data())
+        
         XCTAssertTrue(firstEvent < secondEvent)
+        XCTAssertFalse(secondEvent < firstEvent)
+    }
+    
+    func testEventComparison_equalTimestamps() {
+        let timestamp = Date()
+        let firstEvent = Event(guid: "1", timestamp: timestamp, type: "realtime", eventProtoData: Data())
+        let secondEvent = Event(guid: "2", timestamp: timestamp, type: "realtime", eventProtoData: Data())
+        
+        XCTAssertFalse(firstEvent < secondEvent)
+        XCTAssertFalse(secondEvent < firstEvent)
+    }
+    
+    func testEventEquality() {
+        let guid = "test-guid"
+        let timestamp = Date()
+        let type = "realtime"
+        let eventProtoData = Data()
+        
+        let event1 = Event(guid: guid, timestamp: timestamp, type: type, eventProtoData: eventProtoData)
+        let event2 = Event(guid: guid, timestamp: timestamp, type: type, eventProtoData: eventProtoData)
+        
+        XCTAssertEqual(event1, event2)
+    }
+    
+    func testEventInequality_differentGuid() {
+        let timestamp = Date()
+        let type = "realtime"
+        let eventProtoData = Data()
+        
+        let event1 = Event(guid: "guid1", timestamp: timestamp, type: type, eventProtoData: eventProtoData)
+        let event2 = Event(guid: "guid2", timestamp: timestamp, type: type, eventProtoData: eventProtoData)
+        
+        XCTAssertNotEqual(event1, event2)
+    }
+    
+    func testEventCodable() throws {
+        let event = Event(
+            guid: UUID().uuidString,
+            timestamp: Date(),
+            type: "realtime",
+            eventProtoData: "test".data(using: .utf8)!
+        )
+        
+        let encoded = try JSONEncoder().encode(event)
+        let decoded = try JSONDecoder().decode(Event.self, from: encoded)
+        
+        XCTAssertEqual(event.guid, decoded.guid)
+        XCTAssertEqual(event.type, decoded.type)
+        XCTAssertEqual(event.eventProtoData, decoded.eventProtoData)
+    }
+    
+    func testEventTableName() {
+        XCTAssertEqual(Event.tableName, "event")
+    }
+    
+    func testEventTableMigrations() {
+        XCTAssertNil(Event.tableMigrations)
+    }
+    
+    func testEventColumns() {
+        XCTAssertEqual(Event.Columns.type.name, "type")
     }
 }

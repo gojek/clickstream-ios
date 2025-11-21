@@ -27,7 +27,7 @@ class DatabaseDAOTests: XCTestCase {
         let expectation = self.expectation(description: "Table exists")
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            let tableExists = try! self.persistence.doesTableExist(with: Event.description)
+            let tableExists = self.persistence.doesTableExist(with: Event.description)
             XCTAssertTrue(tableExists!, "Table Exists")
             expectation.fulfill()
         }

@@ -48,6 +48,15 @@ enum Constants {
         case atomicAccess = "com.clickstream.atomicAccess"
         case tracker = "com.gojek.clickstream.tracker"
     }
+
+    enum CourierQueueIdentifiers: QueueIdentifier {
+        case network = "com.clickstream.courier.network"
+        case scheduler = "com.clickstream.courier.schedule"
+        case processor = "com.clickstream.courier.processor"
+        case warehouser = "com.clickstream.courier.warehouser"
+        case dao = "com.clickstream.courier.dao"
+        case connectableAccess = "com.clickstream.courier.connectableAccess"
+    }
     
     enum EventType: String, Codable {
         case instant = "instant"

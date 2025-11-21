@@ -19,19 +19,22 @@ protocol EventProcessor: EventProcessorInput, EventProcessorOutput { }
 
 final class DefaultEventProcessor: EventProcessor {
     
-    private let eventWarehouser: EventWarehouser
+    private let eventWarehouser: DefaultEventWarehouser
     private let serialQueue: SerialQueue
     private let classifier: EventClassifier
     private let sampler: EventSampler?
+    private let networkOptions: ClickstreamNetworkOptions
     
     init(performOnQueue: SerialQueue,
          classifier: EventClassifier,
-         eventWarehouser: EventWarehouser,
-         sampler: EventSampler? = nil) {
+         eventWarehouser: DefaultEventWarehouser,
+         sampler: EventSampler? = nil,
+         networkOptions: ClickstreamNetworkOptions) {
         self.serialQueue = performOnQueue
         self.classifier = classifier
         self.eventWarehouser = eventWarehouser
         self.sampler = sampler
+        self.networkOptions = networkOptions
     }
     
     func shouldTrackEvent(event: ClickstreamEvent) -> Bool {
@@ -81,6 +84,9 @@ final class DefaultEventProcessor: EventProcessor {
             let csEvent = Odpf_Raccoon_Event.with {
                 $0.eventBytes = event.eventData
                 $0.type = typeOfEvent
+                $0.eventName = event.eventName
+                $0.product = event.product
+                $0.eventTimestamp = Google_Protobuf_Timestamp(date: event.timeStamp)
             }
             return try Event(guid: event.guid,
                              timestamp: event.timeStamp,

@@ -8,8 +8,9 @@ import CourierMQTT
 final class CourierHandlerTests: XCTestCase {
     
     private var sut: DefaultCourierHandler!
-    private var mockConfig: ClickstreamCourierConfig!
+    private var mockConfig: ClickstreamCourierClientConfig!
     private var mockCredentials: ClickstreamClientIdentifiers!
+    private var mockEventHandler: ICourierEventHandler!
     private var cancellables: Set<CourierCore.AnyCancellable>!
     
     override func setUp() {
@@ -17,6 +18,7 @@ final class CourierHandlerTests: XCTestCase {
         cancellables = []
         mockConfig = createMockConfig()
         mockCredentials = createMockCredentials()
+        mockEventHandler = MockCourierEventHandler()
         sut = DefaultCourierHandler(config: mockConfig, userCredentials: mockCredentials)
     }
     
@@ -40,7 +42,7 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithValidData_DoesNotThrow() async {
         let testData = "test message".data(using: .utf8)!
         let topic = "clickstream/topic"
-        let eventRequest = EventRequest(guid: "12345", data: testData)
+        let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
         do {
             try await sut.publishMessage(eventRequest, topic: topic)
@@ -52,7 +54,7 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithEmptyData_DoesNotThrow() async {
         let emptyData = Data()
         let topic = "clickstream/topic"
-        let eventRequest = EventRequest(guid: "12345", data: emptyData)
+        let eventRequest = CourierEventRequest(guid: "12345", data: emptyData)
 
         do {
             try await sut.publishMessage(eventRequest, topic: topic)
@@ -69,8 +71,8 @@ final class CourierHandlerTests: XCTestCase {
         let request = createValidURLRequest()
         
         await sut.setup(request: request, 
-                       keepTrying: false, 
-                       connectionCallback: nil)
+                        connectionCallback: nil,
+                        eventHandler: mockEventHandler)
         
         XCTAssertNotNil(sut)
     }
@@ -79,8 +81,8 @@ final class CourierHandlerTests: XCTestCase {
         let request = createValidURLRequest()
         
         await sut.setup(request: request, 
-                       keepTrying: false, 
-                       connectionCallback: nil)
+                        connectionCallback: nil,
+                        eventHandler: mockEventHandler)
         
         XCTAssertNoThrow(sut.disconnect())
     }
@@ -103,7 +105,7 @@ final class CourierHandlerTests: XCTestCase {
     func testLargeDataPublish_WithLargePayload_DoesNotThrow() async {
         let largeData = Data(repeating: 0x41, count: 10000)
         let topic = "clickstream/topic"
-        let eventRequest = EventRequest(guid: "12345", data: largeData)
+        let eventRequest = CourierEventRequest(guid: "12345", data: largeData)
         
         do {
             try await sut.publishMessage(eventRequest, topic: topic)
@@ -115,7 +117,7 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WhenClientNotInitialized_ThrowsError() async {
         let testData = "test message".data(using: .utf8)!
         let topic = "clickstream/topic"
-        let eventRequest = EventRequest(guid: "12345", data: testData)
+        let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
         do {
             try await sut.publishMessage(eventRequest, topic: topic)
@@ -127,12 +129,12 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_AfterDisconnect_ThrowsError() async {
         let request = createValidURLRequest()
         let topic = "clickstream/topic"
-        await sut.setup(request: request, keepTrying: false, connectionCallback: nil)
+        await sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
         
         sut.disconnect()
         
         let testData = "test message".data(using: .utf8)!
-        let eventRequest = EventRequest(guid: "12345", data: testData)
+        let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
         do {
             try await sut.publishMessage(eventRequest, topic: topic)
@@ -145,7 +147,7 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithMalformedData_HandlesError() async {
         let malformedData = Data([0x00, 0xFF, 0x00, 0xFF])
         let topic = "clickstream/topic"
-        let eventRequest = EventRequest(guid: "12345", data: malformedData)
+        let eventRequest = CourierEventRequest(guid: "12345", data: malformedData)
         
         do {
             try await sut.publishMessage(eventRequest, topic: topic)
@@ -156,8 +158,8 @@ final class CourierHandlerTests: XCTestCase {
     
     func testPublishMessage_ConcurrentCalls_HandlesCorrectly() async {
         let request = createValidURLRequest()
-        await sut.setup(request: request, keepTrying: false, connectionCallback: nil)
-        
+        await sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
+
         let testData1 = "message1".data(using: .utf8)!
         let testData2 = "message2".data(using: .utf8)!
         let topic = "clickstream/topic"
@@ -165,7 +167,7 @@ final class CourierHandlerTests: XCTestCase {
         await withTaskGroup(of: Void.self) { group in
             group.addTask {
                 do {
-                    let eventRequest = EventRequest(guid: "12345", data: testData1)
+                    let eventRequest = CourierEventRequest(guid: "12345", data: testData1)
                     try await self.sut.publishMessage(eventRequest, topic: topic)
                 } catch {
                     XCTAssertNotNil(error)
@@ -174,7 +176,7 @@ final class CourierHandlerTests: XCTestCase {
             
             group.addTask {
                 do {
-                    let eventRequest = EventRequest(guid: "12345", data: testData2)
+                    let eventRequest = CourierEventRequest(guid: "12345", data: testData2)
                     try await self.sut.publishMessage(eventRequest, topic: topic)
                 } catch {
                     XCTAssertNotNil(error)
@@ -186,7 +188,7 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithExtremelyLargePayload_HandlesCorrectly() async {
         let extremelyLargeData = Data(repeating: 0x42, count: 1_000_000)
         let topic = "clickstream/topic"
-        let eventRequest = EventRequest(guid: "12345", data: extremelyLargeData)
+        let eventRequest = CourierEventRequest(guid: "12345", data: extremelyLargeData)
 
         do {
             try await sut.publishMessage(eventRequest, topic: topic)
@@ -199,11 +201,11 @@ final class CourierHandlerTests: XCTestCase {
         let request = createValidURLRequest()
         
         for _ in 0..<10 {
-            await sut.setup(request: request, keepTrying: false, connectionCallback: nil)
-            
+            await sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
+
             let testData = "test".data(using: .utf8)!
             let topic = "clickstream/topic"
-            let eventRequest = EventRequest(guid: "12345", data: testData)
+            let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
             do {
                 try await sut.publishMessage(eventRequest, topic: topic)
@@ -220,7 +222,7 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithValidParametersAndData_DoesNotThrow() async {
         let testData = "test message".data(using: .utf8)!
         let topic = "clickstream/topic"
-        let eventRequest = EventRequest(guid: "12345", data: testData)
+        let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
         do {
             try await sut.publishMessage(eventRequest, topic: topic)
@@ -232,7 +234,7 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithEmptyDataAndValidParameters_DoesNotThrow() async {
         let testData = Data()
         let topic = "clickstream/topic"
-        let eventRequest = EventRequest(guid: "12345", data: testData)
+        let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
         do {
             try await sut.publishMessage(eventRequest, topic: topic)
@@ -244,7 +246,7 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithDifferentQoSLevels_DoesNotThrow() async {
         let testData = "test message".data(using: .utf8)!
         let topic = "clickstream/topic"
-        let eventRequest = EventRequest(guid: "12345", data: testData)
+        let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
         do {
             try await sut.publishMessage(eventRequest, topic: topic)
@@ -258,7 +260,7 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithEmptyTopic_DoesNotThrow() async {
         let testData = "test message".data(using: .utf8)!
         let emptyTopic = ""
-        let eventRequest = EventRequest(guid: "12345", data: testData)
+        let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
         do {
             try await sut.publishMessage(eventRequest, topic: emptyTopic)
@@ -270,7 +272,7 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithSpecialCharactersInTopic_DoesNotThrow() async {
         let testData = "test message".data(using: .utf8)!
         let specialTopic = "test/topic-with_special.chars#123"
-        let eventRequest = EventRequest(guid: "12345", data: testData)
+        let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
         do {
             try await sut.publishMessage(eventRequest, topic: specialTopic)
@@ -282,7 +284,7 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithLargePayloadAndTopic_DoesNotThrow() async {
         let largeData = Data(repeating: 0x41, count: 10000)
         let topic = "test/large/payload/topic"
-        let eventRequest = EventRequest(guid: "12345", data: largeData)
+        let eventRequest = CourierEventRequest(guid: "12345", data: largeData)
 
         do {
             try await sut.publishMessage(eventRequest, topic: topic)
@@ -294,7 +296,7 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WhenClientNotInitializedWithParameters_ThrowsError() async {
         let testData = "test message".data(using: .utf8)!
         let topic = "test/topic"
-        let eventRequest = EventRequest(guid: "12345", data: testData)
+        let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
         do {
             try await sut.publishMessage(eventRequest, topic: topic)
@@ -305,13 +307,13 @@ final class CourierHandlerTests: XCTestCase {
     
     func testPublishMessage_AfterDisconnectWithParameters_ThrowsError() async {
         let request = createValidURLRequest()
-        await sut.setup(request: request, keepTrying: false, connectionCallback: nil)
-        
+        await sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
+
         sut.disconnect()
         
         let testData = "test message".data(using: .utf8)!
         let topic = "test/topic"
-        let eventRequest = EventRequest(guid: "12345", data: testData)
+        let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
         do {
             try await sut.publishMessage(eventRequest, topic: topic)
@@ -324,7 +326,7 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithMalformedDataAndParameters_HandlesError() async {
         let malformedData = Data([0x00, 0xFF, 0x00, 0xFF])
         let topic = "test/malformed"
-        let eventRequest = EventRequest(guid: "12345", data: malformedData)
+        let eventRequest = CourierEventRequest(guid: "12345", data: malformedData)
 
         do {
             try await sut.publishMessage(eventRequest, topic: topic)
@@ -335,14 +337,14 @@ final class CourierHandlerTests: XCTestCase {
     
     func testPublishMessage_ConcurrentCallsWithParameters_HandlesCorrectly() async {
         let request = createValidURLRequest()
-        await sut.setup(request: request, keepTrying: false, connectionCallback: nil)
-        
+        await sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
+
         let testData1 = "message1".data(using: .utf8)!
         let testData2 = "message2".data(using: .utf8)!
         let topic1 = "test/topic1"
         let topic2 = "test/topic2"
-        let eventRequest1 = EventRequest(guid: "12345", data: testData1)
-        let eventRequest2 = EventRequest(guid: "12345", data: testData2)
+        let eventRequest1 = CourierEventRequest(guid: "12345", data: testData1)
+        let eventRequest2 = CourierEventRequest(guid: "12345", data: testData2)
 
         await withTaskGroup(of: Void.self) { group in
             group.addTask {
@@ -366,7 +368,7 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithExtremelyLargePayloadAndParameters_HandlesCorrectly() async {
         let extremelyLargeData = Data(repeating: 0x42, count: 1_000_000)
         let topic = "test/extremely/large"
-        let eventRequest = EventRequest(guid: "12345", data: extremelyLargeData)
+        let eventRequest = CourierEventRequest(guid: "12345", data: extremelyLargeData)
 
         do {
             try await sut.publishMessage(eventRequest, topic: topic)
@@ -378,7 +380,7 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithLongTopicName_DoesNotThrow() async {
         let testData = "test message".data(using: .utf8)!
         let longTopic = String(repeating: "verylongtopic/", count: 50) + "end"
-        let eventRequest = EventRequest(guid: "12345", data: testData)
+        let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
         do {
             try await sut.publishMessage(eventRequest, topic: longTopic)
@@ -390,7 +392,7 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithUnicodeInTopic_DoesNotThrow() async {
         let testData = "test message".data(using: .utf8)!
         let unicodeTopic = "test/topic/with/unicode/🚀/📱"
-        let eventRequest = EventRequest(guid: "12345", data: testData)
+        let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
         do {
             try await sut.publishMessage(eventRequest, topic: unicodeTopic)
@@ -402,7 +404,7 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_WithNullBytesInData_HandlesCorrectly() async {
         let dataWithNulls = Data([0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x00, 0x57, 0x6F, 0x72, 0x6C, 0x64])
         let topic = "test/null/bytes"
-        let eventRequest = EventRequest(guid: "12345", data: dataWithNulls)
+        let eventRequest = CourierEventRequest(guid: "12345", data: dataWithNulls)
 
         do {
             try await sut.publishMessage(eventRequest, topic: topic)
@@ -414,27 +416,14 @@ final class CourierHandlerTests: XCTestCase {
 
 extension CourierHandlerTests {
     
-    private func createMockConfig() -> ClickstreamCourierConfig {
-        ClickstreamCourierConfig(
-            messageAdapter: [],
-            connectConfig: .init(),
-            connectTimeoutPolicy: ConnectTimeoutPolicy(),
-            iddleActivityPolicy: IdleActivityTimeoutPolicy(),
-            messagePersistenceTTLSeconds: 300,
-            messageCleanupInterval: 100,
-            isMessagePersistenceEnabled: false
-        )
+    private func createMockConfig() -> ClickstreamCourierClientConfig {
+        ClickstreamCourierClientConfig()
     }
     
-    private func createMockConfigWithDifferentValues() -> ClickstreamCourierConfig {
-        ClickstreamCourierConfig(
-            messageAdapter: [],
-            connectConfig: .init(),
-            connectTimeoutPolicy: ConnectTimeoutPolicy(isEnabled: true),
-            iddleActivityPolicy: IdleActivityTimeoutPolicy(isEnabled: true),
-            messagePersistenceTTLSeconds: 500,
-            messageCleanupInterval: 200,
-            isMessagePersistenceEnabled: false
+    private func createMockConfigWithDifferentValues() -> ClickstreamCourierClientConfig {
+        ClickstreamCourierClientConfig(
+            courierMessageAdapter: [],
+            courierPingIntervalMillis: 500
         )
     }
     
@@ -459,5 +448,13 @@ extension CourierHandlerTests {
             return URLRequest(url: URL(string: "about:blank")!)
         }
         return URLRequest(url: url)
+    }
+}
+
+fileprivate class MockCourierEventHandler: ICourierEventHandler {
+
+    var _onEvent: ((_ event: CourierCore.CourierEvent) -> Void)?
+    func onEvent(_ event: CourierCore.CourierEvent) {
+        _onEvent?(event)
     }
 }

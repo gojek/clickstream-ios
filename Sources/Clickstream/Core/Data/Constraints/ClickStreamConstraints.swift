@@ -8,8 +8,38 @@
 
 import Foundation
 
+protocol ClickstreamConstraintsContract {
+    
+    /// This array holds all priority configs.
+    var priorities: [Priority] { get }
+    
+    /// This is flag which determines whether the contained events be flushed when the app moves to background.
+    var flushOnBackground: Bool { get }
+    
+    /// Wait time for the connection termination
+    var connectionTerminationTimerWaitTime: TimeInterval { get }
+    
+    // Max retry interval for timimg out a batch
+    var maxRequestAckTimeout: TimeInterval { get }
+    
+    /// Max retires allowed batch
+    var maxRetriesPerBatch: Int { get }
+    
+    // Max retry cache size on disk and memory
+    var maxRetryCacheSize: Int { get }
+    
+    // Connection retry duration
+    var connectionRetryDuration: TimeInterval { get }
+    
+    /// This is flag which determines whether the contained events be flushed when the app is launched for the first time by the user
+    var flushOnAppLaunch: Bool { get }
+    
+    /// This is flag which determines whether the contained events be sent when the device's battery is more that it
+    var minBatteryLevelPercent: Float { get }
+}
+
 /// Holds the constraints for clickstream.
-public struct ClickstreamConstraints {
+public struct ClickstreamConstraints: ClickstreamConstraintsContract {
         
     /// Maximum number of retries for connection.
     private(set) var maxConnectionRetries: Int
@@ -80,7 +110,7 @@ public struct ClickstreamConstraints {
 }
 
 /// This struct will hold the priorities defined in the ClickstreamConstraints.
-public struct Priority {
+public struct Priority: Decodable {
     private(set) var priority: Int = 0
     private(set) var identifier: PriorityType = "realTime"
     private(set) var maxBatchSize: Double? = 50000

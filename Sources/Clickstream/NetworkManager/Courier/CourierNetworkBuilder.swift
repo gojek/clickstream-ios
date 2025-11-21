@@ -10,9 +10,10 @@ import Foundation
 
 /// This is the class which the scheduler will communicate with in order to get the network related tasks done
 final class CourierNetworkBuilder: NetworkBuildable {
+    typealias BatchType = CourierEventBatch
     
     private let networkConfigs: NetworkConfigurable
-    private let retryMech: Retryable
+    private let retryMech: CourierRetryMechanism
     private let performQueue: SerialQueue
     
     var isAvailable: Bool {
@@ -20,7 +21,7 @@ final class CourierNetworkBuilder: NetworkBuildable {
     }
     
     init(networkConfigs: NetworkConfigurable,
-         retryMech: Retryable,
+         retryMech: CourierRetryMechanism,
          performOnQueue: SerialQueue) {
         self.networkConfigs = networkConfigs
         self.retryMech = retryMech
@@ -30,25 +31,27 @@ final class CourierNetworkBuilder: NetworkBuildable {
 
 extension CourierNetworkBuilder {
     
-    func trackBatch(_ eventBatch: EventBatch, completion: ((Error?)->())?) {
-        
-        performQueue.async { [weak self] in guard let checkedSelf = self else { return }
+    func trackBatch<T: EventBatchPersistable>(_ eventBatch: T, completion: ((_ error: Error?) -> Void)?) {
+        performQueue.async { [weak self] in
+            guard let checkedSelf = self else { return }
+
             do {
                 let data: Data = try eventBatch.proto.serializedData()
                 print("NetworkBuilder, trackedBatch with id: \(eventBatch.uuid) and itemsCount: \(eventBatch.events.count)")
-                var eventRequest = EventRequest(guid: eventBatch.uuid,
-                                                data: data)
+                var eventRequest = CourierEventRequest(guid: eventBatch.uuid,
+                                                       data: data)
                 
                 if eventBatch.events.first?.type == Constants.HealthEventType {
                     eventRequest.eventType = .internalEvent
                 } else if eventBatch.events.first?.type == Constants.EventType.instant.rawValue {
                     eventRequest.eventType = .instant
                 } else {
-                    checkedSelf.trackHealthEvents(eventBatch: eventBatch,
-                                                          eventBatchData: data)
+                    checkedSelf.trackHealthEvents(eventBatch: eventBatch, eventBatchData: data)
                 }
+                
                 eventRequest.eventCount = eventBatch.events.count
                 checkedSelf.retryMech.trackBatch(with: eventRequest)
+                
                 #if EVENT_VISUALIZER_ENABLED
                 /// Update status of the event batch to sent to network
                 /// to check if the delegate is connected, if not no event should be sent to client
@@ -61,9 +64,9 @@ extension CourierNetworkBuilder {
                     }
                 }
                 #endif
+                
                 completion?(nil)
             } catch {
-                print("There was an error from the Network builder. Description: \(error)",.critical)
                 completion?(error)
             }
         }
@@ -74,19 +77,20 @@ extension CourierNetworkBuilder {
     }
     
     func stopTracking() {
-        performQueue.async { [weak self] in guard let checkedSelf = self else { return }
+        performQueue.async { [weak self] in 
+            guard let checkedSelf = self else { return }
             checkedSelf.retryMech.stopTracking()
         }
     }
 }
 
-// MARK: - Track Clickstream health.
 extension CourierNetworkBuilder {
-    private func trackHealthEvents(eventBatch: EventBatch, eventBatchData: Data) {
+    private func trackHealthEvents<T: EventBatchPersistable>(eventBatch: T, eventBatchData: Data) {
         #if TRACKER_ENABLED
         guard Tracker.debugMode else { return }
+        
         let eventGUIDs: [String] = eventBatch.events.compactMap { $0.guid }
-        let eventGUIDsString = "\(eventGUIDs.joined(separator: ", "))"
+        let eventGUIDsString = eventGUIDs.joined(separator: ", ")
         
         let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamBatchSent,
                                               events: eventGUIDsString,

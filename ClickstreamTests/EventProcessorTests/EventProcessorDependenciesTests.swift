@@ -20,32 +20,94 @@ class EventProcessorDependenciesTests: XCTestCase {
         // given
         let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         let prioritiesMock = [Priority(priority: 0, identifier: "realTime", maxBatchSize: 50000.0, maxTimeBetweenTwoBatches: 1)]
-        
-        let networkService = DefaultNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: mockQueue)
-        let deviceStatus = DefaultDeviceStatus(performOnQueue: mockQueue)
-        let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
-        let eventPersistence = DefaultDatabaseDAO<Event>(database: database, performOnQueue: mockQueue)
-        let keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: mockQueue, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
+        let rechability = NetworkReachabilityMock(isReachable: true)
+        let appStateNotifier = AppStateNotifierMock(state: .didBecomeActive)
 
-        let retryMech = DefaultRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: mockQueue, persistence: persistence, keepAliveService: keepAliveService)
+        let socketNetworkService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: mockQueue)
+        let courierNetworkService = CourierNetworkService<DefaultCourierHandler>(with: config, performOnQueue: mockQueue)
+
+        let deviceStatus = DefaultDeviceStatus(performOnQueue: mockQueue)
+
+        let socketPersistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
+        let courierPersistence = DefaultDatabaseDAO<CourierEventRequest>(database: database, performOnQueue: dbQueueMock)
+
+        let socketEventPersistence = DefaultDatabaseDAO<Event>(database: database, performOnQueue: mockQueue)
+        let courierEventPersistence = DefaultDatabaseDAO<CourierEvent>(database: database, performOnQueue: mockQueue)
+
+        let keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: mockQueue, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
         
-        let networkBuilder: NetworkBuildable = DefaultNetworkBuilder.init(networkConfigs: config, retryMech: retryMech, performOnQueue: mockQueue)
+        let networkOptions = ClickstreamNetworkOptions()
+
+        let socketRetryMech = WebsocketRetryMechanism(
+            networkService: socketNetworkService,
+            reachability: rechability,
+            deviceStatus: deviceStatus,
+            appStateNotifier: appStateNotifier,
+            performOnQueue: mockQueue,
+            persistence: socketPersistence,
+            keepAliveService: keepAliveService
+        )
         
-        let eventBatchCreator = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: mockQueue)
+        let courierRetryMech = CourierRetryMechanism(
+            networkOptions: networkOptions,
+            networkService: courierNetworkService,
+            reachability: rechability,
+            deviceStatus: deviceStatus,
+            appStateNotifier: appStateNotifier,
+            performOnQueue: mockQueue,
+            persistence: courierPersistence
+        )
         
-        let appStateNotifierMock = AppStateNotifierMock(state: .didBecomeActive)
+        let socketNetworkBuilder = WebsocketNetworkBuilder(networkConfigs: config,
+                                                         retryMech: socketRetryMech,
+                                                         performOnQueue: mockQueue)
+        
+        let courierNetworkBuilder = CourierNetworkBuilder(networkConfigs: config,
+                                                          retryMech: courierRetryMech,
+                                                          performOnQueue: mockQueue)
+
+        let socketEventBatchCreator = DefaultEventBatchCreator(with: socketNetworkBuilder, performOnQueue: mockQueue)
+        let courierEventBatchCreator = CourierEventBatchCreator(with: courierNetworkBuilder, performOnQueue: mockQueue)
         
         let schedulerServiceMock = DefaultSchedulerService(with: prioritiesMock, performOnQueue: mockQueue)
         
-        let batchProcessor = DefaultEventBatchProcessor(with: eventBatchCreator, schedulerService: schedulerServiceMock, appStateNotifier: appStateNotifierMock, batchSizeRegulator: BatchSizeRegulatorMock(), persistence: eventPersistence)
+        let socketBatchProcessor = DefaultEventBatchProcessor(
+            with: socketEventBatchCreator,
+            schedulerService: schedulerServiceMock,
+            appStateNotifier: appStateNotifier,
+            batchSizeRegulator: BatchSizeRegulatorMock(),
+            persistence: socketEventPersistence
+        )
+        
+        let courierBatchProcessor = CourierEventBatchProcessor(
+            with: courierEventBatchCreator,
+            schedulerService: schedulerServiceMock,
+            appStateNotifier: appStateNotifier,
+            batchSizeRegulator: CourierBatchSizeRegulator(),
+            persistence: courierEventPersistence
+        )
 
-        let eventWarehouser = DefaultEventWarehouser(with: batchProcessor, performOnQueue: mockQueue, persistence: eventPersistence, batchSizeRegulator: BatchSizeRegulatorMock())
-        
+
+        let socketEventWarehouser = DefaultEventWarehouser(with: socketBatchProcessor,
+                                                           performOnQueue: mockQueue,
+                                                           persistence: socketEventPersistence,
+                                                           batchSizeRegulator: DefaultBatchSizeRegulator())
+
+        let courieEventWarehouser = CourierEventWarehouser(with: courierBatchProcessor,
+                                                           performOnQueue: mockQueue,
+                                                           persistence: courierEventPersistence,
+                                                           batchSizeRegulator: CourierBatchSizeRegulator(),
+                                                           networkOptions: networkOptions)
                 
-        let eventProcessorDependencies = EventProcessorDependencies(with: eventWarehouser)
-        let eventProcessor = eventProcessorDependencies.makeEventProcessor()
-        
+        let eventProcessorDependencies = EventProcessorDependencies(socketEventWarehouser: socketEventWarehouser,
+                                                                    courierEventWarehouser: courieEventWarehouser,
+                                                                    networkOptions: ClickstreamNetworkOptions())
+
+        let socketEventProcessor = eventProcessorDependencies.makeEventProcessor()
+        let courierEventProcessor = eventProcessorDependencies.makeCourierEventProcessor()
+
         // then
-        XCTAssertNotNil(eventProcessor)
+        XCTAssertNotNil(socketEventProcessor)
+        XCTAssertNotNil(courierEventProcessor)
     }
 }

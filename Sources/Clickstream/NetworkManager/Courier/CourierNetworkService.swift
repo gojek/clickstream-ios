@@ -13,7 +13,7 @@ import CourierCore
 
 final class CourierNetworkService<C: CourierConnectable>: NetworkService {
     
-    private let connectableAccessQueue = DispatchQueue(label: Constants.QueueIdentifiers.connectableAccess.rawValue,
+    private let connectableAccessQueue = DispatchQueue(label: Constants.CourierQueueIdentifiers.connectableAccess.rawValue,
                                                        attributes: .concurrent)
     
     private let performQueue: SerialQueue
@@ -50,10 +50,9 @@ final class CourierNetworkService<C: CourierConnectable>: NetworkService {
     ///   - connectionStatusListener: A callback connection listerner
     ///   - keepTrying: A flag to rery connect attempts
     ///   - identifiers: Client's user identifiers
-    func initiateSecondaryConnection(connectionStatusListener: ConnectionStatus?,
-                                     keepTrying: Bool,
-                                     identifiers: ClickstreamClientIdentifiers,
-                                     eventHandler: ICourierEventHandler? = nil) async {
+    func initiateCourierConnection(connectionStatusListener: ConnectionStatus?,
+                                   identifiers: ClickstreamClientIdentifiers,
+                                   eventHandler: ICourierEventHandler) async {
 
         guard _connectable == nil, let courierConfig = networkConfig.networkOptions?.courierConfig else { return }
 
@@ -62,7 +61,6 @@ final class CourierNetworkService<C: CourierConnectable>: NetworkService {
         _connectable = C(config: courierConfig, userCredentials: identifiers)
 
         await connectable?.setup(request: networkConfig.request,
-                                 keepTrying: keepTrying,
                                  connectionCallback: self.connectionCallback,
                                  eventHandler: eventHandler)
     }
@@ -70,7 +68,7 @@ final class CourierNetworkService<C: CourierConnectable>: NetworkService {
 
 extension CourierNetworkService {
     
-    func publish(_ eventRequest: EventRequest, topic: String) async throws {
+    func publish(_ eventRequest: CourierEventRequest, topic: String) async throws {
         try await _connectable?.publishMessage(eventRequest, topic: topic)
     }
     
@@ -92,7 +90,7 @@ extension CourierNetworkService {
 
 extension CourierNetworkService {
 
-    func executeHTTPRequest(_ eventRequest: EventRequest) async throws -> Odpf_Raccoon_EventResponse {
+    func executeHTTPRequest(_ eventRequest: CourierEventRequest) async throws -> Odpf_Raccoon_EventResponse {
         guard _connectable is DefaultCourierHandler else {
             throw ConnectableError.failed
         }
@@ -101,6 +99,7 @@ extension CourierNetworkService {
             let session = URLSession.shared
             var request = self.networkConfig.request
             request.httpMethod = "POST"
+            request.setValue("application/proto", forHTTPHeaderField: "Content-Type")
 
             guard let eventRequestData = eventRequest.data else {
                 throw ConnectableError.parsingData

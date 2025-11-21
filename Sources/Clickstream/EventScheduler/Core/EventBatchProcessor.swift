@@ -9,6 +9,8 @@
 import Foundation
 
 protocol EventBatchProcessorInputs {
+    associatedtype EventType: EventPersistable
+    associatedtype BatchCreatorType: EventBatchCreator where BatchCreatorType.EventType == EventType
     
     /**
         Call this to start the batch processor.
@@ -21,7 +23,7 @@ protocol EventBatchProcessorInputs {
     
     /// Call this method to send an event directly i.e. meant for instant sending.
     /// - Parameter event: Event to be forwarded
-    func sendInstantly(event: Event) -> Bool
+    func sendInstantly(event: EventType) -> Bool
     
     func sendP0(classificationType: String)
 }
@@ -32,8 +34,10 @@ protocol EventBatchProcessor: EventBatchProcessorInputs, EventBatchProcessorOutp
 
 /// This is the brains of the Scheduler block. This block is responsible for scheduling the events through the EventBatchCreator.
 final class DefaultEventBatchProcessor: EventBatchProcessor {
+    typealias EventType = Event
+    typealias BatchCreatorType = DefaultEventBatchCreator
     
-    private let eventBatchCreator: EventBatchCreator
+    private let eventBatchCreator: DefaultEventBatchCreator
     private var schedulerService: SchedulerService
     private let appStateNotifier: AppStateNotifierService
     private let batchSizeRegulator: BatchSizeRegulator
@@ -42,7 +46,7 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
     /// Variable to make sure app is launched after being force closed/killed
     private var hasFlushOnAppLaunchExecutedOnce: Bool = false
     
-    init(with eventBatchCreator: EventBatchCreator,
+    init(with eventBatchCreator: DefaultEventBatchCreator,
          schedulerService: SchedulerService,
          appStateNotifier: AppStateNotifierService,
          batchSizeRegulator: BatchSizeRegulator,

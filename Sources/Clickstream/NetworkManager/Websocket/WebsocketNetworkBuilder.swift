@@ -2,9 +2,10 @@ import Foundation
 
 /// This is the class which the scheduler will communicate with in order to get the network related tasks done
 final class WebsocketNetworkBuilder: NetworkBuildable {
-    
+    typealias BatchType = EventBatch
+
     private let networkConfigs: NetworkConfigurable
-    private let retryMech: Retryable
+    private let retryMech: WebsocketRetryMechanism
     private let performQueue: SerialQueue
     
     var isAvailable: Bool {
@@ -12,7 +13,7 @@ final class WebsocketNetworkBuilder: NetworkBuildable {
     }
     
     init(networkConfigs: NetworkConfigurable,
-         retryMech: Retryable,
+         retryMech: WebsocketRetryMechanism,
          performOnQueue: SerialQueue) {
         self.networkConfigs = networkConfigs
         self.retryMech = retryMech
@@ -22,8 +23,8 @@ final class WebsocketNetworkBuilder: NetworkBuildable {
 
 extension WebsocketNetworkBuilder {
     
-    func trackBatch(_ eventBatch: EventBatch, completion: ((Error?)->())?) {
-        
+    func trackBatch<T: EventBatchPersistable>(_ eventBatch: T, completion: ((_ error: Error?) -> Void)?) {
+
         performQueue.async { [weak self] in guard let checkedSelf = self else { return }
             do {
                 let data: Data = try eventBatch.proto.serializedData()
@@ -74,7 +75,7 @@ extension WebsocketNetworkBuilder {
 
 // MARK: - Track Clickstream health.
 extension WebsocketNetworkBuilder {
-    private func trackHealthEvents(eventBatch: EventBatch, eventBatchData: Data) {
+    private func trackHealthEvents<T: EventBatchPersistable>(eventBatch: T, eventBatchData: Data) {
         #if TRACKER_ENABLED
         guard Tracker.debugMode else { return }
         let eventGUIDs: [String] = eventBatch.events.compactMap { $0.guid }

@@ -38,7 +38,7 @@ final class WebsocketNetworkService<C: Connectable>: NetworkService {
 
 extension WebsocketNetworkService {
 
-    func initiateConnection(connectionStatusListener: ConnectionStatus?,
+    func initiateWebsocketConnection(connectionStatusListener: ConnectionStatus?,
                             keepTrying: Bool = false) {
         guard _connectable == nil else { return }
         self.connectionCallback = connectionStatusListener
@@ -59,7 +59,7 @@ extension WebsocketNetworkService {
                         return
                     }
                     do {
-                        let result = try T(serializedData: responseData) // Deserialise the proto data.
+                        let result = try T(serializedBytes: responseData) // Deserialise the proto data.
                         completion(.success(result))
                     } catch {
                         completion(Result.failure(ConnectableError.parsingData))

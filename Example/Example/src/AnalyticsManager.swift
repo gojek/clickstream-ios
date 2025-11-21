@@ -22,18 +22,21 @@ class AnalyticsManager {
     }
 
     /// Initialise Clickstream
-    func initialiseClickstream(networkOptions: ClickstreamNetworkOptions? = nil) {
+    func initialiseClickstream(networkOptions: ClickstreamNetworkOptions) {
         Clickstream.setLogLevel(.verbose)
         do {
             let header = createHeader()
             let request = self.urlRequest(headerParamaters: header)
             
             let configurations = ClickstreamConstraints(maxConnectionRetries: 5)
+            let courierConfigurations = ClickstreamCourierConstraints()
+
             let classification = ClickstreamEventClassification(eventTypes: [.init(identifier: "instant", eventNames: [], csEventNames: [])])
 
             self.clickstream = try Clickstream.initialise(
                 with: request ?? URLRequest(url: URL(string: "")!),
                 configurations: configurations,
+                courierConfigurations: courierConfigurations,
                 eventClassification: classification,
                 appPrefix: "",
                 networkOptions: networkOptions
@@ -76,7 +79,8 @@ class AnalyticsManager {
                 timeStamp: Date(),
                 message: message,
                 eventName: type(of: message).protoMessageName,
-                eventData: try message.serializedData())
+                eventData: try message.serializedData(),
+                product: "CSSampleApp")
             clickstream.trackEvent(with: eventDTO)
         } catch {
             print(error.localizedDescription)
@@ -107,6 +111,7 @@ class AnalyticsManager {
             return
         }
         clickstream?.provideClientIdentifiers(with: userCredentials, topic: courierTopic)
+        debugPrint("[clickstream-sqlite] \(NSHomeDirectory())/Library/Application Support/clickstream_wal/db.sqlite")
     }
 }
 
