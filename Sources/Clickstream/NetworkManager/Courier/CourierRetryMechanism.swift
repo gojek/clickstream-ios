@@ -90,7 +90,11 @@ final class CourierRetryMechanism: Retryable {
         self.deviceStatus = deviceStatus
         self.appStateNotifier = appStateNotifier
         self.persistence = persistence
-        
+
+        guard networkOptions.isCourierEnabled else {
+            return
+        }
+
         self.observeNetworkConnectivity()
         self.observeDeviceStatus()
         self.observeAppStateChanges()
