@@ -34,8 +34,12 @@ final class NetworkManagerDependencies {
         DefaultDeviceStatus(performOnQueue: socketNetworkQueue)
     }()
 
-    private lazy var appStateNotifier: AppStateNotifierService = {
+    private lazy var socketAppStateNotifier: AppStateNotifierService = {
         DefaultAppStateNotifierService(with: socketNetworkQueue)
+    }()
+
+    private lazy var courierAppStateNotifier: AppStateNotifierService = {
+        DefaultAppStateNotifierService(with: courierNetworkQueue)
     }()
 
     private lazy var socketPersistence: DefaultDatabaseDAO<EventRequest> = {
@@ -68,7 +72,7 @@ final class NetworkManagerDependencies {
         WebsocketRetryMechanism(networkService: websocketNetworkService,
                                 reachability: reachability,
                                 deviceStatus: deviceStatus,
-                                appStateNotifier: appStateNotifier,
+                                appStateNotifier: socketAppStateNotifier,
                                 performOnQueue: socketNetworkQueue,
                                 persistence: socketPersistence,
                                 keepAliveService: keepAliveService)
@@ -79,7 +83,7 @@ final class NetworkManagerDependencies {
                               networkService: courierNetworkService,
                               reachability: reachability,
                               deviceStatus: deviceStatus,
-                              appStateNotifier: appStateNotifier,
+                              appStateNotifier: courierAppStateNotifier,
                               performOnQueue: courierNetworkQueue,
                               persistence: courierPersistance)
     }()
