@@ -57,6 +57,8 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
         if let bundleIdentifier = userCredentials.bundleIdentifier {
             id += ":\(bundleIdentifier)"
         }
+        
+        id += ":clickstream"
 
         return id
     }
