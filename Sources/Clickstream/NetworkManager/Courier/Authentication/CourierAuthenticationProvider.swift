@@ -46,18 +46,18 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
     }
 
     var clientId: String {
-        var id = "\(userCredentials.userIdentifier)"
+        var id = "\(userCredentials.deviceIdentifier)"
 
-        if let extraId = userCredentials.extraIdentifier, !extraId.isEmpty {
-            id += ":\(extraId)"
+        if let ownerId = userCredentials.extraIdentifier, !ownerId.isEmpty {
+            id += ":\(ownerId)"
         }
 
-        id += ":\(userCredentials.deviceIdentifier)"
+        id += ":\(userCredentials.userIdentifier)"
 
-        if let bundleIdentifier = userCredentials.bundleIdentifier {
-            id += ":\(bundleIdentifier)"
+        if let bundleID = userCredentials.bundleIdentifier, !bundleID.isEmpty {
+            id += ":\(bundleID)"
         }
-        
+
         id += ":clickstream"
 
         return id
