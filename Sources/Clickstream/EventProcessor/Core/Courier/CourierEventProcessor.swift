@@ -81,7 +81,7 @@ final class CourierEventProcessor: EventProcessor {
             let csEvent = Odpf_Raccoon_Event.with {
                 $0.eventBytes = event.eventData
                 $0.type = typeOfEvent
-                $0.eventName = event.eventName
+                $0.eventName = event.csEventName ?? "Unknown"
                 $0.product = event.product
                 $0.eventTimestamp = Google_Protobuf_Timestamp(date: event.timeStamp)
             }
