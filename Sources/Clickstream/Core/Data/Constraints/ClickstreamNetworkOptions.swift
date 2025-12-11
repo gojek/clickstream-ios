@@ -15,6 +15,7 @@ public struct ClickstreamNetworkOptions {
 
     public let isWebsocketEnabled: Bool
     public let isCourierEnabled: Bool
+    public let networkChannelSplitEnabled: Bool
     public let courierEventTypes: Set<CourierEventIdentifier>
     public let courierRetryPolicy: ClickstreamCourierRetryPolicy
     public let courierRetryHTTPPolicy: ClickstreamCourierHTTPRetryPolicy
@@ -23,6 +24,7 @@ public struct ClickstreamNetworkOptions {
 
     public init(isWebsocketEnabled: Bool = true,
                 isCourierEnabled: Bool = false,
+                networkChannelSplitEnabled: Bool = false,
                 courierEventTypes: Set<CourierEventIdentifier> = [],
                 courierRetryPolicy: ClickstreamCourierRetryPolicy = .init(),
                 courierRetryHTTPPolicy: ClickstreamCourierHTTPRetryPolicy = .init(),
@@ -31,6 +33,7 @@ public struct ClickstreamNetworkOptions {
 
         self.isWebsocketEnabled = isWebsocketEnabled
         self.isCourierEnabled = isCourierEnabled
+        self.networkChannelSplitEnabled = networkChannelSplitEnabled
         self.courierEventTypes = courierEventTypes
         self.courierRetryPolicy = courierRetryPolicy
         self.courierRetryHTTPPolicy = courierRetryHTTPPolicy
