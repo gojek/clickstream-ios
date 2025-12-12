@@ -170,6 +170,18 @@ public final class Clickstream {
         socketEventProcessor.createEvent(event: event)
         courierEventProcessor.createEvent(event: event)
     }
+
+    /// Tracks Clickstream event via websocket network channel
+    /// - Parameter event: Client's Clickstream Event
+    public func trackEventViaWebsocket(with event: ClickstreamEvent) {
+        socketEventProcessor.createEvent(event: event)
+    }
+
+    /// Tracks Clickstream event via courier network channel
+    /// - Parameter event: Client's Clickstream Event
+    public func trackEventViaCourier(with event: ClickstreamEvent) {
+        courierEventProcessor.createEvent(event: event)
+    }
     
     /// Initializes an instance of the API with the given configurations.
     /// Returns a new Clickstream instance API object. This allows you to create one instance only.
