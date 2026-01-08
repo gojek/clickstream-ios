@@ -322,7 +322,7 @@ extension CourierRetryMechanism {
     func configureIdentifiers(with identifiers: CourierIdentifiers, topic: String) {
         self.identifiers = identifiers
         self.topic = topic
-        establishConnection()
+        establishConnection(isForced: true)
     }
 
     func removeIdentifiers() {
@@ -362,7 +362,7 @@ extension CourierRetryMechanism {
         terminationCountDown?.resume()
     }
     
-    private func establishConnection() {
+    private func establishConnection(isForced: Bool = false) {
         // Only establish connection when Courier identifiers available
         guard let identifiers else {
             return
@@ -374,10 +374,18 @@ extension CourierRetryMechanism {
             Clickstream.connectionState = .connected
         }
 
-        if self.networkService.isConnected || !reachability.isAvailable {
+        guard reachability.isAvailable else {
             return
         }
-
+        
+        if isForced {
+            connect(with: identifiers, isForced: true)
+        } else if !networkService.isConnected {
+            connect(with: identifiers, isForced: false)
+        }
+    }
+    
+    private func connect(with identifiers: CourierIdentifiers, isForced: Bool) {
         Task {
             await networkService.initiateCourierConnection(connectionStatusListener: { [weak self] result in
                 guard let checkedSelf = self else {
@@ -402,9 +410,10 @@ extension CourierRetryMechanism {
                 case .failure:
                     checkedSelf.stopObservingFailedBatches()
                 }
-            }, identifiers: identifiers, eventHandler: self)
+            }, identifiers: identifiers, eventHandler: self, isForced: isForced)
         }
     }
+    
 }
 
 extension CourierRetryMechanism {

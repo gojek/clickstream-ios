@@ -52,9 +52,17 @@ final class CourierNetworkService<C: CourierConnectable>: NetworkService {
     ///   - identifiers: Client's user identifiers
     func initiateCourierConnection(connectionStatusListener: ConnectionStatus?,
                                    identifiers: ClickstreamClientIdentifiers,
-                                   eventHandler: ICourierEventHandler) async {
+                                   eventHandler: ICourierEventHandler,
+                                   isForced: Bool) async {
 
-        guard _connectable == nil, let courierConfig = networkConfig.networkOptions?.courierConfig else { return }
+        if isForced {
+            _connectable?.disconnect()
+            _connectable = nil
+        }
+
+        guard _connectable == nil, let courierConfig = networkConfig.networkOptions?.courierConfig else {
+            return
+        }
 
         self.connectionCallback = connectionStatusListener
 
