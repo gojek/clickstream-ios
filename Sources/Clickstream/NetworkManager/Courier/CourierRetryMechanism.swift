@@ -374,7 +374,7 @@ extension CourierRetryMechanism {
     
     private func establishConnection(isForced: Bool = false) {
         // Only establish connection when Courier identifiers available
-        guard let identifiers, let courierConnectOptionsObserver else {
+        guard let identifiers else {
             return
         }
 
@@ -389,15 +389,13 @@ extension CourierRetryMechanism {
         }
         
         if isForced {
-            connect(with: identifiers, isForced: true, connectOptionsObserver: courierConnectOptionsObserver)
+            connect(with: identifiers, isForced: true)
         } else if !networkService.isConnected {
-            connect(with: identifiers, isForced: false, connectOptionsObserver: courierConnectOptionsObserver)
+            connect(with: identifiers, isForced: false)
         }
     }
     
-    private func connect(with identifiers: CourierIdentifiers,
-                         isForced: Bool,
-                         connectOptionsObserver: CourierConnectOptionsObserver?) {
+    private func connect(with identifiers: CourierIdentifiers, isForced: Bool) {
 
         Task {
             await networkService.initiateCourierConnection(connectionStatusListener: { [weak self] result in
@@ -423,7 +421,7 @@ extension CourierRetryMechanism {
                 case .failure:
                     checkedSelf.stopObservingFailedBatches()
                 }
-            }, identifiers: identifiers, eventHandler: self, connectOptionsObserver: connectOptionsObserver, isForced: isForced)
+            }, identifiers: identifiers, eventHandler: self, connectOptionsObserver: self.courierConnectOptionsObserver, isForced: isForced)
         }
     }
     

@@ -33,10 +33,7 @@ final class CourierNetworkService<C: CourierConnectable>: NetworkService {
             }
         }
     }
-    
-    private var connectionOptions: ConnectOptions?
-    private var connectOptionsProvider: CourierConnectOptionsObserver?
-    
+
     /// Initializer
     /// - Parameters:
     ///   - networkConfig: Network Configuration.
