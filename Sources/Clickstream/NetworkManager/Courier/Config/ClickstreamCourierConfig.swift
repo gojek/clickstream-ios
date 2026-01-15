@@ -33,6 +33,7 @@ public struct ClickstreamCourierClientConfig {
     public let courierInactivityPolicyIntervalMillis: Int
     public let courierInactivityPolicyTimeoutMillis: Int
     public let courierInactivityPolicyReadTimeoutMillis: Int
+    public let courierPubSubEventProbability: Int
 
     public init(
         courierMessageAdapter: [MessageAdapter] = [],
@@ -55,7 +56,8 @@ public struct ClickstreamCourierClientConfig {
         courierInactivityPolicyEnabled: Bool = false,
         courierInactivityPolicyIntervalMillis: Int = 12,
         courierInactivityPolicyTimeoutMillis: Int = 10,
-        courierInactivityPolicyReadTimeoutMillis: Int = 40
+        courierInactivityPolicyReadTimeoutMillis: Int = 40,
+        courierPubSubEventProbability: Int = 99
     ) {
         self.courierMessageAdapter = courierMessageAdapter
         self.courierPingIntervalMillis = courierPingIntervalMillis
@@ -78,5 +80,6 @@ public struct ClickstreamCourierClientConfig {
         self.courierInactivityPolicyIntervalMillis = courierInactivityPolicyIntervalMillis
         self.courierInactivityPolicyTimeoutMillis = courierInactivityPolicyTimeoutMillis
         self.courierInactivityPolicyReadTimeoutMillis = courierInactivityPolicyReadTimeoutMillis
+        self.courierPubSubEventProbability = courierPubSubEventProbability
     }
 }
