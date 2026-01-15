@@ -6,6 +6,7 @@
 //  Copyright © 2020 Gojek. All rights reserved.
 //
 
+import CourierCore
 import Foundation
 
 final class NetworkManagerDependencies {
@@ -114,13 +115,17 @@ final class NetworkManagerDependencies {
 
     func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers,
                                   topic: String,
-                                  courierConnectOptionsObserver: CourierConnectOptionsObserver?) {
+                                  connectOptionsObserver: CourierConnectOptionsObserver?,
+                                  pubSubAnalytics: ICourierEventHandler?) {
 
         guard let courierIdentifiers = identifiers as? CourierIdentifiers else {
             return
         }
 
-        courierRetryMech.configureIdentifiers(with: courierIdentifiers, topic: topic, courierConnectOptionsObserver: courierConnectOptionsObserver)
+        courierRetryMech.configureIdentifiers(with: courierIdentifiers,
+                                              topic: topic,
+                                              connectOptionsObserver: connectOptionsObserver,
+                                              pubSubAnalytics: pubSubAnalytics)
     }
     
     func removeClientIdentifiers() {

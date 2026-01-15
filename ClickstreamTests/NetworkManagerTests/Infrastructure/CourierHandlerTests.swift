@@ -20,7 +20,7 @@ final class CourierHandlerTests: XCTestCase {
         mockConfig = createMockConfig()
         mockCredentials = createMockCredentials()
         mockEventHandler = MockCourierEventHandler()
-        sut = DefaultCourierHandler(config: mockConfig, userCredentials: mockCredentials, connectOptionsObserver: nil)
+        sut = DefaultCourierHandler(config: mockConfig, userCredentials: mockCredentials, connectOptionsObserver: nil, pubSubAnalytics: nil)
     }
     
     override func tearDown() {
@@ -97,7 +97,7 @@ final class CourierHandlerTests: XCTestCase {
     func testConfigRetention_AfterInit_ConfigIsRetained() {
         let newConfig = createMockConfigWithDifferentValues()
         let newCredentials = createMockCredentialsWithDifferentValues()
-        let newSut = DefaultCourierHandler(config: newConfig, userCredentials: newCredentials, connectOptionsObserver: nil)
+        let newSut = DefaultCourierHandler(config: newConfig, userCredentials: newCredentials, connectOptionsObserver: nil, pubSubAnalytics: nil)
         
         XCTAssertNotNil(newSut)
         XCTAssertFalse(newSut.isConnected.value)

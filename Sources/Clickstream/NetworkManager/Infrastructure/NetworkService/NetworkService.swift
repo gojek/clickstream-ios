@@ -29,6 +29,7 @@ protocol NetworkServiceInputs {
                                    identifiers: ClickstreamClientIdentifiers,
                                    eventHandler: ICourierEventHandler,
                                    connectOptionsObserver: CourierConnectOptionsObserver?,
+                                   pubSubAnalytics: ICourierEventHandler?,
                                    isForced: Bool) async
 
     /// Writes data to the given connectable and fires a completion event after the write is completed.
@@ -58,6 +59,7 @@ extension NetworkService {
                                    identifiers: ClickstreamClientIdentifiers,
                                    eventHandler: ICourierEventHandler,
                                    connectOptionsObserver: CourierConnectOptionsObserver?,
+                                   pubSubAnalytics: ICourierEventHandler?,
                                    isForced: Bool) async {}
     func write<T: SwiftProtobuf.Message>(_ data: Data, completion: @escaping (Result<T, ConnectableError>) -> Void) {}
 }

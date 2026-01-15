@@ -16,9 +16,11 @@ protocol CourierConnectableInputs {
     ///   - performOnQueue: A queue instance on which the tasks are performed.
     ///   - userCredentials: Client's user credentials
     ///   - connectOptionsObserver: Courier Connection Observer
+    ///   - pubSubAnalytics: ICourierEventHandler?
     init(config: ClickstreamCourierClientConfig,
          userCredentials: ClickstreamClientIdentifiers,
-         connectOptionsObserver: CourierConnectOptionsObserver?)
+         connectOptionsObserver: CourierConnectOptionsObserver?,
+         pubSubAnalytics: ICourierEventHandler?)
 
     /// Publish Event Request message to Courier
     /// - Parameters:

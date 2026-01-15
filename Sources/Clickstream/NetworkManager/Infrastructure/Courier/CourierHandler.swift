@@ -23,6 +23,7 @@ final class DefaultCourierHandler: CourierHandler {
     private var userCredentials: ClickstreamClientIdentifiers
     private var cancellables: Set<CourierCore.AnyCancellable> = []
     private var connectOptionsObserver: CourierConnectOptionsObserver?
+    private var pubSubAnalytics: ICourierEventHandler?
     private lazy var authServiceProvider: IConnectionServiceProvider = {
         CourierAuthenticationProvider(config: config,
                                       userCredentials: userCredentials,
@@ -35,11 +36,13 @@ final class DefaultCourierHandler: CourierHandler {
 
     init(config: ClickstreamCourierClientConfig,
          userCredentials: ClickstreamClientIdentifiers,
-         connectOptionsObserver: CourierConnectOptionsObserver?) {
+         connectOptionsObserver: CourierConnectOptionsObserver?,
+         pubSubAnalytics: ICourierEventHandler?) {
 
         self.config = config
         self.userCredentials = userCredentials
         self.connectOptionsObserver = connectOptionsObserver
+        self.pubSubAnalytics = pubSubAnalytics
     }
     
     func publishMessage(_ eventRequest: CourierEventRequest, topic: String) async throws {
@@ -56,6 +59,10 @@ final class DefaultCourierHandler: CourierHandler {
     func setup(request: URLRequest, connectionCallback: ConnectionStatus?, eventHandler: ICourierEventHandler) async {
         courierClient = await getCourierClient()
         courierClient?.addEventHandler(eventHandler)
+
+        if let pubSubAnalytics {
+            courierClient?.addEventHandler(pubSubAnalytics)
+        }
 
         await connect(connectionCallback: connectionCallback)
     }

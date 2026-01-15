@@ -54,6 +54,7 @@ final class CourierNetworkService<C: CourierConnectable>: NetworkService {
                                    identifiers: ClickstreamClientIdentifiers,
                                    eventHandler: ICourierEventHandler,
                                    connectOptionsObserver: CourierConnectOptionsObserver?,
+                                   pubSubAnalytics: ICourierEventHandler?,
                                    isForced: Bool) async {
 
         if isForced {
@@ -67,7 +68,8 @@ final class CourierNetworkService<C: CourierConnectable>: NetworkService {
         self.connectionCallback = connectionStatusListener
         _connectable = C(config: courierConfig,
                          userCredentials: identifiers,
-                         connectOptionsObserver: connectOptionsObserver)
+                         connectOptionsObserver: connectOptionsObserver,
+                         pubSubAnalytics: pubSubAnalytics)
 
         await connectable?.setup(request: networkConfig.request,
                                  connectionCallback: self.connectionCallback,

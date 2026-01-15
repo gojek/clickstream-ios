@@ -5,6 +5,8 @@
 //  Created by Anirudh Vyas on 21/04/20.
 //  Copyright © 2020 Gojek. All rights reserved.
 //
+
+import CourierCore
 import Foundation
 import SwiftProtobuf
 
@@ -379,9 +381,13 @@ extension Clickstream {
     /// - Parameter identifiers: A client's credentials
     public func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers,
                                          topic: String,
-                                         courierConnectOptionsObserver:  CourierConnectOptionsObserver?) {
+                                         connectOptionsObserver: CourierConnectOptionsObserver?,
+                                         pubSubAnalytics: ICourierEventHandler?) {
 
-        dependencies?.provideCourierClientIdentifiers(with: identifiers, topic: topic, courierConnectOptionsObserver: courierConnectOptionsObserver)
+        dependencies?.provideCourierClientIdentifiers(with: identifiers,
+                                                      topic: topic,
+                                                      connectOptionsObserver: connectOptionsObserver,
+                                                      pubSubAnalytics: pubSubAnalytics)
     }
 
     public func removeClientIdentifiers() {

@@ -24,7 +24,8 @@ final class CourierRetryMechanism: Retryable {
     private var persistence: DefaultDatabaseDAO<CourierEventRequest>
     private var retryTimer: DispatchSourceTimer?
     private var identifiers: CourierIdentifiers?
-    private var courierConnectOptionsObserver: CourierConnectOptionsObserver?
+    private var connectOptionsObserver: CourierConnectOptionsObserver?
+    private var pubSubAnalytics: ICourierEventHandler?
     private var topic: String?
     
     #if ETE_TEST_SUITE_ENABLED
@@ -322,11 +323,13 @@ extension CourierRetryMechanism {
 
     func configureIdentifiers(with identifiers: CourierIdentifiers,
                               topic: String,
-                              courierConnectOptionsObserver: CourierConnectOptionsObserver?) {
+                              connectOptionsObserver: CourierConnectOptionsObserver?,
+                              pubSubAnalytics: ICourierEventHandler?) {
 
         self.identifiers = identifiers
         self.topic = topic
-        self.courierConnectOptionsObserver = courierConnectOptionsObserver
+        self.connectOptionsObserver = connectOptionsObserver
+        self.pubSubAnalytics = pubSubAnalytics
         establishConnection(isForced: true)
     }
 
@@ -421,7 +424,7 @@ extension CourierRetryMechanism {
                 case .failure:
                     checkedSelf.stopObservingFailedBatches()
                 }
-            }, identifiers: identifiers, eventHandler: self, connectOptionsObserver: self.courierConnectOptionsObserver, isForced: isForced)
+            }, identifiers: identifiers, eventHandler: self, connectOptionsObserver: self.connectOptionsObserver, pubSubAnalytics: self.pubSubAnalytics, isForced: isForced)
         }
     }
     
