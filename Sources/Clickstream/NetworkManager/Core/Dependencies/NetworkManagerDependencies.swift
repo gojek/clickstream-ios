@@ -112,12 +112,15 @@ final class NetworkManagerDependencies {
         courierNetworkService.isConnected
     }
 
-    func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers, topic: String) {
+    func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers,
+                                  topic: String,
+                                  courierConnectOptionsObserver: CourierConnectOptionsObserver?) {
+
         guard let courierIdentifiers = identifiers as? CourierIdentifiers else {
             return
         }
 
-        courierRetryMech.configureIdentifiers(with: courierIdentifiers, topic: topic)
+        courierRetryMech.configureIdentifiers(with: courierIdentifiers, topic: topic, courierConnectOptionsObserver: courierConnectOptionsObserver)
     }
     
     func removeClientIdentifiers() {

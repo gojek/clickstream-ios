@@ -24,6 +24,7 @@ final class CourierRetryMechanism: Retryable {
     private var persistence: DefaultDatabaseDAO<CourierEventRequest>
     private var retryTimer: DispatchSourceTimer?
     private var identifiers: CourierIdentifiers?
+    private var courierConnectOptionsObserver: CourierConnectOptionsObserver?
     private var topic: String?
     
     #if ETE_TEST_SUITE_ENABLED
@@ -319,9 +320,13 @@ extension CourierRetryMechanism {
         terminateConnection()
     }
 
-    func configureIdentifiers(with identifiers: CourierIdentifiers, topic: String) {
+    func configureIdentifiers(with identifiers: CourierIdentifiers,
+                              topic: String,
+                              courierConnectOptionsObserver: CourierConnectOptionsObserver?) {
+
         self.identifiers = identifiers
         self.topic = topic
+        self.courierConnectOptionsObserver = courierConnectOptionsObserver
         establishConnection(isForced: true)
     }
 
@@ -329,16 +334,21 @@ extension CourierRetryMechanism {
         identifiers = nil
         topic = nil
         stopTracking()
+        terminateConnection(cleanCredentials: true)
     }
 }
 
 extension CourierRetryMechanism {
     
-    private func terminateConnection() {
+    private func terminateConnection(cleanCredentials: Bool = false) {
         guard isCourierConnectable else {
             return
         }
-        networkService.terminateConnection()
+
+        if cleanCredentials {
+            networkService.terminateConnection()
+        }
+
         stopObservingFailedBatches()
     }
     
@@ -364,7 +374,7 @@ extension CourierRetryMechanism {
     
     private func establishConnection(isForced: Bool = false) {
         // Only establish connection when Courier identifiers available
-        guard let identifiers else {
+        guard let identifiers, let courierConnectOptionsObserver else {
             return
         }
 
@@ -379,13 +389,16 @@ extension CourierRetryMechanism {
         }
         
         if isForced {
-            connect(with: identifiers, isForced: true)
+            connect(with: identifiers, isForced: true, connectOptionsObserver: courierConnectOptionsObserver)
         } else if !networkService.isConnected {
-            connect(with: identifiers, isForced: false)
+            connect(with: identifiers, isForced: false, connectOptionsObserver: courierConnectOptionsObserver)
         }
     }
     
-    private func connect(with identifiers: CourierIdentifiers, isForced: Bool) {
+    private func connect(with identifiers: CourierIdentifiers,
+                         isForced: Bool,
+                         connectOptionsObserver: CourierConnectOptionsObserver?) {
+
         Task {
             await networkService.initiateCourierConnection(connectionStatusListener: { [weak self] result in
                 guard let checkedSelf = self else {
@@ -410,7 +423,7 @@ extension CourierRetryMechanism {
                 case .failure:
                     checkedSelf.stopObservingFailedBatches()
                 }
-            }, identifiers: identifiers, eventHandler: self, isForced: isForced)
+            }, identifiers: identifiers, eventHandler: self, connectOptionsObserver: connectOptionsObserver, isForced: isForced)
         }
     }
     

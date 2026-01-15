@@ -11,15 +11,16 @@ final class CourierHandlerTests: XCTestCase {
     private var mockConfig: ClickstreamCourierClientConfig!
     private var mockCredentials: ClickstreamClientIdentifiers!
     private var mockEventHandler: ICourierEventHandler!
+    private var mockCourierConnectionsObserver: CourierConnectOptionsObserver!
     private var cancellables: Set<CourierCore.AnyCancellable>!
-    
+
     override func setUp() {
         super.setUp()
         cancellables = []
         mockConfig = createMockConfig()
         mockCredentials = createMockCredentials()
         mockEventHandler = MockCourierEventHandler()
-        sut = DefaultCourierHandler(config: mockConfig, userCredentials: mockCredentials)
+        sut = DefaultCourierHandler(config: mockConfig, userCredentials: mockCredentials, connectOptionsObserver: nil)
     }
     
     override func tearDown() {
@@ -64,7 +65,7 @@ final class CourierHandlerTests: XCTestCase {
     }
     
     func testDisconnect_WhenCalled_DoesNotThrow() {
-        XCTAssertNoThrow(sut.disconnect())
+        XCTAssertNoThrow(sut.destroyAndDisconnect())
     }
     
     func testSetup_WithoutConnectionCallback_CompletesSuccessfully() async {
@@ -84,19 +85,19 @@ final class CourierHandlerTests: XCTestCase {
                         connectionCallback: nil,
                         eventHandler: mockEventHandler)
         
-        XCTAssertNoThrow(sut.disconnect())
+        XCTAssertNoThrow(sut.destroyAndDisconnect())
     }
     
     func testMultipleDisconnectCalls_DoesNotThrow() {
-        XCTAssertNoThrow(sut.disconnect())
-        XCTAssertNoThrow(sut.disconnect())
-        XCTAssertNoThrow(sut.disconnect())
+        XCTAssertNoThrow(sut.destroyAndDisconnect())
+        XCTAssertNoThrow(sut.destroyAndDisconnect())
+        XCTAssertNoThrow(sut.destroyAndDisconnect())
     }
     
     func testConfigRetention_AfterInit_ConfigIsRetained() {
         let newConfig = createMockConfigWithDifferentValues()
         let newCredentials = createMockCredentialsWithDifferentValues()
-        let newSut = DefaultCourierHandler(config: newConfig, userCredentials: newCredentials)
+        let newSut = DefaultCourierHandler(config: newConfig, userCredentials: newCredentials, connectOptionsObserver: nil)
         
         XCTAssertNotNil(newSut)
         XCTAssertFalse(newSut.isConnected.value)
@@ -131,7 +132,7 @@ final class CourierHandlerTests: XCTestCase {
         let topic = "clickstream/topic"
         await sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
         
-        sut.disconnect()
+        sut.destroyAndDisconnect()
         
         let testData = "test message".data(using: .utf8)!
         let eventRequest = CourierEventRequest(guid: "12345", data: testData)
@@ -213,7 +214,7 @@ final class CourierHandlerTests: XCTestCase {
                 continue
             }
             
-            sut.disconnect()
+            sut.destroyAndDisconnect()
         }
         
         XCTAssertNotNil(sut)
@@ -309,7 +310,7 @@ final class CourierHandlerTests: XCTestCase {
         let request = createValidURLRequest()
         await sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
 
-        sut.disconnect()
+        sut.destroyAndDisconnect()
         
         let testData = "test message".data(using: .utf8)!
         let topic = "test/topic"

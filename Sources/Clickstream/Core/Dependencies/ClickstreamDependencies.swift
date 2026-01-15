@@ -108,9 +108,12 @@ extension DefaultClickstreamDependencies {
     /// Courier client's user credentials provider
     /// - Parameter identifiers: Client's user identifiers
     /// - Parameter topic: Courier's topic path
-    func provideCourierClientIdentifiers(with identifiers: ClickstreamClientIdentifiers, topic: String) {
+    func provideCourierClientIdentifiers(with identifiers: ClickstreamClientIdentifiers,
+                                         topic: String,
+                                         courierConnectOptionsObserver:  CourierConnectOptionsObserver?) {
+
         courierEventProcessor.setClientIdentifiers(identifiers)
-        networkManagerDependencies.provideClientIdentifiers(with: identifiers, topic: topic)
+        networkManagerDependencies.provideClientIdentifiers(with: identifiers, topic: topic, courierConnectOptionsObserver: courierConnectOptionsObserver)
     }
 
     /// Remove client identifier upon user's session is revoked

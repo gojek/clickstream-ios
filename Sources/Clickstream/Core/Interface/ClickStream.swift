@@ -377,8 +377,11 @@ extension Clickstream {
 
     /// Courier client's user credentials provider
     /// - Parameter identifiers: A client's credentials
-    public func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers, topic: String) {
-        dependencies?.provideCourierClientIdentifiers(with: identifiers, topic: topic)
+    public func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers,
+                                         topic: String,
+                                         courierConnectOptionsObserver:  CourierConnectOptionsObserver?) {
+
+        dependencies?.provideCourierClientIdentifiers(with: identifiers, topic: topic, courierConnectOptionsObserver: courierConnectOptionsObserver)
     }
 
     public func removeClientIdentifiers() {
