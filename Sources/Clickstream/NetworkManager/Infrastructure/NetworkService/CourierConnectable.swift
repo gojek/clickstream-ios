@@ -15,7 +15,12 @@ protocol CourierConnectableInputs {
     /// - Parameters:
     ///   - performOnQueue: A queue instance on which the tasks are performed.
     ///   - userCredentials: Client's user credentials
-    init(config: ClickstreamCourierClientConfig, userCredentials: ClickstreamClientIdentifiers)
+    ///   - connectOptionsObserver: Courier Connection Observer
+    ///   - pubSubAnalytics: ICourierEventHandler?
+    init(config: ClickstreamCourierClientConfig,
+         userCredentials: ClickstreamClientIdentifiers,
+         connectOptionsObserver: CourierConnectOptionsObserver?,
+         pubSubAnalytics: ICourierEventHandler?)
 
     /// Publish Event Request message to Courier
     /// - Parameters:
@@ -24,7 +29,7 @@ protocol CourierConnectableInputs {
     func publishMessage(_ eventRequest: CourierEventRequest, topic: String) async throws
 
     /// Disconnects the connection.
-    func disconnect()
+    func destroyAndDisconnect()
     
     /// Sets up a connectable
     /// - Parameters:

@@ -6,6 +6,7 @@
 //  Copyright © 2020 Gojek. All rights reserved.
 //
 
+import CourierCore
 import Foundation
 
 /// A class that generates all the dependencies of the Clickstream SDK.
@@ -108,9 +109,16 @@ extension DefaultClickstreamDependencies {
     /// Courier client's user credentials provider
     /// - Parameter identifiers: Client's user identifiers
     /// - Parameter topic: Courier's topic path
-    func provideCourierClientIdentifiers(with identifiers: ClickstreamClientIdentifiers, topic: String) {
+    func provideCourierClientIdentifiers(with identifiers: ClickstreamClientIdentifiers,
+                                         topic: String,
+                                         connectOptionsObserver: CourierConnectOptionsObserver?,
+                                         pubSubAnalytics: ICourierEventHandler?) {
+
         courierEventProcessor.setClientIdentifiers(identifiers)
-        networkManagerDependencies.provideClientIdentifiers(with: identifiers, topic: topic)
+        networkManagerDependencies.provideClientIdentifiers(with: identifiers,
+                                                            topic: topic,
+                                                            connectOptionsObserver: connectOptionsObserver,
+                                                            pubSubAnalytics: pubSubAnalytics)
     }
 
     /// Remove client identifier upon user's session is revoked

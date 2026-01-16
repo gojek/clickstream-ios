@@ -12,6 +12,8 @@ import CourierCore
 import CourierMQTT
 import Reachability
 
+public typealias CourierConnectOptionsObserver = (_ connectOptions: ConnectOptions) -> Void
+
 protocol CourierHandler: CourierConnectable { }
 
 final class DefaultCourierHandler: CourierHandler {
@@ -20,7 +22,8 @@ final class DefaultCourierHandler: CourierHandler {
     private var config: ClickstreamCourierClientConfig
     private var userCredentials: ClickstreamClientIdentifiers
     private var cancellables: Set<CourierCore.AnyCancellable> = []
-
+    private var connectOptionsObserver: CourierConnectOptionsObserver?
+    private var pubSubAnalytics: ICourierEventHandler?
     private lazy var authServiceProvider: IConnectionServiceProvider = {
         CourierAuthenticationProvider(config: config,
                                       userCredentials: userCredentials,
@@ -31,9 +34,15 @@ final class DefaultCourierHandler: CourierHandler {
         .init(courierClient?.connectionState == .connected)
     }
 
-    init(config: ClickstreamCourierClientConfig, userCredentials: ClickstreamClientIdentifiers) {
+    init(config: ClickstreamCourierClientConfig,
+         userCredentials: ClickstreamClientIdentifiers,
+         connectOptionsObserver: CourierConnectOptionsObserver?,
+         pubSubAnalytics: ICourierEventHandler?) {
+
         self.config = config
         self.userCredentials = userCredentials
+        self.connectOptionsObserver = connectOptionsObserver
+        self.pubSubAnalytics = pubSubAnalytics
     }
     
     func publishMessage(_ eventRequest: CourierEventRequest, topic: String) async throws {
@@ -43,14 +52,17 @@ final class DefaultCourierHandler: CourierHandler {
         try courierClient?.publishMessage(data, topic: topic, qos: .oneWithoutPersistenceAndRetry)
     }
     
-    func disconnect() {
+    func destroyAndDisconnect() {
         courierClient?.destroy()
-        courierClient?.disconnect()
     }
 
     func setup(request: URLRequest, connectionCallback: ConnectionStatus?, eventHandler: ICourierEventHandler) async {
         courierClient = await getCourierClient()
         courierClient?.addEventHandler(eventHandler)
+
+        if let pubSubAnalytics {
+            courierClient?.addEventHandler(pubSubAnalytics)
+        }
 
         await connect(connectionCallback: connectionCallback)
     }
@@ -86,9 +98,12 @@ extension DefaultCourierHandler {
 
     private func connect(connectionCallback: ConnectionStatus?) async {
         courierClient?.connect(source: "clickstream")
-        courierClient?.connectionStatePublisher.sink { state in
+        courierClient?.connectionStatePublisher.sink { [weak self] state in
             switch state {
             case .connected:
+                if let connectOptions = self?.authServiceProvider.existingConnectOptions {
+                    self?.connectOptionsObserver?(connectOptions)
+                }
                 connectionCallback?(.success(.connected))
             case .connecting:
                 connectionCallback?(.success(.connecting))

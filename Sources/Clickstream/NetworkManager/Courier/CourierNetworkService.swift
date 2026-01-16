@@ -33,7 +33,7 @@ final class CourierNetworkService<C: CourierConnectable>: NetworkService {
             }
         }
     }
-    
+
     /// Initializer
     /// - Parameters:
     ///   - networkConfig: Network Configuration.
@@ -53,10 +53,11 @@ final class CourierNetworkService<C: CourierConnectable>: NetworkService {
     func initiateCourierConnection(connectionStatusListener: ConnectionStatus?,
                                    identifiers: ClickstreamClientIdentifiers,
                                    eventHandler: ICourierEventHandler,
+                                   connectOptionsObserver: CourierConnectOptionsObserver?,
+                                   pubSubAnalytics: ICourierEventHandler?,
                                    isForced: Bool) async {
 
         if isForced {
-            _connectable?.disconnect()
             _connectable = nil
         }
 
@@ -65,8 +66,10 @@ final class CourierNetworkService<C: CourierConnectable>: NetworkService {
         }
 
         self.connectionCallback = connectionStatusListener
-
-        _connectable = C(config: courierConfig, userCredentials: identifiers)
+        _connectable = C(config: courierConfig,
+                         userCredentials: identifiers,
+                         connectOptionsObserver: connectOptionsObserver,
+                         pubSubAnalytics: pubSubAnalytics)
 
         await connectable?.setup(request: networkConfig.request,
                                  connectionCallback: self.connectionCallback,
@@ -81,7 +84,7 @@ extension CourierNetworkService {
     }
     
     func terminateConnection() {
-        _connectable?.disconnect()
+        _connectable?.destroyAndDisconnect()
     }
     
     func flushConnectable() {

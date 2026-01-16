@@ -24,6 +24,8 @@ final class CourierRetryMechanism: Retryable {
     private var persistence: DefaultDatabaseDAO<CourierEventRequest>
     private var retryTimer: DispatchSourceTimer?
     private var identifiers: CourierIdentifiers?
+    private var connectOptionsObserver: CourierConnectOptionsObserver?
+    private var pubSubAnalytics: ICourierEventHandler?
     private var topic: String?
     
     #if ETE_TEST_SUITE_ENABLED
@@ -319,9 +321,15 @@ extension CourierRetryMechanism {
         terminateConnection()
     }
 
-    func configureIdentifiers(with identifiers: CourierIdentifiers, topic: String) {
+    func configureIdentifiers(with identifiers: CourierIdentifiers,
+                              topic: String,
+                              connectOptionsObserver: CourierConnectOptionsObserver?,
+                              pubSubAnalytics: ICourierEventHandler?) {
+
         self.identifiers = identifiers
         self.topic = topic
+        self.connectOptionsObserver = connectOptionsObserver
+        self.pubSubAnalytics = pubSubAnalytics
         establishConnection(isForced: true)
     }
 
@@ -329,16 +337,21 @@ extension CourierRetryMechanism {
         identifiers = nil
         topic = nil
         stopTracking()
+        terminateConnection(cleanCredentials: true)
     }
 }
 
 extension CourierRetryMechanism {
     
-    private func terminateConnection() {
+    private func terminateConnection(cleanCredentials: Bool = false) {
         guard isCourierConnectable else {
             return
         }
-        networkService.terminateConnection()
+
+        if cleanCredentials {
+            networkService.terminateConnection()
+        }
+
         stopObservingFailedBatches()
     }
     
@@ -386,6 +399,7 @@ extension CourierRetryMechanism {
     }
     
     private func connect(with identifiers: CourierIdentifiers, isForced: Bool) {
+
         Task {
             await networkService.initiateCourierConnection(connectionStatusListener: { [weak self] result in
                 guard let checkedSelf = self else {
@@ -410,7 +424,7 @@ extension CourierRetryMechanism {
                 case .failure:
                     checkedSelf.stopObservingFailedBatches()
                 }
-            }, identifiers: identifiers, eventHandler: self, isForced: isForced)
+            }, identifiers: identifiers, eventHandler: self, connectOptionsObserver: self.connectOptionsObserver, pubSubAnalytics: self.pubSubAnalytics, isForced: isForced)
         }
     }
     
