@@ -30,7 +30,7 @@ protocol NetworkServiceInputs {
                                    eventHandler: ICourierEventHandler,
                                    connectOptionsObserver: CourierConnectOptionsObserver?,
                                    pubSubAnalytics: ICourierEventHandler?,
-                                   isForced: Bool) async
+                                   isForced: Bool)
 
     /// Writes data to the given connectable and fires a completion event after the write is completed.
     /// - Parameters:
@@ -60,6 +60,6 @@ extension NetworkService {
                                    eventHandler: ICourierEventHandler,
                                    connectOptionsObserver: CourierConnectOptionsObserver?,
                                    pubSubAnalytics: ICourierEventHandler?,
-                                   isForced: Bool) async {}
+                                   isForced: Bool) {}
     func write<T: SwiftProtobuf.Message>(_ data: Data, completion: @escaping (Result<T, ConnectableError>) -> Void) {}
 }

@@ -20,7 +20,7 @@ final class CourierRetryMechanism: Retryable {
     private var deviceStatus: DefaultDeviceStatus
     private let appStateNotifier: AppStateNotifierService
     private var terminationCountDown: DispatchSourceTimer?
-    private var networkServiceState: ConnectableState = .disconnected
+    private var networkServiceState: ConnectableState?
     private var persistence: DefaultDatabaseDAO<CourierEventRequest>
     private var retryTimer: DispatchSourceTimer?
     private var identifiers: CourierIdentifiers?
@@ -413,33 +413,30 @@ extension CourierRetryMechanism {
     }
     
     private func connect(with identifiers: CourierIdentifiers, isForced: Bool) {
+        networkService.initiateCourierConnection(connectionStatusListener: { [weak self] result in
+            guard let checkedSelf = self else {
+                return
+            }
 
-        Task {
-            await networkService.initiateCourierConnection(connectionStatusListener: { [weak self] result in
-                guard let checkedSelf = self else {
-                    return
-                }
+            NotificationCenter.default.post(name: Constants.CourierConnectionNotification,
+                                            object: [Constants.Strings.didConnect: checkedSelf.networkService.isConnected])
 
-                NotificationCenter.default.post(name: Constants.CourierConnectionNotification,
-                                                object: [Constants.Strings.didConnect: checkedSelf.networkService.isConnected])
-
-                switch result {
-                case .success(let state):
-                    switch state {
-                    case .connected:
-                        checkedSelf.startObservingFailedBatches()
-                    case .cancelled, .disconnected:
-                        checkedSelf.stopObservingFailedBatches()
-                        checkedSelf.networkService.flushConnectable()
-                    default:
-                        break
-                    }
-                    checkedSelf.networkServiceState = state
-                case .failure:
+            switch result {
+            case .success(let state):
+                switch state {
+                case .connected:
+                    checkedSelf.startObservingFailedBatches()
+                case .cancelled, .disconnected:
                     checkedSelf.stopObservingFailedBatches()
+                    checkedSelf.networkService.flushConnectable()
+                default:
+                    break
                 }
-            }, identifiers: identifiers, eventHandler: self, connectOptionsObserver: self.connectOptionsObserver, pubSubAnalytics: self.pubSubAnalytics, isForced: isForced)
-        }
+                checkedSelf.networkServiceState = state
+            case .failure:
+                checkedSelf.stopObservingFailedBatches()
+            }
+        }, identifiers: identifiers, eventHandler: self, connectOptionsObserver: self.connectOptionsObserver, pubSubAnalytics: self.pubSubAnalytics, isForced: isForced)
     }
     
 }
