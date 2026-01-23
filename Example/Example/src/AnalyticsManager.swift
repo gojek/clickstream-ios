@@ -110,7 +110,7 @@ class AnalyticsManager {
             assertionFailure("Courier's topic is missing")
             return
         }
-        clickstream?.provideClientIdentifiers(with: userCredentials, topic: courierTopic)
+        clickstream?.provideClientIdentifiers(with: userCredentials, topic: courierTopic, connectOptionsObserver: nil, pubSubAnalytics: nil)
         debugPrint("[clickstream-sqlite] \(NSHomeDirectory())/Library/Application Support/clickstream_wal/db.sqlite")
     }
 }

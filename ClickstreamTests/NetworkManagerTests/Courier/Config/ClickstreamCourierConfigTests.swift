@@ -29,13 +29,15 @@ class ClickstreamCourierClientConfigTests: XCTestCase {
         XCTAssertFalse(config.courierMessagePersistenceEnabled)
         XCTAssertEqual(config.courierMessagePersistenceTTLSecs, 86400)
         XCTAssertFalse(config.courierInitCoreDataPersistenceContextEnabled)
-        XCTAssertFalse(config.courierConnectTimeoutPolicyEnabled)
-        XCTAssertEqual(config.courierConnectTimeoutPolicyIntervalMillis, 16)
-        XCTAssertEqual(config.courierConnectTimeoutPolicyMaxRetryCount, 10)
-        XCTAssertFalse(config.courierInactivityPolicyEnabled)
-        XCTAssertEqual(config.courierInactivityPolicyIntervalMillis, 12)
-        XCTAssertEqual(config.courierInactivityPolicyTimeoutMillis, 10)
-        XCTAssertEqual(config.courierInactivityPolicyReadTimeoutMillis, 40)
+        XCTAssertFalse(config.courierConnectPolicy.isEnabled)
+        XCTAssertEqual(config.courierConnectPolicy.intervalSecs, 15)
+        XCTAssertEqual(config.courierConnectPolicy.timeoutSecs, 10)
+        XCTAssertFalse(config.courierInactivityPolicy.isEnabled)
+        XCTAssertEqual(config.courierInactivityPolicy.intervalSecs, 12)
+        XCTAssertEqual(config.courierInactivityPolicy.timeoutSecs, 10)
+        XCTAssertEqual(config.courierInactivityPolicy.readTimeoutSecs, 40)
+        XCTAssertEqual(config.courierHealthConfig.pubSubEventProbability, 99)
+        XCTAssertEqual(config.courierHealthConfig.csTrackingHealthEventsEnabled, true)
     }
     
     func testCustomInitialization() {
@@ -55,13 +57,9 @@ class ClickstreamCourierClientConfigTests: XCTestCase {
             courierMessagePersistenceEnabled: true,
             courierMessagePersistenceTTLSecs: 172800,
             courierInitCoreDataPersistenceContextEnabled: true,
-            courierConnectTimeoutPolicyEnabled: true,
-            courierConnectTimeoutPolicyIntervalMillis: 32,
-            courierConnectTimeoutPolicyMaxRetryCount: 20,
-            courierInactivityPolicyEnabled: true,
-            courierInactivityPolicyIntervalMillis: 24,
-            courierInactivityPolicyTimeoutMillis: 20,
-            courierInactivityPolicyReadTimeoutMillis: 80
+            courierConnectPolicy: .init(isEnabled: true, intervalSecs: 32, timeoutSecs: 20),
+            courierInactivityPolicy: .init(isEnabled: true, intervalSecs: 24, timeoutSecs: 20, readTimeoutSecs: 80),
+            courierHealthConfig: .init(pubSubEventProbability: 50, csTrackingHealthEventsEnabled: false)
         )
         
         XCTAssertEqual(config.courierMessageAdapter.count, 0)
@@ -78,13 +76,15 @@ class ClickstreamCourierClientConfigTests: XCTestCase {
         XCTAssertTrue(config.courierMessagePersistenceEnabled)
         XCTAssertEqual(config.courierMessagePersistenceTTLSecs, 172800)
         XCTAssertTrue(config.courierInitCoreDataPersistenceContextEnabled)
-        XCTAssertTrue(config.courierConnectTimeoutPolicyEnabled)
-        XCTAssertEqual(config.courierConnectTimeoutPolicyIntervalMillis, 32)
-        XCTAssertEqual(config.courierConnectTimeoutPolicyMaxRetryCount, 20)
-        XCTAssertTrue(config.courierInactivityPolicyEnabled)
-        XCTAssertEqual(config.courierInactivityPolicyIntervalMillis, 24)
-        XCTAssertEqual(config.courierInactivityPolicyTimeoutMillis, 20)
-        XCTAssertEqual(config.courierInactivityPolicyReadTimeoutMillis, 80)
+        XCTAssertTrue(config.courierConnectPolicy.isEnabled)
+        XCTAssertEqual(config.courierConnectPolicy.intervalSecs, 32)
+        XCTAssertEqual(config.courierConnectPolicy.timeoutSecs, 20)
+        XCTAssertTrue(config.courierInactivityPolicy.isEnabled)
+        XCTAssertEqual(config.courierInactivityPolicy.intervalSecs, 24)
+        XCTAssertEqual(config.courierInactivityPolicy.timeoutSecs, 20)
+        XCTAssertEqual(config.courierInactivityPolicy.readTimeoutSecs, 80)
+        XCTAssertEqual(config.courierHealthConfig.pubSubEventProbability, 50)
+        XCTAssertFalse(config.courierHealthConfig.csTrackingHealthEventsEnabled)
     }
     
     func testPartialCustomInitialization() {
@@ -115,12 +115,14 @@ class ClickstreamCourierClientConfigTests: XCTestCase {
         let config = ClickstreamCourierClientConfig(
             courierPingIntervalMillis: -10,
             courierAutoReconnectIntervalSecs: -5,
-            courierConnectTimeoutPolicyMaxRetryCount: -1
+            courierConnectPolicy: .init(timeoutSecs: -1),
+            courierHealthConfig: .init(pubSubEventProbability: -99)
         )
         
         XCTAssertEqual(config.courierPingIntervalMillis, -10)
         XCTAssertEqual(config.courierAutoReconnectIntervalSecs, -5)
-        XCTAssertEqual(config.courierConnectTimeoutPolicyMaxRetryCount, -1)
+        XCTAssertEqual(config.courierConnectPolicy.timeoutSecs, -1)
+        XCTAssertEqual(config.courierHealthConfig.pubSubEventProbability, -99)
     }
     
     func testLargeValues() {
@@ -142,8 +144,8 @@ class ClickstreamCourierClientConfigTests: XCTestCase {
             courierIsCleanSessionEnabled: true,
             courierMessagePersistenceEnabled: true,
             courierInitCoreDataPersistenceContextEnabled: true,
-            courierConnectTimeoutPolicyEnabled: true,
-            courierInactivityPolicyEnabled: true
+            courierConnectPolicy: .init(isEnabled: true),
+            courierInactivityPolicy: .init(isEnabled: true)
         )
         
         XCTAssertTrue(configAllTrue.courierAuthTimeoutEnabled)
@@ -151,8 +153,8 @@ class ClickstreamCourierClientConfigTests: XCTestCase {
         XCTAssertTrue(configAllTrue.courierIsCleanSessionEnabled)
         XCTAssertTrue(configAllTrue.courierMessagePersistenceEnabled)
         XCTAssertTrue(configAllTrue.courierInitCoreDataPersistenceContextEnabled)
-        XCTAssertTrue(configAllTrue.courierConnectTimeoutPolicyEnabled)
-        XCTAssertTrue(configAllTrue.courierInactivityPolicyEnabled)
+        XCTAssertTrue(configAllTrue.courierConnectPolicy.isEnabled)
+        XCTAssertTrue(configAllTrue.courierInactivityPolicy.isEnabled)
         
         let configAllFalse = ClickstreamCourierClientConfig(
             courierAuthTimeoutEnabled: false,
@@ -160,8 +162,9 @@ class ClickstreamCourierClientConfigTests: XCTestCase {
             courierIsCleanSessionEnabled: false,
             courierMessagePersistenceEnabled: false,
             courierInitCoreDataPersistenceContextEnabled: false,
-            courierConnectTimeoutPolicyEnabled: false,
-            courierInactivityPolicyEnabled: false
+            courierConnectPolicy: .init(isEnabled: false),
+            courierInactivityPolicy: .init(isEnabled: false),
+            courierHealthConfig: .init(csTrackingHealthEventsEnabled: false)
         )
         
         XCTAssertFalse(configAllFalse.courierAuthTimeoutEnabled)
@@ -169,7 +172,8 @@ class ClickstreamCourierClientConfigTests: XCTestCase {
         XCTAssertFalse(configAllFalse.courierIsCleanSessionEnabled)
         XCTAssertFalse(configAllFalse.courierMessagePersistenceEnabled)
         XCTAssertFalse(configAllFalse.courierInitCoreDataPersistenceContextEnabled)
-        XCTAssertFalse(configAllFalse.courierConnectTimeoutPolicyEnabled)
-        XCTAssertFalse(configAllFalse.courierInactivityPolicyEnabled)
+        XCTAssertFalse(configAllFalse.courierConnectPolicy.isEnabled)
+        XCTAssertFalse(configAllFalse.courierInactivityPolicy.isEnabled)
+        XCTAssertFalse(configAllFalse.courierHealthConfig.csTrackingHealthEventsEnabled)
     }
 }

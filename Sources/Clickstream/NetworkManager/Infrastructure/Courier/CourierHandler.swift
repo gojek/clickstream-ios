@@ -71,14 +71,14 @@ final class DefaultCourierHandler: CourierHandler {
 extension DefaultCourierHandler {
 
     private func getCourierClient() async -> CourierClient {
-        let connectPolicy = ConnectTimeoutPolicy(isEnabled: config.courierConnectTimeoutPolicyEnabled,
-                                                 timerInterval: TimeInterval(config.courierConnectTimeoutPolicyIntervalMillis),
-                                                 timeout: TimeInterval(config.courierInactivityPolicyTimeoutMillis))
+        let connectPolicy = ConnectTimeoutPolicy(isEnabled: config.courierConnectPolicy.isEnabled,
+                                                 timerInterval: TimeInterval(config.courierConnectPolicy.intervalSecs),
+                                                 timeout: TimeInterval(config.courierConnectPolicy.timeoutSecs))
 
-        let idleActivityPolicy = IdleActivityTimeoutPolicy.init(isEnabled: config.courierInactivityPolicyEnabled,
-                                                                timerInterval: TimeInterval(config.courierInactivityPolicyIntervalMillis),
-                                                                inactivityTimeout: TimeInterval(config.courierInactivityPolicyTimeoutMillis),
-                                                                readTimeout: TimeInterval(config.courierInactivityPolicyReadTimeoutMillis))
+        let idleActivityPolicy = IdleActivityTimeoutPolicy.init(isEnabled: config.courierInactivityPolicy.isEnabled,
+                                                                timerInterval: TimeInterval(config.courierInactivityPolicy.intervalSecs),
+                                                                inactivityTimeout: TimeInterval(config.courierInactivityPolicy.timeoutSecs),
+                                                                readTimeout: TimeInterval(config.courierInactivityPolicy.readTimeoutSecs))
 
         let mqttConfig = MQTTClientConfig(authService: authServiceProvider,
                                           messageAdapters: config.courierMessageAdapter,
