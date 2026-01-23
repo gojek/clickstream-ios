@@ -71,7 +71,7 @@ final class CourierHandlerTests: XCTestCase {
     func testSetup_WithoutConnectionCallback_CompletesSuccessfully() async {
         let request = createValidURLRequest()
         
-        await sut.setup(request: request, 
+        sut.setup(request: request,
                         connectionCallback: nil,
                         eventHandler: mockEventHandler)
         
@@ -81,9 +81,9 @@ final class CourierHandlerTests: XCTestCase {
     func testSequentialSetupAndDisconnect_DoesNotThrow() async {
         let request = createValidURLRequest()
         
-        await sut.setup(request: request, 
-                        connectionCallback: nil,
-                        eventHandler: mockEventHandler)
+        sut.setup(request: request,
+                  connectionCallback: nil,
+                  eventHandler: mockEventHandler)
         
         XCTAssertNoThrow(sut.destroyAndDisconnect())
     }
@@ -130,7 +130,7 @@ final class CourierHandlerTests: XCTestCase {
     func testPublishMessage_AfterDisconnect_ThrowsError() async {
         let request = createValidURLRequest()
         let topic = "clickstream/topic"
-        await sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
+        sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
         
         sut.destroyAndDisconnect()
         
@@ -159,7 +159,7 @@ final class CourierHandlerTests: XCTestCase {
     
     func testPublishMessage_ConcurrentCalls_HandlesCorrectly() async {
         let request = createValidURLRequest()
-        await sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
+        sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
 
         let testData1 = "message1".data(using: .utf8)!
         let testData2 = "message2".data(using: .utf8)!
@@ -202,7 +202,7 @@ final class CourierHandlerTests: XCTestCase {
         let request = createValidURLRequest()
         
         for _ in 0..<10 {
-            await sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
+            sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
 
             let testData = "test".data(using: .utf8)!
             let topic = "clickstream/topic"
@@ -308,7 +308,7 @@ final class CourierHandlerTests: XCTestCase {
     
     func testPublishMessage_AfterDisconnectWithParameters_ThrowsError() async {
         let request = createValidURLRequest()
-        await sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
+        sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
 
         sut.destroyAndDisconnect()
         
@@ -338,7 +338,7 @@ final class CourierHandlerTests: XCTestCase {
     
     func testPublishMessage_ConcurrentCallsWithParameters_HandlesCorrectly() async {
         let request = createValidURLRequest()
-        await sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
+        sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
 
         let testData1 = "message1".data(using: .utf8)!
         let testData2 = "message2".data(using: .utf8)!

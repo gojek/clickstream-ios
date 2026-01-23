@@ -55,7 +55,7 @@ final class CourierNetworkService<C: CourierConnectable>: NetworkService {
                                    eventHandler: ICourierEventHandler,
                                    connectOptionsObserver: CourierConnectOptionsObserver?,
                                    pubSubAnalytics: ICourierEventHandler?,
-                                   isForced: Bool) async {
+                                   isForced: Bool) {
 
         if isForced {
             _connectable = nil
@@ -71,16 +71,16 @@ final class CourierNetworkService<C: CourierConnectable>: NetworkService {
                          connectOptionsObserver: connectOptionsObserver,
                          pubSubAnalytics: pubSubAnalytics)
 
-        await connectable?.setup(request: networkConfig.request,
-                                 connectionCallback: self.connectionCallback,
-                                 eventHandler: eventHandler)
+        connectable?.setup(request: networkConfig.request,
+                           connectionCallback: self.connectionCallback,
+                           eventHandler: eventHandler)
     }
 }
 
 extension CourierNetworkService {
     
-    func publish(_ eventRequest: CourierEventRequest, topic: String) async throws {
-        try await _connectable?.publishMessage(eventRequest, topic: topic)
+    func publish(_ eventRequest: CourierEventRequest, topic: String) throws {
+        try _connectable?.publishMessage(eventRequest, topic: topic)
     }
     
     func terminateConnection() {

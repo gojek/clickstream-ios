@@ -45,7 +45,7 @@ final class DefaultCourierHandler: CourierHandler {
         self.pubSubAnalytics = pubSubAnalytics
     }
     
-    func publishMessage(_ eventRequest: CourierEventRequest, topic: String) async throws {
+    func publishMessage(_ eventRequest: CourierEventRequest, topic: String) throws {
         guard let data = eventRequest.data else {
             throw CourierError.encodingError
         }
@@ -56,21 +56,21 @@ final class DefaultCourierHandler: CourierHandler {
         courierClient?.destroy()
     }
 
-    func setup(request: URLRequest, connectionCallback: ConnectionStatus?, eventHandler: ICourierEventHandler) async {
-        courierClient = await getCourierClient()
+    func setup(request: URLRequest, connectionCallback: ConnectionStatus?, eventHandler: ICourierEventHandler) {
+        courierClient = getCourierClient()
         courierClient?.addEventHandler(eventHandler)
 
         if let pubSubAnalytics {
             courierClient?.addEventHandler(pubSubAnalytics)
         }
 
-        await connect(connectionCallback: connectionCallback)
+        connect(connectionCallback: connectionCallback)
     }
 }
 
 extension DefaultCourierHandler {
 
-    private func getCourierClient() async -> CourierClient {
+    private func getCourierClient() -> CourierClient {
         let connectPolicy = ConnectTimeoutPolicy(isEnabled: config.courierConnectPolicy.isEnabled,
                                                  timerInterval: TimeInterval(config.courierConnectPolicy.intervalSecs),
                                                  timeout: TimeInterval(config.courierConnectPolicy.timeoutSecs))
@@ -96,7 +96,7 @@ extension DefaultCourierHandler {
         return CourierClientFactory().makeMQTTClient(config: mqttConfig)
     }
 
-    private func connect(connectionCallback: ConnectionStatus?) async {
+    private func connect(connectionCallback: ConnectionStatus?) {
         courierClient?.connect(source: "clickstream")
         courierClient?.connectionStatePublisher.sink { [weak self] state in
             switch state {
