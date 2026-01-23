@@ -77,7 +77,7 @@ final class CourierEventBatchCreatorTests: XCTestCase {
     }
     
     func testDefaultHealthTrackingConfig() {
-        XCTAssertTrue(sut.isCSHealthTrackingEnabled)
+        XCTAssertFalse(sut.isCSHealthTrackingEnabled)
     }
 }
 

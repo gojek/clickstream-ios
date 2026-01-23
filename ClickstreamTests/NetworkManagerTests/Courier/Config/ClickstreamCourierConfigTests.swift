@@ -36,8 +36,8 @@ class ClickstreamCourierClientConfigTests: XCTestCase {
         XCTAssertEqual(config.courierInactivityPolicy.intervalSecs, 12)
         XCTAssertEqual(config.courierInactivityPolicy.timeoutSecs, 10)
         XCTAssertEqual(config.courierInactivityPolicy.readTimeoutSecs, 40)
-        XCTAssertEqual(config.courierHealthConfig.pubSubEventProbability, 99)
-        XCTAssertEqual(config.courierHealthConfig.csTrackingHealthEventsEnabled, true)
+        XCTAssertEqual(config.courierHealthConfig.pubSubEventProbability, 0)
+        XCTAssertEqual(config.courierHealthConfig.csTrackingHealthEventsEnabled, false)
     }
     
     func testCustomInitialization() {

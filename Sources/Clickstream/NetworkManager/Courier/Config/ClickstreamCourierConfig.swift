@@ -99,7 +99,7 @@ public struct ClickstreamCourierHealthConfig: Decodable {
     public let pubSubEventProbability: Int
     public let csTrackingHealthEventsEnabled: Bool
 
-    public init(pubSubEventProbability: Int = 99, csTrackingHealthEventsEnabled: Bool = true) {
+    public init(pubSubEventProbability: Int = 0, csTrackingHealthEventsEnabled: Bool = false) {
         self.pubSubEventProbability = pubSubEventProbability
         self.csTrackingHealthEventsEnabled = csTrackingHealthEventsEnabled
     }
