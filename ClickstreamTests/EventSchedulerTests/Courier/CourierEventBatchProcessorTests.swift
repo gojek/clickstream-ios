@@ -10,6 +10,7 @@ final class CourierEventBatchProcessorTests: XCTestCase {
     private var mockAppStateNotifier: MockAppStateNotifierService!
     private var mockBatchSizeRegulator: CourierBatchSizeRegulator!
     private var mockPersistence: DefaultDatabaseDAO<CourierEvent>!
+    private var mockHealthTrackingConfig: ClickstreamCourierHealthConfig!
     private var sut: CourierEventBatchProcessor!
     
     private let database = try! DefaultDatabase(qos: .WAL)
@@ -20,7 +21,12 @@ final class CourierEventBatchProcessorTests: XCTestCase {
     override func setUp() {
         super.setUp()
         mockNetworkBuilder = MockNetworkBuilder()
-        mockEventBatchCreator = CourierEventBatchCreator(with: mockNetworkBuilder, performOnQueue: daoQueue)
+        mockHealthTrackingConfig = ClickstreamCourierHealthConfig(csTrackingHealthEventsEnabled: true)
+        mockEventBatchCreator = CourierEventBatchCreator(
+            with: mockNetworkBuilder,
+            performOnQueue: daoQueue,
+            healthTrackingConfig: mockHealthTrackingConfig
+        )
         mockSchedulerService = MockSchedulerService()
         mockAppStateNotifier = MockAppStateNotifierService()
         mockBatchSizeRegulator = CourierBatchSizeRegulator()
@@ -42,6 +48,7 @@ final class CourierEventBatchProcessorTests: XCTestCase {
         mockAppStateNotifier = nil
         mockSchedulerService = nil
         mockEventBatchCreator = nil
+        mockHealthTrackingConfig = nil
         super.tearDown()
     }
     

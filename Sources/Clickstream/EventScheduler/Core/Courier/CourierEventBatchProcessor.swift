@@ -188,7 +188,7 @@ final class CourierEventBatchProcessor: EventBatchProcessor {
 private extension CourierEventBatchProcessor {
     func flushObservabilityEvents() {
         #if TRACKER_ENABLED
-        guard eventBatchCreator.canForward,
+        guard eventBatchCreator.isCSHealthTrackingEnabled, eventBatchCreator.canForward,
               let events = Tracker.sharedInstance?.sendHealthEventsToInternalParty(),
               !events.isEmpty else { return }
         

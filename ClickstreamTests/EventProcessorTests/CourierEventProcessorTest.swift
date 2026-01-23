@@ -38,7 +38,7 @@ class CourierEventProcessorTest: XCTestCase {
         persitance = DefaultDatabaseDAO<CourierEvent>(database: db, performOnQueue: mockQueue)
         
         courierNetworkBuilder = MockNetworkBuilder()
-        courierBatchCreator = CourierEventBatchCreator(with: courierNetworkBuilder, performOnQueue: mockQueue)
+        courierBatchCreator = CourierEventBatchCreator(with: courierNetworkBuilder, performOnQueue: mockQueue, healthTrackingConfig: .init())
         
         courierBatchEventProcessor = CourierEventBatchProcessor(with: courierBatchCreator,
                                                                 schedulerService: MockSchedulerService(),
