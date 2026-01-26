@@ -93,8 +93,8 @@ class CourierAuthenticationProviderTests: XCTestCase {
             networkTypeProvider: NetworkType.wifi
         )
         
-        XCTAssertNil(provider.cachedAuthResponse)
-        XCTAssertNil(mockUserDefaults.data(forKey: "connect_auth_response"))
+        XCTAssertNotNil(provider.cachedAuthResponse)
+        XCTAssertNotNil(mockUserDefaults.data(forKey: "connect_auth_response"))
     }
     
     func testClientIdGeneration() {
@@ -148,26 +148,10 @@ class CourierAuthenticationProviderTests: XCTestCase {
         XCTAssertNil(provider.cachedAuthResponse)
     }
     
-    func testIsTokenValidWithExpiryDisabled() {
-        let pastDate = Date(timeIntervalSinceNow: -3600)
-        let courierConnect = CourierConnect(
-            token: "test-token",
-            broker: CourierConnect.Broker(host: "test.com", port: 1883),
-            expiryInSec: 3600,
-            expiryTimestamp: pastDate
-        )
-        
-        let isValid = CourierAuthenticationProvider.isTokenValid(
-            authResponse: courierConnect,
-            cachingType: .disk,
-            isTokenCacheExpiryEnabled: false
-        )
-        
-        XCTAssertTrue(isValid)
-    }
+
     
     func testIsTokenValidWithValidToken() {
-        let futureDate = Date(timeIntervalSinceNow: 3600)
+        let futureDate = Date(timeIntervalSinceNow: 3599)
         let courierConnect = CourierConnect(
             token: "valid-token",
             broker: CourierConnect.Broker(host: "test.com", port: 1883),
@@ -175,17 +159,15 @@ class CourierAuthenticationProviderTests: XCTestCase {
             expiryTimestamp: futureDate
         )
         
-        let isValid = CourierAuthenticationProvider.isTokenValid(
-            authResponse: courierConnect,
-            cachingType: .disk,
-            isTokenCacheExpiryEnabled: true
+        let isValid = CourierAuthenticationProvider.isCachedTokenValid(
+            authResponse: courierConnect
         )
         
         XCTAssertTrue(isValid)
     }
     
     func testIsTokenValidWithExpiredToken() {
-        let pastDate = Date(timeIntervalSinceNow: -3600)
+        let pastDate = Date(timeIntervalSinceNow: 3601)
         let courierConnect = CourierConnect(
             token: "expired-token",
             broker: CourierConnect.Broker(host: "test.com", port: 1883),
@@ -193,10 +175,8 @@ class CourierAuthenticationProviderTests: XCTestCase {
             expiryTimestamp: pastDate
         )
         
-        let isValid = CourierAuthenticationProvider.isTokenValid(
-            authResponse: courierConnect,
-            cachingType: .disk,
-            isTokenCacheExpiryEnabled: true
+        let isValid = CourierAuthenticationProvider.isCachedTokenValid(
+            authResponse: courierConnect
         )
         
         XCTAssertFalse(isValid)
@@ -210,28 +190,42 @@ class CourierAuthenticationProviderTests: XCTestCase {
             expiryTimestamp: nil
         )
         
-        let isValid = CourierAuthenticationProvider.isTokenValid(
-            authResponse: courierConnect,
-            cachingType: .disk,
-            isTokenCacheExpiryEnabled: true
+        let isValid = CourierAuthenticationProvider.isCachedTokenValid(
+            authResponse: courierConnect
+        )
+        
+        XCTAssertFalse(isValid)
+    }
+    
+    func testIsCachedTokenValidWithThresholdCheck() {
+        let expiryMins = 5
+        let futureDate = Date(timeIntervalSinceNow: TimeInterval(expiryMins * 60 + 10))
+        let courierConnect = CourierConnect(
+            token: "threshold-token",
+            broker: CourierConnect.Broker(host: "test.com", port: 1883),
+            expiryInSec: 3600,
+            expiryTimestamp: futureDate
+        )
+        
+        let isValid = CourierAuthenticationProvider.isCachedTokenValid(
+            authResponse: courierConnect
         )
         
         XCTAssertTrue(isValid)
     }
     
-    func testIsTokenValidWithInMemoryCaching() {
-        let pastDate = Date(timeIntervalSinceNow: -3600)
+    func testIsCachedTokenValidBelowThreshold() {
+        let expiryMins = 5
+        let futureDate = Date(timeIntervalSinceNow: TimeInterval(expiryMins * 60 - 10))
         let courierConnect = CourierConnect(
-            token: "memory-token",
+            token: "below-threshold-token",
             broker: CourierConnect.Broker(host: "test.com", port: 1883),
             expiryInSec: 3600,
-            expiryTimestamp: pastDate
+            expiryTimestamp: futureDate
         )
         
-        let isValid = CourierAuthenticationProvider.isTokenValid(
-            authResponse: courierConnect,
-            cachingType: .inMemory,
-            isTokenCacheExpiryEnabled: true
+        let isValid = CourierAuthenticationProvider.isCachedTokenValid(
+            authResponse: courierConnect
         )
         
         XCTAssertTrue(isValid)

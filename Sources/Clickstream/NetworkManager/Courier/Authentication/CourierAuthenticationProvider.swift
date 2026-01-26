@@ -18,6 +18,29 @@ enum CourierConnectCacheType: Int {
     case noop, inMemory, disk
 }
 
+fileprivate enum CourierAuthError: Error {
+    
+    case httpError(_ statusCode: Int)
+    case decodingError
+    case otherError(_ description: String)
+
+    var errorDescription: String {
+        switch self {
+        case .httpError(let code):
+            return "HTTP Error: \(code)"
+        case .decodingError:
+            return "JSON Decoding Error"
+        case .otherError(let description):
+            return "Other Error: \(description)"
+        }
+    }
+
+    var asNSError: NSError {
+        NSError(domain: "com.clickstream.courier", code: -1, userInfo: ["error_description": errorDescription])
+    }
+
+}
+
 final class CourierAuthenticationProvider: IConnectionServiceProvider {
 
     private let cachingType: CourierConnectCacheType
@@ -42,6 +65,7 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
             } else {
                 userDefaults.removeObject(forKey: userDefaultsKey)
             }
+            userDefaults.synchronize()
         }
     }
 
@@ -97,16 +121,15 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
         self.userDefaults = userDefaults
         self.userDefaultsKey = userDefaultsKey
 
-        if cachingType == .disk,
+        if cachingType == .disk, config.courierTokenCacheExpiryEnabled,
             let data = userDefaults.data(forKey: userDefaultsKey),
             let authResponse = try? JSONDecoder().decode(CourierConnect.self, from: data),
-            Self.isTokenValid(authResponse: authResponse,
-                              cachingType: cachingType,
-                              isTokenCacheExpiryEnabled: config.courierTokenCacheExpiryEnabled) {
+            Self.isCachedTokenValid(authResponse: authResponse) {
 
             self._cachedAuthResponse = Atomic(authResponse)
         } else {
             userDefaults.removeObject(forKey: userDefaultsKey)
+            userDefaults.synchronize()
             self._cachedAuthResponse = Atomic(nil)
         }
 
@@ -116,12 +139,11 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
     }
 
     func getConnectOptions(completion: @escaping (Result<ConnectOptions, AuthError>) -> Void) {
-        if cachingType != .noop, let cachedCourierConnect = self.cachedAuthResponse,
-            Self.isTokenValid(authResponse: cachedCourierConnect,
-                              cachingType: self.cachingType,
-                              isTokenCacheExpiryEnabled: self.config.courierTokenCacheExpiryEnabled) {
-            
-            let connectOptions = connectOptions(with: cachedCourierConnect)
+        if cachingType == .disk, config.courierTokenCacheExpiryEnabled, let cachedAuthResponse,
+            Self.isCachedTokenValid(authResponse: cachedAuthResponse) {
+    
+            // Fetch cached auth response and assign `ConnectOptions` to class variable
+            let connectOptions = connectOptions(with: cachedAuthResponse)
             self.existingConnectOptions = connectOptions
             completion(.success(connectOptions))
             return
@@ -129,15 +151,28 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
 
         Task {
             do {
-                let courierConnect = try await executeRequest(with: userCredentials.authURLRequest)
-                let connectOptions = connectOptions(with: courierConnect)
+                var authResponse = try await executeRequest(with: userCredentials.authURLRequest)
+    
+                if self.cachingType == .disk {
+                    // Assign `expiry_in_sec` to expiryTimestamp
+                    authResponse.expiryTimestamp = Date().addingTimeInterval(authResponse.expiryInSec)
+                }
+
+                if self.cachingType != .noop {
+                    // Update cached response
+                    self.cachedAuthResponse = authResponse
+                }
+
+                // Convert auth response into `ConnectOptions`
+                let connectOptions = connectOptions(with: authResponse)
+                
                 self.existingConnectOptions = connectOptions
                 completion(.success(connectOptions))
             } catch(let error) {
                 self.existingConnectOptions = nil
-                
-                if let authError = error as? AuthError {
-                    completion(.failure(authError))
+
+                if let courierAuthError = error as? CourierAuthError {
+                    completion(.failure(.otherError(.init(domain: "com.clickstream.courier.auth", code: -1, userInfo: ["error": courierAuthError.errorDescription]))))
                 } else {
                     completion(.failure(.otherError(.init(domain: "com.clickstream.courier.auth", code: -1, userInfo: ["error": error.localizedDescription]))))
                 }
@@ -164,38 +199,26 @@ final class CourierAuthenticationProvider: IConnectionServiceProvider {
     }
 
     private func executeRequest(with urlRequest: URLRequest) async throws -> CourierConnect {
-        do {
-            let (data, response) = try await URLSession.shared.data(for: urlRequest)
-            
-            guard let httpResponse = response as? HTTPURLResponse, 200..<300 ~= httpResponse.statusCode else {
-                let statusCode: Int = (response as? HTTPURLResponse)?.statusCode ?? -1
-                throw AuthError.httpError(statusCode: statusCode)
-            }
+        let (data, response) = try await URLSession.shared.data(for: urlRequest)
+        
+        guard let httpResponse = response as? HTTPURLResponse, 200..<300 ~= httpResponse.statusCode else {
+            let statusCode: Int = (response as? HTTPURLResponse)?.statusCode ?? -1
+            throw CourierAuthError.httpError(statusCode)
+        }
 
+        do {
             let connection = try JSONDecoder().decode(CourierConnect.self, from: data)
             return connection
-        } catch(let error) {
-            throw AuthError.otherError(.init(domain: "com.clickstream.courier.auth", code: -1, userInfo: ["error": error.localizedDescription]))
+        } catch {
+            throw CourierAuthError.decodingError
         }
     }
-}
-
-extension CourierAuthenticationProvider {
-
-    static func isTokenValid(authResponse: CourierConnect,
-                             cachingType: CourierConnectCacheType,
-                             isTokenCacheExpiryEnabled: Bool) -> Bool {
-
-        guard isTokenCacheExpiryEnabled else {
-            return true
+    
+    static func isCachedTokenValid(authResponse: CourierConnect) -> Bool {
+        guard let expiryTimestamp = authResponse.expiryTimestamp else {
+            return false
         }
 
-        guard cachingType == .disk,
-              let expiryTimestamp = authResponse.expiryTimestamp
-        else {
-            return true
-        }
-
-        return (expiryTimestamp.timeIntervalSince1970 - Date().timeIntervalSince1970) >= 60
+        return (expiryTimestamp.timeIntervalSince1970 - Date().timeIntervalSince1970) < authResponse.expiryInSec
     }
 }
