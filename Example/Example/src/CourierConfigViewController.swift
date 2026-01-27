@@ -76,10 +76,7 @@ final class CourierConfigViewController: UITableViewController {
             urlRequest.setValue($0.value, forHTTPHeaderField: $0.key)
         }
 
-        userCredentials = CourierIdentifiers(
-            userIdentifier: userIdentifier,
-            authURLRequest: urlRequest
-        )
+        userCredentials = CourierIdentifiers(userIdentifier: userIdentifier)
 
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")

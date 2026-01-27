@@ -7,6 +7,7 @@
 //
 
 import CourierCore
+import CourierMQTT
 import Foundation
 
 final class NetworkManagerDependencies {
@@ -115,7 +116,7 @@ final class NetworkManagerDependencies {
 
     func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers,
                                   topic: String,
-                                  connectOptionsObserver: CourierConnectOptionsObserver?,
+                                  authProvider: IConnectionServiceProvider,
                                   pubSubAnalytics: ICourierEventHandler?) {
 
         guard let courierIdentifiers = identifiers as? CourierIdentifiers else {
@@ -124,7 +125,7 @@ final class NetworkManagerDependencies {
 
         courierRetryMech.configureIdentifiers(with: courierIdentifiers,
                                               topic: topic,
-                                              connectOptionsObserver: connectOptionsObserver,
+                                              authProvider: authProvider,
                                               pubSubAnalytics: pubSubAnalytics)
     }
     

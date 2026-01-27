@@ -52,8 +52,8 @@ final class CourierNetworkService<C: CourierConnectable>: NetworkService {
     ///   - identifiers: Client's user identifiers
     func initiateCourierConnection(connectionStatusListener: ConnectionStatus?,
                                    identifiers: ClickstreamClientIdentifiers,
+                                   authProvider: IConnectionServiceProvider,
                                    eventHandler: ICourierEventHandler,
-                                   connectOptionsObserver: CourierConnectOptionsObserver?,
                                    pubSubAnalytics: ICourierEventHandler?,
                                    isForced: Bool) {
 
@@ -68,10 +68,9 @@ final class CourierNetworkService<C: CourierConnectable>: NetworkService {
         self.connectionCallback = connectionStatusListener
         _connectable = C(config: courierConfig,
                          userCredentials: identifiers,
-                         connectOptionsObserver: connectOptionsObserver,
                          pubSubAnalytics: pubSubAnalytics)
 
-        connectable?.setup(request: networkConfig.request,
+        connectable?.setup(authProvider: authProvider,
                            connectionCallback: self.connectionCallback,
                            eventHandler: eventHandler)
     }

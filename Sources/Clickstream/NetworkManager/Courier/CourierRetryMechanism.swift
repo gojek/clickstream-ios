@@ -24,7 +24,7 @@ final class CourierRetryMechanism: Retryable {
     private var persistence: DefaultDatabaseDAO<CourierEventRequest>
     private var retryTimer: DispatchSourceTimer?
     private var identifiers: CourierIdentifiers?
-    private var connectOptionsObserver: CourierConnectOptionsObserver?
+    private var authProvider: IConnectionServiceProvider?
     private var pubSubAnalytics: ICourierEventHandler?
     private var topic: String?
     private var isCSHealthTrackingEnabled: Bool {
@@ -337,12 +337,12 @@ extension CourierRetryMechanism {
 
     func configureIdentifiers(with identifiers: CourierIdentifiers,
                               topic: String,
-                              connectOptionsObserver: CourierConnectOptionsObserver?,
+                              authProvider: IConnectionServiceProvider,
                               pubSubAnalytics: ICourierEventHandler?) {
 
         self.identifiers = identifiers
         self.topic = topic
-        self.connectOptionsObserver = connectOptionsObserver
+        self.authProvider = authProvider
         self.pubSubAnalytics = pubSubAnalytics
         establishConnection(isForced: true)
     }
@@ -391,7 +391,7 @@ extension CourierRetryMechanism {
     
     private func establishConnection(isForced: Bool = false) {
         // Only establish connection when Courier identifiers available
-        guard let identifiers else {
+        guard let identifiers, let authProvider else {
             return
         }
 
@@ -406,39 +406,43 @@ extension CourierRetryMechanism {
         }
         
         if isForced {
-            connect(with: identifiers, isForced: true)
+            connect(with: identifiers, authProvider: authProvider, isForced: true)
         } else if !networkService.isConnected {
-            connect(with: identifiers, isForced: false)
+            connect(with: identifiers, authProvider: authProvider, isForced: false)
         }
     }
     
-    private func connect(with identifiers: CourierIdentifiers, isForced: Bool) {
-        networkService.initiateCourierConnection(connectionStatusListener: { [weak self] result in
-            guard let checkedSelf = self else {
-                return
-            }
-
-            NotificationCenter.default.post(name: Constants.CourierConnectionNotification,
-                                            object: [Constants.Strings.didConnect: checkedSelf.networkService.isConnected])
-
-            switch result {
-            case .success(let state):
-                switch state {
-                case .connected:
-                    checkedSelf.startObservingFailedBatches()
-                case .cancelled, .disconnected:
-                    checkedSelf.stopObservingFailedBatches()
-                    checkedSelf.networkService.flushConnectable()
-                default:
-                    break
-                }
-                checkedSelf.networkServiceState = state
-            case .failure:
-                checkedSelf.stopObservingFailedBatches()
-            }
-        }, identifiers: identifiers, eventHandler: self, connectOptionsObserver: self.connectOptionsObserver, pubSubAnalytics: self.pubSubAnalytics, isForced: isForced)
+    private func connect(with identifiers: CourierIdentifiers, authProvider: IConnectionServiceProvider, isForced: Bool) {
+        networkService.initiateCourierConnection(
+            connectionStatusListener: self.connectionStatusListener,
+            identifiers: identifiers,
+            authProvider: authProvider,
+            eventHandler: self,
+            pubSubAnalytics: self.pubSubAnalytics,
+            isForced: isForced
+        )
     }
-    
+
+    private func connectionStatusListener(_ result: (Result<ConnectableState, ConnectableError>)) {
+        NotificationCenter.default.post(name: Constants.CourierConnectionNotification,
+                                        object: [Constants.Strings.didConnect: networkService.isConnected])
+
+        switch result {
+        case .success(let state):
+            switch state {
+            case .connected:
+                startObservingFailedBatches()
+            case .cancelled, .disconnected:
+                stopObservingFailedBatches()
+                networkService.flushConnectable()
+            default:
+                break
+            }
+            networkServiceState = state
+        case .failure:
+            stopObservingFailedBatches()
+        }
+    }
 }
 
 extension CourierRetryMechanism {

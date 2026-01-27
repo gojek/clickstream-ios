@@ -71,8 +71,7 @@ class CourierEventProcessorTest: XCTestCase {
             product: "CSTestProduct"
         )
         
-        courierIdentifiers = CourierIdentifiers(userIdentifier: "12345",
-                                                authURLRequest: .init(url: .init(string: "courier_auth_url")!))
+        courierIdentifiers = CourierIdentifiers(userIdentifier: "12345")
 
         super.setUp()
     }
