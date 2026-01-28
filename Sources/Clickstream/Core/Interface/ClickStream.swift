@@ -97,6 +97,8 @@ public final class Clickstream {
     private let socketEventWarehouser: any EventWarehouser
     private let courierEventWarehouser: any EventWarehouser
     
+    private var userIdentifiers: ClickstreamClientIdentifiers?
+    
     /// Private initialiser for the Clickstream Interface.
     /// - Parameters:
     ///   - networkBuilder: network builder instance
@@ -161,28 +163,17 @@ public final class Clickstream {
         stopTracking()
         sharedInstance = nil
     }
-    
-    /// Call this method add an event to tracking.
-    /// - Parameter event: readonly public accessor for CSEventDTO
-    /// CSEventDTO consists of
-    ///     guid:- event guid
-    ///     message:- product proto message for an event which needs to be tracked.
-    ///     timestamp:- timestamp of the event
-    public func trackEvent(with event: ClickstreamEvent) {
-        socketEventProcessor.createEvent(event: event)
-        courierEventProcessor.createEvent(event: event)
-    }
 
     /// Tracks Clickstream event via websocket network channel
     /// - Parameter event: Client's Clickstream Event
     public func trackEventViaWebsocket(with event: ClickstreamEvent) {
-        socketEventProcessor.createEvent(event: event)
+        socketEventProcessor.createEvent(event: event, userIdentifiersExist: self.userIdentifiers != nil)
     }
 
     /// Tracks Clickstream event via courier network channel
     /// - Parameter event: Client's Clickstream Event
     public func trackEventViaCourier(with event: ClickstreamEvent) {
-        courierEventProcessor.createEvent(event: event)
+        courierEventProcessor.createEvent(event: event, userIdentifiersExist: self.userIdentifiers != nil)
     }
     
     /// Initializes an instance of the API with the given configurations.
@@ -384,6 +375,7 @@ extension Clickstream {
                                          authProvider: IConnectionServiceProvider,
                                          pubSubAnalytics: ICourierEventHandler?) {
 
+        userIdentifiers = identifiers
         dependencies?.provideCourierClientIdentifiers(with: identifiers,
                                                       topic: topic,
                                                       authProvider: authProvider,
@@ -391,6 +383,7 @@ extension Clickstream {
     }
 
     public func removeClientIdentifiers() {
+        userIdentifiers = nil
         dependencies?.removeCourierClientIdentifiers()
     }
 }

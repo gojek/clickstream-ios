@@ -36,13 +36,17 @@ final class CourierEventProcessor: EventProcessor {
         identifiers = nil
     }
     
+    func shouldTrackEventWithExclusiveFlow(event: ClickstreamEvent, userIdentifiersExist: Bool) -> Bool {
+        event.exclusiveTrackWebsocket(isUserLoggedIn: userIdentifiersExist, networkOptions: networkOptions)
+    }
+
     func shouldTrackEvent(event: ClickstreamEvent) -> Bool {
         networkOptions.isCourierEnabled &&
         networkOptions.courierEventTypes.contains(event.messageName) &&
         identifiers != nil
     }
     
-    func createEvent(event: ClickstreamEvent) {
+    func createEvent(event: ClickstreamEvent, userIdentifiersExist: Bool) {
         self.serialQueue.async { [weak self] in guard let checkedSelf = self else { return }
             guard checkedSelf.shouldTrackEvent(event: event) else {
                 return
