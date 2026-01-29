@@ -24,7 +24,7 @@ public struct ClickstreamNetworkOptions {
 
     public init(isWebsocketEnabled: Bool = true,
                 isCourierEnabled: Bool = false,
-                networkChannelSplitEnabled: Bool = false,
+                networkChannelSplitEnabled: Bool = true,
                 courierEventTypes: Set<CourierEventIdentifier> = [],
                 courierRetryPolicy: ClickstreamCourierRetryPolicy = .init(),
                 courierRetryHTTPPolicy: ClickstreamCourierHTTPRetryPolicy = .init(),

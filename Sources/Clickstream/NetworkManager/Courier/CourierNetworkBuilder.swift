@@ -87,7 +87,9 @@ extension CourierNetworkBuilder {
 extension CourierNetworkBuilder {
     private func trackHealthEvents<T: EventBatchPersistable>(eventBatch: T, eventBatchData: Data) {
         #if TRACKER_ENABLED
-        guard Tracker.debugMode else { return }
+        guard Tracker.debugMode,
+              networkConfigs.networkOptions?.courierConfig.courierHealthConfig.csTrackingHealthEventsEnabled == true
+        else { return }
         
         let eventGUIDs: [String] = eventBatch.events.compactMap { $0.guid }
         let eventGUIDsString = eventGUIDs.joined(separator: ", ")

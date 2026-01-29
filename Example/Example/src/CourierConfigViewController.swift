@@ -76,10 +76,7 @@ final class CourierConfigViewController: UITableViewController {
             urlRequest.setValue($0.value, forHTTPHeaderField: $0.key)
         }
 
-        userCredentials = CourierIdentifiers(
-            userIdentifier: userIdentifier,
-            authURLRequest: urlRequest
-        )
+        userCredentials = CourierIdentifiers(userIdentifier: userIdentifier)
 
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
@@ -118,14 +115,14 @@ final class CourierConfigViewController: UITableViewController {
             }
         }
         
-        connectPolicyEnabledSwitch.isOn = config.courierConnectTimeoutPolicyEnabled
-        connectPolicyTimerIntervalTextField.text = config.courierConnectTimeoutPolicyIntervalMillis.description
-        connectPolicyTimeoutTextField.text = config.courierConnectTimeoutPolicyIntervalMillis.description
+        connectPolicyEnabledSwitch.isOn = config.courierConnectPolicy.isEnabled
+        connectPolicyTimerIntervalTextField.text = config.courierConnectPolicy.intervalSecs.description
+        connectPolicyTimeoutTextField.text = config.courierConnectPolicy.timeoutSecs.description
         
-        iddlePolicyEnabledSwitch.isOn = config.courierInactivityPolicyEnabled
-        iddlePolicyTimerIntervalTextField.text = config.courierInactivityPolicyIntervalMillis.description
-        iddlePolicyTimeoutTextField.text = config.courierInactivityPolicyTimeoutMillis.description
-        iddlePolicyReadTimeoutTextField.text = config.courierInactivityPolicyReadTimeoutMillis.description
+        iddlePolicyEnabledSwitch.isOn = config.courierInactivityPolicy.isEnabled
+        iddlePolicyTimerIntervalTextField.text = config.courierInactivityPolicy.intervalSecs.description
+        iddlePolicyTimeoutTextField.text = config.courierInactivityPolicy.timeoutSecs.description
+        iddlePolicyReadTimeoutTextField.text = config.courierInactivityPolicy.readTimeoutSecs.description
     }
 
     @IBAction func onTapSaveButton(_ sender: UIBarButtonItem) {

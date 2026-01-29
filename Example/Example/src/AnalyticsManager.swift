@@ -9,6 +9,7 @@
 import Foundation
 import Clickstream
 import SwiftProtobuf
+import Reachability
 
 class AnalyticsManager {
     
@@ -106,11 +107,15 @@ class AnalyticsManager {
     #endif
 
     func provideUserCredentials(with userCredentials: ClickstreamClientIdentifiers) {
-        guard let courierTopic, isCourierConfigSet else {
+        guard let courierTopic, isCourierConfigSet, let reachability = try? Reachability() else {
             assertionFailure("Courier's topic is missing")
             return
         }
-        clickstream?.provideClientIdentifiers(with: userCredentials, topic: courierTopic)
+        let authProvider = CourierAuthProvider(userCredentials: userCredentials, networkTypeProvider: reachability)
+        clickstream?.provideClientIdentifiers(with: userCredentials,
+                                              topic: courierTopic,
+                                              authProvider: authProvider,
+                                              pubSubAnalytics: nil)
         debugPrint("[clickstream-sqlite] \(NSHomeDirectory())/Library/Application Support/clickstream_wal/db.sqlite")
     }
 }

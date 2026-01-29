@@ -67,7 +67,7 @@ class EventProcessorDependenciesTests: XCTestCase {
                                                           performOnQueue: mockQueue)
 
         let socketEventBatchCreator = DefaultEventBatchCreator(with: socketNetworkBuilder, performOnQueue: mockQueue)
-        let courierEventBatchCreator = CourierEventBatchCreator(with: courierNetworkBuilder, performOnQueue: mockQueue)
+        let courierEventBatchCreator = CourierEventBatchCreator(with: courierNetworkBuilder, performOnQueue: mockQueue, healthTrackingConfig: .init())
         
         let schedulerServiceMock = DefaultSchedulerService(with: prioritiesMock, performOnQueue: mockQueue)
         

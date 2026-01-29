@@ -71,7 +71,11 @@ final class EventSchedulerDependencies {
     }()
     
     private lazy var courierEventBatchCreator: CourierEventBatchCreator = {
-        CourierEventBatchCreator(with: self.courierNetworkBuider, performOnQueue: courierSchedulerQueue)
+        CourierEventBatchCreator(
+            with: self.courierNetworkBuider,
+            performOnQueue: courierSchedulerQueue,
+            healthTrackingConfig: self.networkOptions.courierConfig.courierHealthConfig
+        )
     }()
 
     private lazy var socketEventBatchProcessor: DefaultEventBatchProcessor = {

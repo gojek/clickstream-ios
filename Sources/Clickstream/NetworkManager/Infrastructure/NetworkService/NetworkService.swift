@@ -23,14 +23,15 @@ protocol NetworkServiceInputs {
     /// - Parameters:
     ///   - connectionStatusListener: A callback to listen to the change in the status.
     ///   - userCredentials: Courier's user credentials
+    ///   - authProvider: Courier's user credentials
     ///   - eventHandler: Courier's event handler delegate
     ///   - isForced: Connection forceable flag
     func initiateCourierConnection(connectionStatusListener: ConnectionStatus?,
                                    identifiers: ClickstreamClientIdentifiers,
+                                   authProvider: IConnectionServiceProvider,
                                    eventHandler: ICourierEventHandler,
-                                   connectOptionsObserver: CourierConnectOptionsObserver?,
                                    pubSubAnalytics: ICourierEventHandler?,
-                                   isForced: Bool) async
+                                   isForced: Bool)
 
     /// Writes data to the given connectable and fires a completion event after the write is completed.
     /// - Parameters:
@@ -57,9 +58,9 @@ extension NetworkService {
     func initiateWebsocketConnection(connectionStatusListener: ConnectionStatus?, keepTrying: Bool) {}
     func initiateCourierConnection(connectionStatusListener: ConnectionStatus?,
                                    identifiers: ClickstreamClientIdentifiers,
+                                   authProvider: IConnectionServiceProvider,
                                    eventHandler: ICourierEventHandler,
-                                   connectOptionsObserver: CourierConnectOptionsObserver?,
                                    pubSubAnalytics: ICourierEventHandler?,
-                                   isForced: Bool) async {}
+                                   isForced: Bool) {}
     func write<T: SwiftProtobuf.Message>(_ data: Data, completion: @escaping (Result<T, ConnectableError>) -> Void) {}
 }

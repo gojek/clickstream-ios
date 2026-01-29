@@ -19,26 +19,25 @@ protocol CourierConnectableInputs {
     ///   - pubSubAnalytics: ICourierEventHandler?
     init(config: ClickstreamCourierClientConfig,
          userCredentials: ClickstreamClientIdentifiers,
-         connectOptionsObserver: CourierConnectOptionsObserver?,
          pubSubAnalytics: ICourierEventHandler?)
 
     /// Publish Event Request message to Courier
     /// - Parameters:
     ///   - eventRequest: CS EventRequest
     ///   - topic: Courier's topic path
-    func publishMessage(_ eventRequest: CourierEventRequest, topic: String) async throws
+    func publishMessage(_ eventRequest: CourierEventRequest, topic: String) throws
 
     /// Disconnects the connection.
     func destroyAndDisconnect()
     
     /// Sets up a connectable
     /// - Parameters:
-    ///   - request: URLRequest which the connectable must connect to.
+    ///   - authProvider: `IConnectionServiceProvider` instance.
     ///   - connectionCallback: A callback to update about the connection status.
     ///   - eventHandler: Courier's event handler delegate
-    func setup(request: URLRequest,
+    func setup(authProvider: IConnectionServiceProvider,
                connectionCallback: ConnectionStatus?,
-               eventHandler: ICourierEventHandler) async
+               eventHandler: ICourierEventHandler)
 }
 
 protocol CourierConnectableOutputs {

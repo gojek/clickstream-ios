@@ -7,18 +7,21 @@ final class CourierEventBatchCreatorTests: XCTestCase {
     private var schedulerQueue: DispatchQueue!
     private var mockNetworkBuilder: MockNetworkBuilder!
     private var sut: CourierEventBatchCreator!
+    private var healthTrackingConfig: ClickstreamCourierHealthConfig!
     
     override func setUp() {
         super.setUp()
         mockNetworkBuilder = MockNetworkBuilder()
         schedulerQueue = SerialQueue(label: Constants.QueueIdentifiers.scheduler.rawValue, qos: .utility)
-        sut = CourierEventBatchCreator(with: mockNetworkBuilder, performOnQueue: schedulerQueue)
+        healthTrackingConfig = ClickstreamCourierHealthConfig()
+        sut = CourierEventBatchCreator(with: mockNetworkBuilder, performOnQueue: schedulerQueue, healthTrackingConfig: healthTrackingConfig)
     }
     
     override func tearDown() {
         sut = nil
         schedulerQueue = nil
         mockNetworkBuilder = nil
+        healthTrackingConfig = nil
         super.tearDown()
     }
     
@@ -71,6 +74,10 @@ final class CourierEventBatchCreatorTests: XCTestCase {
         
         mockNetworkBuilder.isAvailableValue = false
         XCTAssertFalse(sut.canForward)
+    }
+    
+    func testDefaultHealthTrackingConfig() {
+        XCTAssertFalse(sut.isCSHealthTrackingEnabled)
     }
 }
 

@@ -11,7 +11,7 @@ final class CourierHandlerTests: XCTestCase {
     private var mockConfig: ClickstreamCourierClientConfig!
     private var mockCredentials: ClickstreamClientIdentifiers!
     private var mockEventHandler: ICourierEventHandler!
-    private var mockCourierConnectionsObserver: CourierConnectOptionsObserver!
+    private var mockAuthProvider: MockAuthenticationProvider!
     private var cancellables: Set<CourierCore.AnyCancellable>!
 
     override func setUp() {
@@ -20,7 +20,8 @@ final class CourierHandlerTests: XCTestCase {
         mockConfig = createMockConfig()
         mockCredentials = createMockCredentials()
         mockEventHandler = MockCourierEventHandler()
-        sut = DefaultCourierHandler(config: mockConfig, userCredentials: mockCredentials, connectOptionsObserver: nil, pubSubAnalytics: nil)
+        mockAuthProvider = MockAuthenticationProvider()
+        sut = DefaultCourierHandler(config: mockConfig, userCredentials: mockCredentials, pubSubAnalytics: nil)
     }
     
     override func tearDown() {
@@ -46,7 +47,7 @@ final class CourierHandlerTests: XCTestCase {
         let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
         do {
-            try await sut.publishMessage(eventRequest, topic: topic)
+            try sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTFail("Should not throw error: \(error)")
         }
@@ -58,7 +59,7 @@ final class CourierHandlerTests: XCTestCase {
         let eventRequest = CourierEventRequest(guid: "12345", data: emptyData)
 
         do {
-            try await sut.publishMessage(eventRequest, topic: topic)
+            try sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTFail("Should not throw error: \(error)")
         }
@@ -69,9 +70,8 @@ final class CourierHandlerTests: XCTestCase {
     }
     
     func testSetup_WithoutConnectionCallback_CompletesSuccessfully() async {
-        let request = createValidURLRequest()
         
-        await sut.setup(request: request, 
+        sut.setup(authProvider: mockAuthProvider,
                         connectionCallback: nil,
                         eventHandler: mockEventHandler)
         
@@ -79,11 +79,10 @@ final class CourierHandlerTests: XCTestCase {
     }
     
     func testSequentialSetupAndDisconnect_DoesNotThrow() async {
-        let request = createValidURLRequest()
         
-        await sut.setup(request: request, 
-                        connectionCallback: nil,
-                        eventHandler: mockEventHandler)
+        sut.setup(authProvider: mockAuthProvider,
+                  connectionCallback: nil,
+                  eventHandler: mockEventHandler)
         
         XCTAssertNoThrow(sut.destroyAndDisconnect())
     }
@@ -97,7 +96,7 @@ final class CourierHandlerTests: XCTestCase {
     func testConfigRetention_AfterInit_ConfigIsRetained() {
         let newConfig = createMockConfigWithDifferentValues()
         let newCredentials = createMockCredentialsWithDifferentValues()
-        let newSut = DefaultCourierHandler(config: newConfig, userCredentials: newCredentials, connectOptionsObserver: nil, pubSubAnalytics: nil)
+        let newSut = DefaultCourierHandler(config: newConfig, userCredentials: newCredentials, pubSubAnalytics: nil)
         
         XCTAssertNotNil(newSut)
         XCTAssertFalse(newSut.isConnected.value)
@@ -109,7 +108,7 @@ final class CourierHandlerTests: XCTestCase {
         let eventRequest = CourierEventRequest(guid: "12345", data: largeData)
         
         do {
-            try await sut.publishMessage(eventRequest, topic: topic)
+            try sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTFail("Should not throw error: \(error)")
         }
@@ -121,16 +120,15 @@ final class CourierHandlerTests: XCTestCase {
         let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
         do {
-            try await sut.publishMessage(eventRequest, topic: topic)
+            try sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTAssertNotNil(error)
         }
     }
     
     func testPublishMessage_AfterDisconnect_ThrowsError() async {
-        let request = createValidURLRequest()
         let topic = "clickstream/topic"
-        await sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
+        sut.setup(authProvider: mockAuthProvider, connectionCallback: nil, eventHandler: mockEventHandler)
         
         sut.destroyAndDisconnect()
         
@@ -138,7 +136,7 @@ final class CourierHandlerTests: XCTestCase {
         let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
         do {
-            try await sut.publishMessage(eventRequest, topic: topic)
+            try sut.publishMessage(eventRequest, topic: topic)
             XCTFail("Should have thrown an error")
         } catch {
             XCTAssertNotNil(error)
@@ -151,15 +149,14 @@ final class CourierHandlerTests: XCTestCase {
         let eventRequest = CourierEventRequest(guid: "12345", data: malformedData)
         
         do {
-            try await sut.publishMessage(eventRequest, topic: topic)
+            try sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTFail("Should handle malformed data gracefully")
         }
     }
     
     func testPublishMessage_ConcurrentCalls_HandlesCorrectly() async {
-        let request = createValidURLRequest()
-        await sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
+        sut.setup(authProvider: mockAuthProvider, connectionCallback: nil, eventHandler: mockEventHandler)
 
         let testData1 = "message1".data(using: .utf8)!
         let testData2 = "message2".data(using: .utf8)!
@@ -169,7 +166,7 @@ final class CourierHandlerTests: XCTestCase {
             group.addTask {
                 do {
                     let eventRequest = CourierEventRequest(guid: "12345", data: testData1)
-                    try await self.sut.publishMessage(eventRequest, topic: topic)
+                    try self.sut.publishMessage(eventRequest, topic: topic)
                 } catch {
                     XCTAssertNotNil(error)
                 }
@@ -178,7 +175,7 @@ final class CourierHandlerTests: XCTestCase {
             group.addTask {
                 do {
                     let eventRequest = CourierEventRequest(guid: "12345", data: testData2)
-                    try await self.sut.publishMessage(eventRequest, topic: topic)
+                    try self.sut.publishMessage(eventRequest, topic: topic)
                 } catch {
                     XCTAssertNotNil(error)
                 }
@@ -192,24 +189,23 @@ final class CourierHandlerTests: XCTestCase {
         let eventRequest = CourierEventRequest(guid: "12345", data: extremelyLargeData)
 
         do {
-            try await sut.publishMessage(eventRequest, topic: topic)
+            try sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTAssertTrue(error is CourierError)
         }
     }
     
     func testMemoryManagement_AfterMultipleOperations_NoLeaks() async {
-        let request = createValidURLRequest()
         
         for _ in 0..<10 {
-            await sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
+            sut.setup(authProvider: mockAuthProvider, connectionCallback: nil, eventHandler: mockEventHandler)
 
             let testData = "test".data(using: .utf8)!
             let topic = "clickstream/topic"
             let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
             do {
-                try await sut.publishMessage(eventRequest, topic: topic)
+                try sut.publishMessage(eventRequest, topic: topic)
             } catch {
                 continue
             }
@@ -226,7 +222,7 @@ final class CourierHandlerTests: XCTestCase {
         let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
         do {
-            try await sut.publishMessage(eventRequest, topic: topic)
+            try sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTFail("Should not throw error: \(error)")
         }
@@ -238,7 +234,7 @@ final class CourierHandlerTests: XCTestCase {
         let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
         do {
-            try await sut.publishMessage(eventRequest, topic: topic)
+            try sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTFail("Should not throw error: \(error)")
         }
@@ -250,9 +246,9 @@ final class CourierHandlerTests: XCTestCase {
         let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
         do {
-            try await sut.publishMessage(eventRequest, topic: topic)
-            try await sut.publishMessage(eventRequest, topic: topic)
-            try await sut.publishMessage(eventRequest, topic: topic)
+            try sut.publishMessage(eventRequest, topic: topic)
+            try sut.publishMessage(eventRequest, topic: topic)
+            try sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTFail("Should not throw error: \(error)")
         }
@@ -264,7 +260,7 @@ final class CourierHandlerTests: XCTestCase {
         let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
         do {
-            try await sut.publishMessage(eventRequest, topic: emptyTopic)
+            try sut.publishMessage(eventRequest, topic: emptyTopic)
         } catch {
             XCTFail("Should not throw error: \(error)")
         }
@@ -276,7 +272,7 @@ final class CourierHandlerTests: XCTestCase {
         let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
         do {
-            try await sut.publishMessage(eventRequest, topic: specialTopic)
+            try sut.publishMessage(eventRequest, topic: specialTopic)
         } catch {
             XCTFail("Should not throw error: \(error)")
         }
@@ -288,7 +284,7 @@ final class CourierHandlerTests: XCTestCase {
         let eventRequest = CourierEventRequest(guid: "12345", data: largeData)
 
         do {
-            try await sut.publishMessage(eventRequest, topic: topic)
+            try sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTFail("Should not throw error: \(error)")
         }
@@ -300,15 +296,14 @@ final class CourierHandlerTests: XCTestCase {
         let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
         do {
-            try await sut.publishMessage(eventRequest, topic: topic)
+            try sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTAssertNotNil(error)
         }
     }
     
     func testPublishMessage_AfterDisconnectWithParameters_ThrowsError() async {
-        let request = createValidURLRequest()
-        await sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
+        sut.setup(authProvider: mockAuthProvider, connectionCallback: nil, eventHandler: mockEventHandler)
 
         sut.destroyAndDisconnect()
         
@@ -317,7 +312,7 @@ final class CourierHandlerTests: XCTestCase {
         let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
         do {
-            try await sut.publishMessage(eventRequest, topic: topic)
+            try sut.publishMessage(eventRequest, topic: topic)
             XCTFail("Should have thrown an error")
         } catch {
             XCTAssertNotNil(error)
@@ -330,15 +325,14 @@ final class CourierHandlerTests: XCTestCase {
         let eventRequest = CourierEventRequest(guid: "12345", data: malformedData)
 
         do {
-            try await sut.publishMessage(eventRequest, topic: topic)
+            try sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTFail("Should handle malformed data gracefully")
         }
     }
     
     func testPublishMessage_ConcurrentCallsWithParameters_HandlesCorrectly() async {
-        let request = createValidURLRequest()
-        await sut.setup(request: request, connectionCallback: nil, eventHandler: mockEventHandler)
+        sut.setup(authProvider: mockAuthProvider, connectionCallback: nil, eventHandler: mockEventHandler)
 
         let testData1 = "message1".data(using: .utf8)!
         let testData2 = "message2".data(using: .utf8)!
@@ -350,7 +344,7 @@ final class CourierHandlerTests: XCTestCase {
         await withTaskGroup(of: Void.self) { group in
             group.addTask {
                 do {
-                    try await self.sut.publishMessage(eventRequest1, topic: topic1)
+                    try self.sut.publishMessage(eventRequest1, topic: topic1)
                 } catch {
                     XCTAssertNotNil(error)
                 }
@@ -358,7 +352,7 @@ final class CourierHandlerTests: XCTestCase {
             
             group.addTask {
                 do {
-                    try await self.sut.publishMessage(eventRequest2, topic: topic2)
+                    try self.sut.publishMessage(eventRequest2, topic: topic2)
                 } catch {
                     XCTAssertNotNil(error)
                 }
@@ -372,7 +366,7 @@ final class CourierHandlerTests: XCTestCase {
         let eventRequest = CourierEventRequest(guid: "12345", data: extremelyLargeData)
 
         do {
-            try await sut.publishMessage(eventRequest, topic: topic)
+            try sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTAssertTrue(error is CourierError)
         }
@@ -384,7 +378,7 @@ final class CourierHandlerTests: XCTestCase {
         let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
         do {
-            try await sut.publishMessage(eventRequest, topic: longTopic)
+            try sut.publishMessage(eventRequest, topic: longTopic)
         } catch {
             XCTFail("Should not throw error: \(error)")
         }
@@ -396,7 +390,7 @@ final class CourierHandlerTests: XCTestCase {
         let eventRequest = CourierEventRequest(guid: "12345", data: testData)
 
         do {
-            try await sut.publishMessage(eventRequest, topic: unicodeTopic)
+            try sut.publishMessage(eventRequest, topic: unicodeTopic)
         } catch {
             XCTFail("Should not throw error: \(error)")
         }
@@ -408,7 +402,7 @@ final class CourierHandlerTests: XCTestCase {
         let eventRequest = CourierEventRequest(guid: "12345", data: dataWithNulls)
 
         do {
-            try await sut.publishMessage(eventRequest, topic: topic)
+            try sut.publishMessage(eventRequest, topic: topic)
         } catch {
             XCTFail("Should not throw error: \(error)")
         }
@@ -431,15 +425,13 @@ extension CourierHandlerTests {
     private func createMockCredentials() -> ClickstreamClientIdentifiers {
         CourierIdentifiers(userIdentifier: "user_id",
                            deviceIdentifier: "device_id",
-                           bundleIdentifier: "bundle_id",
-                           authURLRequest: URLRequest(url: URL(string: "https://auth.example.com/token")!))
+                           bundleIdentifier: "bundle_id")
     }
     
     private func createMockCredentialsWithDifferentValues() -> ClickstreamClientIdentifiers {
         CourierIdentifiers(userIdentifier: "user_id_2",
                            deviceIdentifier: "device_id_2",
-                           bundleIdentifier: "bundle_id_3",
-                           authURLRequest: URLRequest(url: URL(string: "https://auth.example.com/token")!))
+                           bundleIdentifier: "bundle_id_3")
 
     }
     

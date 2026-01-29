@@ -8,10 +8,10 @@
 
 import Foundation
 
-struct CourierConnect: Codable {
-    let token: String
-    let broker: Broker
-    let expiryInSec: TimeInterval
+public struct CourierConnect: Codable {
+    public let token: String
+    public let broker: Broker
+    public let expiryInSec: TimeInterval
     var expiryTimestamp: Date?
 
     enum CodingKeys: String, CodingKey {
@@ -19,7 +19,7 @@ struct CourierConnect: Codable {
         case token, broker, expiryTimestamp
     }
 
-    init(token: String,
+    public init(token: String,
          broker: CourierConnect.Broker,
          expiryInSec: TimeInterval,
          expiryTimestamp: Date? = .init()) {
@@ -30,7 +30,7 @@ struct CourierConnect: Codable {
         self.expiryTimestamp = expiryTimestamp
     }
 
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         token = try values.decodeIfPresent(String.self, forKey: .token) ?? ""
         broker = try values.decodeIfPresent(Broker.self, forKey: .broker) ?? .init(host: "", port: 0)
@@ -38,7 +38,7 @@ struct CourierConnect: Codable {
         expiryTimestamp = try values.decodeIfPresent(Date.self, forKey: .expiryTimestamp)
     }
     
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try? container.encode(token, forKey: .token)
         try? container.encode(broker, forKey: .broker)
@@ -46,21 +46,21 @@ struct CourierConnect: Codable {
         try? container.encode(expiryTimestamp, forKey: .expiryTimestamp)
     }
 
-    struct Broker: Codable {
-        let host: String
-        let port: Int
+    public struct Broker: Codable {
+        public let host: String
+        public let port: Int
 
         enum CodingKeys: String, CodingKey {
             case host
             case port
         }
 
-        init(host: String, port: Int) {
+        public init(host: String, port: Int) {
             self.host = host
             self.port = port
         }
 
-        init(from decoder: Decoder) throws {
+        public init(from decoder: Decoder) throws {
             let values = try decoder.container(keyedBy: CodingKeys.self)
             host = try values.decodeIfPresent(String.self, forKey: .host) ?? ""
             port = try values.decodeIfPresent(Int.self, forKey: .port) ?? 0

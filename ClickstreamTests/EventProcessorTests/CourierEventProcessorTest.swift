@@ -38,7 +38,7 @@ class CourierEventProcessorTest: XCTestCase {
         persitance = DefaultDatabaseDAO<CourierEvent>(database: db, performOnQueue: mockQueue)
         
         courierNetworkBuilder = MockNetworkBuilder()
-        courierBatchCreator = CourierEventBatchCreator(with: courierNetworkBuilder, performOnQueue: mockQueue)
+        courierBatchCreator = CourierEventBatchCreator(with: courierNetworkBuilder, performOnQueue: mockQueue, healthTrackingConfig: .init())
         
         courierBatchEventProcessor = CourierEventBatchProcessor(with: courierBatchCreator,
                                                                 schedulerService: MockSchedulerService(),
@@ -71,8 +71,7 @@ class CourierEventProcessorTest: XCTestCase {
             product: "CSTestProduct"
         )
         
-        courierIdentifiers = CourierIdentifiers(userIdentifier: "12345",
-                                                authURLRequest: .init(url: .init(string: "courier_auth_url")!))
+        courierIdentifiers = CourierIdentifiers(userIdentifier: "12345")
 
         super.setUp()
     }

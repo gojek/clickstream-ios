@@ -26,14 +26,9 @@ public struct ClickstreamCourierClientConfig {
     public let courierMessagePersistenceEnabled: Bool
     public let courierMessagePersistenceTTLSecs: Int
     public let courierInitCoreDataPersistenceContextEnabled: Bool
-    public let courierConnectTimeoutPolicyEnabled: Bool
-    public let courierConnectTimeoutPolicyIntervalMillis: Int
-    public let courierConnectTimeoutPolicyMaxRetryCount: Int
-    public let courierInactivityPolicyEnabled: Bool
-    public let courierInactivityPolicyIntervalMillis: Int
-    public let courierInactivityPolicyTimeoutMillis: Int
-    public let courierInactivityPolicyReadTimeoutMillis: Int
-    public let courierPubSubEventProbability: Int
+    public let courierConnectPolicy: ClickstreamCourierConnectPolicy
+    public let courierInactivityPolicy: ClickstreamCourierInactivityPolicy
+    public let courierHealthConfig: ClickstreamCourierHealthConfig
 
     public init(
         courierMessageAdapter: [MessageAdapter] = [],
@@ -50,14 +45,9 @@ public struct ClickstreamCourierClientConfig {
         courierMessagePersistenceEnabled: Bool = false,
         courierMessagePersistenceTTLSecs: Int = 86400,
         courierInitCoreDataPersistenceContextEnabled: Bool = false,
-        courierConnectTimeoutPolicyEnabled: Bool = false,
-        courierConnectTimeoutPolicyIntervalMillis: Int = 16,
-        courierConnectTimeoutPolicyMaxRetryCount: Int = 10,
-        courierInactivityPolicyEnabled: Bool = false,
-        courierInactivityPolicyIntervalMillis: Int = 12,
-        courierInactivityPolicyTimeoutMillis: Int = 10,
-        courierInactivityPolicyReadTimeoutMillis: Int = 40,
-        courierPubSubEventProbability: Int = 99
+        courierConnectPolicy: ClickstreamCourierConnectPolicy = .init(),
+        courierInactivityPolicy: ClickstreamCourierInactivityPolicy = .init(),
+        courierHealthConfig: ClickstreamCourierHealthConfig = .init()
     ) {
         self.courierMessageAdapter = courierMessageAdapter
         self.courierPingIntervalMillis = courierPingIntervalMillis
@@ -73,13 +63,44 @@ public struct ClickstreamCourierClientConfig {
         self.courierMessagePersistenceEnabled = courierMessagePersistenceEnabled
         self.courierMessagePersistenceTTLSecs = courierMessagePersistenceTTLSecs
         self.courierInitCoreDataPersistenceContextEnabled = courierInitCoreDataPersistenceContextEnabled
-        self.courierConnectTimeoutPolicyEnabled = courierConnectTimeoutPolicyEnabled
-        self.courierConnectTimeoutPolicyIntervalMillis = courierConnectTimeoutPolicyIntervalMillis
-        self.courierConnectTimeoutPolicyMaxRetryCount = courierConnectTimeoutPolicyMaxRetryCount
-        self.courierInactivityPolicyEnabled = courierInactivityPolicyEnabled
-        self.courierInactivityPolicyIntervalMillis = courierInactivityPolicyIntervalMillis
-        self.courierInactivityPolicyTimeoutMillis = courierInactivityPolicyTimeoutMillis
-        self.courierInactivityPolicyReadTimeoutMillis = courierInactivityPolicyReadTimeoutMillis
-        self.courierPubSubEventProbability = courierPubSubEventProbability
+        self.courierConnectPolicy = courierConnectPolicy
+        self.courierInactivityPolicy = courierInactivityPolicy
+        self.courierHealthConfig = courierHealthConfig
+    }
+}
+
+public struct ClickstreamCourierConnectPolicy: Decodable {
+    public let isEnabled: Bool
+    public let intervalSecs: Int
+    public let timeoutSecs: Int
+
+    public init(isEnabled: Bool = false, intervalSecs: Int = 15, timeoutSecs: Int = 10) {
+        self.isEnabled = isEnabled
+        self.intervalSecs = intervalSecs
+        self.timeoutSecs = timeoutSecs
+    }
+}
+
+public struct ClickstreamCourierInactivityPolicy: Decodable {
+    public let isEnabled: Bool
+    public let intervalSecs: Int
+    public let timeoutSecs: Int
+    public let readTimeoutSecs: Int
+
+    public init(isEnabled: Bool = false, intervalSecs: Int = 12, timeoutSecs: Int = 10, readTimeoutSecs: Int = 40) {
+        self.isEnabled = isEnabled
+        self.intervalSecs = intervalSecs
+        self.timeoutSecs = timeoutSecs
+        self.readTimeoutSecs = readTimeoutSecs
+    }
+}
+
+public struct ClickstreamCourierHealthConfig: Decodable {
+    public let pubSubEventProbability: Int
+    public let csTrackingHealthEventsEnabled: Bool
+
+    public init(pubSubEventProbability: Int = 0, csTrackingHealthEventsEnabled: Bool = false) {
+        self.pubSubEventProbability = pubSubEventProbability
+        self.csTrackingHealthEventsEnabled = csTrackingHealthEventsEnabled
     }
 }

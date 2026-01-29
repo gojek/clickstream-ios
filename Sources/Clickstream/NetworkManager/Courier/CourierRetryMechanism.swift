@@ -20,13 +20,16 @@ final class CourierRetryMechanism: Retryable {
     private var deviceStatus: DefaultDeviceStatus
     private let appStateNotifier: AppStateNotifierService
     private var terminationCountDown: DispatchSourceTimer?
-    private var networkServiceState: ConnectableState = .disconnected
+    private var networkServiceState: ConnectableState?
     private var persistence: DefaultDatabaseDAO<CourierEventRequest>
     private var retryTimer: DispatchSourceTimer?
     private var identifiers: CourierIdentifiers?
-    private var connectOptionsObserver: CourierConnectOptionsObserver?
+    private var authProvider: IConnectionServiceProvider?
     private var pubSubAnalytics: ICourierEventHandler?
     private var topic: String?
+    private var isCSHealthTrackingEnabled: Bool {
+        networkOptions.courierConfig.courierHealthConfig.csTrackingHealthEventsEnabled
+    }
     
     #if ETE_TEST_SUITE_ENABLED
     lazy var testMode: Bool = {
@@ -39,15 +42,15 @@ final class CourierRetryMechanism: Retryable {
         let isReachable = reachability.isAvailable
         let isConnected = networkService.isConnected
         let isOnLowPower = deviceStatus.isDeviceLowOnPower
-        
+
         #if TRACKER_ENABLED
-        if !isReachable && Tracker.debugMode {
+        if !isReachable && Tracker.debugMode && isCSHealthTrackingEnabled {
             let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
                                                   reason: FailureReason.networkUnavailable.rawValue)
             Tracker.sharedInstance?.record(event: healthEvent)
         }
         
-        if !isConnected && Tracker.debugMode {
+        if !isConnected && Tracker.debugMode && isCSHealthTrackingEnabled {
             if !isConnected && Tracker.debugMode {
                 if isOnLowPower {
                     let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
@@ -65,7 +68,7 @@ final class CourierRetryMechanism: Retryable {
             }
         }
         
-        if isOnLowPower && Tracker.debugMode {
+        if isOnLowPower && Tracker.debugMode && isCSHealthTrackingEnabled {
             let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
                                                   reason: FailureReason.lowBattery.rawValue)
             Tracker.sharedInstance?.record(event: healthEvent)
@@ -175,7 +178,7 @@ extension CourierRetryMechanism {
 
             Task {
                 do {
-                    try await networkService.publish(eventRequest, topic: topic)
+                    try networkService.publish(eventRequest, topic: topic)
 
                     if eventRequest.eventType == .instant {
                         checkedSelf.handlePublisedEventRequest(eventRequest: eventRequest)
@@ -230,12 +233,15 @@ extension CourierRetryMechanism {
 
     private func handleFailedEventRequest(with eventRequest: CourierEventRequest, error: Error) {
         #if TRACKER_ENABLED
-        let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchErrorResponse,
-                                              eventBatchGUID: eventRequest.guid,
-                                              reason: error.localizedDescription,
-                                              eventCount: eventRequest.eventCount)
+        if networkOptions.courierConfig.courierHealthConfig.csTrackingHealthEventsEnabled {
+            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchErrorResponse,
+                                                  eventBatchGUID: eventRequest.guid,
+                                                  reason: error.localizedDescription,
+                                                  eventCount: eventRequest.eventCount)
 
-        Tracker.sharedInstance?.record(event: healthEvent)
+            Tracker.sharedInstance?.record(event: healthEvent)
+        }
+
         #if ETE_TEST_SUITE_ENABLED
         Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "\(error)")
         if testMode { FileManagerOverride.writeToFile() }
@@ -270,7 +276,7 @@ extension CourierRetryMechanism {
         } else {
             if response.code == .maxConnectionLimitReached {
                 #if TRACKER_ENABLED
-                if Tracker.debugMode {
+                if Tracker.debugMode && isCSHealthTrackingEnabled {
                     let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamConnectionFailure,
                                                           reason: FailureReason.MAX_CONNECTION_LIMIT_REACHED.rawValue)
                     Tracker.sharedInstance?.record(event: healthEvent)
@@ -284,9 +290,13 @@ extension CourierRetryMechanism {
             }
             #if TRACKER_ENABLED
             if response.code == .maxUserLimitReached {
-               let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamConnectionFailure,
-                                                     reason: FailureReason.MAX_USER_LIMIT_REACHED.rawValue)
-                Tracker.sharedInstance?.record(event: healthEvent)
+
+                if isCSHealthTrackingEnabled {
+                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamConnectionFailure,
+                                                          reason: FailureReason.MAX_USER_LIMIT_REACHED.rawValue)
+                    Tracker.sharedInstance?.record(event: healthEvent)
+                }
+
                 #if ETE_TEST_SUITE_ENABLED
                 Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Max User Limit Reached")
                 #endif
@@ -295,12 +305,16 @@ extension CourierRetryMechanism {
             if response.code == .badRequest {
                 print("Error: Parsing Exception for eventRequest guid \(eventRequest.guid)", .verbose)
                 if Tracker.debugMode {
-                    var healthEvent: HealthAnalysisEvent!
-                    healthEvent = HealthAnalysisEvent(eventName: .ClickstreamWriteToSocketFailed,
-                                                      eventBatchGUID: eventRequest.guid,
-                                                      reason: FailureReason.ParsingException.rawValue,
-                                                      eventCount: eventRequest.eventCount)
-                    Tracker.sharedInstance?.record(event: healthEvent)
+
+                    if isCSHealthTrackingEnabled {
+                        var healthEvent: HealthAnalysisEvent!
+                        healthEvent = HealthAnalysisEvent(eventName: .ClickstreamWriteToSocketFailed,
+                                                          eventBatchGUID: eventRequest.guid,
+                                                          reason: FailureReason.ParsingException.rawValue,
+                                                          eventCount: eventRequest.eventCount)
+                        Tracker.sharedInstance?.record(event: healthEvent)
+                    }
+
                     #if ETE_TEST_SUITE_ENABLED
                     Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Bad Request")
                     #endif
@@ -323,12 +337,12 @@ extension CourierRetryMechanism {
 
     func configureIdentifiers(with identifiers: CourierIdentifiers,
                               topic: String,
-                              connectOptionsObserver: CourierConnectOptionsObserver?,
+                              authProvider: IConnectionServiceProvider,
                               pubSubAnalytics: ICourierEventHandler?) {
 
         self.identifiers = identifiers
         self.topic = topic
-        self.connectOptionsObserver = connectOptionsObserver
+        self.authProvider = authProvider
         self.pubSubAnalytics = pubSubAnalytics
         establishConnection(isForced: true)
     }
@@ -344,14 +358,9 @@ extension CourierRetryMechanism {
 extension CourierRetryMechanism {
     
     private func terminateConnection(cleanCredentials: Bool = false) {
-        guard isCourierConnectable else {
-            return
-        }
-
         if cleanCredentials {
             networkService.terminateConnection()
         }
-
         stopObservingFailedBatches()
     }
     
@@ -377,7 +386,7 @@ extension CourierRetryMechanism {
     
     private func establishConnection(isForced: Bool = false) {
         // Only establish connection when Courier identifiers available
-        guard let identifiers else {
+        guard let identifiers, let authProvider else {
             return
         }
 
@@ -392,42 +401,43 @@ extension CourierRetryMechanism {
         }
         
         if isForced {
-            connect(with: identifiers, isForced: true)
+            connect(with: identifiers, authProvider: authProvider, isForced: true)
         } else if !networkService.isConnected {
-            connect(with: identifiers, isForced: false)
+            connect(with: identifiers, authProvider: authProvider, isForced: false)
         }
     }
     
-    private func connect(with identifiers: CourierIdentifiers, isForced: Bool) {
+    private func connect(with identifiers: CourierIdentifiers, authProvider: IConnectionServiceProvider, isForced: Bool) {
+        networkService.initiateCourierConnection(
+            connectionStatusListener: self.connectionStatusListener,
+            identifiers: identifiers,
+            authProvider: authProvider,
+            eventHandler: self,
+            pubSubAnalytics: self.pubSubAnalytics,
+            isForced: isForced
+        )
+    }
 
-        Task {
-            await networkService.initiateCourierConnection(connectionStatusListener: { [weak self] result in
-                guard let checkedSelf = self else {
-                    return
-                }
+    private func connectionStatusListener(_ result: (Result<ConnectableState, ConnectableError>)) {
+        NotificationCenter.default.post(name: Constants.CourierConnectionNotification,
+                                        object: [Constants.Strings.didConnect: networkService.isConnected])
 
-                NotificationCenter.default.post(name: Constants.CourierConnectionNotification,
-                                                object: [Constants.Strings.didConnect: checkedSelf.networkService.isConnected])
-
-                switch result {
-                case .success(let state):
-                    switch state {
-                    case .connected:
-                        checkedSelf.startObservingFailedBatches()
-                    case .cancelled, .disconnected:
-                        checkedSelf.stopObservingFailedBatches()
-                        checkedSelf.networkService.flushConnectable()
-                    default:
-                        break
-                    }
-                    checkedSelf.networkServiceState = state
-                case .failure:
-                    checkedSelf.stopObservingFailedBatches()
-                }
-            }, identifiers: identifiers, eventHandler: self, connectOptionsObserver: self.connectOptionsObserver, pubSubAnalytics: self.pubSubAnalytics, isForced: isForced)
+        switch result {
+        case .success(let state):
+            switch state {
+            case .connected:
+                startObservingFailedBatches()
+            case .cancelled, .disconnected:
+                stopObservingFailedBatches()
+                networkService.flushConnectable()
+            default:
+                break
+            }
+            networkServiceState = state
+        case .failure:
+            stopObservingFailedBatches()
         }
     }
-    
 }
 
 extension CourierRetryMechanism {
@@ -437,7 +447,7 @@ extension CourierRetryMechanism {
             if fetchedEventRequest.retriesMade >= Clickstream.courierConfigurations.maxRetriesPerBatch {
                 persistence.deleteOne(eventRequest.guid)
                 #if TRACKER_ENABLED
-                if Tracker.debugMode {
+                if Tracker.debugMode && isCSHealthTrackingEnabled {
                     let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchDropped,
                                                           eventBatchGUID: fetchedEventRequest.guid,
                                                           eventCount: eventRequest.eventCount)
@@ -567,7 +577,7 @@ extension CourierRetryMechanism {
     
     func trackHealthAndPerformanceEvents(eventRequest: CourierEventRequest, startTime: Date) {
         #if TRACKER_ENABLED
-        if Tracker.debugMode {
+        if Tracker.debugMode && networkOptions.courierConfig.courierHealthConfig.csTrackingHealthEventsEnabled {
             guard eventRequest.eventType != Constants.EventType.instant else { return }
             
             let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchSuccessAck,

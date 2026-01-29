@@ -381,12 +381,12 @@ extension Clickstream {
     /// - Parameter identifiers: A client's credentials
     public func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers,
                                          topic: String,
-                                         connectOptionsObserver: CourierConnectOptionsObserver?,
+                                         authProvider: IConnectionServiceProvider,
                                          pubSubAnalytics: ICourierEventHandler?) {
 
         dependencies?.provideCourierClientIdentifiers(with: identifiers,
                                                       topic: topic,
-                                                      connectOptionsObserver: connectOptionsObserver,
+                                                      authProvider: authProvider,
                                                       pubSubAnalytics: pubSubAnalytics)
     }
 
