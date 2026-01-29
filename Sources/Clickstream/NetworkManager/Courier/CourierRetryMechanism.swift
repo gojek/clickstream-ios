@@ -358,14 +358,9 @@ extension CourierRetryMechanism {
 extension CourierRetryMechanism {
     
     private func terminateConnection(cleanCredentials: Bool = false) {
-        guard isCourierConnectable else {
-            return
-        }
-
         if cleanCredentials {
             networkService.terminateConnection()
         }
-
         stopObservingFailedBatches()
     }
     
