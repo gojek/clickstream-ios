@@ -275,7 +275,6 @@ public final class Tracker {
             let event = try Event(guid: eventGuid,
                                   timestamp: Date(),
                                   type: TrackerConstant.HealthEventType,
-                                  isMirrored: eventProto.isMirrored,
                                   eventProtoData: eventProto.serializedData())
             return event
         } catch {

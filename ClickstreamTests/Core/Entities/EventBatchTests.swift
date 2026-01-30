@@ -14,7 +14,7 @@ class EventBatchTests: XCTestCase {
     
     func testInit() {
         let uuid = UUID().uuidString
-        let event = Event(guid: UUID().uuidString, timestamp: Date(), type: "realtime", isMirrored: false, eventProtoData: Data())
+        let event = Event(guid: UUID().uuidString, timestamp: Date(), type: "realtime", eventProtoData: Data())
         
         let eventBatch = EventBatch(uuid: uuid, events: [event])
         
@@ -32,7 +32,7 @@ class EventBatchTests: XCTestCase {
     }
     
     func testInitWithEmptyUUID() {
-        let event = Event(guid: UUID().uuidString, timestamp: Date(), type: "realtime", isMirrored: false, eventProtoData: Data())
+        let event = Event(guid: UUID().uuidString, timestamp: Date(), type: "realtime", eventProtoData: Data())
         
         let eventBatch = EventBatch(uuid: "", events: [event])
         
@@ -42,8 +42,8 @@ class EventBatchTests: XCTestCase {
     
     func testInitWithMultipleEvents() {
         let uuid = UUID().uuidString
-        let event1 = Event(guid: "guid1", timestamp: Date(), type: "realtime", isMirrored: false, eventProtoData: Data())
-        let event2 = Event(guid: "guid2", timestamp: Date(), type: "realtime", isMirrored: false, eventProtoData: Data())
+        let event1 = Event(guid: "guid1", timestamp: Date(), type: "realtime", eventProtoData: Data())
+        let event2 = Event(guid: "guid2", timestamp: Date(), type: "realtime", eventProtoData: Data())
         let events = [event1, event2]
         
         let eventBatch = EventBatch(uuid: uuid, events: events)
@@ -55,7 +55,7 @@ class EventBatchTests: XCTestCase {
     
     func testEventBatchCodable() throws {
         let uuid = UUID().uuidString
-        let event = Event(guid: UUID().uuidString, timestamp: Date(), type: "realtime", isMirrored: false, eventProtoData: "test".data(using: .utf8)!)
+        let event = Event(guid: UUID().uuidString, timestamp: Date(), type: "realtime", eventProtoData: "test".data(using: .utf8)!)
         let eventBatch = EventBatch(uuid: uuid, events: [event])
         
         let encoded = try JSONEncoder().encode(eventBatch)
@@ -68,7 +68,7 @@ class EventBatchTests: XCTestCase {
     
     func testEventBatchMutability() {
         var eventBatch = EventBatch(uuid: UUID().uuidString)
-        let event = Event(guid: UUID().uuidString, timestamp: Date(), type: "realtime", isMirrored: false, eventProtoData: Data())
+        let event = Event(guid: UUID().uuidString, timestamp: Date(), type: "realtime", eventProtoData: Data())
         
         XCTAssertTrue(eventBatch.events.isEmpty)
         

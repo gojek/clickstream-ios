@@ -14,11 +14,10 @@ struct Event: EventDatabasePersistable {
     var guid: String
     var timestamp: Date
     var type: PriorityType
-    var isMirrored: Bool
     var eventProtoData: Data
     
     private enum CodingKeys: String, CodingKey {
-        case guid, timestamp, type, isMirrored, eventProtoData
+        case guid, timestamp, type, eventProtoData
     }
     
     enum Columns {

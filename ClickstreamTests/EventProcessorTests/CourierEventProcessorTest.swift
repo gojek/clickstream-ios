@@ -103,23 +103,7 @@ class CourierEventProcessorTest: XCTestCase {
         
         XCTAssertNotNil(courierEventProcessor)
     }
-    
-    func testShouldTrackEventValidWithWebsocketDisabled() {
-        let networkOptions = ClickstreamNetworkOptions(
-            isWebsocketEnabled: false,
-            courierEventTypes: [],
-            courierExclusiveEventTypes: []
-        )
-        courierEventProcessor = CourierEventProcessor(
-            performOnQueue: mockQueue,
-            classifier: mockClassifier,
-            eventWarehouser: mockWarehouser,
-            networkOptions: networkOptions
-        )
-        
-        XCTAssertTrue(courierEventProcessor.shouldTrackEvent(event: testEvent))
-    }
-    
+
     func testShouldTrackEventInvalidWithWebsocketEnabledAndNotWhitelisted() {
         let networkOptions = ClickstreamNetworkOptions(
             isWebsocketEnabled: true,
@@ -138,7 +122,7 @@ class CourierEventProcessorTest: XCTestCase {
 
     func testShouldTrackEventValidWithWebsocketEnabledAndWhitelisted() {
         let networkOptions = ClickstreamNetworkOptions(
-            isWebsocketEnabled: true,
+            isCourierEnabled: true,
             courierEventTypes: [testEvent.messageName],
             courierExclusiveEventTypes: []
         )
@@ -148,26 +132,11 @@ class CourierEventProcessorTest: XCTestCase {
             eventWarehouser: mockWarehouser,
             networkOptions: networkOptions
         )
+        courierEventProcessor.setClientIdentifiers(CourierIdentifiers(userIdentifier: "user"))
 
         XCTAssertTrue(courierEventProcessor.shouldTrackEvent(event: testEvent))
     }
 
-    func testShouldTrackEventValidWithCourierExclusiveEvent() {
-        let networkOptions = ClickstreamNetworkOptions(
-            isWebsocketEnabled: true,
-            courierEventTypes: [],
-            courierExclusiveEventTypes: [testEvent.messageName]
-        )
-        courierEventProcessor = CourierEventProcessor(
-            performOnQueue: mockQueue,
-            classifier: mockClassifier,
-            eventWarehouser: mockWarehouser,
-            networkOptions: networkOptions
-        )
-
-        XCTAssertTrue(courierEventProcessor.shouldTrackEvent(event: testEvent))
-    }
-    
     func testSetClientIdentifiers() {
         let identifiers = CourierIdentifiers(userIdentifier: "test-user-123")
         courierEventProcessor.setClientIdentifiers(identifiers)

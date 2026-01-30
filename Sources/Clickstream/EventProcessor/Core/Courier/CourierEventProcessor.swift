@@ -37,13 +37,21 @@ final class CourierEventProcessor: EventProcessor {
     }
 
     func shouldTrackEvent(event: ClickstreamEvent) -> Bool {
-        event.isCourierExclusive(networkOptions: networkOptions)
+        networkOptions.isCourierEnabled &&
+        networkOptions.courierEventTypes.contains(event.messageName) &&
+        identifiers != nil
     }
     
     func createEvent(event: ClickstreamEvent, userIdentifiersExist: Bool) {
         self.serialQueue.async { [weak self] in guard let checkedSelf = self else { return }
-            guard checkedSelf.shouldTrackEvent(event: event) else {
-                return
+            if checkedSelf.networkOptions.courierExclusiveEventsEnabled {
+                guard event.shouldTrackOnCourier(networkOptions: checkedSelf.networkOptions) else {
+                    return
+                }
+            } else {
+                guard checkedSelf.shouldTrackEvent(event: event) else {
+                    return
+                }
             }
 
             #if EVENT_VISUALIZER_ENABLED
@@ -82,11 +90,11 @@ final class CourierEventProcessor: EventProcessor {
                 $0.eventName = event.csEventName ?? "Unknown"
                 $0.product = event.product
                 $0.eventTimestamp = Google_Protobuf_Timestamp(date: event.timeStamp)
+                $0.isMirrored = isMirrored
             }
             return try CourierEvent(guid: event.guid,
                                     timestamp: event.timeStamp,
                                     type: classification,
-                                    isMirrored: isMirrored,
                                     eventProtoData: csEvent.serializedData())
         } catch {
             return nil
@@ -94,6 +102,6 @@ final class CourierEventProcessor: EventProcessor {
     }
 
     private func isExslusiveEvent(_ event: ClickstreamEvent) -> Bool {
-        event.isCourierExclusive(networkOptions: self.networkOptions)
+        event.shouldTrackOnCourier(networkOptions: self.networkOptions)
     }
 }

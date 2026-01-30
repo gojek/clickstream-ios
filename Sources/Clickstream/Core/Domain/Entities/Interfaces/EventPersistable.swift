@@ -6,7 +6,6 @@ protocol EventPersistable: Codable, Comparable, Hashable {
     var guid: String { get }
     var timestamp: Date { get }
     var type: PriorityType { get }
-    var isMirrored: Bool { get }
     var eventProtoData: Data { get }
 }
 

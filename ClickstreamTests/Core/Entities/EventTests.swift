@@ -17,7 +17,7 @@ class EventTests: XCTestCase {
         let type = "realtime"
         let eventProtoData = "test data".data(using: .utf8)!
         
-        let event = Event(guid: guid, timestamp: timestamp, type: type, isMirrored: false, eventProtoData: eventProtoData)
+        let event = Event(guid: guid, timestamp: timestamp, type: type, eventProtoData: eventProtoData)
         
         XCTAssertEqual(event.guid, guid)
         XCTAssertEqual(event.timestamp, timestamp)
@@ -31,7 +31,7 @@ class EventTests: XCTestCase {
         let type = "realtime"
         let eventProtoData = Data()
         
-        let event = Event(guid: guid, timestamp: timestamp, type: type, isMirrored: false, eventProtoData: eventProtoData)
+        let event = Event(guid: guid, timestamp: timestamp, type: type, eventProtoData: eventProtoData)
         
         XCTAssertEqual(event.guid, guid)
         XCTAssertEqual(event.timestamp, timestamp)
@@ -41,8 +41,8 @@ class EventTests: XCTestCase {
     
     func testEventComparison_basedOnTimestamp() {
         let baseDate = Date()
-        let firstEvent = Event(guid: "1", timestamp: baseDate, type: "realtime", isMirrored: false, eventProtoData: Data())
-        let secondEvent = Event(guid: "2", timestamp: Date(timeInterval: 1, since: baseDate), type: "realtime", isMirrored: false, eventProtoData: Data())
+        let firstEvent = Event(guid: "1", timestamp: baseDate, type: "realtime", eventProtoData: Data())
+        let secondEvent = Event(guid: "2", timestamp: Date(timeInterval: 1, since: baseDate), type: "realtime", eventProtoData: Data())
         
         XCTAssertTrue(firstEvent < secondEvent)
         XCTAssertFalse(secondEvent < firstEvent)
@@ -50,8 +50,8 @@ class EventTests: XCTestCase {
     
     func testEventComparison_equalTimestamps() {
         let timestamp = Date()
-        let firstEvent = Event(guid: "1", timestamp: timestamp, type: "realtime", isMirrored: false, eventProtoData: Data())
-        let secondEvent = Event(guid: "2", timestamp: timestamp, type: "realtime", isMirrored: false, eventProtoData: Data())
+        let firstEvent = Event(guid: "1", timestamp: timestamp, type: "realtime", eventProtoData: Data())
+        let secondEvent = Event(guid: "2", timestamp: timestamp, type: "realtime", eventProtoData: Data())
         
         XCTAssertFalse(firstEvent < secondEvent)
         XCTAssertFalse(secondEvent < firstEvent)
@@ -63,8 +63,8 @@ class EventTests: XCTestCase {
         let type = "realtime"
         let eventProtoData = Data()
         
-        let event1 = Event(guid: guid, timestamp: timestamp, type: type, isMirrored: false, eventProtoData: eventProtoData)
-        let event2 = Event(guid: guid, timestamp: timestamp, type: type, isMirrored: false, eventProtoData: eventProtoData)
+        let event1 = Event(guid: guid, timestamp: timestamp, type: type, eventProtoData: eventProtoData)
+        let event2 = Event(guid: guid, timestamp: timestamp, type: type, eventProtoData: eventProtoData)
         
         XCTAssertEqual(event1, event2)
     }
@@ -74,8 +74,8 @@ class EventTests: XCTestCase {
         let type = "realtime"
         let eventProtoData = Data()
         
-        let event1 = Event(guid: "guid1", timestamp: timestamp, type: type, isMirrored: false, eventProtoData: eventProtoData)
-        let event2 = Event(guid: "guid2", timestamp: timestamp, type: type, isMirrored: false, eventProtoData: eventProtoData)
+        let event1 = Event(guid: "guid1", timestamp: timestamp, type: type, eventProtoData: eventProtoData)
+        let event2 = Event(guid: "guid2", timestamp: timestamp, type: type, eventProtoData: eventProtoData)
         
         XCTAssertNotEqual(event1, event2)
     }
@@ -85,7 +85,6 @@ class EventTests: XCTestCase {
             guid: UUID().uuidString,
             timestamp: Date(),
             type: "realtime",
-            isMirrored: false,
             eventProtoData: "test".data(using: .utf8)!
         )
         

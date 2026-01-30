@@ -18,8 +18,8 @@ class EventBatchProcessorTests: XCTestCase {
     private var standardEvent: Event!
     
     override func setUp() {
-        realTimeEvent = Event(guid: "realTime", timestamp: Date(), type: "realTime", isMirrored: false, eventProtoData: Data())
-        standardEvent = Event(guid: "standard", timestamp: Date(), type: "standard", isMirrored: false, eventProtoData: Data())
+        realTimeEvent = Event(guid: "realTime", timestamp: Date(), type: "realTime", eventProtoData: Data())
+        standardEvent = Event(guid: "standard", timestamp: Date(), type: "standard", eventProtoData: Data())
         
         Clickstream.configurations = ClickstreamConstraints()
         Tracker.debugMode = true

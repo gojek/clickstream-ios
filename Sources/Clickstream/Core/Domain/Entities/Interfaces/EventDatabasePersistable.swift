@@ -25,7 +25,6 @@ extension EventDatabasePersistable {
             t.column("timestamp", .datetime).notNull()
             t.column("type", .integer).notNull()
             t.column("eventProtoData", .blob)
-            t.column("isMirrored", .boolean).defaults(to: false)
         }
     }
     

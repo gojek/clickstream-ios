@@ -14,7 +14,7 @@ class EventProcessorDependenciesTests: XCTestCase {
     private let database = try! DefaultDatabase(qos: .WAL)
     private let dbQueueMock = SerialQueue(label: "com.mock.gojek.clickstream.network", qos: .utility, attributes: .concurrent)
     private let mockQueue = SerialQueue(label: "com.mock.gojek.clickstream.processor", qos: .utility)
-    private let realTimeEvent = Event(guid: "", timestamp: Date(), type: "realTime", isMirrored: false, eventProtoData: Data())
+    private let realTimeEvent = Event(guid: "", timestamp: Date(), type: "realTime", eventProtoData: Data())
     
     func testMakeEventProcessor() {
         // given
