@@ -36,14 +36,6 @@ final class DefaultEventProcessor: EventProcessor {
         self.sampler = sampler
         self.networkOptions = networkOptions
     }
-    
-    func shouldTrackEventWithExclusiveFlow(event: ClickstreamEvent, userIdentifiersExist: Bool) -> Bool {
-        let shouldTrack = event.exclusiveTrackWebsocket(isUserLoggedIn: userIdentifiersExist, networkOptions: networkOptions)
-        if let eventSampler = sampler {
-            return eventSampler.shouldTrack(event: event) && shouldTrack
-        }
-        return shouldTrack
-    }
 
     func shouldTrackEvent(event: ClickstreamEvent) -> Bool {
         if let eventSampler = sampler {
@@ -54,14 +46,13 @@ final class DefaultEventProcessor: EventProcessor {
     
     func createEvent(event: ClickstreamEvent, userIdentifiersExist: Bool) {
         self.serialQueue.async { [weak self] in guard let checkedSelf = self else { return }
-            if checkedSelf.networkOptions.exclusiveTrackingFlowEnabled {
-                guard checkedSelf.shouldTrackEventWithExclusiveFlow(event: event, userIdentifiersExist: userIdentifiersExist) else {
-                    return
-                }
-            } else {
-                guard checkedSelf.shouldTrackEvent(event: event) else {
-                    return
-                }
+            guard event.isCourierExclusiveWebsocket(isUserLoggedIn: userIdentifiersExist,
+                                                    networkOptions: checkedSelf.networkOptions) else {
+                return
+            }
+
+            guard checkedSelf.shouldTrackEvent(event: event) else {
+                return
             }
 
             #if EVENT_VISUALIZER_ENABLED

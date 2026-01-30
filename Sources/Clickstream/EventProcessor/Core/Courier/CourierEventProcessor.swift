@@ -35,15 +35,9 @@ final class CourierEventProcessor: EventProcessor {
     func removeClientIdentifiers() {
         identifiers = nil
     }
-    
-    func shouldTrackEventWithExclusiveFlow(event: ClickstreamEvent, userIdentifiersExist: Bool) -> Bool {
-        event.exclusiveTrackWebsocket(isUserLoggedIn: userIdentifiersExist, networkOptions: networkOptions)
-    }
 
     func shouldTrackEvent(event: ClickstreamEvent) -> Bool {
-        networkOptions.isCourierEnabled &&
-        networkOptions.courierEventTypes.contains(event.messageName) &&
-        identifiers != nil
+        event.isCourierExclusive(networkOptions: networkOptions)
     }
     
     func createEvent(event: ClickstreamEvent, userIdentifiersExist: Bool) {

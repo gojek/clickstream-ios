@@ -51,7 +51,7 @@ public extension ClickstreamEvent {
 
 extension ClickstreamEvent {
 
-    func exclusiveTrackCourier(networkOptions: ClickstreamNetworkOptions) -> Bool {
+    func isCourierExclusive(networkOptions: ClickstreamNetworkOptions) -> Bool {
         let isWebsocketEnabled = networkOptions.isWebsocketEnabled
         let isCourierWhitelisted = networkOptions.courierEventTypes.contains(self.messageName)
         let isCourierExclusive = networkOptions.courierExclusiveEventTypes.contains(self.messageName)
@@ -62,7 +62,7 @@ extension ClickstreamEvent {
         return true
     }
 
-    func exclusiveTrackWebsocket(isUserLoggedIn: Bool, networkOptions: ClickstreamNetworkOptions) -> Bool {
+    func isCourierExclusiveWebsocket(isUserLoggedIn: Bool, networkOptions: ClickstreamNetworkOptions) -> Bool {
         let isCourierEnabled = networkOptions.isCourierEnabled
         let isCourierExclusive = networkOptions.courierExclusiveEventTypes.contains(self.messageName)
 

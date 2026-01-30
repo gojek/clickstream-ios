@@ -24,7 +24,6 @@ class CourierEventProcessorTest: XCTestCase {
     private var networkOptions: ClickstreamNetworkOptions!
     private var batchSizeRegulator: CourierBatchSizeRegulator!
     private var persitance: DefaultDatabaseDAO<CourierEvent>!
-    private var courierIdentifiers: CourierIdentifiers!
 
     override func setUp() {
         let db = try! DefaultDatabase(qos: .WAL)
@@ -70,8 +69,6 @@ class CourierEventProcessorTest: XCTestCase {
             eventData: Data(),
             product: "CSTestProduct"
         )
-        
-        courierIdentifiers = CourierIdentifiers(userIdentifier: "12345")
 
         super.setUp()
     }
@@ -107,8 +104,12 @@ class CourierEventProcessorTest: XCTestCase {
         XCTAssertNotNil(courierEventProcessor)
     }
     
-    func testShouldTrackEventValid() {
-        let networkOptions = ClickstreamNetworkOptions(isCourierEnabled: true, courierEventTypes: [""])
+    func testShouldTrackEventValidWithWebsocketDisabled() {
+        let networkOptions = ClickstreamNetworkOptions(
+            isWebsocketEnabled: false,
+            courierEventTypes: [],
+            courierExclusiveEventTypes: []
+        )
         courierEventProcessor = CourierEventProcessor(
             performOnQueue: mockQueue,
             classifier: mockClassifier,
@@ -116,12 +117,15 @@ class CourierEventProcessorTest: XCTestCase {
             networkOptions: networkOptions
         )
         
-        courierEventProcessor.setClientIdentifiers(courierIdentifiers)
         XCTAssertTrue(courierEventProcessor.shouldTrackEvent(event: testEvent))
     }
     
-    func testShouldTrackEventInvalidIdentifiers() {
-        let networkOptions = ClickstreamNetworkOptions(isCourierEnabled: true, courierEventTypes: [""])
+    func testShouldTrackEventInvalidWithWebsocketEnabledAndNotWhitelisted() {
+        let networkOptions = ClickstreamNetworkOptions(
+            isWebsocketEnabled: true,
+            courierEventTypes: [],
+            courierExclusiveEventTypes: []
+        )
         courierEventProcessor = CourierEventProcessor(
             performOnQueue: mockQueue,
             classifier: mockClassifier,
@@ -129,12 +133,15 @@ class CourierEventProcessorTest: XCTestCase {
             networkOptions: networkOptions
         )
 
-        courierEventProcessor.setClientIdentifiers(nil)
         XCTAssertFalse(courierEventProcessor.shouldTrackEvent(event: testEvent))
     }
 
-    func testShouldTrackEventInvalidNetworkOptionsCourierDisabled() {
-        let networkOptions = ClickstreamNetworkOptions(isCourierEnabled: false, courierEventTypes: [""])
+    func testShouldTrackEventValidWithWebsocketEnabledAndWhitelisted() {
+        let networkOptions = ClickstreamNetworkOptions(
+            isWebsocketEnabled: true,
+            courierEventTypes: [testEvent.messageName],
+            courierExclusiveEventTypes: []
+        )
         courierEventProcessor = CourierEventProcessor(
             performOnQueue: mockQueue,
             classifier: mockClassifier,
@@ -142,20 +149,38 @@ class CourierEventProcessorTest: XCTestCase {
             networkOptions: networkOptions
         )
 
-        courierEventProcessor.setClientIdentifiers(courierIdentifiers)
-        XCTAssertFalse(courierEventProcessor.shouldTrackEvent(event: testEvent))
+        XCTAssertTrue(courierEventProcessor.shouldTrackEvent(event: testEvent))
     }
 
-    func testShouldTrackEventInvalidNetworkOptionsEventTypesEmpty() {
-        let networkOptions = ClickstreamNetworkOptions(isCourierEnabled: true, courierEventTypes: [])
+    func testShouldTrackEventValidWithCourierExclusiveEvent() {
+        let networkOptions = ClickstreamNetworkOptions(
+            isWebsocketEnabled: true,
+            courierEventTypes: [],
+            courierExclusiveEventTypes: [testEvent.messageName]
+        )
         courierEventProcessor = CourierEventProcessor(
             performOnQueue: mockQueue,
             classifier: mockClassifier,
             eventWarehouser: mockWarehouser,
             networkOptions: networkOptions
         )
-        courierEventProcessor.setClientIdentifiers(courierIdentifiers)
-        XCTAssertFalse(courierEventProcessor.shouldTrackEvent(event: testEvent))
+
+        XCTAssertTrue(courierEventProcessor.shouldTrackEvent(event: testEvent))
+    }
+    
+    func testSetClientIdentifiers() {
+        let identifiers = CourierIdentifiers(userIdentifier: "test-user-123")
+        courierEventProcessor.setClientIdentifiers(identifiers)
+        
+        XCTAssertNotNil(courierEventProcessor)
+    }
+    
+    func testRemoveClientIdentifiers() {
+        let identifiers = CourierIdentifiers(userIdentifier: "test-user-123")
+        courierEventProcessor.setClientIdentifiers(identifiers)
+        courierEventProcessor.removeClientIdentifiers()
+        
+        XCTAssertNotNil(courierEventProcessor)
     }
 }
 
