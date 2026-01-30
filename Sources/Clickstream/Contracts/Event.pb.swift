@@ -62,6 +62,13 @@ struct Odpf_Raccoon_Event: Sendable {
   /// Clears the value of `eventTimestamp`. Subsequent reads from it will return its default value.
   mutating func clearEventTimestamp() {self._eventTimestamp = nil}
 
+  ///
+  ///`is_mirrored` indicates whether the event is mirrored.
+  ///
+  ///If set to true, Raccoon will publish the events to a Kafka topic
+  ///with a different naming format than the default topic name format
+  var isMirrored: Bool = false
+
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
@@ -80,7 +87,8 @@ extension Odpf_Raccoon_Event: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
     2: .same(proto: "type"),
     3: .standard(proto: "event_name"),
     4: .standard(proto: "product"),
-    5: .standard(proto: "event_timestamp")
+    5: .standard(proto: "event_timestamp"),
+    6: .standard(proto: "is_mirrored")
   ]
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -94,6 +102,7 @@ extension Odpf_Raccoon_Event: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
       case 3: try { try decoder.decodeSingularStringField(value: &self.eventName) }()
       case 4: try { try decoder.decodeSingularStringField(value: &self.product) }()
       case 5: try { try decoder.decodeSingularMessageField(value: &self._eventTimestamp) }()
+      case 6: try { try decoder.decodeSingularBoolField(value: &self.isMirrored) }()
       default: break
       }
     }
@@ -119,6 +128,9 @@ extension Odpf_Raccoon_Event: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
     try { if let v = self._eventTimestamp {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 5)
     } }()
+    if self.isMirrored != false {
+      try visitor.visitSingularBoolField(value: self.isMirrored, fieldNumber: 6)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -128,6 +140,7 @@ extension Odpf_Raccoon_Event: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
     if lhs.eventName != rhs.eventName {return false}
     if lhs.product != rhs.product {return false}
     if lhs._eventTimestamp != rhs._eventTimestamp {return false}
+    if lhs.isMirrored != rhs.isMirrored {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

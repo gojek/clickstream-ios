@@ -57,13 +57,13 @@ final class CourierEventProcessor: EventProcessor {
             }
             #endif
             // Create an Event instance and forward it to the scheduler.
-            if let event = checkedSelf.constructEvent(event: event) {
+            if let event = checkedSelf.constructEvent(event: event, isMirrored: checkedSelf.isExslusiveEvent(event)) {
                 checkedSelf.eventWarehouser.store(event)
             }
         }
     }
 
-    private func constructEvent(event: ClickstreamEvent) -> CourierEvent? {
+    private func constructEvent(event: ClickstreamEvent, isMirrored: Bool) -> CourierEvent? {
         guard var typeOfEvent: String = event.eventName.components(separatedBy: ".").last?.lowercased() else { return nil }
 
         /// Check if appPrefix does not contain gojek
@@ -86,9 +86,14 @@ final class CourierEventProcessor: EventProcessor {
             return try CourierEvent(guid: event.guid,
                                     timestamp: event.timeStamp,
                                     type: classification,
+                                    isMirrored: isMirrored,
                                     eventProtoData: csEvent.serializedData())
         } catch {
             return nil
         }
+    }
+
+    private func isExslusiveEvent(_ event: ClickstreamEvent) -> Bool {
+        event.isCourierExclusive(networkOptions: self.networkOptions)
     }
 }

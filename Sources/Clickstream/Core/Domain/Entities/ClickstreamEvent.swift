@@ -64,7 +64,7 @@ extension ClickstreamEvent {
 
     func isCourierExclusiveWebsocket(isUserLoggedIn: Bool, networkOptions: ClickstreamNetworkOptions) -> Bool {
         let isCourierEnabled = networkOptions.isCourierEnabled
-        let isCourierExclusive = networkOptions.courierExclusiveEventTypes.contains(self.messageName)
+        let isCourierExclusive = !networkOptions.isWebsocketEnabled || networkOptions.courierExclusiveEventTypes.contains(self.messageName)
 
         if isCourierEnabled && isUserLoggedIn && isCourierExclusive {
             return false

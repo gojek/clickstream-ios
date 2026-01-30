@@ -97,6 +97,7 @@ final class DefaultEventProcessor: EventProcessor {
             return try Event(guid: event.guid,
                              timestamp: event.timeStamp,
                              type: classification,
+                             isMirrored: false,
                              eventProtoData: csEvent.serializedData())
         } catch {
             return nil
