@@ -15,7 +15,7 @@ class NetworkBuilderTests: XCTestCase {
     private let dbQueueMock = DispatchQueue(label: "com.mock.gojek.clickstream.network", qos: .utility, attributes: .concurrent)
     
     private var eventBatchMock: EventBatch {
-        let event = Event(guid: "", timestamp: Date(), type: "realTime", eventProtoData: Data())
+        let event = Event(guid: "", timestamp: Date(), type: "realTime", isMirrored: false, eventProtoData: Data())
         return EventBatch(uuid: UUID().uuidString, events: [event])
     }
     

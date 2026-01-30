@@ -58,7 +58,7 @@ class EventCreatorTests: XCTestCase {
         let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         
         let deviceStatus = DefaultDeviceStatus(performOnQueue: networkQueue)
-        let event = Event(guid: "", timestamp: Date(), type: "realTime", eventProtoData: Data())
+        let event = Event(guid: "", timestamp: Date(), type: "realTime", isMirrored: false, eventProtoData: Data())
         let networkService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: networkQueue)
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         let keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: schedulerQueueMock, duration: 2, reachability: NetworkReachabilityMock(isReachable: true))
@@ -78,7 +78,7 @@ class EventCreatorTests: XCTestCase {
         //given
         let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         
-        let event = Event(guid: "", timestamp: Date(), type: "realTime", eventProtoData: Data())
+        let event = Event(guid: "", timestamp: Date(), type: "realTime", isMirrored: false, eventProtoData: Data())
         let deviceStatus = DefaultDeviceStatus(performOnQueue: networkQueue)
         let networkService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: networkQueue)
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)

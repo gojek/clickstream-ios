@@ -15,8 +15,8 @@ class EventWarehouserTests: XCTestCase {
     private let dbQueueMock = SerialQueue(label: "com.mock.gojek.clickstream.network", qos: .utility, attributes: .concurrent)
 
     private let schedulerQueueMock = SerialQueue(label: "com.mock.gojek.clickstream.schedule", qos: .utility)
-    private let realTimeEvent = Event(guid: "realTimeEvent", timestamp: Date(), type: "realTime", eventProtoData: Data())
-    private let standardEvent = Event(guid: "standardEvent", timestamp: Date(), type: "standard", eventProtoData: Data())
+    private let realTimeEvent = Event(guid: "realTimeEvent", timestamp: Date(), type: "realTime", isMirrored: false, eventProtoData: Data())
+    private let standardEvent = Event(guid: "standardEvent", timestamp: Date(), type: "standard", isMirrored: false, eventProtoData: Data())
 
     override func setUp() {
         
