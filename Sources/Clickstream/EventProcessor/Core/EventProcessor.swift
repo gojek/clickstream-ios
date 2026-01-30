@@ -46,8 +46,9 @@ final class DefaultEventProcessor: EventProcessor {
     
     func createEvent(event: ClickstreamEvent, userIdentifiersExist: Bool) {
         self.serialQueue.async { [weak self] in guard let checkedSelf = self else { return }
-            guard event.isCourierExclusiveWebsocket(isUserLoggedIn: userIdentifiersExist,
-                                                    networkOptions: checkedSelf.networkOptions) else {
+            if checkedSelf.networkOptions.courierExclusiveEventsEnabled
+                && !event.shouldTrackOnWebsocket(isUserLoggedIn: userIdentifiersExist, networkOptions: checkedSelf.networkOptions) {
+                /// Do not track Websocket event if conditions meets
                 return
             }
 
@@ -93,11 +94,11 @@ final class DefaultEventProcessor: EventProcessor {
                 $0.eventName = event.csEventName ?? "Unknown"
                 $0.product = event.product
                 $0.eventTimestamp = Google_Protobuf_Timestamp(date: event.timeStamp)
+                $0.isMirrored = false
             }
             return try Event(guid: event.guid,
                              timestamp: event.timeStamp,
                              type: classification,
-                             isMirrored: false,
                              eventProtoData: csEvent.serializedData())
         } catch {
             return nil

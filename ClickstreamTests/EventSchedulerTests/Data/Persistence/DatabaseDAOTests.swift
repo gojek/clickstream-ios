@@ -36,7 +36,7 @@ class DatabaseDAOTests: XCTestCase {
     }
     
     func test_whenInsertOnTheDAOIsCalled_thenTheObjectMustBeAddedToDatabase() {
-        let event = Event(guid: UUID().uuidString, timestamp: Date(), type: "realTime", isMirrored: false, eventProtoData: Data())
+        let event = Event(guid: UUID().uuidString, timestamp: Date(), type: "realTime", eventProtoData: Data())
         
         persistence.insert(event)
         if let events: [Event] = self.persistence.fetchAll() {

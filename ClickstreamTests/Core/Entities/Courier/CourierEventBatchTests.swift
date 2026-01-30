@@ -6,7 +6,7 @@ class CourierEventBatchTests: XCTestCase {
     
     func testInit() {
         let uuid = UUID().uuidString
-        let event = CourierEvent(guid: UUID().uuidString, timestamp: Date(), type: "realtime", isMirrored: false, eventProtoData: Data())
+        let event = CourierEvent(guid: UUID().uuidString, timestamp: Date(), type: "realtime", eventProtoData: Data())
         
         let eventBatch = CourierEventBatch(uuid: uuid, events: [event])
         
@@ -24,7 +24,7 @@ class CourierEventBatchTests: XCTestCase {
     }
     
     func testInitWithEmptyUUID() {
-        let event = CourierEvent(guid: UUID().uuidString, timestamp: Date(), type: "realtime", isMirrored: false, eventProtoData: Data())
+        let event = CourierEvent(guid: UUID().uuidString, timestamp: Date(), type: "realtime", eventProtoData: Data())
         
         let eventBatch = CourierEventBatch(uuid: "", events: [event])
         
@@ -34,8 +34,8 @@ class CourierEventBatchTests: XCTestCase {
     
     func testInitWithMultipleEvents() {
         let uuid = UUID().uuidString
-        let event1 = CourierEvent(guid: "guid1", timestamp: Date(), type: "realtime", isMirrored: false, eventProtoData: Data())
-        let event2 = CourierEvent(guid: "guid2", timestamp: Date(), type: "realtime", isMirrored: false, eventProtoData: Data())
+        let event1 = CourierEvent(guid: "guid1", timestamp: Date(), type: "realtime", eventProtoData: Data())
+        let event2 = CourierEvent(guid: "guid2", timestamp: Date(), type: "realtime", eventProtoData: Data())
         let events = [event1, event2]
         
         let eventBatch = CourierEventBatch(uuid: uuid, events: events)
@@ -47,7 +47,7 @@ class CourierEventBatchTests: XCTestCase {
     
     func testEventBatchCodable() throws {
         let uuid = UUID().uuidString
-        let event = CourierEvent(guid: UUID().uuidString, timestamp: Date(), type: "realtime", isMirrored: false, eventProtoData: "test".data(using: .utf8)!)
+        let event = CourierEvent(guid: UUID().uuidString, timestamp: Date(), type: "realtime", eventProtoData: "test".data(using: .utf8)!)
         let eventBatch = CourierEventBatch(uuid: uuid, events: [event])
         
         let encoded = try JSONEncoder().encode(eventBatch)
@@ -60,7 +60,7 @@ class CourierEventBatchTests: XCTestCase {
     
     func testEventBatchMutability() {
         var eventBatch = CourierEventBatch(uuid: UUID().uuidString)
-        let event = CourierEvent(guid: UUID().uuidString, timestamp: Date(), type: "realtime", isMirrored: false, eventProtoData: Data())
+        let event = CourierEvent(guid: UUID().uuidString, timestamp: Date(), type: "realtime", eventProtoData: Data())
         
         XCTAssertTrue(eventBatch.events.isEmpty)
         

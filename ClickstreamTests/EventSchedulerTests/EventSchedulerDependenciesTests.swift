@@ -41,7 +41,7 @@ class EventSchedulerDependenciesTests: XCTestCase {
         database = try! DefaultDatabase(qos: .WAL)
         dbQueueMock = SerialQueue(label: "com.mock.gojek.clickstream.network", qos: .utility, attributes: .concurrent)
         mockQueue = SerialQueue(label: "com.mock.gojek.clickstream.network", qos: .utility)
-        realTimeEvent = Event(guid: "test-guid", timestamp: Date(), type: "realTime", isMirrored: false, eventProtoData: Data())
+        realTimeEvent = Event(guid: "test-guid", timestamp: Date(), type: "realTime", eventProtoData: Data())
         
         guard let url = URL(string: "ws://mock.clickstream.com") else {
             XCTFail("Failed to create test URL")
