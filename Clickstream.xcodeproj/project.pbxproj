@@ -238,6 +238,7 @@
 		D8A7F7F92EC6D73600DFC9AE /* ClickstreamCourierHTTPRetryPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7F72EC6D73600DFC9AE /* ClickstreamCourierHTTPRetryPolicy.swift */; };
 		D8A7F7FE2ECC0BFC00DFC9AE /* ClickStreamCourierConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7FD2ECC0BFC00DFC9AE /* ClickStreamCourierConstraints.swift */; };
 		D8A7F7FF2ECC0BFC00DFC9AE /* ClickStreamCourierConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A7F7FD2ECC0BFC00DFC9AE /* ClickStreamCourierConstraints.swift */; };
+		D8D18A382F2C9468000146A6 /* ClickstreamEventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D18A372F2C9468000146A6 /* ClickstreamEventTests.swift */; };
 		D8D2ADEF2F28B3EA00573AC8 /* MockAuthenticationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D2ADEE2F28B3EA00573AC8 /* MockAuthenticationProvider.swift */; };
 		D8E4B8962EA89DDC0001D3D6 /* CourierHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E4B8952EA89DDC0001D3D6 /* CourierHandler.swift */; };
 		D8E4B8972EA89DDC0001D3D6 /* CourierHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E4B8952EA89DDC0001D3D6 /* CourierHandler.swift */; };
@@ -446,6 +447,7 @@
 		D8A7F7F42EC6D72D00DFC9AE /* ClickstreamCourierRetryPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickstreamCourierRetryPolicy.swift; sourceTree = "<group>"; };
 		D8A7F7F72EC6D73600DFC9AE /* ClickstreamCourierHTTPRetryPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickstreamCourierHTTPRetryPolicy.swift; sourceTree = "<group>"; };
 		D8A7F7FD2ECC0BFC00DFC9AE /* ClickStreamCourierConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickStreamCourierConstraints.swift; sourceTree = "<group>"; };
+		D8D18A372F2C9468000146A6 /* ClickstreamEventTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickstreamEventTests.swift; sourceTree = "<group>"; };
 		D8D2ADEE2F28B3EA00573AC8 /* MockAuthenticationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAuthenticationProvider.swift; sourceTree = "<group>"; };
 		D8E4B8952EA89DDC0001D3D6 /* CourierHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierHandler.swift; sourceTree = "<group>"; };
 		D8E4B8982EA89DF10001D3D6 /* CourierConnectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierConnectable.swift; sourceTree = "<group>"; };
@@ -751,6 +753,7 @@
 				BDE467492A5BD24500BFA976 /* EventBatchTests.swift */,
 				BDE4674A2A5BD24500BFA976 /* EventTests.swift */,
 				D8F38D4F2E94CCD300C4281E /* ClickstreamNetworkOptionsTests.swift */,
+				D8D18A372F2C9468000146A6 /* ClickstreamEventTests.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -1759,6 +1762,7 @@
 				BDE468642A5BD72000BFA976 /* EventWarehouser.swift in Sources */,
 				BD6BDB9129FBC1360006B04A /* Notifiable.swift in Sources */,
 				BD6BDB9729FBC1360006B04A /* Health.pb.swift in Sources */,
+				D8D18A382F2C9468000146A6 /* ClickstreamEventTests.swift in Sources */,
 				BD6BDB7B29FBC1360006B04A /* EventDetailsViewController.swift in Sources */,
 				BDE467702A5BD24500BFA976 /* ClickStreamTests.swift in Sources */,
 				BDE468622A5BD72000BFA976 /* EventSchedulerDependencies.swift in Sources */,

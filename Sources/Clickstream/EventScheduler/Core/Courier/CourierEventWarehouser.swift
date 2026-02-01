@@ -11,10 +11,6 @@ final class CourierEventWarehouser: EventWarehouser {
     private let batchSizeRegulator: CourierBatchSizeRegulator
     private let networkOptions: ClickstreamNetworkOptions
 
-    private lazy var courierWhitelistedEvents: Set<String> = {
-        Set(networkOptions.courierEventTypes.map { $0.lowercased() })
-    }()
-
     init(with batchProcessor: CourierEventBatchProcessor,
          performOnQueue: SerialQueue,
          persistence: DefaultDatabaseDAO<CourierEvent>,

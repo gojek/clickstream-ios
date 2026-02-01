@@ -48,3 +48,27 @@ public extension ClickstreamEvent {
         }
     }
 }
+
+extension ClickstreamEvent {
+
+    func shouldTrackOnCourier(networkOptions: ClickstreamNetworkOptions) -> Bool {
+        let isWebsocketEnabled = networkOptions.isWebsocketEnabled
+        let isCourierWhitelisted = networkOptions.courierEventTypes.contains(self.messageName)
+        let isCourierExclusive = networkOptions.courierExclusiveEventTypes.contains(self.messageName)
+
+        if isWebsocketEnabled && !isCourierWhitelisted && !isCourierExclusive {
+            return false
+        }
+        return true
+    }
+
+    func shouldTrackOnWebsocket(isUserLoggedIn: Bool, networkOptions: ClickstreamNetworkOptions) -> Bool {
+        let isCourierEnabled = networkOptions.isCourierEnabled
+        let isCourierExclusive = !networkOptions.isWebsocketEnabled || networkOptions.courierExclusiveEventTypes.contains(self.messageName)
+
+        if isCourierEnabled && isUserLoggedIn && isCourierExclusive {
+            return false
+        }
+        return true
+    }
+}

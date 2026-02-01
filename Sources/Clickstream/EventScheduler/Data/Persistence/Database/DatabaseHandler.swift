@@ -103,6 +103,7 @@ final class DefaultDatabase: Database {
             }
         }
         
+        
         // register migrations.
         t.tableMigrations?.forEach { migration in
             if !registeredMigrations.contains(migration.version) {
