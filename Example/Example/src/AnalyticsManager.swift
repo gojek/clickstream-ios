@@ -82,7 +82,7 @@ class AnalyticsManager {
                 eventName: type(of: message).protoMessageName,
                 eventData: try message.serializedData(),
                 product: "CSSampleApp")
-            clickstream.trackEvent(with: eventDTO)
+            clickstream.trackEventViaWebsocket(with: eventDTO)
         } catch {
             print(error.localizedDescription)
         }

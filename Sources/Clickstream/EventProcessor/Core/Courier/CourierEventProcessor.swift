@@ -35,17 +35,23 @@ final class CourierEventProcessor: EventProcessor {
     func removeClientIdentifiers() {
         identifiers = nil
     }
-    
+
     func shouldTrackEvent(event: ClickstreamEvent) -> Bool {
         networkOptions.isCourierEnabled &&
         networkOptions.courierEventTypes.contains(event.messageName) &&
         identifiers != nil
     }
     
-    func createEvent(event: ClickstreamEvent) {
+    func createEvent(event: ClickstreamEvent, userIdentifiersExist: Bool) {
         self.serialQueue.async { [weak self] in guard let checkedSelf = self else { return }
-            guard checkedSelf.shouldTrackEvent(event: event) else {
-                return
+            if checkedSelf.networkOptions.courierExclusiveEventsEnabled {
+                guard event.shouldTrackOnCourier(networkOptions: checkedSelf.networkOptions) else {
+                    return
+                }
+            } else {
+                guard checkedSelf.shouldTrackEvent(event: event) else {
+                    return
+                }
             }
 
             #if EVENT_VISUALIZER_ENABLED
@@ -59,13 +65,13 @@ final class CourierEventProcessor: EventProcessor {
             }
             #endif
             // Create an Event instance and forward it to the scheduler.
-            if let event = checkedSelf.constructEvent(event: event) {
+            if let event = checkedSelf.constructEvent(event: event, isMirrored: checkedSelf.isExslusiveEvent(event)) {
                 checkedSelf.eventWarehouser.store(event)
             }
         }
     }
 
-    private func constructEvent(event: ClickstreamEvent) -> CourierEvent? {
+    private func constructEvent(event: ClickstreamEvent, isMirrored: Bool) -> CourierEvent? {
         guard var typeOfEvent: String = event.eventName.components(separatedBy: ".").last?.lowercased() else { return nil }
 
         /// Check if appPrefix does not contain gojek
@@ -84,6 +90,7 @@ final class CourierEventProcessor: EventProcessor {
                 $0.eventName = event.csEventName ?? "Unknown"
                 $0.product = event.product
                 $0.eventTimestamp = Google_Protobuf_Timestamp(date: event.timeStamp)
+                $0.isMirrored = isMirrored
             }
             return try CourierEvent(guid: event.guid,
                                     timestamp: event.timeStamp,
@@ -92,5 +99,9 @@ final class CourierEventProcessor: EventProcessor {
         } catch {
             return nil
         }
+    }
+
+    private func isExslusiveEvent(_ event: ClickstreamEvent) -> Bool {
+        event.shouldTrackOnCourier(networkOptions: self.networkOptions)
     }
 }

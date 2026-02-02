@@ -30,6 +30,11 @@ class EventProcessorTest: XCTestCase {
     private let database = try! DefaultDatabase(qos: .WAL)
     private let batchSizeRegulator = DefaultBatchSizeRegulator()
     
+    private var mockClassifier: MockEventClassifier!
+    private var eventProcessor: DefaultEventProcessor!
+    private var testEvent: ClickstreamEvent!
+    private var networkOptions: ClickstreamNetworkOptions!
+    
     override func setUp() {
         //given
         /// Network builder
@@ -50,6 +55,27 @@ class EventProcessorTest: XCTestCase {
         appStateNotifierMock = AppStateNotifierMock(state: .didBecomeActive)
         defaultEventBatchProcessor = DefaultEventBatchProcessor(with: eventBatchCreator, schedulerService: schedulerServiceMock, appStateNotifier: appStateNotifierMock, batchSizeRegulator: batchSizeRegulator, persistence: eventPersistence)
         eventWarehouser = DefaultEventWarehouser(with: defaultEventBatchProcessor, performOnQueue: processorQueueMock, persistence: eventPersistence, batchSizeRegulator: batchSizeRegulator)
+        
+        mockClassifier = MockEventClassifier()
+        mockClassifier.classificationResult = "test-classification"
+        
+        networkOptions = ClickstreamNetworkOptions()
+        
+        eventProcessor = DefaultEventProcessor(
+            performOnQueue: processorQueueMock,
+            classifier: mockClassifier,
+            eventWarehouser: eventWarehouser,
+            networkOptions: networkOptions
+        )
+        
+        testEvent = ClickstreamEvent(
+            guid: "test-guid",
+            timeStamp: Date(),
+            message: nil,
+            eventName: "test.event.name",
+            eventData: Data(),
+            product: "CSTestProduct"
+        )
     }
 
     override func tearDown() {
@@ -64,5 +90,98 @@ class EventProcessorTest: XCTestCase {
         appStateNotifierMock = nil
         defaultEventBatchProcessor = nil
         eventWarehouser = nil
+        eventProcessor = nil
+        mockClassifier = nil
+        testEvent = nil
+        networkOptions = nil
+    }
+    
+    func testInitialization() {
+        XCTAssertNotNil(eventProcessor)
+    }
+    
+    func testInitializationWithSampler() {
+        let sampler = MockEventSampler(shouldTrack: true)
+        let processor = DefaultEventProcessor(
+            performOnQueue: processorQueueMock,
+            classifier: mockClassifier,
+            eventWarehouser: eventWarehouser,
+            sampler: sampler,
+            networkOptions: networkOptions
+        )
+        
+        XCTAssertNotNil(processor)
+    }
+    
+    func testShouldTrackEventWithoutSampler() {
+        XCTAssertTrue(eventProcessor.shouldTrackEvent(event: testEvent))
+    }
+    
+    func testShouldTrackEventWithSamplerReturnsTrue() {
+        let sampler = MockEventSampler(shouldTrack: true)
+        let processor = DefaultEventProcessor(
+            performOnQueue: processorQueueMock,
+            classifier: mockClassifier,
+            eventWarehouser: eventWarehouser,
+            sampler: sampler,
+            networkOptions: networkOptions
+        )
+        
+        XCTAssertTrue(processor.shouldTrackEvent(event: testEvent))
+    }
+    
+    func testShouldTrackEventWithSamplerReturnsFalse() {
+        let sampler = MockEventSampler(shouldTrack: false)
+        let processor = DefaultEventProcessor(
+            performOnQueue: processorQueueMock,
+            classifier: mockClassifier,
+            eventWarehouser: eventWarehouser,
+            sampler: sampler,
+            networkOptions: networkOptions
+        )
+        
+        XCTAssertFalse(processor.shouldTrackEvent(event: testEvent))
+    }
+    
+    func testShouldTrackEventValidWithWebsocketDisabled() {
+        let networkOptions = ClickstreamNetworkOptions(
+            isWebsocketEnabled: false,
+            isCourierEnabled: false
+        )
+        let processor = DefaultEventProcessor(
+            performOnQueue: processorQueueMock,
+            classifier: mockClassifier,
+            eventWarehouser: eventWarehouser,
+            networkOptions: networkOptions
+        )
+        
+        XCTAssertTrue(processor.shouldTrackEvent(event: testEvent))
+    }
+    
+    func testShouldTrackEventValidWithCourierDisabled() {
+        let networkOptions = ClickstreamNetworkOptions(
+            isWebsocketEnabled: true,
+            isCourierEnabled: false
+        )
+        let processor = DefaultEventProcessor(
+            performOnQueue: processorQueueMock,
+            classifier: mockClassifier,
+            eventWarehouser: eventWarehouser,
+            networkOptions: networkOptions
+        )
+        
+        XCTAssertTrue(processor.shouldTrackEvent(event: testEvent))
+    }
+}
+
+class MockEventSampler: EventSampler {
+    private let shouldTrackResult: Bool
+    
+    init(shouldTrack: Bool) {
+        self.shouldTrackResult = shouldTrack
+    }
+    
+    func shouldTrack(event: ClickstreamEvent) -> Bool {
+        return shouldTrackResult
     }
 }

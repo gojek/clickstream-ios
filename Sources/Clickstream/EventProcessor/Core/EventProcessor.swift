@@ -10,7 +10,7 @@ import Foundation
 import SwiftProtobuf
 
 protocol EventProcessorInput {
-    func createEvent(event: ClickstreamEvent)
+    func createEvent(event: ClickstreamEvent, userIdentifiersExist: Bool)
 }
 
 protocol EventProcessorOutput { }
@@ -36,7 +36,7 @@ final class DefaultEventProcessor: EventProcessor {
         self.sampler = sampler
         self.networkOptions = networkOptions
     }
-    
+
     func shouldTrackEvent(event: ClickstreamEvent) -> Bool {
         if let eventSampler = sampler {
             return eventSampler.shouldTrack(event: event)
@@ -44,24 +44,31 @@ final class DefaultEventProcessor: EventProcessor {
         return true
     }
     
-    func createEvent(event: ClickstreamEvent) {
+    func createEvent(event: ClickstreamEvent, userIdentifiersExist: Bool) {
         self.serialQueue.async { [weak self] in guard let checkedSelf = self else { return }
-            if checkedSelf.shouldTrackEvent(event: event) {
-
-                #if EVENT_VISUALIZER_ENABLED
-                /// Sent event data to client with state received
-                /// to check if the delegate is connected, if not no event should be sent to client
-                if let message = event.message, let stateViewer = Clickstream._stateViewer {
-                    /// creating the EventData object and setting the status to received.
-                    let eventsData = EventData(msg: message, state: .received)
-                    /// Sending the eventData object to client
-                    stateViewer.sendEvent(eventsData)
+            if checkedSelf.networkOptions.courierExclusiveEventsEnabled {
+                guard event.shouldTrackOnWebsocket(isUserLoggedIn: userIdentifiersExist, networkOptions: checkedSelf.networkOptions) else {
+                    return
                 }
-                #endif
-                // Create an Event instance and forward it to the scheduler.
-                    if let event = checkedSelf.constructEvent(event: event) {
-                        checkedSelf.eventWarehouser.store(event)
-                    }
+            } else {
+                guard checkedSelf.shouldTrackEvent(event: event) else {
+                    return
+                }
+            }
+
+            #if EVENT_VISUALIZER_ENABLED
+            /// Sent event data to client with state received
+            /// to check if the delegate is connected, if not no event should be sent to client
+            if let message = event.message, let stateViewer = Clickstream._stateViewer {
+                /// creating the EventData object and setting the status to received.
+                let eventsData = EventData(msg: message, state: .received)
+                /// Sending the eventData object to client
+                stateViewer.sendEvent(eventsData)
+            }
+            #endif
+            // Create an Event instance and forward it to the scheduler.
+            if let event = checkedSelf.constructEvent(event: event) {
+                checkedSelf.eventWarehouser.store(event)
             }
         }
     }
@@ -87,6 +94,7 @@ final class DefaultEventProcessor: EventProcessor {
                 $0.eventName = event.csEventName ?? "Unknown"
                 $0.product = event.product
                 $0.eventTimestamp = Google_Protobuf_Timestamp(date: event.timeStamp)
+                $0.isMirrored = false
             }
             return try Event(guid: event.guid,
                              timestamp: event.timeStamp,
