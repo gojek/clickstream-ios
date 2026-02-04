@@ -1,39 +1,42 @@
-// swift-tools-version:5.5
-// The swift-tools-version declares the minimum version of Swift required to build this package.
+// swift-tools-version:6.2
 
 import PackageDescription
 
 let package = Package(
     name: "Clickstream",
-    platforms: [.macOS(.v10_12),
-                .iOS(.v11),
-                .tvOS(.v10),
-                .watchOS(.v3)],
+    platforms: [
+        .iOS(.v14),
+    ],
     products: [
-        // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "Clickstream",
             targets: ["Clickstream"]),
     ],
     dependencies: [
-        .package(name: "SwiftProtobuf", url: "https://github.com/apple/swift-protobuf.git", .exact("1.10.2")),
-        .package(name: "Reachability", url: "https://github.com/ashleymills/Reachability.swift", from: "5.0.0"),
-        .package(name: "GRDB", url: "https://github.com/groue/GRDB.swift.git", .exact("5.12.0")),
-        .package(name: "Starscream", url: "https://github.com/daltoniam/Starscream.git", .exact("4.0.4")),
+        .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.30.0"),
+        .package(url: "https://github.com/ashleymills/Reachability.swift", from: "5.0.0"),
+        .package(url: "https://github.com/groue/GRDB.swift.git", from: "6.7.0"),
+        .package(url: "https://github.com/daltoniam/Starscream.git", exact: "4.0.5"),
+        .package(url: "https://github.com/gojek/courier-iOS.git", from: "1.0.0")
     ],
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "Clickstream",
-            dependencies: ["SwiftProtobuf", "Reachability", "GRDB", "Starscream"],
-            path: "Sources"),
+            dependencies: [
+                .product(name: "SwiftProtobuf", package: "swift-protobuf"),
+                .product(name: "Reachability", package: "Reachability.swift"),
+                .product(name: "GRDB", package: "GRDB.swift"),
+                .product(name: "Starscream", package: "Starscream"),
+                .product(name: "CourierCore", package: "courier-iOS"),
+                .product(name: "CourierMQTT", package: "courier-iOS")
+            ],
+            path: "Sources"
+        ),
         .testTarget(
             name: "ClickstreamTests",
             dependencies: ["Clickstream"],
             path: "ClickstreamTests",
-            exclude: ["Info.plist", "Test Plans"],
-            resources: [.process("Resources")])
+            exclude: ["Info.plist"])
     ],
-    swiftLanguageVersions: [.v5]
+    swiftLanguageModes: [.v5]
 )
