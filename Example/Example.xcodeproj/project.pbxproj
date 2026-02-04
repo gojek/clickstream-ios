@@ -21,7 +21,6 @@
 		9AEA265724924B340018931D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9AEA265524924B340018931D /* Main.storyboard */; };
 		9AEA265924924B360018931D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9AEA265824924B360018931D /* Assets.xcassets */; };
 		9AEA265C24924B360018931D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9AEA265A24924B360018931D /* LaunchScreen.storyboard */; };
-		BD4E9D61285719CC0093D342 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD4E9D60285719CC0093D342 /* Assets.xcassets */; };
 		BDDC8AE129E95D4B0024ED8C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDC8AE029E95D4B0024ED8C /* Constants.swift */; };
 		D839E22E2EA09FAA0049F0E2 /* CourierConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D839E22D2EA09FAA0049F0E2 /* CourierConfigViewController.swift */; };
 		D8D2ADED2F28974200573AC8 /* CourierAuthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D2ADEC2F28974200573AC8 /* CourierAuthProvider.swift */; };
@@ -50,7 +49,6 @@
 		9AEA265D24924B360018931D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BD4E9D58285717050093D342 /* libClickstream.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libClickstream.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD4E9D5C2857186E0093D342 /* libClickstream.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libClickstream.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		BD4E9D60285719CC0093D342 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../EventVisualizer/Resources/Assets.xcassets; sourceTree = "<group>"; };
 		BDDC8AE029E95D4B0024ED8C /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		CDD9BE2452FB2F21C98C5E74 /* Pods-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.debug.xcconfig"; path = "Target Support Files/Pods-Example/Pods-Example.debug.xcconfig"; sourceTree = "<group>"; };
 		D839E22D2EA09FAA0049F0E2 /* CourierConfigViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierConfigViewController.swift; sourceTree = "<group>"; };
@@ -143,7 +141,6 @@
 		9AEA264324924B340018931D = {
 			isa = PBXGroup;
 			children = (
-				BD4E9D60285719CC0093D342 /* Assets.xcassets */,
 				9AEA264E24924B340018931D /* Example */,
 				9AEA264D24924B340018931D /* Products */,
 				1A29E502C341D01021F5DD6A /* Pods */,
@@ -239,7 +236,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BD4E9D61285719CC0093D342 /* Assets.xcassets in Resources */,
 				9AEA265C24924B360018931D /* LaunchScreen.storyboard in Resources */,
 				9AEA265924924B360018931D /* Assets.xcassets in Resources */,
 				9AEA265724924B340018931D /* Main.storyboard in Resources */,

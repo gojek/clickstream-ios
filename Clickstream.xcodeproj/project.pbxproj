@@ -454,6 +454,8 @@
 		D8E4B89B2EA9EF940001D3D6 /* CourierHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierHandlerTests.swift; sourceTree = "<group>"; };
 		D8E4B8A02EA9FFFD0001D3D6 /* CourierEventBatchCreatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierEventBatchCreatorTests.swift; sourceTree = "<group>"; };
 		D8E4B8A22EAA00060001D3D6 /* CourierEventBatchProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierEventBatchProcessorTests.swift; sourceTree = "<group>"; };
+		D8EC88A72F33390500A475FD /* Package.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; path = Package.resolved; sourceTree = "<group>"; };
+		D8EC88A82F33390500A475FD /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		D8F38D4F2E94CCD300C4281E /* ClickstreamNetworkOptionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickstreamNetworkOptionsTests.swift; sourceTree = "<group>"; };
 		D8F38D512E950B9500C4281E /* CourierEventBatchCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierEventBatchCreator.swift; sourceTree = "<group>"; };
 		D8F38D522E950B9500C4281E /* CourierEventBatchProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierEventBatchProcessor.swift; sourceTree = "<group>"; };
@@ -514,6 +516,8 @@
 		68E7BAD6244F08C00072549A = {
 			isa = PBXGroup;
 			children = (
+				D8EC88A72F33390500A475FD /* Package.resolved */,
+				D8EC88A82F33390500A475FD /* Package.swift */,
 				BDE467422A5BD24400BFA976 /* ClickstreamTests */,
 				BD8AF585287ED1CB002DD402 /* Sources */,
 				68E7BAE0244F08C00072549A /* Products */,
