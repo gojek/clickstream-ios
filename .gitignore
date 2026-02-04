@@ -49,6 +49,12 @@ fastlane/screenshots/**/*.png
 fastlane/test_output
 fastlane/README.md
 fastlane/reports/report.junit
+fastlane/reports/scan/**/*
+!fastlane/reports/scan/.gitkeep
+fastlane/reports/swiftlint/**/*
+!fastlane/reports/swiftlint/.gitkeep
+fastlane/reports/xcov/**/*
+!fastlane/reports/xcov/.gitkeep
 
 # Code Injection
 iOSInjectionProject/

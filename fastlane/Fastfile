@@ -1,60 +1,138 @@
-
-
 default_platform(:ios)
 
 platform :ios do
+
+  desc "Install CocoaPods dependencies"
+  lane :pod_install do
+    cocoapods(
+      clean_install: true,
+      repo_update: true,
+      silent: false
+    )
+  end
+
+  desc "Resolve Swift Package Manager dependencies"
+  lane :spm_resolve do
+    spm(
+      command: "resolve",
+      scratch_path: "./.build/spm",
+      verbose: "true"
+    )
+  end
+
+  desc "Run SwiftLint"
+  lane :lint do
+    output_file = "#{ENV['REPORT_OUTPUT_PATH']}/swiftlint/lint_result.json"
   
-  desc "Lane to run the unit_tests."
-  # Lane to run the unit_tests.
-    lane :unit_test do
+    swiftlint(
+      mode: :lint,
+      config_file: ".swiftlint.yml",
+      output_file: output_file,
+      raise_if_swiftlint_error: true
+    )
+  end
 
-        update_cocoapods(repo_update: false)
+  desc "Run unit tests"
+  lane :test do
+    scan
+  end
 
-        run_tests(
-            workspace: "#{library_name}.xcworkspace",
-            scheme: scheme_name,
-            sdk: "iphonesimulator",
-            clean: true,
-            code_coverage: true,
-            output_directory: "fastlane/reports",
-            buildlog_path: "./build/tests_log",
-            devices: TEST_SIMULATORS
-        )
+  desc "Bump version in .xcodeproj and .podspec"
+  lane :bump_version_files do |options| 
+    spec = ENV['PODSPEC_PATH']
+
+    ensure_git_status_clean(
+      show_uncommitted_changes: true, 
+      ignore_files: ["Gemfile.lock", "Podfile.lock"]
+    )
+
+    # Get version from git tag if available, otherwise use bump_type
+    git_tag = sh("git describe --tags --exact-match 2>/dev/null || echo ''").strip
+    version = nil
+
+    if !git_tag.empty? && git_tag.match?(/^\d+\.\d+\.\d+$/)
+      version = git_tag
+      UI.message("📌 Using version from tag: #{version}")
+    else
+      bump_type = options[:bump_type] || 'patch'
+      UI.message("📌 Bumping version using bump_type: #{bump_type}")
     end
 
+    if version
+      version_bump_podspec(path: spec, version_number: version)
+    else
+      version_bump_podspec(path: spec, bump_type: bump_type)
+    end
+    UI.message("#{spec} version to #{version_get_podspec(path: spec)}")
+  end
 
-  desc "Lane to publish code coverage."
-  # Lane to publish code coverage.
-    lane :update_cocoapods do |options|
-        cocoapods(        
-          try_repo_update_on_error: true,
-          repo_update: options[:repo_update],
-          podfile: "#{root_path}/Podfile", 
-          error_callback: lambda { |result|
-            if options[:retried]
-                UI.user_error!("Failed to install cocoapods: \n #{result}")
-            else
-                sh('bundle exec pod repo remove trunk')
-                options[:retried] = true
-                update_cocoapods(options)
-            end
+  lane :update_changelog do
+    last_tag = last_git_tag(pattern: "*.*.*")
+    version = version_get_podspec(path: ENV['PODSPEC_PATH'])
 
-          }
-        )
+    changelog_content = changelog_from_git_commits(
+      between: [last_tag, "HEAD"],
+      pretty: "[%h] %s (by @%an)",
+      date_format: "short",
+    )
+
+    changelog_path = File.expand_path("../CHANGELOG.md", __dir__)
+    existing_changelog = File.exist?(changelog_path) ? File.read(changelog_path) : "# CHANGELOG\n\n"
+
+    # Find insertion point after the header (skip "# CHANGELOG" and any intro text)
+    header_end = existing_changelog.index(/^## \[/)
+    if header_end
+      # Insert before first version entry
+      new_entry = "## [#{version}] - #{Time.now.strftime('%Y-%m-%d')}\n\n#{changelog_content}\n\n"
+      updated_changelog = existing_changelog.insert(header_end, new_entry)
+    else
+      # No existing versions, append after header
+      new_entry = "\n## [#{version}] - #{Time.now.strftime('%Y-%m-%d')}\n\n#{changelog_content}\n"
+      updated_changelog = existing_changelog + new_entry
     end
 
-  def root_path
-        Pathname.new(File.expand_path(Dir.pwd)).parent
+    File.write(changelog_path, updated_changelog)
+
+    UI.success("✅ CHANGELOG.md updated successfully with version #{version}")
   end
 
-  def library_name
-        "Clickstream"
+  desc "Commit and push version bump and changelog.md changes"
+  lane :commit_push do
+    UI.message("Creating Git tag and commit...")
+
+    version = version_get_podspec(path: ENV['PODSPEC_PATH'])
+    token = ENV['CLICKSTREAM_IOS_TOKEN']
+    
+    unless token
+      UI.user_error!("❌ CLICKSTREAM_IOS_TOKEN not found")
+    end
+
+    # Use GitHub Actions variables for more reliable URL construction
+    server_host = ENV['CI_SERVER_HOST'] || 'https://github.com'
+    repo_path = ENV['CI_REPO_PATH'] || 'gojek/clickstream-ios'
+    remote_url = "https://github-actions:#{token}@#{server_host}/#{repo_path}.git"
+
+    # Get current branch name (fallback to main if detached HEAD)
+    current_branch = `git branch --show-current`.strip
+    if current_branch.empty?
+      current_branch = ENV['GITHUB_REF_NAME'] || 'main'
+      UI.message("⚠️ Detached HEAD detected. Using branch: #{current_branch}")
+    else
+      UI.message("📍 Using current branch: #{current_branch}")
+    end
+
+    git_commit(
+      path: [
+        "./Clickstream.podspec", 
+        "./CHANGELOG.md", 
+        "./Clickstream.xcodeproj/project.pbxproj",
+      ],
+      message: "[CI] Bump version - #{version}"
+    )
+
+    # Push to current branch
+    sh("git push #{remote_url} HEAD:#{current_branch}")
+
+    UI.success("✅ Successfully committed version #{version} on branch #{current_branch}")
   end
-
-  def scheme_name 
-        library_name
-  end
-
-  TEST_SIMULATORS = ["iPhone 16 Pro"]
-
 end
