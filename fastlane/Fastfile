@@ -37,6 +37,39 @@ platform :ios do
     scan
   end
 
+  lane :test_coverage do
+    output_dir = "#{ENV['REPORT_OUTPUT_PATH']}/xcov"
+    
+    if Dir.exist?(output_dir) && !Dir.empty?(output_dir)
+      FileUtils.rm_rf(Dir.glob("#{output_dir}/*"))
+      UI.message("🗑️  Cleaned existing files in #{output_dir}")
+    end
+    
+    xcov(
+      workspace: ENV['WORKSPACE'],
+      scheme: ENV['FRAMEWORK_SCHEME'],
+      derived_data_path: ENV['DERIVED_DATA_PATH'],
+      output_directory: output_dir,
+      html_report: true,
+      json_report: true,
+      minimum_coverage_percentage: 17.0,
+    )
+  end
+
+  lane :build do
+    xcodebuild(
+      workspace: ENV['WORKSPACE'],
+      scheme: ENV['FRAMEWORK_SCHEME'],
+      derived_data_path: ENV['DERIVED_DATA_PATH'],
+      destination: "generic/platform=iOS Simulator",
+      configuration: "Release",
+      clean: true,
+      build: true,
+      archive: true,
+      archive_path: ENV['ARCHIVE_DATA_PATH'],
+    )
+  end
+
   desc "Bump version in .xcodeproj and .podspec"
   lane :bump_version_files do |options| 
     spec = ENV['PODSPEC_PATH']
