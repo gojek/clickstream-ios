@@ -1,0 +1,10 @@
+# .github/actions/build/action.yml
+name: build_action
+description: Build & archive Clickstream target
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run build
+      run: bundle exec fastlane build_target
+      shell: bash
