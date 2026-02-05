@@ -32,9 +32,19 @@ platform :ios do
     )
   end
 
+  desc "Build the target"
+  lane :build_target do
+    scan(
+      result_bundle: true,
+      build_for_testing: true
+    )
+  end
+
   desc "Run unit tests"
   lane :test do
-    output_dir = "#{ENV['REPORT_OUTPUT_PATH']}/scan/result.xcresult"
+    clear_derived_data(derived_data_path: ENV['DERIVED_DATA_PATH'])
+
+    output_dir = "#{ENV['REPORT_OUTPUT_PATH']}/scan/Clickstream.xcresult"
     remove_files(path: output_dir)
 
     scan
@@ -49,25 +59,11 @@ platform :ios do
       workspace: ENV['WORKSPACE'],
       scheme: ENV['FRAMEWORK_SCHEME'],
       derived_data_path: ENV['DERIVED_DATA_PATH'],
-      xccov_file_direct_path: "#{ENV['REPORT_OUTPUT_PATH']}/scan/result.xcresult",
+      xccov_file_direct_path: "#{ENV['REPORT_OUTPUT_PATH']}/scan/Clickstream.xcresult",
       output_directory: output_dir,
       html_report: true,
       json_report: true,
       minimum_coverage_percentage: 17.0,
-    )
-  end
-
-  lane :build_archive do
-    xcodebuild(
-      workspace: ENV['WORKSPACE'],
-      scheme: ENV['FRAMEWORK_SCHEME'],
-      derived_data_path: ENV['DERIVED_DATA_PATH'],
-      destination: "generic/platform=iOS Simulator",
-      configuration: "Release",
-      clean: true,
-      build: true,
-      archive: true,
-      archive_path: ENV['ARCHIVE_DATA_PATH'],
     )
   end
 

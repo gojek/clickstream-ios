@@ -7,7 +7,6 @@
 xcuserdata/
 *.xcscmblueprint
 *.xccheckout
-build/
 DerivedData/
 *.moved-aside
 *.pbxuser
