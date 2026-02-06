@@ -45,7 +45,7 @@ struct Odpf_Raccoon_Event: Sendable {
   ///
   ///`product` denotes the product or business from which the event originates.
   ///Example: "GOFOOD", "GOBIZ", "GOPAY".
- var product: String = String()
+  var product: String = String()
 
   ///
   ///`event_timestamp` denotes the exact time the event occurred
@@ -63,11 +63,35 @@ struct Odpf_Raccoon_Event: Sendable {
   mutating func clearEventTimestamp() {self._eventTimestamp = nil}
 
   ///
-  ///`is_mirrored` indicates whether the event is mirrored.
+  /// `is_mirrored` indicates whether the event is mirrored.
   ///
-  ///If set to true, Raccoon will publish the events to a Kafka topic
-  ///with a different naming format than the default topic name format
+  /// DEPRECATED:
+  /// This field is deprecated and will be removed in a future release.
+  /// Use `is_exclusive` instead.
+  ///
+  /// Historically:
+  /// - If set to true, Raccoon publishes the event to a Kafka topic
+  ///   with a different naming format than the default topic.
+  ///
+  /// Backward compatibility:
+  /// - Older clients may still send this field.
+  /// - If both `is_mirrored` and `is_exclusive` are set,
+  ///   `is_exclusive` takes precedence.
   var isMirrored: Bool = false
+
+  ///
+  /// `is_exclusive` indicates whether the event is exclusive to ingest
+  /// on the actual Clickstream topic.
+  ///
+  /// This flag replaces `is_mirrored`.
+  ///
+  /// Behavior when MQTT consumer is enabled:
+  /// - true  → publish to actual Clickstream topic
+  /// - false → publish to MQTT-specific topic
+  ///
+  /// Backward compatibility:
+  /// - Defaults to `false` when not sent by older clients.
+  var isExclusive: Bool = false
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -88,7 +112,8 @@ extension Odpf_Raccoon_Event: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
     3: .standard(proto: "event_name"),
     4: .standard(proto: "product"),
     5: .standard(proto: "event_timestamp"),
-    6: .standard(proto: "is_mirrored")
+    6: .standard(proto: "is_mirrored"),
+    7: .standard(proto: "is_exclusive")
   ]
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -103,6 +128,7 @@ extension Odpf_Raccoon_Event: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
       case 4: try { try decoder.decodeSingularStringField(value: &self.product) }()
       case 5: try { try decoder.decodeSingularMessageField(value: &self._eventTimestamp) }()
       case 6: try { try decoder.decodeSingularBoolField(value: &self.isMirrored) }()
+      case 7: try { try decoder.decodeSingularBoolField(value: &self.isExclusive) }()
       default: break
       }
     }
@@ -131,6 +157,9 @@ extension Odpf_Raccoon_Event: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
     if self.isMirrored != false {
       try visitor.visitSingularBoolField(value: self.isMirrored, fieldNumber: 6)
     }
+    if self.isExclusive != false {
+      try visitor.visitSingularBoolField(value: self.isExclusive, fieldNumber: 7)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -141,6 +170,7 @@ extension Odpf_Raccoon_Event: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
     if lhs.product != rhs.product {return false}
     if lhs._eventTimestamp != rhs._eventTimestamp {return false}
     if lhs.isMirrored != rhs.isMirrored {return false}
+    if lhs.isExclusive != rhs.isExclusive {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
