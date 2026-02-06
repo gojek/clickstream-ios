@@ -94,7 +94,7 @@ final class DefaultEventProcessor: EventProcessor {
                 $0.eventName = event.csEventName ?? "Unknown"
                 $0.product = event.product
                 $0.eventTimestamp = Google_Protobuf_Timestamp(date: event.timeStamp)
-                $0.isMirrored = false
+                $0.isExclusive = true
             }
             return try Event(guid: event.guid,
                              timestamp: event.timeStamp,
