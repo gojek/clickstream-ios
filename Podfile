@@ -2,7 +2,7 @@
 
 source 'https://github.com/CocoaPods/Specs.git'
 
-platform :ios, '14.0'
+platform :ios, '15.0'
  use_modular_headers!
 
 project 'Clickstream.xcodeproj'
