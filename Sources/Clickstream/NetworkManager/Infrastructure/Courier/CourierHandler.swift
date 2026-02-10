@@ -39,7 +39,8 @@ final class DefaultCourierHandler: CourierHandler {
         guard let data = eventRequest.data else {
             throw CourierError.encodingError
         }
-        try courierClient?.publishMessage(data, topic: topic, qos: .oneWithoutPersistenceAndRetry)
+        let qos: QoS = .init(rawValue: config.courierQoSType) ?? .oneWithoutPersistenceAndRetry
+        try courierClient?.publishMessage(data, topic: topic, qos: qos)
     }
     
     func destroyAndDisconnect() {

@@ -26,6 +26,7 @@ public struct ClickstreamCourierClientConfig {
     public let courierMessagePersistenceEnabled: Bool
     public let courierMessagePersistenceTTLSecs: Int
     public let courierInitCoreDataPersistenceContextEnabled: Bool
+    public let courierQoSType: Int
     public let courierConnectPolicy: ClickstreamCourierConnectPolicy
     public let courierInactivityPolicy: ClickstreamCourierInactivityPolicy
     public let courierHealthConfig: ClickstreamCourierHealthConfig
@@ -45,6 +46,7 @@ public struct ClickstreamCourierClientConfig {
         courierMessagePersistenceEnabled: Bool = false,
         courierMessagePersistenceTTLSecs: Int = 86400,
         courierInitCoreDataPersistenceContextEnabled: Bool = false,
+        courierQoSType: Int = 4,
         courierConnectPolicy: ClickstreamCourierConnectPolicy = .init(),
         courierInactivityPolicy: ClickstreamCourierInactivityPolicy = .init(),
         courierHealthConfig: ClickstreamCourierHealthConfig = .init()
@@ -63,6 +65,7 @@ public struct ClickstreamCourierClientConfig {
         self.courierMessagePersistenceEnabled = courierMessagePersistenceEnabled
         self.courierMessagePersistenceTTLSecs = courierMessagePersistenceTTLSecs
         self.courierInitCoreDataPersistenceContextEnabled = courierInitCoreDataPersistenceContextEnabled
+        self.courierQoSType = courierQoSType
         self.courierConnectPolicy = courierConnectPolicy
         self.courierInactivityPolicy = courierInactivityPolicy
         self.courierHealthConfig = courierHealthConfig
