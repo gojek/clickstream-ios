@@ -15,6 +15,8 @@ final class NetworkManagerDependencies {
     private var request: URLRequest
     private let database: Database
     private let networkOptions: ClickstreamNetworkOptions
+    private var courierPreAuthIdentifiers: ClickstreamClientPreAuthIdentifiers?
+    private var courierPostAuthIdentifiers: ClickstreamClientPostAuthIdentifiers?
 
     init(with request: URLRequest, db: Database, networkOptions: ClickstreamNetworkOptions) {
         self.database = db
@@ -25,7 +27,8 @@ final class NetworkManagerDependencies {
     private let socketNetworkQueue = SerialQueue(label: Constants.QueueIdentifiers.network.rawValue, qos: .utility)
     private let socketDaoQueue = DispatchQueue(label: Constants.QueueIdentifiers.dao.rawValue, qos: .utility, attributes: .concurrent)
 
-    private let courierNetworkQueue = SerialQueue(label: Constants.CourierQueueIdentifiers.network.rawValue, qos: .utility)
+    private let courierPreAuthNetworkQueue = SerialQueue(label: Constants.CourierQueueIdentifiers.networkPreAuth.rawValue, qos: .utility)
+    private let courierPostAuthNetworkQueue = SerialQueue(label: Constants.CourierQueueIdentifiers.networkPostAuth.rawValue, qos: .utility)
     private let courierDaoQueue = DispatchQueue(label: Constants.CourierQueueIdentifiers.dao.rawValue, qos: .utility, attributes: .concurrent)
 
     private lazy var reachability: NetworkReachability = {
@@ -40,8 +43,12 @@ final class NetworkManagerDependencies {
         DefaultAppStateNotifierService(with: socketNetworkQueue)
     }()
 
-    private lazy var courierAppStateNotifier: AppStateNotifierService = {
-        DefaultAppStateNotifierService(with: courierNetworkQueue)
+    private lazy var courierPreAuthAppStateNotifier: AppStateNotifierService = {
+        DefaultAppStateNotifierService(with: courierPreAuthNetworkQueue)
+    }()
+
+    private lazy var courierPostAuthAppStateNotifier: AppStateNotifierService = {
+        DefaultAppStateNotifierService(with: courierPostAuthNetworkQueue)
     }()
 
     private lazy var socketPersistence: DefaultDatabaseDAO<EventRequest> = {
@@ -65,9 +72,14 @@ final class NetworkManagerDependencies {
                                                       performOnQueue: socketNetworkQueue)
     }()
     
-    private lazy var courierNetworkService: NetworkService = {
+    private lazy var courierPreAuthNetworkService: NetworkService = {
         CourierNetworkService<DefaultCourierHandler>(with: getNetworkConfig(),
-                                                     performOnQueue: courierNetworkQueue)
+                                                     performOnQueue: courierPreAuthNetworkQueue)
+    }()
+
+    private lazy var courierPostAuthNetworkService: NetworkService = {
+        CourierNetworkService<DefaultCourierHandler>(with: getNetworkConfig(),
+                                                     performOnQueue: courierPostAuthNetworkQueue)
     }()
 
     private lazy var websocketRetryMech: WebsocketRetryMechanism = {
@@ -80,13 +92,23 @@ final class NetworkManagerDependencies {
                                 keepAliveService: keepAliveService)
     }()
 
-    private lazy var courierRetryMech: CourierRetryMechanism = {
+    private lazy var courierPreAuthRetryMech: CourierRetryMechanism = {
         CourierRetryMechanism(networkOptions: networkOptions,
-                              networkService: courierNetworkService,
+                              networkService: courierPreAuthNetworkService,
                               reachability: reachability,
                               deviceStatus: deviceStatus,
-                              appStateNotifier: courierAppStateNotifier,
-                              performOnQueue: courierNetworkQueue,
+                              appStateNotifier: courierPreAuthAppStateNotifier,
+                              performOnQueue: courierPreAuthNetworkQueue,
+                              persistence: courierPersistance)
+    }()
+
+    private lazy var courierPostAuthRetryMech: CourierRetryMechanism = {
+        CourierRetryMechanism(networkOptions: networkOptions,
+                              networkService: courierPostAuthNetworkService,
+                              reachability: reachability,
+                              deviceStatus: deviceStatus,
+                              appStateNotifier: courierPostAuthAppStateNotifier,
+                              performOnQueue: courierPostAuthNetworkQueue,
                               persistence: courierPersistance)
     }()
 
@@ -101,9 +123,15 @@ final class NetworkManagerDependencies {
     }
 
     func makeCourierNetworkBuilder() -> CourierNetworkBuilder {
-        CourierNetworkBuilder(networkConfigs: getNetworkConfig(),
-                              retryMech: courierRetryMech,
-                              performOnQueue: courierNetworkQueue)
+        if courierPostAuthIdentifiers != nil {
+            return CourierNetworkBuilder(networkConfigs: getNetworkConfig(),
+                                         retryMech: courierPostAuthRetryMech,
+                                         performOnQueue: courierPostAuthNetworkQueue)
+        } else {
+            return CourierNetworkBuilder(networkConfigs: getNetworkConfig(),
+                                  retryMech: courierPreAuthRetryMech,
+                                  performOnQueue: courierPreAuthNetworkQueue)
+        }
     }
 
     var isSocketConnected: Bool {
@@ -111,25 +139,42 @@ final class NetworkManagerDependencies {
     }
 
     var isCourierConnected: Bool {
-        courierNetworkService.isConnected
-    }
-
-    func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers,
-                                  topic: String,
-                                  authProvider: IConnectionServiceProvider,
-                                  pubSubAnalytics: ICourierEventHandler?) {
-
-        guard let courierIdentifiers = identifiers as? CourierIdentifiers else {
-            return
+        if courierPostAuthIdentifiers != nil {
+            courierPostAuthNetworkService.isConnected
+        } else {
+            courierPreAuthNetworkService.isConnected
         }
-
-        courierRetryMech.configureIdentifiers(with: courierIdentifiers,
-                                              topic: topic,
-                                              authProvider: authProvider,
-                                              pubSubAnalytics: pubSubAnalytics)
     }
-    
-    func removeClientIdentifiers() {
-        courierRetryMech.removeIdentifiers()
+
+    func providePreAuthClientIdentifiers(with identifiers: ClickstreamClientPreAuthIdentifiers,
+                                         topic: String,
+                                         authProvider: IConnectionServiceProvider,
+                                         pubSubAnalytics: ICourierEventHandler?) {
+
+        courierPreAuthIdentifiers = identifiers
+        courierPreAuthRetryMech.configureIdentifiers(with: identifiers,
+                                                     topic: topic,
+                                                     authProvider: authProvider,
+                                                     pubSubAnalytics: pubSubAnalytics)
+    }
+
+    func providePostAuthClientIdentifiers(with identifiers: ClickstreamClientPostAuthIdentifiers,
+                                          topic: String,
+                                          authProvider: IConnectionServiceProvider,
+                                          pubSubAnalytics: ICourierEventHandler?) {
+
+        courierPostAuthIdentifiers = identifiers
+        courierPostAuthRetryMech.configureIdentifiers(with: identifiers,
+                                                      topic: topic,
+                                                      authProvider: authProvider,
+                                                      pubSubAnalytics: pubSubAnalytics)
+    }
+
+    func removePreAuthClientIdentifiers() {
+        courierPreAuthRetryMech.removeIdentifiers()
+    }
+
+    func removePostAuthClientIdentifiers() {
+        courierPostAuthRetryMech.removeIdentifiers()
     }
 }

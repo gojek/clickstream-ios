@@ -50,7 +50,8 @@ enum Constants {
     }
 
     enum CourierQueueIdentifiers: QueueIdentifier {
-        case network = "com.clickstream.courier.network"
+        case networkPreAuth = "com.clickstream.courier.network.preauth"
+        case networkPostAuth = "com.clickstream.courier.network.postauth"
         case scheduler = "com.clickstream.courier.schedule"
         case processor = "com.clickstream.courier.processor"
         case warehouser = "com.clickstream.courier.warehouser"

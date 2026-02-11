@@ -97,8 +97,12 @@ public final class Clickstream {
     private let socketEventWarehouser: any EventWarehouser
     private let courierEventWarehouser: any EventWarehouser
     
-    private var userIdentifiers: ClickstreamClientIdentifiers?
-    
+    private var postAuthUserIdentifiers: ClickstreamClientPostAuthIdentifiers?
+    private var preAuthUserIdentifiers: ClickstreamClientPreAuthIdentifiers?
+    private var isUserAuthenticated: Bool {
+        postAuthUserIdentifiers != nil && preAuthUserIdentifiers == nil
+    }
+
     /// Private initialiser for the Clickstream Interface.
     /// - Parameters:
     ///   - networkBuilder: network builder instance
@@ -170,13 +174,13 @@ public final class Clickstream {
     /// Tracks Clickstream event via websocket network channel
     /// - Parameter event: Client's Clickstream Event
     public func trackEventViaWebsocket(with event: ClickstreamEvent) {
-        socketEventProcessor.createEvent(event: event, userIdentifiersExist: self.userIdentifiers != nil)
+        socketEventProcessor.createEvent(event: event, isUserAuthenticated: isUserAuthenticated)
     }
 
     /// Tracks Clickstream event via courier network channel
     /// - Parameter event: Client's Clickstream Event
     public func trackEventViaCourier(with event: ClickstreamEvent) {
-        courierEventProcessor.createEvent(event: event, userIdentifiersExist: self.userIdentifiers != nil)
+        courierEventProcessor.createEvent(event: event, isUserAuthenticated: isUserAuthenticated)
     }
     
     /// Initializes an instance of the API with the given configurations.
@@ -370,23 +374,52 @@ extension Clickstream {
 #endif
 
 extension Clickstream {
+    
+    /// Provide pre-auth courier's identifiers
+    /// - Parameters:
+    ///   - identifiers: Courier's client identifiers
+    ///   - topic: Courier's publish topic
+    ///   - authProvider: Courier's auth service
+    ///   - pubSubAnalytics:  Courier's auth service
+    public func providePreAuthClientIdentifiers(with identifiers: ClickstreamClientPreAuthIdentifiers,
+                                                topic: String,
+                                                authProvider: IConnectionServiceProvider,
+                                                pubSubAnalytics: ICourierEventHandler?) {
 
-    /// Courier client's user credentials provider
-    /// - Parameter identifiers: A client's credentials
-    public func provideClientIdentifiers(with identifiers: ClickstreamClientIdentifiers,
-                                         topic: String,
-                                         authProvider: IConnectionServiceProvider,
-                                         pubSubAnalytics: ICourierEventHandler?) {
-
-        userIdentifiers = identifiers
-        dependencies?.provideCourierClientIdentifiers(with: identifiers,
+        preAuthUserIdentifiers = identifiers
+        dependencies?.providePreAuthClientIdentifiers(with: identifiers,
                                                       topic: topic,
                                                       authProvider: authProvider,
                                                       pubSubAnalytics: pubSubAnalytics)
     }
+    
+    /// Remove post-auth courier's identifiers
+    public func removePreAuthClientIdentifiers() {
+        preAuthUserIdentifiers = nil
+        dependencies?.removePreAuthClientIdentifiers()
+    }
 
-    public func removeClientIdentifiers() {
-        userIdentifiers = nil
-        dependencies?.removeCourierClientIdentifiers()
+    /// Provide post-auth courier's identifiers
+    /// - Parameters:
+    ///   - identifiers: Courier's client identifiers
+    ///   - topic: Courier's publish topic
+    ///   - authProvider: Courier's auth service
+    ///   - pubSubAnalytics:  Courier's auth service
+    public func providePostAuthClientIdentifiers(with identifiers: ClickstreamClientPostAuthIdentifiers,
+                                                 topic: String,
+                                                 authProvider: IConnectionServiceProvider,
+                                                 pubSubAnalytics: ICourierEventHandler?) {
+
+        postAuthUserIdentifiers = identifiers
+        dependencies?.providePostAuthClientIdentifiers(with: identifiers,
+                                                       topic: topic,
+                                                       authProvider: authProvider,
+                                                       pubSubAnalytics: pubSubAnalytics)
+    }
+
+    /// Remove post-auth courier's identifiers
+    public func removePostAuthClientIdentifiers() {
+        postAuthUserIdentifiers = nil
+        dependencies?.removePostAuthClientIdentifiers()
     }
 }

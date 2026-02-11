@@ -12,49 +12,40 @@ import XCTest
 class CourierIdentifiersTests: XCTestCase {
 
     func testInitWithAllParameters() {
-        let credentials = CourierIdentifiers(
+        let credentials = CourierPostAuthIdentifiers(
             userIdentifier: "user123",
             deviceIdentifier: "device456",
             bundleIdentifier: "com.test.app",
-            extraIdentifier: "extra789",
+            ownerType: "clickstream",
         )
         
         XCTAssertEqual(credentials.userIdentifier, "user123")
         XCTAssertEqual(credentials.deviceIdentifier, "device456")
         XCTAssertEqual(credentials.bundleIdentifier, "com.test.app")
-        XCTAssertEqual(credentials.extraIdentifier, "extra789")
+        XCTAssertEqual(credentials.ownerType, "clickstream")
     }
     
     func testInitWithDefaultParameters() {
-        let credentials = CourierIdentifiers(userIdentifier: "testUser")
+        let credentials = CourierPostAuthIdentifiers(userIdentifier: "testUser", ownerType:  "clickstream")
         
         XCTAssertEqual(credentials.userIdentifier, "testUser")
+        XCTAssertEqual(credentials.ownerType, "clickstream")
         XCTAssertNotNil(credentials.deviceIdentifier)
         XCTAssertFalse(credentials.deviceIdentifier.isEmpty)
-    }
-    
-    func testInitWithNilOptionalParameters() {
-        let credentials = CourierIdentifiers(
-            userIdentifier: "user456",
-            deviceIdentifier: "device789",
-            bundleIdentifier: nil,
-            extraIdentifier: nil
-        )
-        
-        XCTAssertEqual(credentials.userIdentifier, "user456")
-        XCTAssertEqual(credentials.deviceIdentifier, "device789")
-        XCTAssertNil(credentials.bundleIdentifier)
-        XCTAssertNil(credentials.extraIdentifier)
+        XCTAssertNotNil(credentials.bundleIdentifier)
+        XCTAssertFalse(credentials.bundleIdentifier.isEmpty)
     }
     
     func testDeviceIdentifierGeneration() {
-        let credentials1 = CourierIdentifiers(
+        let credentials1 = CourierPostAuthIdentifiers(
             userIdentifier: "user1",
-            deviceIdentifier: UUID().uuidString
+            deviceIdentifier: UUID().uuidString,
+            ownerType: "clickstream"
         )
-        let credentials2 = CourierIdentifiers(
+        let credentials2 = CourierPostAuthIdentifiers(
             userIdentifier: "user2",
-            deviceIdentifier: UUID().uuidString
+            deviceIdentifier: UUID().uuidString,
+            ownerType: "clickstream"
         )
         
         XCTAssertNotEqual(credentials1.deviceIdentifier, credentials2.deviceIdentifier)
@@ -63,17 +54,19 @@ class CourierIdentifiersTests: XCTestCase {
     }
     
     func testDeviceIdentifierFallbackGeneration() {
-        let credentials = CourierIdentifiers(userIdentifier: "testUser")
+        let credentials = CourierPostAuthIdentifiers(userIdentifier: "testUser", ownerType: "clickstream")
         
         XCTAssertFalse(credentials.deviceIdentifier.isEmpty)
         XCTAssertTrue(credentials.deviceIdentifier.count >= 36)
     }
     
     func testUserIdentifierValidation() {
-        let emptyUserCredentials = CourierIdentifiers(userIdentifier: "")
-        let validUserCredentials = CourierIdentifiers(userIdentifier: "validUser")
+        let emptyUserCredentials = CourierPostAuthIdentifiers(userIdentifier: "", ownerType: "clickstream")
+        let validUserCredentials = CourierPostAuthIdentifiers(userIdentifier: "validUser", ownerType: "clickstream")
         
         XCTAssertEqual(emptyUserCredentials.userIdentifier, "")
+        XCTAssertEqual(emptyUserCredentials.ownerType, "clickstream")
         XCTAssertEqual(validUserCredentials.userIdentifier, "validUser")
+        XCTAssertEqual(validUserCredentials.ownerType, "clickstream")
     }
 }

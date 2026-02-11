@@ -132,20 +132,20 @@ class CourierEventProcessorTest: XCTestCase {
             eventWarehouser: mockWarehouser,
             networkOptions: networkOptions
         )
-        courierEventProcessor.setClientIdentifiers(CourierIdentifiers(userIdentifier: "user"))
+        courierEventProcessor.setClientIdentifiers(CourierPostAuthIdentifiers(userIdentifier: "user", ownerType: "clickstream"))
 
         XCTAssertTrue(courierEventProcessor.shouldTrackEvent(event: testEvent))
     }
 
     func testSetClientIdentifiers() {
-        let identifiers = CourierIdentifiers(userIdentifier: "test-user-123")
+        let identifiers = CourierPostAuthIdentifiers(userIdentifier: "test-user-123", ownerType: "clickstream")
         courierEventProcessor.setClientIdentifiers(identifiers)
         
         XCTAssertNotNil(courierEventProcessor)
     }
     
     func testRemoveClientIdentifiers() {
-        let identifiers = CourierIdentifiers(userIdentifier: "test-user-123")
+        let identifiers = CourierPostAuthIdentifiers(userIdentifier: "test-user-123", ownerType: "clickstream")
         courierEventProcessor.setClientIdentifiers(identifiers)
         courierEventProcessor.removeClientIdentifiers()
         
