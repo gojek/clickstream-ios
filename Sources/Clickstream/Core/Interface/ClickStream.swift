@@ -144,11 +144,14 @@ public final class Clickstream {
         Logger.logLevel = level
     }
     
-    /// Provides whether clickstream is connected to the network or not
-    public var isClickstreamConnectedToNetwork: Bool {
-        get {
-            return dependencies?.isSocketConnected ?? false
-        }
+    /// Provides whether clickstream is connected to the websocket network or not
+    public var isClickstreamConnectedToWebsocket: Bool {
+        return dependencies?.isSocketConnected ?? false
+    }
+
+    /// Provides whether clickstream is connected to the courier network or not
+    public var isClickstreamConnectedToCourier: Bool {
+        return dependencies?.isCourierConnected ?? false
     }
     
     /// Stops the Clickstream tracking.
