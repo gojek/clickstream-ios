@@ -324,7 +324,7 @@ extension CourierRetryMechanism {
     }
 
     func openConnectionForcefully() {
-        establishConnection()
+        establishConnection(isForced: true)
     }
     
     func stopTracking() {
