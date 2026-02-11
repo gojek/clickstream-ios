@@ -36,16 +36,6 @@ final class CourierEventBatchCreatorTests: XCTestCase {
         XCTAssertEqual(mockNetworkBuilder.lastTrackedBatch?.events.count, 2)
     }
     
-    func testForward_whenCannotForward_shouldReturnFalse() {
-        mockNetworkBuilder.isAvailableValue = false
-        let events = [CourierEvent.mock()]
-        
-        let result = sut.forward(with: events)
-        
-        XCTAssertFalse(result)
-        XCTAssertEqual(mockNetworkBuilder.trackBatchCallCount, 0)
-    }
-    
     func testForward_shouldCreateBatchWithUniqueUUID() {
         mockNetworkBuilder.isAvailableValue = true
         let events = [CourierEvent.mock()]

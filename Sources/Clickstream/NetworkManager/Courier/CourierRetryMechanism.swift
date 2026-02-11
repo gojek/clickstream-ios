@@ -110,7 +110,6 @@ final class CourierRetryMechanism: Retryable {
         appStateNotifier.start { [weak self] (stateNotification) in guard let checkedSelf = self else { return }
             switch stateNotification {
             case .willResignActive:
-                checkedSelf.flushAllEventRequestsIfNeeded()
                 checkedSelf.prepareForTerminatingConnection()
             case .didBecomeActive:
                 checkedSelf.cancelTerminationCountDown()
@@ -325,7 +324,7 @@ extension CourierRetryMechanism {
     }
 
     func openConnectionForcefully() {
-        establishConnection()
+        establishConnection(isForced: true)
     }
     
     func stopTracking() {
@@ -560,14 +559,6 @@ extension CourierRetryMechanism {
         } else if isCourierRetryEnabled && isHttpRetryEnbled && eventRequest.retriesMade >= combinedMaxCount {
             // Delete event request if `isCourierRetryEnabled` & `isHttpRetryEnbled` enabled & has reached `combinedMaxCount`
             removeFromCache(with: eventRequest.guid)
-        }
-    }
-    
-    private func flushAllEventRequestsIfNeeded() {
-        let combinedDataSize = persistence.fetchAll()?.compactMap({ $0.data }).reduce(0, { $0 + $1.count }) ?? 0
-
-        if combinedDataSize > Clickstream.courierConfigurations.maxRetryCacheSize {
-            persistence.deleteAll()
         }
     }
 }

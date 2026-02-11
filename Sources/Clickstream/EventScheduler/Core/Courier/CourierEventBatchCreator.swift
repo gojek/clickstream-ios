@@ -20,9 +20,7 @@ final class CourierEventBatchCreator: EventBatchCreator {
         self.healthTrackingConfig = healthTrackingConfig
     }
     
-    func forward(with events: [CourierEvent]) -> Bool {
-        guard canForward else { return false }
-        
+    func forward(with events: [CourierEvent]) -> Bool {        
         let batch = CourierEventBatch(uuid: UUID().uuidString, events: events)
         networkBuilder.trackBatch(batch, completion: nil)
         
