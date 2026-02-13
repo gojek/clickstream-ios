@@ -25,7 +25,7 @@ public struct ClickstreamNetworkOptions {
     public let clickstreamConstraints: ClickstreamCourierConstraints
 
     public init(isWebsocketEnabled: Bool = true,
-                isCourierEnabled: Bool = false,
+                isCourierEnabled: Bool = true,
                 isCourierPreAuthEnabled: Bool = false,
                 courierEventTypes: Set<CourierEventIdentifier> = [],
                 courierExclusiveEventTypes: Set<CourierEventIdentifier> = [],
