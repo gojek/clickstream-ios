@@ -152,7 +152,7 @@ final class CourierEventBatchProcessor: EventBatchProcessor {
     }
     
     func sendP0(classificationType: String) {
-        guard let events = self.persistence.deleteWhere(CourierEvent.Columns.type, value: classificationType),
+        guard eventBatchCreator.canForward, let events = self.persistence.deleteWhere(CourierEvent.Columns.type, value: classificationType),
               !events.isEmpty else { return }
         
         _ = self.eventBatchCreator.forward(with: events)

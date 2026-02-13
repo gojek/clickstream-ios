@@ -180,7 +180,7 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
     }
     
     func sendP0(classificationType: String) {
-        if let events = self.persistence.deleteWhere(Event.Columns.type, value: classificationType),
+        if eventBatchCreator.canForward, let events = self.persistence.deleteWhere(Event.Columns.type, value: classificationType),
            !events.isEmpty {
             self.eventBatchCreator.forward(with: events)
         }
