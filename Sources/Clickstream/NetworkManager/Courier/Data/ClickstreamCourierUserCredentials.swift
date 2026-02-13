@@ -9,27 +9,48 @@
 import UIKit
 
 public protocol ClickstreamClientIdentifiers {
-    var userIdentifier: String { get }
     var deviceIdentifier: String { get }
-    var bundleIdentifier: String? { get }
-    var extraIdentifier: String? { get }
+    var bundleIdentifier: String { get }
+    var ownerType: String { get }
 }
 
-public struct CourierIdentifiers: ClickstreamClientIdentifiers {
+public protocol ClickstreamClientPostAuthIdentifiers: ClickstreamClientIdentifiers {
+    var userIdentifier: String { get }
+}
+
+public protocol ClickstreamClientPreAuthIdentifiers: ClickstreamClientIdentifiers { }
+
+public struct CourierPostAuthIdentifiers: ClickstreamClientPostAuthIdentifiers {
 
     public let userIdentifier: String
     public let deviceIdentifier: String
-    public let bundleIdentifier: String?
-    public let extraIdentifier: String?
+    public let bundleIdentifier: String
+    public let ownerType: String
 
     public init(userIdentifier: String,
                 deviceIdentifier: String = UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString,
-                bundleIdentifier: String? = Bundle.main.bundleIdentifier,
-                extraIdentifier: String? = nil) {
+                bundleIdentifier: String = Bundle.main.bundleIdentifier ?? "",
+                ownerType: String) {
 
         self.userIdentifier = userIdentifier
         self.deviceIdentifier = deviceIdentifier
         self.bundleIdentifier = bundleIdentifier
-        self.extraIdentifier = extraIdentifier
+        self.ownerType = ownerType
+    }
+}
+
+public struct CourierPreAuthIdentifiers: ClickstreamClientPreAuthIdentifiers {
+
+    public let deviceIdentifier: String
+    public let bundleIdentifier: String
+    public let ownerType: String
+
+    public init(deviceIdentifier: String = UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString,
+                bundleIdentifier: String = Bundle.main.bundleIdentifier ?? "",
+                ownerType: String) {
+
+        self.deviceIdentifier = deviceIdentifier
+        self.bundleIdentifier = bundleIdentifier
+        self.ownerType = ownerType
     }
 }

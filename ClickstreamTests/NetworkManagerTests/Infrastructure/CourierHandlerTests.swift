@@ -423,15 +423,17 @@ extension CourierHandlerTests {
     }
     
     private func createMockCredentials() -> ClickstreamClientIdentifiers {
-        CourierIdentifiers(userIdentifier: "user_id",
-                           deviceIdentifier: "device_id",
-                           bundleIdentifier: "bundle_id")
+        CourierPostAuthIdentifiers(userIdentifier: "user_id_2",
+                                   deviceIdentifier: "device_id_2",
+                                   bundleIdentifier: "bundle_id_3",
+                                   ownerType: "clickstream")
     }
     
     private func createMockCredentialsWithDifferentValues() -> ClickstreamClientIdentifiers {
-        CourierIdentifiers(userIdentifier: "user_id_2",
-                           deviceIdentifier: "device_id_2",
-                           bundleIdentifier: "bundle_id_3")
+        CourierPostAuthIdentifiers(userIdentifier: "user_id_2",
+                                   deviceIdentifier: "device_id_2",
+                                   bundleIdentifier: "bundle_id_3",
+                                   ownerType: "clickstream")
 
     }
     

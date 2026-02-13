@@ -23,7 +23,7 @@ final class CourierRetryMechanism: Retryable {
     private var networkServiceState: ConnectableState?
     private var persistence: DefaultDatabaseDAO<CourierEventRequest>
     private var retryTimer: DispatchSourceTimer?
-    private var identifiers: CourierIdentifiers?
+    private var identifiers: ClickstreamClientIdentifiers?
     private var authProvider: IConnectionServiceProvider?
     private var pubSubAnalytics: ICourierEventHandler?
     private var topic: String?
@@ -334,7 +334,7 @@ extension CourierRetryMechanism {
         terminateConnection()
     }
 
-    func configureIdentifiers(with identifiers: CourierIdentifiers,
+    func configureIdentifiers(with identifiers: ClickstreamClientIdentifiers,
                               topic: String,
                               authProvider: IConnectionServiceProvider,
                               pubSubAnalytics: ICourierEventHandler?) {
@@ -406,7 +406,7 @@ extension CourierRetryMechanism {
         }
     }
     
-    private func connect(with identifiers: CourierIdentifiers, authProvider: IConnectionServiceProvider, isForced: Bool) {
+    private func connect(with identifiers: ClickstreamClientIdentifiers, authProvider: IConnectionServiceProvider, isForced: Bool) {
         networkService.initiateCourierConnection(
             connectionStatusListener: self.connectionStatusListener,
             identifiers: identifiers,

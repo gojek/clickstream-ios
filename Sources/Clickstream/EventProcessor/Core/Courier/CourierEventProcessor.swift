@@ -42,7 +42,7 @@ final class CourierEventProcessor: EventProcessor {
         identifiers != nil
     }
     
-    func createEvent(event: ClickstreamEvent, userIdentifiersExist: Bool) {
+    func createEvent(event: ClickstreamEvent, isUserAuthenticated: Bool) {
         self.serialQueue.async { [weak self] in guard let checkedSelf = self else { return }
             if checkedSelf.networkOptions.courierExclusiveEventsEnabled {
                 guard event.shouldTrackOnCourier(networkOptions: checkedSelf.networkOptions) else {
