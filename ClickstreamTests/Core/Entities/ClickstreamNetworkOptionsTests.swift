@@ -15,7 +15,7 @@ class ClickstreamNetworkOptionsTests: XCTestCase {
         let options = ClickstreamNetworkOptions()
         
         XCTAssertTrue(options.isWebsocketEnabled)
-        XCTAssertFalse(options.isCourierEnabled)
+        XCTAssertTrue(options.isCourierEnabled)
         XCTAssertTrue(options.courierEventTypes.isEmpty)
         XCTAssertNotNil(options.courierRetryPolicy)
         XCTAssertNotNil(options.courierRetryHTTPPolicy)
@@ -57,7 +57,7 @@ class ClickstreamNetworkOptionsTests: XCTestCase {
         )
         
         XCTAssertFalse(options.isWebsocketEnabled)
-        XCTAssertFalse(options.isCourierEnabled)
+        XCTAssertTrue(options.isCourierEnabled)
         XCTAssertEqual(options.courierEventTypes, eventTypes)
         XCTAssertNotNil(options.courierRetryPolicy)
         XCTAssertNotNil(options.courierRetryHTTPPolicy)
