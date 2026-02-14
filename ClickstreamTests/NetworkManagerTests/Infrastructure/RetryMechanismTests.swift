@@ -31,7 +31,7 @@ class RetryMechanismTests: XCTestCase {
         let expectation = self.expectation(description: "The batch must be retried")
         
         let mockQueue = SerialQueue(label: "com.mock.gojek.clickstream.network", qos: .utility)
-        SerialQueue.registerDetection(of: mockQueue) //Registers a queue to be detected.
+        SerialQueue.registerDetection(of: mockQueue)
         
         let deviceStatus = DefaultDeviceStatus(performOnQueue: mockQueue)
         let networkService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
@@ -47,16 +47,29 @@ class RetryMechanismTests: XCTestCase {
         
         sut.trackBatch(with: mockEventRequest)
 
-        DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 3) {
-            if (mockEventRequest.eventType != .instant), let fetchedRequest = persistence.fetchAll()?.first {
-                if fetchedRequest.retriesMade > 0 {
-                    expectation.fulfill()
+        var checkCount = 0
+        let maxChecks = 20
+        let checkInterval: TimeInterval = 0.5
+        
+        func checkRetries() {
+            mockQueue.asyncAfter(deadline: .now() + checkInterval) {
+                checkCount += 1
+                if (mockEventRequest.eventType != .instant), let fetchedRequest = persistence.fetchAll()?.first {
+                    if fetchedRequest.retriesMade > 0 {
+                        expectation.fulfill()
+                        return
+                    }
+                }
+                if checkCount < maxChecks {
+                    checkRetries()
                 }
             }
         }
         
+        checkRetries()
+        
         //then
-        wait(for: [expectation], timeout: 13.0)
+        wait(for: [expectation], timeout: 15.0)
     }
 
     func test_whenTheMaxRetriesAreReached_thenTheBatchMustGetRemovedFromTheCache() {

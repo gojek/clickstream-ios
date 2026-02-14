@@ -257,7 +257,7 @@ extension EventVisualizerLandingViewController: FilterDataProtocol {
     func sendUserInput(data: [(String, String)]) {
         self.filterSelected = viewModel.getFilteredEvents(data: data)
         viewModel.filterResult = self.filterSelected
-        if filterSelected.count > 0 {
+        if !filterSelected.isEmpty {
             addResetFilterButton()
         }
         tableView.reloadData()
