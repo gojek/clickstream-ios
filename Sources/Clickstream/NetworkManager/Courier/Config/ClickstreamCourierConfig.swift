@@ -24,6 +24,7 @@ public struct ClickstreamCourierClientConfig {
     public let courierMessageCleanupInterval: Int
     public let courierIsCleanSessionEnabled: Bool
     public let courierMessagePersistenceEnabled: Bool
+    public let courierMessagePersistenceInMemoryEnabled: Bool
     public let courierMessagePersistenceTTLSecs: Int
     public let courierInitCoreDataPersistenceContextEnabled: Bool
     public let courierQoSType: Int
@@ -44,6 +45,7 @@ public struct ClickstreamCourierClientConfig {
         courierMessageCleanupInterval: Int = 10,
         courierIsCleanSessionEnabled: Bool = false,
         courierMessagePersistenceEnabled: Bool = false,
+        courierMessagePersistenceInMemoryEnabled: Bool = false,
         courierMessagePersistenceTTLSecs: Int = 86400,
         courierInitCoreDataPersistenceContextEnabled: Bool = false,
         courierQoSType: Int = 4,
@@ -63,6 +65,7 @@ public struct ClickstreamCourierClientConfig {
         self.courierMessageCleanupInterval = courierMessageCleanupInterval
         self.courierIsCleanSessionEnabled = courierIsCleanSessionEnabled
         self.courierMessagePersistenceEnabled = courierMessagePersistenceEnabled
+        self.courierMessagePersistenceInMemoryEnabled = courierMessagePersistenceInMemoryEnabled
         self.courierMessagePersistenceTTLSecs = courierMessagePersistenceTTLSecs
         self.courierInitCoreDataPersistenceContextEnabled = courierInitCoreDataPersistenceContextEnabled
         self.courierQoSType = courierQoSType
