@@ -16,7 +16,7 @@ class AnalyticsManager {
     private var clickstream: Clickstream?
 
     var networkOptions: ClickstreamNetworkOptions?
-    var courierUserCredentials: ClickstreamClientIdentifiers?
+    var courierUserCredentials: CourierPostAuthIdentifiers?
     var courierTopic: String?
     var isCourierConfigSet: Bool {
         networkOptions != nil && courierUserCredentials != nil && courierTopic != nil
@@ -106,16 +106,13 @@ class AnalyticsManager {
     }
     #endif
 
-    func provideUserCredentials(with userCredentials: ClickstreamClientIdentifiers) {
+    func provideUserCredentials(with userCredentials: CourierPostAuthIdentifiers) {
         guard let courierTopic, isCourierConfigSet, let reachability = try? Reachability() else {
             assertionFailure("Courier's topic is missing")
             return
         }
         let authProvider = CourierAuthProvider(userCredentials: userCredentials, networkTypeProvider: reachability)
-        clickstream?.provideClientIdentifiers(with: userCredentials,
-                                              topic: courierTopic,
-                                              authProvider: authProvider,
-                                              pubSubAnalytics: nil)
+        clickstream?.providePostAuthClientIdentifiers(with: userCredentials, topic: courierTopic, authProvider: authProvider, pubSubAnalytics: nil)
         debugPrint("[clickstream-sqlite] \(NSHomeDirectory())/Library/Application Support/clickstream_wal/db.sqlite")
     }
 }
