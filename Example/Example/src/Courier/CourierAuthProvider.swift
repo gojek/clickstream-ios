@@ -23,14 +23,16 @@ final class CourierAuthProvider: IConnectionServiceProvider {
 
     var clientId: String {
         var id = "\(userCredentials.deviceIdentifier)"
+        let ownerId = userCredentials.userIdentifier
+        let bundleID = userCredentials.bundleIdentifier
 
-        if let ownerId = userCredentials.extraIdentifier, !ownerId.isEmpty {
+        if !ownerId.isEmpty {
             id += ":\(ownerId)"
         }
 
         id += ":\(userCredentials.userIdentifier)"
 
-        if let bundleID = userCredentials.bundleIdentifier, !bundleID.isEmpty {
+        if !bundleID.isEmpty {
             id += ":\(bundleID)"
         }
 
@@ -43,7 +45,7 @@ final class CourierAuthProvider: IConnectionServiceProvider {
 
     public private(set) var existingConnectOptions: ConnectOptions?
     
-    private let userCredentials: ClickstreamClientIdentifiers
+    private let userCredentials: ClickstreamClientPostAuthIdentifiers
 
     private var userProperties: [String: String]? {
         return [
@@ -56,12 +58,12 @@ final class CourierAuthProvider: IConnectionServiceProvider {
     }
 
     init(
-        userCredentials: ClickstreamClientIdentifiers,
+        userCredentials: ClickstreamClientPostAuthIdentifiers,
         applicationState: CourierApplicationState = .foreground,
         networkTypeProvider: Reachability
     ) {
         self.userCredentials = userCredentials
-        self.extraIdProvider = { userCredentials.extraIdentifier }
+        self.extraIdProvider = { "clickstream" }
         self.applicationState = applicationState
         self.networkTypeProvider = networkTypeProvider
     }

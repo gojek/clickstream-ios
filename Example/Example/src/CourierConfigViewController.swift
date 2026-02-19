@@ -38,9 +38,9 @@ final class CourierConfigViewController: UITableViewController {
     @IBOutlet weak var iddlePolicyReadTimeoutTextField: UITextField!
 
     private var config: ClickstreamCourierClientConfig?
-    private var userCredentials: ClickstreamClientIdentifiers?
+    private var userCredentials: CourierPostAuthIdentifiers?
 
-    var didSaveConfig: ((_ config: ClickstreamCourierClientConfig, _ userCredentials: ClickstreamClientIdentifiers, _ topic: String) -> Void)?
+    var didSaveConfig: ((_ config: ClickstreamCourierClientConfig, _ userCredentials: CourierPostAuthIdentifiers, _ topic: String) -> Void)?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -76,7 +76,7 @@ final class CourierConfigViewController: UITableViewController {
             urlRequest.setValue($0.value, forHTTPHeaderField: $0.key)
         }
 
-        userCredentials = CourierIdentifiers(userIdentifier: userIdentifier)
+        userCredentials = CourierPostAuthIdentifiers(userIdentifier: userIdentifier, ownerType: "clickstream_sample_app")
 
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
@@ -92,8 +92,8 @@ final class CourierConfigViewController: UITableViewController {
 
         userIdTextField.text = userCredentials?.userIdentifier.description
         deviceIdTextField.text = userCredentials?.deviceIdentifier.description
-        bundleIdTextField.text = userCredentials?.bundleIdentifier?.description
-        extrraIdTextField.text = userCredentials?.extraIdentifier?.description
+        bundleIdTextField.text = userCredentials?.bundleIdentifier.description
+        extrraIdTextField.text = userCredentials?.ownerType.description
         urlHostTextField.text = host
         urlPathTextField.text = path
         urlQueriesTextField.text = queries

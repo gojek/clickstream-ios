@@ -77,6 +77,7 @@ extension DefaultCourierHandler {
         let mqttConfig = MQTTClientConfig(authService: authServiceProvider,
                                           messageAdapters: config.courierMessageAdapter,
                                           isMessagePersistenceEnabled: config.courierMessagePersistenceEnabled,
+                                          isMessageInMemoryPersistenceEnabled: config.courierMessagePersistenceInMemoryEnabled,
                                           autoReconnectInterval: UInt16(config.courierAutoReconnectIntervalSecs),
                                           maxAutoReconnectInterval: UInt16(config.courierAutoReconnectMaxIntervalSecs),
                                           enableAuthenticationTimeout: config.courierAuthTimeoutEnabled,

@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "Clickstream"
-  s.version          = "2.0.61"
+  s.version          = "2.0.62"
   s.summary          = "Real time Analytics SDK"
   s.description      = "Clickstream is an event agnostic, real-time data ingestion analytics SDK"
 
@@ -19,14 +19,14 @@ Pod::Spec.new do |s|
   s.source           = { :git => 'https://github.com/gojek/clickstream-ios.git', :tag => s.version }
 
   s.platform         = :ios
-  s.ios.deployment_target = '14.0'
+  s.ios.deployment_target = '15.0'
   s.swift_version    = '5.0'
 
   s.source_files  = 'Sources/**/*.swift'
   s.exclude_files = "Example"
   s.exclude_files = "Sources/ETETestSuite/**/*.swift"
   s.frameworks    = "UIKit", "Foundation", "CoreTelephony"
-  s.dependency    "SwiftProtobuf", "~> 1.30.0"
+  s.dependency    "SwiftProtobuf"
   s.dependency    "ReachabilitySwift", '>= 5.0.0'
   s.dependency    "GRDB.swift", "~> 6.7.0"
   s.dependency    "Starscream", "4.0.5"
