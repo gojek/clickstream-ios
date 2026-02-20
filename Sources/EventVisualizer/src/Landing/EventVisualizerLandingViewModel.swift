@@ -44,7 +44,7 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
     
     var sectionCount: Int {
         /// if searching or filtering then there would be no section division
-        if (isSearchActive && searchText != "") || filterResult.count > 0 {
+        if (isSearchActive && searchText != "") || !filterResult.isEmpty {
             return 1
         } else {
             return eventsDict.keys.count
@@ -67,7 +67,7 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
         if isSearchActive && searchText != "" {
             /// searchResult contain event names
             eventName = searchResult[indexPath.row]
-        } else if filterResult.count > 0 {
+        } else if !filterResult.isEmpty {
             /// filterResult contain event names
             eventName = filterResult[indexPath.row]
         } else {
@@ -103,7 +103,7 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
     }
     
     func headerTitle(section: Int) -> String {
-        if (isSearchActive && searchText != "") || filterResult.count > 0 {
+        if (isSearchActive && searchText != "") || !filterResult.isEmpty {
             return ""
         } else {
             /// get all protos
@@ -122,7 +122,7 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
             /// get all event names which contain the searchText
             self.searchResult = events.filter { $0.lowercased().contains(searchText.lowercased()) }
             return searchResult.count
-        } else if filterResult.count > 0 {
+        } else if !filterResult.isEmpty {
             /// get all values of proto keys which gives [[eventName: [Message]]] and then flatten it out to [eventName: [Message]]
             let eventInDict = eventsDict.map { $0.value }.flatMap { $0 }
             /// get all event names
@@ -183,7 +183,7 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
             if let messagesInEvent = events.first?.value {
                 return (eventSelected, messagesInEvent)
             }
-        } else if filterResult.count > 0 {
+        } else if !filterResult.isEmpty {
             /// get all values of proto keys which gives [[eventName: [Message]]] and then flatten it out to [eventName: [Message]]
             let eventInDict = eventsDict.map { $0.value }.flatMap { $0 }
             let eventSelected = filterResult[indexPath.row]
