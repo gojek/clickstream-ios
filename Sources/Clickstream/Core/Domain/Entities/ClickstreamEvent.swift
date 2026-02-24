@@ -51,10 +51,17 @@ public extension ClickstreamEvent {
 
 extension ClickstreamEvent {
 
-    func shouldTrackOnCourier(networkOptions: ClickstreamNetworkOptions) -> Bool {
+    func shouldTrackOnCourier(isUserLoggedIn: Bool, networkOptions: ClickstreamNetworkOptions) -> Bool {
+        let isCourierEnabled = networkOptions.isCourierEnabled
+        let isUserEligible = isUserLoggedIn == true || networkOptions.isCourierPreAuthEnabled
+
         let isWebsocketEnabled = networkOptions.isWebsocketEnabled
         let isCourierWhitelisted = networkOptions.courierEventTypes.contains(self.messageName)
         let isCourierExclusive = networkOptions.courierExclusiveEventTypes.contains(self.messageName)
+
+        guard isCourierEnabled && isUserEligible else {
+            return false
+        }
 
         if isWebsocketEnabled && !isCourierWhitelisted && !isCourierExclusive {
             return false
@@ -64,9 +71,11 @@ extension ClickstreamEvent {
 
     func shouldTrackOnWebsocket(isUserLoggedIn: Bool, networkOptions: ClickstreamNetworkOptions) -> Bool {
         let isCourierEnabled = networkOptions.isCourierEnabled
-        let isCourierExclusive = !networkOptions.isWebsocketEnabled || networkOptions.courierExclusiveEventTypes.contains(self.messageName)
+        let isUserEligible = isUserLoggedIn == true || networkOptions.isCourierPreAuthEnabled
 
-        if isCourierEnabled && isUserLoggedIn && isCourierExclusive {
+        let isCourierExclusive = networkOptions.courierExclusiveEventTypes.contains(self.messageName)
+
+        if isCourierEnabled && isUserEligible && isCourierExclusive {
             return false
         }
         return true

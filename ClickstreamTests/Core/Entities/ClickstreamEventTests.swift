@@ -91,7 +91,46 @@ class ClickstreamEventTests: XCTestCase {
         XCTAssertEqual(event.messageName, "odpf.raccoon.Event")
     }
     
-    func testIsCourierExclusiveWithWebsocketDisabled() {
+    func testShouldTrackOnCourierWithCourierDisabled() {
+        let event = ClickstreamEvent(
+            guid: "test-guid",
+            timeStamp: Date(),
+            message: Odpf_Raccoon_Event(),
+            eventName: "test.event",
+            eventData: Data(),
+            product: "Product"
+        )
+        
+        let networkOptions = ClickstreamNetworkOptions(
+            isCourierEnabled: false,
+            courierEventTypes: [],
+            courierExclusiveEventTypes: []
+        )
+        
+        XCTAssertFalse(event.shouldTrackOnCourier(isUserLoggedIn: true, networkOptions: networkOptions))
+    }
+    
+    func testShouldTrackOnCourierWithUserNotLoggedInAndPreAuthDisabled() {
+        let event = ClickstreamEvent(
+            guid: "test-guid",
+            timeStamp: Date(),
+            message: Odpf_Raccoon_Event(),
+            eventName: "test.event",
+            eventData: Data(),
+            product: "Product"
+        )
+        
+        let networkOptions = ClickstreamNetworkOptions(
+            isCourierEnabled: true,
+            isCourierPreAuthEnabled: false,
+            courierEventTypes: [],
+            courierExclusiveEventTypes: []
+        )
+        
+        XCTAssertFalse(event.shouldTrackOnCourier(isUserLoggedIn: false, networkOptions: networkOptions))
+    }
+    
+    func testShouldTrackOnCourierWithUserNotLoggedInAndPreAuthEnabled() {
         let event = ClickstreamEvent(
             guid: "test-guid",
             timeStamp: Date(),
@@ -103,14 +142,36 @@ class ClickstreamEventTests: XCTestCase {
         
         let networkOptions = ClickstreamNetworkOptions(
             isWebsocketEnabled: false,
+            isCourierEnabled: true,
+            isCourierPreAuthEnabled: true,
             courierEventTypes: [],
             courierExclusiveEventTypes: []
         )
         
-        XCTAssertTrue(event.shouldTrackOnCourier(networkOptions: networkOptions))
+        XCTAssertTrue(event.shouldTrackOnCourier(isUserLoggedIn: false, networkOptions: networkOptions))
     }
     
-    func testIsCourierExclusiveWithWebsocketEnabledAndNotWhitelisted() {
+    func testShouldTrackOnCourierWithWebsocketDisabled() {
+        let event = ClickstreamEvent(
+            guid: "test-guid",
+            timeStamp: Date(),
+            message: Odpf_Raccoon_Event(),
+            eventName: "test.event",
+            eventData: Data(),
+            product: "Product"
+        )
+        
+        let networkOptions = ClickstreamNetworkOptions(
+            isWebsocketEnabled: false,
+            isCourierEnabled: true,
+            courierEventTypes: [],
+            courierExclusiveEventTypes: []
+        )
+        
+        XCTAssertTrue(event.shouldTrackOnCourier(isUserLoggedIn: true, networkOptions: networkOptions))
+    }
+    
+    func testShouldTrackOnCourierWithWebsocketEnabledAndNotWhitelisted() {
         let event = ClickstreamEvent(
             guid: "test-guid",
             timeStamp: Date(),
@@ -122,14 +183,15 @@ class ClickstreamEventTests: XCTestCase {
         
         let networkOptions = ClickstreamNetworkOptions(
             isWebsocketEnabled: true,
+            isCourierEnabled: true,
             courierEventTypes: [],
             courierExclusiveEventTypes: []
         )
         
-        XCTAssertFalse(event.shouldTrackOnCourier(networkOptions: networkOptions))
+        XCTAssertFalse(event.shouldTrackOnCourier(isUserLoggedIn: true, networkOptions: networkOptions))
     }
     
-    func testIsCourierExclusiveWithWebsocketEnabledAndCourierWhitelisted() {
+    func testShouldTrackOnCourierWithWebsocketEnabledAndCourierWhitelisted() {
         let event = ClickstreamEvent(
             guid: "test-guid",
             timeStamp: Date(),
@@ -141,14 +203,15 @@ class ClickstreamEventTests: XCTestCase {
         
         let networkOptions = ClickstreamNetworkOptions(
             isWebsocketEnabled: true,
+            isCourierEnabled: true,
             courierEventTypes: ["odpf.raccoon.Event"],
             courierExclusiveEventTypes: []
         )
         
-        XCTAssertTrue(event.shouldTrackOnCourier(networkOptions: networkOptions))
+        XCTAssertTrue(event.shouldTrackOnCourier(isUserLoggedIn: true, networkOptions: networkOptions))
     }
     
-    func testIsCourierExclusiveWithWebsocketEnabledAndCourierExclusive() {
+    func testShouldTrackOnCourierWithWebsocketEnabledAndCourierExclusive() {
         let event = ClickstreamEvent(
             guid: "test-guid",
             timeStamp: Date(),
@@ -160,14 +223,15 @@ class ClickstreamEventTests: XCTestCase {
         
         let networkOptions = ClickstreamNetworkOptions(
             isWebsocketEnabled: true,
+            isCourierEnabled: true,
             courierEventTypes: [],
             courierExclusiveEventTypes: ["odpf.raccoon.Event"]
         )
         
-        XCTAssertTrue(event.shouldTrackOnCourier(networkOptions: networkOptions))
+        XCTAssertTrue(event.shouldTrackOnCourier(isUserLoggedIn: true, networkOptions: networkOptions))
     }
     
-    func testIsCourierExclusiveWebsocketWithCourierDisabled() {
+    func testShouldTrackOnWebsocketWithCourierDisabled() {
         let event = ClickstreamEvent(
             guid: "test-guid",
             timeStamp: Date(),
@@ -185,7 +249,7 @@ class ClickstreamEventTests: XCTestCase {
         XCTAssertTrue(event.shouldTrackOnWebsocket(isUserLoggedIn: true, networkOptions: networkOptions))
     }
     
-    func testIsCourierExclusiveWebsocketWithUserNotLoggedIn() {
+    func testShouldTrackOnWebsocketWithUserNotLoggedInAndPreAuthDisabled() {
         let event = ClickstreamEvent(
             guid: "test-guid",
             timeStamp: Date(),
@@ -197,13 +261,14 @@ class ClickstreamEventTests: XCTestCase {
         
         let networkOptions = ClickstreamNetworkOptions(
             isCourierEnabled: true,
+            isCourierPreAuthEnabled: false,
             courierExclusiveEventTypes: ["odpf.raccoon.Event"]
         )
         
         XCTAssertTrue(event.shouldTrackOnWebsocket(isUserLoggedIn: false, networkOptions: networkOptions))
     }
     
-    func testIsCourierExclusiveWebsocketWithCourierEnabledUserLoggedInAndExclusiveEvent() {
+    func testShouldTrackOnWebsocketWithUserNotLoggedInAndPreAuthEnabled() {
         let event = ClickstreamEvent(
             guid: "test-guid",
             timeStamp: Date(),
@@ -214,7 +279,25 @@ class ClickstreamEventTests: XCTestCase {
         )
         
         let networkOptions = ClickstreamNetworkOptions(
-            isWebsocketEnabled: false,
+            isCourierEnabled: true,
+            isCourierPreAuthEnabled: true,
+            courierExclusiveEventTypes: ["odpf.raccoon.Event"]
+        )
+        
+        XCTAssertFalse(event.shouldTrackOnWebsocket(isUserLoggedIn: false, networkOptions: networkOptions))
+    }
+    
+    func testShouldTrackOnWebsocketWithCourierEnabledUserLoggedInAndExclusiveEvent() {
+        let event = ClickstreamEvent(
+            guid: "test-guid",
+            timeStamp: Date(),
+            message: Odpf_Raccoon_Event(),
+            eventName: "test.event",
+            eventData: Data(),
+            product: "Product"
+        )
+        
+        let networkOptions = ClickstreamNetworkOptions(
             isCourierEnabled: true,
             courierExclusiveEventTypes: ["odpf.raccoon.Event"]
         )
@@ -222,7 +305,7 @@ class ClickstreamEventTests: XCTestCase {
         XCTAssertFalse(event.shouldTrackOnWebsocket(isUserLoggedIn: true, networkOptions: networkOptions))
     }
     
-    func testIsCourierExclusiveWebsocketWithWebsocketEnabledAndNotExclusive() {
+    func testShouldTrackOnWebsocketWithCourierEnabledAndNotExclusive() {
         let event = ClickstreamEvent(
             guid: "test-guid",
             timeStamp: Date(),
@@ -233,7 +316,6 @@ class ClickstreamEventTests: XCTestCase {
         )
         
         let networkOptions = ClickstreamNetworkOptions(
-            isWebsocketEnabled: true,
             isCourierEnabled: true,
             courierExclusiveEventTypes: []
         )
@@ -241,7 +323,7 @@ class ClickstreamEventTests: XCTestCase {
         XCTAssertTrue(event.shouldTrackOnWebsocket(isUserLoggedIn: true, networkOptions: networkOptions))
     }
     
-    func testIsCourierExclusiveWebsocketWithWebsocketDisabledCourierEnabledAndUserLoggedIn() {
+    func testShouldTrackOnWebsocketWithDifferentMessageName() {
         let event = ClickstreamEvent(
             guid: "test-guid",
             timeStamp: Date(),
@@ -252,12 +334,11 @@ class ClickstreamEventTests: XCTestCase {
         )
         
         let networkOptions = ClickstreamNetworkOptions(
-            isWebsocketEnabled: false,
             isCourierEnabled: true,
-            courierExclusiveEventTypes: []
+            courierExclusiveEventTypes: ["different.event.Type"]
         )
         
-        XCTAssertFalse(event.shouldTrackOnWebsocket(isUserLoggedIn: true, networkOptions: networkOptions))
+        XCTAssertTrue(event.shouldTrackOnWebsocket(isUserLoggedIn: true, networkOptions: networkOptions))
     }
     
     func testEventWithEmptyStrings() {
