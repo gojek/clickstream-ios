@@ -102,6 +102,6 @@ final class CourierEventProcessor: EventProcessor {
     }
 
     private func isExslusiveEvent(_ event: ClickstreamEvent) -> Bool {
-        networkOptions.isWebsocketEnabled || networkOptions.courierExclusiveEventTypes.contains(event.messageName)
+        !networkOptions.isWebsocketEnabled || networkOptions.courierExclusiveEventTypes.contains(event.messageName)
     }
 }
