@@ -65,8 +65,7 @@ final class CourierEventProcessor: EventProcessor {
             }
             #endif
             // Create an Event instance and forward it to the scheduler.
-            if let event = checkedSelf.constructEvent(event: event,
-                                                      isExslusive: checkedSelf.isExslusiveEvent(event, isUserAuthenticated: isUserAuthenticated)) {
+            if let event = checkedSelf.constructEvent(event: event, isExslusive: checkedSelf.isExslusiveEvent(event)) {
                 checkedSelf.eventWarehouser.store(event)
             }
         }
@@ -102,7 +101,7 @@ final class CourierEventProcessor: EventProcessor {
         }
     }
 
-    private func isExslusiveEvent(_ event: ClickstreamEvent, isUserAuthenticated: Bool) -> Bool {
-        event.shouldTrackOnCourier(isUserLoggedIn: isUserAuthenticated, networkOptions: self.networkOptions)
+    private func isExslusiveEvent(_ event: ClickstreamEvent) -> Bool {
+        networkOptions.isWebsocketEnabled || networkOptions.courierExclusiveEventTypes.contains(event.messageName)
     }
 }
