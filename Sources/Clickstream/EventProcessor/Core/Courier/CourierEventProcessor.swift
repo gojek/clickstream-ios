@@ -45,7 +45,7 @@ final class CourierEventProcessor: EventProcessor {
     func createEvent(event: ClickstreamEvent, isUserAuthenticated: Bool) {
         self.serialQueue.async { [weak self] in guard let checkedSelf = self else { return }
             if checkedSelf.networkOptions.courierExclusiveEventsEnabled {
-                guard event.shouldTrackOnCourier(networkOptions: checkedSelf.networkOptions) else {
+                guard event.shouldTrackOnCourier(isUserLoggedIn: isUserAuthenticated, networkOptions: checkedSelf.networkOptions) else {
                     return
                 }
             } else {
@@ -65,7 +65,8 @@ final class CourierEventProcessor: EventProcessor {
             }
             #endif
             // Create an Event instance and forward it to the scheduler.
-            if let event = checkedSelf.constructEvent(event: event, isExslusive: checkedSelf.isExslusiveEvent(event)) {
+            if let event = checkedSelf.constructEvent(event: event,
+                                                      isExslusive: checkedSelf.isExslusiveEvent(event, isUserAuthenticated: isUserAuthenticated)) {
                 checkedSelf.eventWarehouser.store(event)
             }
         }
@@ -101,7 +102,7 @@ final class CourierEventProcessor: EventProcessor {
         }
     }
 
-    private func isExslusiveEvent(_ event: ClickstreamEvent) -> Bool {
-        event.shouldTrackOnCourier(networkOptions: self.networkOptions)
+    private func isExslusiveEvent(_ event: ClickstreamEvent, isUserAuthenticated: Bool) -> Bool {
+        event.shouldTrackOnCourier(isUserLoggedIn: isUserAuthenticated, networkOptions: self.networkOptions)
     }
 }
