@@ -1,23 +1,22 @@
-// swift-tools-version:6.2
-
+// swift-tools-version: 5.9
 import PackageDescription
 
 let package = Package(
     name: "Clickstream",
     platforms: [
-        .iOS(.v15),
+        .iOS(.v15)
     ],
     products: [
-        .library(
-            name: "Clickstream",
-            targets: ["Clickstream"]),
+        .library(name: "Clickstream", targets: ["Clickstream"]),
+        .library(name: "ClickstreamTracker", targets: ["ClickstreamTracker"]),
+        .library(name: "ClickstreamEventVisualizer", targets: ["ClickstreamEventVisualizer"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.30.0"),
-        .package(url: "https://github.com/ashleymills/Reachability.swift", from: "5.0.0"),
+        .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.0.0"),
+        .package(url: "https://github.com/ashleymills/Reachability.swift.git", from: "5.0.0"),
         .package(url: "https://github.com/groue/GRDB.swift.git", from: "6.7.0"),
         .package(url: "https://github.com/daltoniam/Starscream.git", exact: "4.0.5"),
-        .package(url: "https://github.com/gojek/courier-iOS.git", from: "1.0.0")
+        .package(url: "https://github.com/gojek/courier-iOS.git", from: "1.0.0") 
     ],
     targets: [
         .target(
@@ -30,13 +29,21 @@ let package = Package(
                 .product(name: "CourierCore", package: "courier-iOS"),
                 .product(name: "CourierMQTT", package: "courier-iOS")
             ],
-            path: "Sources"
+            path: "Sources",
+            exclude: ["ETETestSuite", "Example"],
+            sources: ["**/*.swift"]
         ),
-        .testTarget(
-            name: "ClickstreamTests",
+        .target(
+            name: "ClickstreamTracker",
             dependencies: ["Clickstream"],
-            path: "ClickstreamTests",
-            exclude: ["Info.plist"])
-    ],
-    swiftLanguageModes: [.v5]
+            path: "Sources/Tracker",
+            swiftSettings: [.define("TRACKER_ENABLED")]
+        ),
+        .target(
+            name: "ClickstreamEventVisualizer",
+            dependencies: ["Clickstream"],
+            path: "Sources/EventVisualizer",
+            swiftSettings: [.define("EVENT_VISUALIZER_ENABLED")]
+        )
+    ]
 )
