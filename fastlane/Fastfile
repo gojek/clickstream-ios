@@ -32,6 +32,23 @@ platform :ios do
     )
   end
 
+
+  desc "Build Swift Package Manager package"
+  lane :spm_build do
+    scheme = ENV['FRAMEWORK_SCHEME']
+
+    UI.message("Building SPM #{scheme} scheme")
+
+    xcodebuild(
+      workspace: ENV['WORKSPACE'],
+      scheme: scheme,
+      destination: "generic/platform=iOS Simulator",
+      configuration: "Debug",
+      clean: true,
+      build: true
+    )
+  end
+
   desc "Build the target"
   lane :build_target do
     scan(
@@ -69,31 +86,33 @@ platform :ios do
 
   desc "Bump version in .xcodeproj and .podspec"
   lane :bump_version_files do |options| 
-    spec = ENV['PODSPEC_PATH']
-
     ensure_git_status_clean(
       show_uncommitted_changes: true, 
       ignore_files: ["Gemfile.lock", "Podfile.lock"]
     )
 
-    # Get version from git tag if available, otherwise use bump_type
-    git_tag = sh("git describe --tags --exact-match 2>/dev/null || echo ''").strip
-    version = nil
+    # Get version from release branch name (release/x.y.z), fallback to bump_type
+    ref_name = ENV['GITHUB_REF_NAME'] || `git branch --show-current`.strip
+    branch_version = ref_name.match(/^release\/(\d+\.\d+\.\d+)$/)&.captures&.first
 
-    if !git_tag.empty? && git_tag.match?(/^\d+\.\d+\.\d+$/)
-      version = git_tag
-      UI.message("📌 Using version from tag: #{version}")
+    if branch_version
+      version = branch_version
+      UI.message("📌 Using version from branch: #{version}")
     else
       bump_type = options[:bump_type] || 'patch'
       UI.message("📌 Bumping version using bump_type: #{bump_type}")
     end
 
-    if version
-      version_bump_podspec(path: spec, version_number: version)
-    else
-      version_bump_podspec(path: spec, bump_type: bump_type)
+    packages = ENV['PACKAGES'].split(',')
+
+    packages.each do |package|
+      if version
+        version_bump_podspec(path: "#{package}.podspec", version_number: version)
+      else
+        version_bump_podspec(path: "#{package}.podspec", bump_type: bump_type)
+      end
+      UI.message("#{package}.podspec version to #{version_get_podspec(path: "#{package}.podspec")}")
     end
-    UI.message("#{spec} version to #{version_get_podspec(path: spec)}")
   end
 
   lane :update_changelog do
@@ -138,7 +157,7 @@ platform :ios do
     end
 
     # Use GitHub Actions variables for more reliable URL construction
-    server_host = ENV['CI_SERVER_HOST'] || 'https://github.com'
+    server_host = ENV['CI_SERVER_HOST'] || 'github.com'
     repo_path = ENV['CI_REPO_PATH'] || 'gojek/clickstream-ios'
     remote_url = "https://github-actions:#{token}@#{server_host}/#{repo_path}.git"
 
@@ -153,16 +172,21 @@ platform :ios do
 
     git_commit(
       path: [
-        "./Clickstream.podspec", 
+        "./*.podspec", 
         "./CHANGELOG.md", 
-        "./Clickstream.xcodeproj/project.pbxproj",
+        "./Clickstream.xcodeproj/project.pbxproj"
       ],
       message: "[CI] Bump version - #{version}"
     )
 
-    # Push to current branch
-    sh("git push #{remote_url} HEAD:#{current_branch}")
+    add_git_tag(
+      tag: version,
+      message: "Release #{version}"
+    )
 
-    UI.success("✅ Successfully committed version #{version} on branch #{current_branch}")
+    sh("git push #{remote_url} HEAD:#{current_branch}")
+    sh("git push #{remote_url} refs/tags/#{version}")
+
+    UI.success("✅ Successfully committed and tagged version #{version} on branch #{current_branch}")
   end
 end
