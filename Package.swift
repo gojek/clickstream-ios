@@ -30,8 +30,7 @@ let package = Package(
                 .product(name: "CourierMQTT", package: "courier-iOS")
             ],
             path: "Sources",
-            exclude: ["ETETestSuite", "Example"],
-            sources: ["**/*.swift"]
+            sources: ["Clickstream", "Networking"]
         ),
         .target(
             name: "ClickstreamTracker",
