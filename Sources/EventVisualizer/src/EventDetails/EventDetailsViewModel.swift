@@ -87,6 +87,7 @@ final class EventDetailsViewModel: EventDetailsModelInput {
             (value as? Int64 != nil) ||
             (value as? Int != nil) ||
             (value as? Double != nil) ||
+            (value as? Float != nil) ||
             (value is NSArray) ||
             /// checking if value is of enum type
             Mirror(reflecting: value).displayStyle?.equals(displayCase: .enum) ?? false ? true : false ||
