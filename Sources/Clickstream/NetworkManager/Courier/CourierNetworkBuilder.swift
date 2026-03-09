@@ -37,7 +37,7 @@ extension CourierNetworkBuilder {
 
             do {
                 let data: Data = try eventBatch.proto.serializedData()
-                debugPrint("[CS_COURIER] batch_uuid: \(eventBatch.uuid) events: \(try Odpf_Raccoon_EventRequest(serializedBytes: data))")
+                print("NetworkBuilder, trackedBatch with id: \(eventBatch.uuid) and itemsCount: \(eventBatch.events.count)")
                 var eventRequest = CourierEventRequest(guid: eventBatch.uuid,
                                                        data: data)
                 
