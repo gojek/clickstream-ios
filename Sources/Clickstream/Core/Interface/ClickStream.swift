@@ -387,16 +387,16 @@ extension Clickstream {
                                                 pubSubAnalytics: ICourierEventHandler?) {
 
         preAuthUserIdentifiers = identifiers
-        dependencies?.providePreAuthClientIdentifiers(with: identifiers,
-                                                      topic: topic,
-                                                      authProvider: authProvider,
-                                                      pubSubAnalytics: pubSubAnalytics)
+        dependencies?.provideAuthClientIdentifiers(with: identifiers,
+                                                   topic: topic,
+                                                   authProvider: authProvider,
+                                                   pubSubAnalytics: pubSubAnalytics)
     }
     
     /// Remove post-auth courier's identifiers
     public func removePreAuthClientIdentifiers() {
         preAuthUserIdentifiers = nil
-        dependencies?.removePreAuthClientIdentifiers()
+        dependencies?.removeAuthClientIdentifiers()
     }
 
     /// Provide post-auth courier's identifiers
@@ -411,15 +411,15 @@ extension Clickstream {
                                                  pubSubAnalytics: ICourierEventHandler?) {
 
         postAuthUserIdentifiers = identifiers
-        dependencies?.providePostAuthClientIdentifiers(with: identifiers,
-                                                       topic: topic,
-                                                       authProvider: authProvider,
-                                                       pubSubAnalytics: pubSubAnalytics)
+        dependencies?.provideAuthClientIdentifiers(with: identifiers,
+                                                   topic: topic,
+                                                   authProvider: authProvider,
+                                                   pubSubAnalytics: pubSubAnalytics)
     }
 
     /// Remove post-auth courier's identifiers
     public func removePostAuthClientIdentifiers() {
         postAuthUserIdentifiers = nil
-        dependencies?.removePostAuthClientIdentifiers()
+        dependencies?.removeAuthClientIdentifiers()
     }
 }

@@ -106,37 +106,20 @@ final class DefaultClickstreamDependencies {
 
 extension DefaultClickstreamDependencies {
 
-    func providePreAuthClientIdentifiers(with identifiers: ClickstreamClientPreAuthIdentifiers,
-                                         topic: String,
-                                         authProvider: IConnectionServiceProvider,
-                                         pubSubAnalytics: ICourierEventHandler?) {
+    func provideAuthClientIdentifiers(with identifiers: ClickstreamClientIdentifiers,
+                                      topic: String,
+                                      authProvider: IConnectionServiceProvider,
+                                      pubSubAnalytics: ICourierEventHandler?) {
 
         courierEventProcessor.setClientIdentifiers(identifiers)
-        networkManagerDependencies.providePreAuthClientIdentifiers(with: identifiers,
-                                                                   topic: topic,
-                                                                   authProvider: authProvider,
-                                                                   pubSubAnalytics: pubSubAnalytics)
+        networkManagerDependencies.provideClientIdentifiers(with: identifiers,
+                                                            topic: topic,
+                                                            authProvider: authProvider,
+                                                            pubSubAnalytics: pubSubAnalytics)
     }
 
-    func providePostAuthClientIdentifiers(with identifiers: ClickstreamClientPostAuthIdentifiers,
-                                          topic: String,
-                                          authProvider: IConnectionServiceProvider,
-                                          pubSubAnalytics: ICourierEventHandler?)  {
-
-        courierEventProcessor.setClientIdentifiers(identifiers)
-        networkManagerDependencies.providePostAuthClientIdentifiers(with: identifiers,
-                                                                    topic: topic,
-                                                                    authProvider: authProvider,
-                                                                    pubSubAnalytics: pubSubAnalytics)
-    }
-
-    func removePreAuthClientIdentifiers() {
+    func removeAuthClientIdentifiers() {
         courierEventProcessor.removeClientIdentifiers()
-        networkManagerDependencies.removePreAuthClientIdentifiers()
-    }
-
-    func removePostAuthClientIdentifiers() {
-        courierEventProcessor.removeClientIdentifiers()
-        networkManagerDependencies.removePostAuthClientIdentifiers()
+        networkManagerDependencies.removeClientIdentifiers()
     }
 }
