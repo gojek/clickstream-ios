@@ -93,6 +93,16 @@ struct Odpf_Raccoon_Event: Sendable {
   /// - Defaults to `false` when not sent by older clients.
   var isExclusive: Bool = false
 
+  ///
+  ///`app_version` denotes the version of the mobile app generating the event.
+  ///Example: "7.15.2"
+  var appVersion: String = String()
+
+  ///
+  ///`platform` denotes the mobile client platform generating the event.
+  ///Example: ANDROID, IOS, FLUTTER
+  var platform: Odpf_Raccoon_Platform = .unspecified
+
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
@@ -113,7 +123,9 @@ extension Odpf_Raccoon_Event: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
     4: .standard(proto: "product"),
     5: .standard(proto: "event_timestamp"),
     6: .standard(proto: "is_mirrored"),
-    7: .standard(proto: "is_exclusive")
+    7: .standard(proto: "is_exclusive"),
+    8: .standard(proto: "app_version"),
+    9: .same(proto: "platform"),
   ]
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -129,6 +141,8 @@ extension Odpf_Raccoon_Event: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
       case 5: try { try decoder.decodeSingularMessageField(value: &self._eventTimestamp) }()
       case 6: try { try decoder.decodeSingularBoolField(value: &self.isMirrored) }()
       case 7: try { try decoder.decodeSingularBoolField(value: &self.isExclusive) }()
+      case 8: try { try decoder.decodeSingularStringField(value: &self.appVersion) }()
+      case 9: try { try decoder.decodeSingularEnumField(value: &self.platform) }()
       default: break
       }
     }
@@ -160,6 +174,12 @@ extension Odpf_Raccoon_Event: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
     if self.isExclusive != false {
       try visitor.visitSingularBoolField(value: self.isExclusive, fieldNumber: 7)
     }
+    if !self.appVersion.isEmpty {
+      try visitor.visitSingularStringField(value: self.appVersion, fieldNumber: 8)
+    }
+    if self.platform != .unspecified {
+      try visitor.visitSingularEnumField(value: self.platform, fieldNumber: 9)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -171,6 +191,8 @@ extension Odpf_Raccoon_Event: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
     if lhs._eventTimestamp != rhs._eventTimestamp {return false}
     if lhs.isMirrored != rhs.isMirrored {return false}
     if lhs.isExclusive != rhs.isExclusive {return false}
+    if lhs.appVersion != rhs.appVersion {return false}
+    if lhs.platform != rhs.platform {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

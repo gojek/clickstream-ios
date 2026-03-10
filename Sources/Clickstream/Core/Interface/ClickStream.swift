@@ -138,6 +138,9 @@ public final class Clickstream {
     /// Use this property to pass application name without any space or special characters.
     static var appPrefix: String = ""
     
+    /// Client app version
+    static var appVersion: String = ""
+    
     /// Returns the shared Clickstream instance.
     /// - Returns: `Clickstream` instance.
     public static func getInstance() -> Clickstream? {
@@ -205,6 +208,7 @@ public final class Clickstream {
                                                      timerCrashFixFlag: Bool = false,
                                                      priorityEventsEnabled: Bool = false,
                                                      appPrefix: String,
+                                                     appVersion: String,
                                                      samplerConfiguration: EventSamplerConfiguration? = nil,
                                                      networkOptions: ClickstreamNetworkOptions) throws -> Clickstream? {
         do {
@@ -218,6 +222,7 @@ public final class Clickstream {
                 timerCrashFixFlag: timerCrashFixFlag,
                 priorityEventsEnabled: priorityEventsEnabled,
                 appPrefix: appPrefix,
+                appVersion: appVersion,
                 samplerConfiguration: samplerConfiguration,
                 networkOptions: networkOptions)
         } catch {
@@ -235,6 +240,7 @@ public final class Clickstream {
                                                      updateConnectionStatus: Bool = false,
                                                      timerCrashFixFlag: Bool = false,
                                                      appPrefix: String,
+                                                     appVersion: String,
                                                      samplerConfiguration: EventSamplerConfiguration? = nil,
                                                      networkOptions: ClickstreamNetworkOptions) throws -> Clickstream? {
         do {
@@ -247,6 +253,7 @@ public final class Clickstream {
                 updateConnectionStatus: updateConnectionStatus,
                 timerCrashFixFlag: timerCrashFixFlag,
                 appPrefix: appPrefix,
+                appVersion: appVersion,
                 samplerConfiguration: samplerConfiguration,
                 networkOptions: networkOptions)
         } catch {
@@ -266,6 +273,7 @@ public final class Clickstream {
                                       timerCrashFixFlag: Bool = false,
                                       priorityEventsEnabled: Bool = false,
                                       appPrefix: String,
+                                      appVersion: String,
                                       samplerConfiguration: EventSamplerConfiguration? = nil,
                                       networkOptions: ClickstreamNetworkOptions) throws -> Clickstream? {
 
@@ -285,6 +293,7 @@ public final class Clickstream {
             Clickstream.timerCrashFixFlag = timerCrashFixFlag
             Clickstream.priorityEventsEnabled = priorityEventsEnabled
             Clickstream.appPrefix = appPrefix.lowercased().replacingOccurrences(of: " ", with: "")
+            Clickstream.appVersion = appVersion
             
             // All the dependency injections pertaining to the clickstream blocks happen here!
             // Load default dependencies.

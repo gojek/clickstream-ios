@@ -91,6 +91,8 @@ final class CourierEventProcessor: EventProcessor {
                 $0.product = event.product
                 $0.eventTimestamp = Google_Protobuf_Timestamp(date: event.timeStamp)
                 $0.isExclusive = isExslusive
+                $0.appVersion = Clickstream.appVersion
+                $0.platform = .ios
             }
             return try CourierEvent(guid: event.guid,
                                     timestamp: event.timeStamp,

@@ -33,6 +33,7 @@ class AnalyticsManager {
             let courierConfigurations = ClickstreamCourierConstraints()
 
             let classification = ClickstreamEventClassification(eventTypes: [.init(identifier: "instant", eventNames: [], csEventNames: [])])
+            let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
 
             self.clickstream = try Clickstream.initialise(
                 with: request ?? URLRequest(url: URL(string: "")!),
@@ -40,6 +41,7 @@ class AnalyticsManager {
                 courierConfigurations: courierConfigurations,
                 eventClassification: classification,
                 appPrefix: "",
+                appVersion: appVersion,
                 networkOptions: networkOptions
             )
 
