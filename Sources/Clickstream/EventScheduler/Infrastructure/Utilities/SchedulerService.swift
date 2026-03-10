@@ -77,3 +77,57 @@ final class DefaultSchedulerService: SchedulerService {
         stop()
     }
 }
+
+
+final class CourierSchedulerService: SchedulerService {
+    
+    private let performQueue: SerialQueue
+    private let priorities: [Priority]
+
+    lazy private(set) var timers = [String: DispatchSourceTimer]()
+
+    var subscriber: ((Priority) -> Void)?
+
+    init(with priorities: [Priority],
+         performOnQueue: SerialQueue) {
+        self.priorities = priorities
+        self.performQueue = performOnQueue
+    }
+
+    func start() {
+        stop()
+        start(with: priorities)
+    }
+    
+    private func start(with priorities: [Priority]) {
+        for priority in priorities {
+            if let timer = makeTimer(with: priority) {
+                timers[priority.identifier] = timer
+            }
+        }
+    }
+
+    private func makeTimer(with priority: Priority) -> DispatchSourceTimer? {
+        guard let timeInterval = priority.maxTimeBetweenTwoBatches else { return nil }  // Schedule only those which have are time based.
+        let timer: DispatchSourceTimer = DispatchSource.makeTimerSource(flags: .strict, queue: performQueue)
+        timer.schedule(deadline: .now() + timeInterval, repeating: timeInterval)
+        timer.setEventHandler(handler: { [weak self] in
+            guard let checkedSelf = self else { return }
+            checkedSelf.performQueue.async {
+                checkedSelf.subscriber?(priority)
+            }
+        })
+        timer.resume()
+        return timer
+    }
+
+    func stop() {
+        let timers = Array(self.timers.values)
+        timers.forEach { $0.cancel() }
+        self.timers.removeAll()
+    }
+
+    deinit {
+        stop()
+    }
+}
