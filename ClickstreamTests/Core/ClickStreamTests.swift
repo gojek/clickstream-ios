@@ -20,6 +20,7 @@ class ClickstreamTests: XCTestCase {
                                                       courierConfigurations: MockConstants.courierConstraints,
                                                       eventClassification: MockConstants.eventClassification,
                                                       appPrefix: "",
+                                                      appVersion: "1.0.0",
                                                       networkOptions: ClickstreamNetworkOptions())
         
         // then
@@ -35,6 +36,7 @@ class ClickstreamTests: XCTestCase {
                                                       courierConfigurations: MockConstants.courierConstraints,
                                                       eventClassification: MockConstants.eventClassification,
                                                       appPrefix: "",
+                                                      appVersion: "1.0.0",
                                                       networkOptions: networkOptions)
         
         // then
@@ -54,6 +56,7 @@ class ClickstreamTests: XCTestCase {
                                                       courierConfigurations: MockConstants.courierConstraints,
                                                       eventClassification: MockConstants.eventClassification,
                                                       appPrefix: "",
+                                                      appVersion: "1.0.0",
                                                       networkOptions: networkOptions)
         
         // then

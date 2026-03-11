@@ -195,6 +195,8 @@
 		BDE4687A2A5BD72000BFA976 /* EventProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467F72A5BD72000BFA976 /* EventProcessor.swift */; };
 		BDE4687B2A5BD72000BFA976 /* EventProcessorDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467F82A5BD72000BFA976 /* EventProcessorDependencies.swift */; };
 		BDE4687C2A5BD72000BFA976 /* EventProcessorDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE467F82A5BD72000BFA976 /* EventProcessorDependencies.swift */; };
+		D82187042F6031410099C72A /* Platform.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82187032F60313C0099C72A /* Platform.pb.swift */; };
+		D82187052F6031410099C72A /* Platform.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82187032F60313C0099C72A /* Platform.pb.swift */; };
 		D859DC3E2E9F5147008D900F /* CourierExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D859DC3D2E9F5146008D900F /* CourierExtensionTests.swift */; };
 		D859DC412E9F51C6008D900F /* CourierConnectTimeoutPolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D859DC402E9F51C6008D900F /* CourierConnectTimeoutPolicyTests.swift */; };
 		D859DC432E9F51D3008D900F /* CourierIdleActivityTimeoutPolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D859DC422E9F51D3008D900F /* CourierIdleActivityTimeoutPolicyTests.swift */; };
@@ -420,6 +422,7 @@
 		BDE467F82A5BD72000BFA976 /* EventProcessorDependencies.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventProcessorDependencies.swift; sourceTree = "<group>"; };
 		C7CD1A2E08F13591955370E3 /* Pods-Clickstream.integration.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.integration.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.integration.xcconfig"; sourceTree = "<group>"; };
 		CA0F06B342B881F06295F6E3 /* Pods-Clickstream.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.debug.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.debug.xcconfig"; sourceTree = "<group>"; };
+		D82187032F60313C0099C72A /* Platform.pb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Platform.pb.swift; sourceTree = "<group>"; };
 		D859DC3D2E9F5146008D900F /* CourierExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierExtensionTests.swift; sourceTree = "<group>"; };
 		D859DC402E9F51C6008D900F /* CourierConnectTimeoutPolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierConnectTimeoutPolicyTests.swift; sourceTree = "<group>"; };
 		D859DC422E9F51D3008D900F /* CourierIdleActivityTimeoutPolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierIdleActivityTimeoutPolicyTests.swift; sourceTree = "<group>"; };
@@ -1091,6 +1094,7 @@
 		BDE467BC2A5BD72000BFA976 /* Contracts */ = {
 			isa = PBXGroup;
 			children = (
+				D82187032F60313C0099C72A /* Platform.pb.swift */,
 				BDE467BD2A5BD72000BFA976 /* EventRequest.pb.swift */,
 				BDE467BE2A5BD72000BFA976 /* EteExperiment.pb.swift */,
 				BDE467BF2A5BD72000BFA976 /* EventResponse.pb.swift */,
@@ -1506,9 +1510,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1685,6 +1693,7 @@
 				BDDC872229E6AF580024ED8C /* FileManagerOverride.swift in Sources */,
 				D8A7F7E72EC6C67400DFC9AE /* EventRequestPersistable.swift in Sources */,
 				BD6BDB7C29FBC1360006B04A /* FilterViewController.swift in Sources */,
+				D82187052F6031410099C72A /* Platform.pb.swift in Sources */,
 				BDE468112A5BD72000BFA976 /* KeepAliveService.swift in Sources */,
 				BD6BDB8E29FBC1360006B04A /* TrackerConstants.swift in Sources */,
 				BDE468332A5BD72000BFA976 /* EventResponse.pb.swift in Sources */,
@@ -1841,6 +1850,7 @@
 				BD6BDB8329FBC1360006B04A /* EventStateViewable.swift in Sources */,
 				D8A7F7D62EC6B94500DFC9AE /* CourierEventTests.swift in Sources */,
 				D8A7F7D72EC6B94500DFC9AE /* CourierEventBatchTests.swift in Sources */,
+				D82187042F6031410099C72A /* Platform.pb.swift in Sources */,
 				BDE468082A5BD72000BFA976 /* NetworkConfiguration.swift in Sources */,
 				BDE468302A5BD72000BFA976 /* EventRequest.pb.swift in Sources */,
 				BD6BDB9529FBC1360006B04A /* HealthMeta.pb.swift in Sources */,
