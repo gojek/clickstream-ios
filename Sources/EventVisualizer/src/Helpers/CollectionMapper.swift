@@ -30,6 +30,12 @@ public extension CollectionMapper {
                 }
                 return (label, dict.asDictionary)
             }
+
+            if let messageArray = value as? [SwiftProtobuf.Message] {
+                let descriptions = messageArray.map { $0.textFormatString() }
+                return (label, "[\(descriptions.joined(separator: ", "))]")
+            }
+
             return (label, value)
         }).compactMap { $0 })
         let asDict = flatten(dictionary: dict)
