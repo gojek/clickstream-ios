@@ -360,7 +360,9 @@ extension CourierRetryMechanism {
         if cleanCredentials {
             networkService.terminateConnection()
         }
-        stopObservingFailedBatches()
+        performQueue.async(flags: .barrier) { [weak self] in
+            self?.stopObservingFailedBatches()
+        }
     }
     
     private func prepareForTerminatingConnection() {
