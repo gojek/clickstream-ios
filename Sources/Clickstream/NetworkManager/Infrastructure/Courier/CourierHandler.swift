@@ -51,6 +51,9 @@ final class DefaultCourierHandler: CourierHandler {
                connectionCallback: ConnectionStatus?,
                eventHandler: ICourierEventHandler) {
 
+        courierClient?.destroy()
+        cancellables.removeAll()
+
         courierClient = getCourierClient(authServiceProvider: authProvider)
         courierClient?.addEventHandler(eventHandler)
 
