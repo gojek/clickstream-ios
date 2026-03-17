@@ -401,10 +401,13 @@ extension CourierRetryMechanism {
             return
         }
         
-        if isForced {
-            connect(with: identifiers, authProvider: authProvider, isForced: true)
-        } else if !networkService.isConnected {
-            connect(with: identifiers, authProvider: authProvider, isForced: false)
+        performQueue.async(flags: .barrier) { [weak self] in
+            guard let checkedSelf = self else { return }
+            if isForced {
+                checkedSelf.connect(with: identifiers, authProvider: authProvider, isForced: true)
+            } else if !checkedSelf.networkService.isConnected {
+                checkedSelf.connect(with: identifiers, authProvider: authProvider, isForced: false)
+            }
         }
     }
     
@@ -423,23 +426,20 @@ extension CourierRetryMechanism {
         NotificationCenter.default.post(name: Constants.CourierConnectionNotification,
                                         object: [Constants.Strings.didConnect: networkService.isConnected])
 
-        performQueue.async(flags: .barrier) { [weak self] in
-            guard let checkedSelf = self else { return }
-            switch result {
-            case .success(let state):
-                switch state {
-                case .connected:
-                    checkedSelf.startObservingFailedBatches()
-                case .cancelled, .disconnected:
-                    checkedSelf.stopObservingFailedBatches()
-                    checkedSelf.networkService.flushConnectable()
-                default:
-                    break
-                }
-                checkedSelf.networkServiceState = state
-            case .failure:
-                checkedSelf.stopObservingFailedBatches()
+        switch result {
+        case .success(let state):
+            switch state {
+            case .connected:
+                startObservingFailedBatches()
+            case .cancelled, .disconnected:
+                stopObservingFailedBatches()
+                networkService.flushConnectable()
+            default:
+                break
             }
+            networkServiceState = state
+        case .failure:
+            stopObservingFailedBatches()
         }
     }
 }
