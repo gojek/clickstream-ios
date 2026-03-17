@@ -357,10 +357,10 @@ extension CourierRetryMechanism {
 extension CourierRetryMechanism {
     
     private func terminateConnection(cleanCredentials: Bool = false) {
-        if cleanCredentials {
-            networkService.terminateConnection()
-        }
         performQueue.async(flags: .barrier) { [weak self] in
+            if cleanCredentials {
+                self?.networkService.terminateConnection()
+            }
             self?.stopObservingFailedBatches()
         }
     }
