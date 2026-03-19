@@ -174,17 +174,15 @@ extension CourierRetryMechanism {
 
         performQueue.async(flags: .barrier) { [weak self] in
             guard let checkedSelf = self else { return }
-
-            Task {
-                do {
-                    try networkService.publish(eventRequest, topic: topic)
-
-                    if eventRequest.eventType == .instant {
-                        checkedSelf.handlePublisedEventRequest(eventRequest: eventRequest)
-                    }
-                } catch {
-                    debugPrint("Filed to publish event Courier \(error)")
+            
+            do {
+                try networkService.publish(eventRequest, topic: topic)
+                
+                if eventRequest.eventType == .instant {
+                    checkedSelf.handlePublisedEventRequest(eventRequest: eventRequest)
                 }
+            } catch {
+                debugPrint("Filed to publish event Courier \(error)")
             }
         }
     }
