@@ -16,7 +16,6 @@ final class CourierEventProcessor: EventProcessor {
     private let serialQueue: SerialQueue
     private let classifier: EventClassifier
     private let networkOptions: ClickstreamNetworkOptions
-    private var identifiers: ClickstreamClientIdentifiers?
 
     init(performOnQueue: SerialQueue,
          classifier: EventClassifier,
@@ -27,19 +26,10 @@ final class CourierEventProcessor: EventProcessor {
         self.eventWarehouser = eventWarehouser
         self.networkOptions = networkOptions
     }
-    
-    func setClientIdentifiers(_ identifiers: ClickstreamClientIdentifiers?) {
-        self.identifiers = identifiers
-    }
-
-    func removeClientIdentifiers() {
-        identifiers = nil
-    }
 
     func shouldTrackEvent(event: ClickstreamEvent) -> Bool {
         networkOptions.isCourierEnabled &&
-        networkOptions.courierEventTypes.contains(event.messageName) &&
-        identifiers != nil
+        networkOptions.courierEventTypes.contains(event.messageName)
     }
     
     func createEvent(event: ClickstreamEvent, isUserAuthenticated: Bool) {
