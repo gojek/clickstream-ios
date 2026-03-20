@@ -111,7 +111,6 @@ extension DefaultClickstreamDependencies {
                                       authProvider: IConnectionServiceProvider,
                                       pubSubAnalytics: ICourierEventHandler?) {
 
-        courierEventProcessor.setClientIdentifiers(identifiers)
         networkManagerDependencies.provideClientIdentifiers(with: identifiers,
                                                             topic: topic,
                                                             authProvider: authProvider,
@@ -119,7 +118,6 @@ extension DefaultClickstreamDependencies {
     }
 
     func removeAuthClientIdentifiers() {
-        courierEventProcessor.removeClientIdentifiers()
         networkManagerDependencies.removeClientIdentifiers()
     }
 }
