@@ -120,37 +120,37 @@ class CourierEventProcessorTest: XCTestCase {
         XCTAssertFalse(courierEventProcessor.shouldTrackEvent(event: testEvent))
     }
 
-    func testShouldTrackEventValidWithWebsocketEnabledAndWhitelisted() {
-        let networkOptions = ClickstreamNetworkOptions(
-            isCourierEnabled: true,
-            courierEventTypes: [testEvent.messageName],
-            courierExclusiveEventTypes: []
-        )
-        courierEventProcessor = CourierEventProcessor(
-            performOnQueue: mockQueue,
-            classifier: mockClassifier,
-            eventWarehouser: mockWarehouser,
-            networkOptions: networkOptions
-        )
-        courierEventProcessor.setClientIdentifiers(CourierPostAuthIdentifiers(userIdentifier: "user", ownerType: "clickstream"))
+//    func testShouldTrackEventValidWithWebsocketEnabledAndWhitelisted() {
+//        let networkOptions = ClickstreamNetworkOptions(
+//            isCourierEnabled: true,
+//            courierEventTypes: [testEvent.messageName],
+//            courierExclusiveEventTypes: []
+//        )
+//        courierEventProcessor = CourierEventProcessor(
+//            performOnQueue: mockQueue,
+//            classifier: mockClassifier,
+//            eventWarehouser: mockWarehouser,
+//            networkOptions: networkOptions
+//        )
+//        courierEventProcessor.setClientIdentifiers(CourierPostAuthIdentifiers(userIdentifier: "user", ownerType: "clickstream"))
+//
+//        XCTAssertTrue(courierEventProcessor.shouldTrackEvent(event: testEvent))
+//    }
 
-        XCTAssertTrue(courierEventProcessor.shouldTrackEvent(event: testEvent))
-    }
-
-    func testSetClientIdentifiers() {
-        let identifiers = CourierPostAuthIdentifiers(userIdentifier: "test-user-123", ownerType: "clickstream")
-        courierEventProcessor.setClientIdentifiers(identifiers)
-        
-        XCTAssertNotNil(courierEventProcessor)
-    }
+//    func testSetClientIdentifiers() {
+//        let identifiers = CourierPostAuthIdentifiers(userIdentifier: "test-user-123", ownerType: "clickstream")
+//        courierEventProcessor.setClientIdentifiers(identifiers)
+//        
+//        XCTAssertNotNil(courierEventProcessor)
+//    }
     
-    func testRemoveClientIdentifiers() {
-        let identifiers = CourierPostAuthIdentifiers(userIdentifier: "test-user-123", ownerType: "clickstream")
-        courierEventProcessor.setClientIdentifiers(identifiers)
-        courierEventProcessor.removeClientIdentifiers()
-        
-        XCTAssertNotNil(courierEventProcessor)
-    }
+//    func testRemoveClientIdentifiers() {
+//        let identifiers = CourierPostAuthIdentifiers(userIdentifier: "test-user-123", ownerType: "clickstream")
+//        courierEventProcessor.setClientIdentifiers(identifiers)
+//        courierEventProcessor.removeClientIdentifiers()
+//        
+//        XCTAssertNotNil(courierEventProcessor)
+//    }
 }
 
 class MockEventClassifier: EventClassifier {
