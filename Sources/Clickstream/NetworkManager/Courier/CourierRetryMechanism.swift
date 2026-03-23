@@ -101,22 +101,13 @@ final class CourierRetryMechanism: Retryable {
         }
 
         self.observeNetworkConnectivity()
-        self.observeDeviceStatus()
         self.observeAppStateChanges()
     }
     
     /// Adding a subscription to the app state changes.
     private func observeAppStateChanges() {
         appStateNotifier.start { [weak self] (stateNotification) in guard let checkedSelf = self else { return }
-            switch stateNotification {
-            case .willResignActive:
-                checkedSelf.prepareForTerminatingConnection()
-            case .didBecomeActive:
-                checkedSelf.cancelTerminationCountDown()
-                checkedSelf.establishConnection()
-            default:
-                break
-            }
+            checkedSelf.establishConnection()
         }
     }
         
@@ -128,26 +119,11 @@ final class CourierRetryMechanism: Retryable {
             }
             reachability.whenUnreachable = { [weak self] (_) in
                 guard let checkedSelf = self else { return }
-                checkedSelf.terminateConnection()
+                
             }
             try reachability.startNotifier()
         } catch {
             print("Unable to start notifier")
-        }
-    }
-    
-    private func observeDeviceStatus() {
-        deviceStatus.startTracking()
-        deviceStatus.onBatteryStatusChanged = { [weak self] isLowOnPower in
-            guard let checkedSelf = self else { return }
-            /* If network is not connected and the device was on low power,
-               now device is on charging state so establish the connection */
-            if !checkedSelf.networkService.isConnected && !isLowOnPower {
-                checkedSelf.establishConnection()
-                // If network is connected but device is on low power, terminate the connection
-            } else if checkedSelf.networkService.isConnected && isLowOnPower {
-                checkedSelf.terminateConnection()
-            }
         }
     }
     
@@ -393,10 +369,6 @@ extension CourierRetryMechanism {
         /// to .closing in line 261 when app was moving to background
         if Clickstream.updateConnectionStatus && self.networkService.isConnected {
             Clickstream.connectionState = .connected
-        }
-
-        guard reachability.isAvailable else {
-            return
         }
         
         performQueue.async(flags: .barrier) { [weak self] in
