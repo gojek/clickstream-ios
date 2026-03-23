@@ -52,7 +52,6 @@ class EventProcessorDependenciesTests: XCTestCase {
             networkOptions: networkOptions,
             networkService: courierNetworkService,
             reachability: rechability,
-            deviceStatus: deviceStatus,
             appStateNotifier: appStateNotifier,
             performOnQueue: mockQueue,
             persistence: courierPersistence

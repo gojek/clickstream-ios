@@ -77,7 +77,6 @@ class EventSchedulerDependenciesTests: XCTestCase {
             networkOptions: networkOptions,
             networkService: courierNetworkService,
             reachability: NetworkReachabilityMock(isReachable: true),
-            deviceStatus: deviceStatus,
             appStateNotifier: AppStateNotifierMock(state: .didBecomeActive),
             performOnQueue: mockQueue,
             persistence: courierPersistence
