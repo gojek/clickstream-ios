@@ -17,7 +17,6 @@ final class CourierRetryMechanism: Retryable {
     private var reachability: NetworkReachability
     private let networkService: NetworkService
     private let performQueue: SerialQueue
-    private var deviceStatus: DefaultDeviceStatus
     private let appStateNotifier: AppStateNotifierService
     private var terminationCountDown: DispatchSourceTimer?
     private var networkServiceState: ConnectableState?
@@ -41,7 +40,6 @@ final class CourierRetryMechanism: Retryable {
         
         let isReachable = reachability.isAvailable
         let isConnected = networkService.isConnected
-        let isOnLowPower = deviceStatus.isDeviceLowOnPower
 
         #if TRACKER_ENABLED
         if !isReachable && Tracker.debugMode && isCSHealthTrackingEnabled {
@@ -52,29 +50,17 @@ final class CourierRetryMechanism: Retryable {
         
         if !isConnected && Tracker.debugMode && isCSHealthTrackingEnabled {
             if !isConnected && Tracker.debugMode {
-                if isOnLowPower {
-                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
-                                                          reason: FailureReason.lowBattery.rawValue)
-                    Tracker.sharedInstance?.record(event: healthEvent)
-                } else {
-                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
-                                                          reason: FailureReason.socket_not_open.rawValue)
-                    Tracker.sharedInstance?.record(event: healthEvent)
-                }
+                let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
+                                                      reason: FailureReason.socket_not_open.rawValue)
+                Tracker.sharedInstance?.record(event: healthEvent)
             } else {
                 let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
                                                       reason: FailureReason.socket_not_open.rawValue)
                 Tracker.sharedInstance?.record(event: healthEvent)
             }
         }
-        
-        if isOnLowPower && Tracker.debugMode && isCSHealthTrackingEnabled {
-            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
-                                                  reason: FailureReason.lowBattery.rawValue)
-            Tracker.sharedInstance?.record(event: healthEvent)
-        }
         #endif
-        return isReachable && isConnected && !isOnLowPower
+        return isReachable && isConnected
     }
 
     private var isCourierConnectable: Bool {
@@ -84,7 +70,6 @@ final class CourierRetryMechanism: Retryable {
     init(networkOptions: ClickstreamNetworkOptions,
          networkService: NetworkService,
          reachability: NetworkReachability,
-         deviceStatus: DefaultDeviceStatus,
          appStateNotifier: AppStateNotifierService,
          performOnQueue: SerialQueue,
          persistence: DefaultDatabaseDAO<CourierEventRequest>) {
@@ -92,22 +77,23 @@ final class CourierRetryMechanism: Retryable {
         self.networkService = networkService
         self.reachability = reachability
         self.performQueue = performOnQueue
-        self.deviceStatus = deviceStatus
         self.appStateNotifier = appStateNotifier
         self.persistence = persistence
-
-        guard networkOptions.isCourierEnabled else {
-            return
-        }
-
+        
         self.observeNetworkConnectivity()
-        self.observeDeviceStatus()
         self.observeAppStateChanges()
     }
     
     /// Adding a subscription to the app state changes.
     private func observeAppStateChanges() {
-        appStateNotifier.start { [weak self] (stateNotification) in guard let checkedSelf = self else { return }
+        print("++ [CourierRetryMechanism]:[observeAppStateChanges] CALLING appStateNotifier.start on \(appStateNotifier)", .verbose)
+        appStateNotifier.start { [weak self] (stateNotification) in
+            print("++ [CourierRetryMechanism]:[observeAppStateChanges] CALLBACK fired: \(stateNotification), self=\(String(describing: self))", .verbose)
+            guard let checkedSelf = self else {
+                print("++ [CourierRetryMechanism]:[observeAppStateChanges] self is nil, returning", .verbose)
+                return
+            }
+            print("++ [CourierRetryMechanism]:[observeAppStateChanges] handling: \(stateNotification)", .verbose)
             switch stateNotification {
             case .willResignActive:
                 checkedSelf.prepareForTerminatingConnection()
@@ -124,30 +110,17 @@ final class CourierRetryMechanism: Retryable {
         do {
             reachability.whenReachable = { [weak self] (_) in
                 guard let checkedSelf = self else { return }
+                print("++ [CourierRetryMechanism]:[observeNetworkConnectivity] whenReachable fired", .verbose)
                 checkedSelf.establishConnection()
             }
             reachability.whenUnreachable = { [weak self] (_) in
                 guard let checkedSelf = self else { return }
-                checkedSelf.terminateConnection()
+                print("++ [CourierRetryMechanism]:[observeNetworkConnectivity] whenUnreachable fired", .verbose)
+                checkedSelf.stopObservingFailedBatches()
             }
             try reachability.startNotifier()
         } catch {
             print("Unable to start notifier")
-        }
-    }
-    
-    private func observeDeviceStatus() {
-        deviceStatus.startTracking()
-        deviceStatus.onBatteryStatusChanged = { [weak self] isLowOnPower in
-            guard let checkedSelf = self else { return }
-            /* If network is not connected and the device was on low power,
-               now device is on charging state so establish the connection */
-            if !checkedSelf.networkService.isConnected && !isLowOnPower {
-                checkedSelf.establishConnection()
-                // If network is connected but device is on low power, terminate the connection
-            } else if checkedSelf.networkService.isConnected && isLowOnPower {
-                checkedSelf.terminateConnection()
-            }
         }
     }
     
@@ -279,7 +252,7 @@ extension CourierRetryMechanism {
                     Tracker.sharedInstance?.record(event: healthEvent)
                 }
                 #endif
-                terminateConnection()
+                stopObservingFailedBatches()
                 establishConnection()
                 #if ETE_TEST_SUITE_ENABLED
                 Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Max Connection Limit Reached")
@@ -327,9 +300,8 @@ extension CourierRetryMechanism {
     
     func stopTracking() {
         appStateNotifier.stop()
-        deviceStatus.stopTracking()
         reachability.stopNotifier()
-        terminateConnection()
+        stopObservingFailedBatches()
     }
 
     func configureIdentifiers(with identifiers: ClickstreamClientIdentifiers,
@@ -347,7 +319,6 @@ extension CourierRetryMechanism {
     func removeIdentifiers() {
         identifiers = nil
         topic = nil
-        stopTracking()
         terminateConnection(cleanCredentials: true)
     }
 }
@@ -378,7 +349,7 @@ extension CourierRetryMechanism {
         // This gives the breathing space for flushing the events.
         terminationCountDown?.schedule(deadline: .now() + Clickstream.courierConfigurations.connectionTerminationTimerWaitTime)
         terminationCountDown?.setEventHandler(handler: { [weak self] in guard let checkedSelf = self else { return }
-            checkedSelf.terminateConnection()
+            checkedSelf.stopObservingFailedBatches()
         })
         terminationCountDown?.resume()
     }

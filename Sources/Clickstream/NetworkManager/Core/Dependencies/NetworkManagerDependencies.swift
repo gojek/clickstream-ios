@@ -86,7 +86,6 @@ final class NetworkManagerDependencies {
         CourierRetryMechanism(networkOptions: networkOptions,
                               networkService: courierNetworkService,
                               reachability: reachability,
-                              deviceStatus: deviceStatus,
                               appStateNotifier: courierAppStateNotifier,
                               performOnQueue: courierNetworkQueue,
                               persistence: courierPersistance)
