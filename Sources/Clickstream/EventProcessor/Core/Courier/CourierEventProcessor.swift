@@ -28,20 +28,13 @@ final class CourierEventProcessor: EventProcessor {
     }
 
     func shouldTrackEvent(event: ClickstreamEvent) -> Bool {
-        networkOptions.isCourierEnabled &&
         networkOptions.courierEventTypes.contains(event.messageName)
     }
     
     func createEvent(event: ClickstreamEvent, isUserAuthenticated: Bool) {
         self.serialQueue.async { [weak self] in guard let checkedSelf = self else { return }
-            if checkedSelf.networkOptions.courierExclusiveEventsEnabled {
-                guard event.shouldTrackOnCourier(isUserLoggedIn: isUserAuthenticated, networkOptions: checkedSelf.networkOptions) else {
+            guard event.shouldTrackOnCourier(isUserLoggedIn: isUserAuthenticated, networkOptions: checkedSelf.networkOptions) else {
                     return
-                }
-            } else {
-                guard checkedSelf.shouldTrackEvent(event: event) else {
-                    return
-                }
             }
 
             #if EVENT_VISUALIZER_ENABLED
