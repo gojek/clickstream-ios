@@ -89,7 +89,8 @@ extension DefaultCourierHandler {
                                           idleActivityTimeoutPolicy: idleActivityPolicy,
                                           messagePersistenceTTLSeconds: TimeInterval(config.courierMessagePersistenceTTLSecs),
                                           messageCleanupInterval: TimeInterval(config.courierMessageCleanupInterval),
-                                          shouldInitializeCoreDataPersistenceContext: config.courierInitCoreDataPersistenceContextEnabled)
+                                          shouldInitializeCoreDataPersistenceContext: config.courierInitCoreDataPersistenceContextEnabled,
+                                          fixCxxDestructCrash: config.fixCxxDestructCrash)
 
         return CourierClientFactory().makeMQTTClient(config: mqttConfig)
     }

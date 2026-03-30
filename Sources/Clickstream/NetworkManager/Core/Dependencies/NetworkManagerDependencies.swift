@@ -37,6 +37,10 @@ final class NetworkManagerDependencies {
     private lazy var deviceStatus: DefaultDeviceStatus = {
         DefaultDeviceStatus(performOnQueue: socketNetworkQueue)
     }()
+    
+    private lazy var courierReachability: NetworkReachability = {
+        DefaultNetworkReachability(with: courierNetworkQueue)
+    }()
 
     private lazy var socketAppStateNotifier: AppStateNotifierService = {
         DefaultAppStateNotifierService(with: socketNetworkQueue)
@@ -85,7 +89,7 @@ final class NetworkManagerDependencies {
     private lazy var courierRetryMech: CourierRetryMechanism = {
         CourierRetryMechanism(networkOptions: networkOptions,
                               networkService: courierNetworkService,
-                              reachability: reachability,
+                              reachability: courierReachability,
                               appStateNotifier: courierAppStateNotifier,
                               performOnQueue: courierNetworkQueue,
                               persistence: courierPersistance)
