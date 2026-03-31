@@ -13,8 +13,8 @@ def clickstream_pods
   pod 'ReachabilitySwift', '5.2.3'
   pod 'GRDB.swift', '~> 6.7.0'
   pod 'Starscream', '4.0.5'
-  pod 'CourierCore', '~> 1.0.0'
-  pod 'CourierMQTT', '~> 1.0.0'
+  pod 'CourierCore', '~> 1.0.11'
+  pod 'CourierMQTT', '~> 1.0.11'
 end
 
 target 'Clickstream' do
