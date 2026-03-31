@@ -59,3 +59,6 @@ fastlane/reports/xcov/**/*
 iOSInjectionProject/
 
 /derived_data
+
+.bundle
+vendor/
