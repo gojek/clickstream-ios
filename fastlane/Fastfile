@@ -103,16 +103,15 @@ platform :ios do
       UI.message("📌 Bumping version using bump_type: #{bump_type}")
     end
 
-    packages = ENV['PACKAGES'].split(',')
-
-    packages.each do |package|
-      if version
-        version_bump_podspec(path: "#{package}.podspec", version_number: version)
-      else
-        version_bump_podspec(path: "#{package}.podspec", bump_type: bump_type)
-      end
-      UI.message("#{package}.podspec version to #{version_get_podspec(path: "#{package}.podspec")}")
+    podspec = ENV['PODSPEC_PATH']
+  
+    if version
+      version_bump_podspec(path: podspec, version_number: version)
+    else
+      version_bump_podspec(path: podspec, bump_type: bump_type)
     end
+  
+    UI.message("#{podspec} version to #{version_get_podspec(path: podspec)}")
   end
 
   lane :update_changelog do
