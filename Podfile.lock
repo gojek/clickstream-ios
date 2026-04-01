@@ -1,20 +1,20 @@
 PODS:
-  - CourierCore (1.0.11)
-  - CourierMQTT (1.0.11):
-    - CourierCore (= 1.0.11)
-    - MQTTClientGJ (= 1.0.11)
+  - CourierCore (1.0.10)
+  - CourierMQTT (1.0.10):
+    - CourierCore (= 1.0.10)
+    - MQTTClientGJ (= 1.0.10)
     - ReachabilitySwift (>= 5.0.0)
   - GRDB.swift (6.7.0):
     - GRDB.swift/standard (= 6.7.0)
   - GRDB.swift/standard (6.7.0)
-  - MQTTClientGJ (1.0.11)
+  - MQTTClientGJ (1.0.10)
   - ReachabilitySwift (5.2.3)
   - Starscream (4.0.5)
   - SwiftProtobuf (1.30.0)
 
 DEPENDENCIES:
-  - CourierCore (~> 1.0.11)
-  - CourierMQTT (~> 1.0.11)
+  - CourierCore (from `https://github.com/gojek/courier-iOS.git`, branch `task/track-guid`)
+  - CourierMQTT (from `https://github.com/gojek/courier-iOS.git`, branch `task/track-guid`)
   - GRDB.swift (~> 6.7.0)
   - ReachabilitySwift (= 5.2.3)
   - Starscream (= 4.0.5)
@@ -22,23 +22,37 @@ DEPENDENCIES:
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
-    - CourierCore
-    - CourierMQTT
     - GRDB.swift
     - MQTTClientGJ
     - ReachabilitySwift
     - Starscream
     - SwiftProtobuf
 
+EXTERNAL SOURCES:
+  CourierCore:
+    :branch: task/track-guid
+    :git: https://github.com/gojek/courier-iOS.git
+  CourierMQTT:
+    :branch: task/track-guid
+    :git: https://github.com/gojek/courier-iOS.git
+
+CHECKOUT OPTIONS:
+  CourierCore:
+    :commit: 263215d0786ab296d224ba4c8b6ae7e5163ef19d
+    :git: https://github.com/gojek/courier-iOS.git
+  CourierMQTT:
+    :commit: 263215d0786ab296d224ba4c8b6ae7e5163ef19d
+    :git: https://github.com/gojek/courier-iOS.git
+
 SPEC CHECKSUMS:
-  CourierCore: c8275c1b6a4680a4f559272f5fa3f79ecd6218e4
-  CourierMQTT: 8773f5ffbcb24a8a767045d2e76af27e38301b64
+  CourierCore: 5fe69ef1665488d1f818ff1346ceeac6f914ed11
+  CourierMQTT: 1673b534fd80b99b3853a1ad85e6614ffa62124e
   GRDB.swift: df2fdb0752e88383fc314e1e5d7c3a76d52054eb
-  MQTTClientGJ: 2fa7a284620a3bf393156c3ab991c279f6d03084
+  MQTTClientGJ: b563398d082ed7b256249520cfadf65ac9953f04
   ReachabilitySwift: 7f151ff156cea1481a8411701195ac6a984f4979
   Starscream: 97a24f0636451d134fbb932f2b15cefd89b1a040
   SwiftProtobuf: 3697407f0d5b23bedeba9c2eaaf3ec6fdff69349
 
-PODFILE CHECKSUM: c3652ca76abfe5e6e14772b9ab31cd7c98e55836
+PODFILE CHECKSUM: 4ab64d31a6121f6a1f8c9f88a041c28f200eb47f
 
 COCOAPODS: 1.16.2
