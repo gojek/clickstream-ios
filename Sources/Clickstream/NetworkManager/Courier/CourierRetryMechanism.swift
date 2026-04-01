@@ -519,7 +519,7 @@ extension CourierRetryMechanism {
                 // Send event via Courier
                 checkedSelf.trackBatch(with: failedRequest)
             }
-        } else if isHttpRetryEnbled && eventRequest.retriesMade < combinedMaxCount {
+        } else if isHttpRetryEnbled && failedRequest.retriesMade < combinedMaxCount {
             performQueue.asyncAfter(deadline: .now() + httpRetryDelaySeconds, flags: .barrier) { [weak self] in
                 guard let checkedSelf = self else { return }
 
@@ -530,9 +530,9 @@ extension CourierRetryMechanism {
                 // Send event via HTTP
                 checkedSelf.fallbackToHTTP(for: failedRequest, startTime: Date())
             }
-        } else if isCourierRetryEnabled && isHttpRetryEnbled && eventRequest.retriesMade >= combinedMaxCount {
+        } else if isCourierRetryEnabled && isHttpRetryEnbled && failedRequest.retriesMade >= combinedMaxCount {
             // Delete event request if `isCourierRetryEnabled` & `isHttpRetryEnbled` enabled & has reached `combinedMaxCount`
-            removeFromCache(with: eventRequest.guid)
+            removeFromCache(with: failedRequest.guid)
         }
     }
 }
@@ -560,13 +560,14 @@ extension CourierRetryMechanism: ICourierEventHandler {
 
     func onEvent(_ event: CourierCore.CourierEvent) {
         switch event.type {
-        case .messageSend, .messageSendSuccess:
-            // On received puback
-            guard let lastEventRequest = persistence.fetchFirst(1)?.first else {
+        case .messageSend:
+            break
+        case .messageSendSuccess(_, _, _, let guid):
+            guard !guid.isEmpty,
+                  let eventRequest = persistence.fetchOne(guid) else {
                 return
             }
-
-            handlePublisedEventRequest(eventRequest: lastEventRequest)
+            handlePublisedEventRequest(eventRequest: eventRequest)
         default:
             return
         }
