@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "Clickstream",
     platforms: [
-        .iOS(.v15)
+        .iOS(.v12)
     ],
     products: [
         .library(name: "Clickstream", targets: ["Clickstream"]),
@@ -16,7 +16,7 @@ let package = Package(
         .package(url: "https://github.com/ashleymills/Reachability.swift.git", from: "5.0.0"),
         .package(url: "https://github.com/groue/GRDB.swift.git", from: "6.7.0"),
         .package(url: "https://github.com/daltoniam/Starscream.git", exact: "4.0.5"),
-        .package(url: "https://github.com/gojek/courier-iOS.git", exact: "1.0.10")
+        .package(url: "https://github.com/gojek/courier-iOS.git", branch: "digital_identity_ios_12")
     ],
     targets: [
         .target(

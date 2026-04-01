@@ -2,7 +2,7 @@
 
 source 'https://github.com/CocoaPods/Specs.git'
 
-platform :ios, '15.0'
+platform :ios, '12.0'
 use_modular_headers!
 
 project 'Clickstream.xcodeproj'
@@ -13,8 +13,8 @@ def clickstream_pods
   pod 'ReachabilitySwift', '5.2.3'
   pod 'GRDB.swift', '~> 6.7.0'
   pod 'Starscream', '4.0.5'
-  pod 'CourierCore', '~> 1.0.11'
-  pod 'CourierMQTT', '~> 1.0.11'
+  pod 'CourierCore', git: 'https://github.com/gojek/courier-iOS.git', branch: 'digital_identity_ios_12'
+  pod 'CourierMQTT', git: 'https://github.com/gojek/courier-iOS.git', branch: 'digital_identity_ios_12'
 end
 
 target 'Clickstream' do

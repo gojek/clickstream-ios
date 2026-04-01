@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/gojek/courier-iOS.git",
       "state" : {
-        "revision" : "305fb309851e21a623deb61ea186e8a27bf81c8b",
-        "version" : "1.0.10"
+        "branch" : "digital_identity_ios_12",
+        "revision" : "3d5bf1edf72d572c5a3ccf919904fa3d4af65d41"
       }
     },
     {

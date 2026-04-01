@@ -100,6 +100,7 @@ extension CourierNetworkService {
 
 extension CourierNetworkService {
 
+    @available(iOS 13.0, *)
     func executeHTTPRequest(_ eventRequest: CourierEventRequest) async throws -> Odpf_Raccoon_EventResponse {
         guard _connectable is DefaultCourierHandler else {
             throw ConnectableError.failed
@@ -119,7 +120,17 @@ extension CourierNetworkService {
             requestProto.sentTime = Google_Protobuf_Timestamp(date: Date())
             request.httpBody = try requestProto.serializedData()
 
-            let (data, response) = try await session.data(for: request)
+            let (data, response): (Data, URLResponse) = try await withCheckedThrowingContinuation { continuation in
+                session.dataTask(with: request) { data, response, error in
+                    if let error = error {
+                        continuation.resume(throwing: error)
+                    } else if let data = data, let response = response {
+                        continuation.resume(returning: (data, response))
+                    } else {
+                        continuation.resume(throwing: CourierError.otherError)
+                    }
+                }.resume()
+            }
 
             guard let httpResponse = response as? HTTPURLResponse, (200..<300).contains(httpResponse.statusCode) else {
                 throw CourierError.httpError

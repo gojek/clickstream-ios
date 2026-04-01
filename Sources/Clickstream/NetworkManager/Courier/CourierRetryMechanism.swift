@@ -186,6 +186,7 @@ extension CourierRetryMechanism {
         #endif
     }
 
+    @available(iOS 13.0, *)
     private func fallbackToHTTP(for eventRequest: CourierEventRequest, startTime: Date) {
         guard let networkService = networkService as? CourierNetworkService<DefaultCourierHandler> else {
             return
@@ -528,7 +529,9 @@ extension CourierRetryMechanism {
                 checkedSelf.persistence.update(failedRequest)
 
                 // Send event via HTTP
-                checkedSelf.fallbackToHTTP(for: failedRequest, startTime: Date())
+                if #available(iOS 13.0, *) {
+                    checkedSelf.fallbackToHTTP(for: failedRequest, startTime: Date())
+                }
             }
         } else if isCourierRetryEnabled && isHttpRetryEnbled && eventRequest.retriesMade >= combinedMaxCount {
             // Delete event request if `isCourierRetryEnabled` & `isHttpRetryEnbled` enabled & has reached `combinedMaxCount`
