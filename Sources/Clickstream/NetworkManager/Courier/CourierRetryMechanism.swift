@@ -562,14 +562,23 @@ extension CourierRetryMechanism: ICourierEventHandler {
         switch event.type {
         case .messageSend:
             break
-        case .messageSendSuccess(_, _, _, let guid):
-            guard !guid.isEmpty,
+        case .messageSendSuccess(_, _, _, let data):
+            guard let guid = extractGuid(from: data),
                   let eventRequest = persistence.fetchOne(guid) else {
                 return
             }
+            print("++ onEvent(_ event: CourierCore.CourierEvent) \(guid)", .verbose)
             handlePublisedEventRequest(eventRequest: eventRequest)
         default:
             return
         }
+    }
+    
+    private func extractGuid(from data: Data) -> String? {
+        guard let eventRequest = try? Odpf_Raccoon_EventRequest(serializedBytes: data),
+              !eventRequest.reqGuid.isEmpty else {
+            return nil
+        }
+        return eventRequest.reqGuid
     }
 }
