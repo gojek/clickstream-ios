@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [2.0.77] - 2026-04-02
+
+
+
 ## [2.0.75] - 2026-03-31
 
 [8fc7b61] Fix lane command (by @Luqman)
