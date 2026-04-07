@@ -41,7 +41,7 @@ public final class Tracker {
     internal var commonProperties: CSCommonProperties?
     
     /// Tells whether the debugMode is enabled or not.
-    internal static var debugMode: Bool = false
+    public static var debugMode: Bool = false
     
     var location: CSLocation?
     
