@@ -57,22 +57,31 @@ final class CourierNetworkService<C: CourierConnectable>: NetworkService {
                                    pubSubAnalytics: ICourierEventHandler?,
                                    isForced: Bool) {
 
-        if isForced {
-            _connectable = nil
+        connectableAccessQueue.sync(flags: .barrier) { [weak self] in
+            guard let checkedSelf = self else { return }
+            
+            // If connectable exists (connecting or connected) and not forced, skip to avoid duplicate connections
+            if checkedSelf.connectable != nil && !isForced {
+                return
+            }
+
+            // Always destroy existing connectable before creating new one
+            checkedSelf.connectable?.destroyAndDisconnect()
+            checkedSelf.connectable = nil
+
+            guard let courierConfig = checkedSelf.networkConfig.networkOptions?.courierConfig else {
+                return
+            }
+
+            checkedSelf.connectionCallback = connectionStatusListener
+            checkedSelf.connectable = C(config: courierConfig,
+                             userCredentials: identifiers,
+                             pubSubAnalytics: pubSubAnalytics)
+
+            checkedSelf.connectable?.setup(authProvider: authProvider,
+                               connectionCallback: checkedSelf.connectionCallback,
+                               eventHandler: eventHandler)
         }
-
-        guard _connectable == nil, let courierConfig = networkConfig.networkOptions?.courierConfig else {
-            return
-        }
-
-        self.connectionCallback = connectionStatusListener
-        _connectable = C(config: courierConfig,
-                         userCredentials: identifiers,
-                         pubSubAnalytics: pubSubAnalytics)
-
-        connectable?.setup(authProvider: authProvider,
-                           connectionCallback: self.connectionCallback,
-                           eventHandler: eventHandler)
     }
 }
 

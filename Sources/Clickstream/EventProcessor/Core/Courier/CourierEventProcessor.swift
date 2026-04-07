@@ -33,7 +33,21 @@ final class CourierEventProcessor: EventProcessor {
     
     func createEvent(event: ClickstreamEvent, isUserAuthenticated: Bool) {
         self.serialQueue.async { [weak self] in guard let checkedSelf = self else { return }
+            #if TRACKER_ENABLED
+            if Tracker.debugMode {
+                let isCourierWhitelisted = checkedSelf.networkOptions.courierEventTypes.contains(event.messageName)
+                if isCourierWhitelisted {
+                    checkedSelf.trackHealthEvent(event: event, healthEventName: .Courier_ClickstreamEventReceived, reason: "Event Received by SDK")
+                }
+            }
+            #endif
             guard event.shouldTrackOnCourier(isUserLoggedIn: isUserAuthenticated, networkOptions: checkedSelf.networkOptions) else {
+                if Tracker.debugMode {
+                    let isCourierWhitelisted = checkedSelf.networkOptions.courierEventTypes.contains(event.messageName)
+                    if isCourierWhitelisted {
+                        checkedSelf.trackHealthEvent(event: event, healthEventName: .Courier_ClickstreamEventNotCached, reason: "shouldTrackOnCourier is false with networkoptions: \(checkedSelf.networkOptions)")
+                    }
+                }
                     return
             }
 
@@ -88,5 +102,12 @@ final class CourierEventProcessor: EventProcessor {
 
     private func isExslusiveEvent(_ event: ClickstreamEvent) -> Bool {
         !networkOptions.isWebsocketEnabled || networkOptions.courierExclusiveEventTypes.contains(event.messageName)
+    }
+    
+    private func trackHealthEvent(event: ClickstreamEvent, healthEventName: HealthEvents, reason: String) {
+        if let classification = self.classifier.getClassification(event: event), classification == "realTime" {
+            let healthEvent = HealthAnalysisEvent(eventName: healthEventName, eventGUID: event.guid, reason: reason, eventCount: 1)
+            Tracker.sharedInstance?.record(event: healthEvent)
+        }
     }
 }

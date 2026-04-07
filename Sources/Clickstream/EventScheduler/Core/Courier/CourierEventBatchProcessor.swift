@@ -100,7 +100,7 @@ final class CourierEventBatchProcessor: EventBatchProcessor {
         if Tracker.debugMode && Clickstream.courierConfigurations.flushOnAppLaunch && !hasFlushOnAppLaunchExecutedOnce {
             let eventGUIDs = events.map { $0.guid }
             let eventGUIDString = "\(eventGUIDs.joined(separator: ", "))"
-            let healthAnalysisEvent = HealthAnalysisEvent(eventName: .ClickstreamFlushOnForeground, events: eventGUIDString)
+            let healthAnalysisEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamFlushOnForeground, events: eventGUIDString)
             Tracker.sharedInstance?.record(event: healthAnalysisEvent)
         }
         #endif
@@ -137,7 +137,7 @@ final class CourierEventBatchProcessor: EventBatchProcessor {
                 if Tracker.debugMode {
                     let eventGUIDs = eventsToBeFlushed.map { $0.guid }
                     let eventGUIDString = "\(eventGUIDs.joined(separator: ", "))"
-                    let healthAnalysisEvent = HealthAnalysisEvent(eventName: .ClickstreamFlushOnBackground,
+                    let healthAnalysisEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamFlushOnBackground,
                                                                   events: eventGUIDString)
                     Tracker.sharedInstance?.record(event: healthAnalysisEvent)
                 }

@@ -58,7 +58,7 @@ extension CourierEventBatchCreator {
         if events.first?.type != TrackerConstant.HealthEventType && events.first?.type != Constants.EventType.instant.rawValue {
             let eventGUIDs = batch.events.map { $0.guid }
             let eventGUIDString = "\(eventGUIDs.joined(separator: ", "))"
-            let batchCreatedEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchCreated,
+            let batchCreatedEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamEventBatchCreated,
                                                         events: eventGUIDString,
                                                         eventBatchGUID: batch.uuid)
             Tracker.sharedInstance?.record(event: batchCreatedEvent)

@@ -94,7 +94,7 @@ extension CourierNetworkBuilder {
         let eventGUIDs: [String] = eventBatch.events.compactMap { $0.guid }
         let eventGUIDsString = eventGUIDs.joined(separator: ", ")
         
-        let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamBatchSent,
+        let healthEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamBatchSent,
                                               events: eventGUIDsString,
                                               eventBatchGUID: eventBatch.uuid,
                                               eventCount: eventBatch.events.count)
