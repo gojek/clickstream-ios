@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [2.0.79] - 2026-04-07
+
+[9e9e407] Crash fix and health tracking (#125) (by @Abhijeet Mallick)
+[9ba8fee] [CI] Bump version - 2.0.78 (#124) (by @Abhijeet Mallick)
+[31fd037] [CI] Bump version - 2.0.78 (by @github-actions[bot])
+
 ## [2.0.78] - 2026-04-07
 
 [fce1a06] Crash fix and health tracking (#123) (by @Abhijeet Mallick)
