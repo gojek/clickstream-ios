@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [2.0.78] - 2026-04-07
+
+[fce1a06] Crash fix and health tracking (#123) (by @Abhijeet Mallick)
+[aeb7723] Crash fix and courier health tracking (by @AbhijeetMallick)
+[c349597] [CI] Bump version - 2.0.77 (by @github-actions[bot])
+
 ## [2.0.75] - 2026-03-31
 
 [8fc7b61] Fix lane command (by @Luqman)
