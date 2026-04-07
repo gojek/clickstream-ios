@@ -42,13 +42,15 @@ final class CourierEventProcessor: EventProcessor {
             }
             #endif
             guard event.shouldTrackOnCourier(isUserLoggedIn: isUserAuthenticated, networkOptions: checkedSelf.networkOptions) else {
+                #if TRACKER_ENABLED
                 if Tracker.debugMode {
                     let isCourierWhitelisted = checkedSelf.networkOptions.courierEventTypes.contains(event.messageName)
                     if isCourierWhitelisted {
                         checkedSelf.trackHealthEvent(event: event, healthEventName: .Courier_ClickstreamEventNotCached, reason: "shouldTrackOnCourier is false with networkoptions: \(checkedSelf.networkOptions)")
                     }
                 }
-                    return
+                #endif
+                return
             }
 
             #if EVENT_VISUALIZER_ENABLED
