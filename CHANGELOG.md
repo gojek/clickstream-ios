@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [2.0.83] - 2026-04-15
+
+[beec9a4] [CI] Bump version - 2.0.82 (by @github-actions[bot])
+
 ## [2.0.80] - 2026-04-13
 
 [65f95b1] Crash fix (#127) (by @Abhijeet Mallick)
