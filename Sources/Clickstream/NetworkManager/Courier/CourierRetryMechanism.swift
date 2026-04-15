@@ -155,7 +155,7 @@ extension CourierRetryMechanism {
                     checkedSelf.handlePublisedEventRequest(eventRequest: eventRequest)
                 }
             } catch {
-                debugPrint("Filed to publish event Courier \(error)")
+                debugPrint("Failed to publish event Courier \(error)")
             }
         }
     }
