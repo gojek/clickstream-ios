@@ -90,8 +90,7 @@ extension DefaultCourierHandler {
                                           messagePersistenceTTLSeconds: TimeInterval(config.courierMessagePersistenceTTLSecs),
                                           messageCleanupInterval: TimeInterval(config.courierMessageCleanupInterval),
                                           shouldInitializeCoreDataPersistenceContext: config.courierInitCoreDataPersistenceContextEnabled,
-                                          fixCxxDestructCrash: config.fixCxxDestructCrash,
-                                          fixMessageDeliveredCrash: config.fixMessageDeliveredCrash)
+                                          fixCxxDestructCrash: config.fixCxxDestructCrash)
 
         return CourierClientFactory().makeMQTTClient(config: mqttConfig)
     }
