@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [2.0.81] - 2026-04-15
+
+[c824247] Update Courier SDK (by @AbhijeetMallick)
+[1a081e6] [CI] Bump version - 2.0.80 (#128) (by @Abhijeet Mallick)
+[5e583ba] [CI] Bump version - 2.0.80 (by @github-actions[bot])
+
 ## [2.0.80] - 2026-04-13
 
 [65f95b1] Crash fix (#127) (by @Abhijeet Mallick)
