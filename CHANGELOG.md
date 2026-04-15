@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [2.0.82] - 2026-04-15
+
+[9da1ee1] Revert fixMessageDeliveredCrash (by @AbhijeetMallick)
+[4f4e6ea] [CI] Bump version - 2.0.81 (by @github-actions[bot])
+
 ## [2.0.80] - 2026-04-13
 
 [65f95b1] Crash fix (#127) (by @Abhijeet Mallick)
