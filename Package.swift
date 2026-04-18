@@ -7,9 +7,9 @@ let package = Package(
         .iOS(.v12)
     ],
     products: [
-        .library(name: "Clickstream", targets: ["Clickstream"]),
-        .library(name: "ClickstreamTracker", targets: ["ClickstreamTracker"]),
-        .library(name: "ClickstreamEventVisualizer", targets: ["ClickstreamEventVisualizer"])
+        .library(name: "Clickstream", type: .dynamic, targets: ["Clickstream"]),
+        .library(name: "ClickstreamTracker", type: .dynamic, targets: ["ClickstreamTracker"]),
+        .library(name: "ClickstreamEventVisualizer", type: .dynamic, targets: ["ClickstreamEventVisualizer"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.0.0"),
