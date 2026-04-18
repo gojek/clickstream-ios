@@ -7,13 +7,13 @@ let package = Package(
         .iOS(.v12)
     ],
     products: [
-        .library(name: "Clickstream", type: .dynamic, targets: ["Clickstream"]),
-        .library(name: "ClickstreamTracker", type: .dynamic, targets: ["ClickstreamTracker"]),
-        .library(name: "ClickstreamEventVisualizer", type: .dynamic, targets: ["ClickstreamEventVisualizer"])
+        .library(name: "Clickstream", targets: ["Clickstream"]),
+        .library(name: "ClickstreamTracker", targets: ["ClickstreamTracker"]),
+        .library(name: "ClickstreamEventVisualizer", targets: ["ClickstreamEventVisualizer"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.0.0"),
-        .package(url: "https://github.com/ashleymills/Reachability.swift.git", exact: "5.1.0"),
+        .package(url: "https://github.com/ashleymills/Reachability.swift.git", from: "5.0.0"),
         .package(url: "https://github.com/groue/GRDB.swift.git", from: "6.7.0"),
         .package(url: "https://github.com/daltoniam/Starscream.git", exact: "4.0.5"),
         .package(url: "https://github.com/gojek/courier-iOS.git", branch: "digital_identity_ios_12")
