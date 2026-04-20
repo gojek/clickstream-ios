@@ -15,6 +15,7 @@ def clickstream_pods
   pod 'Starscream', '4.0.5'
   pod 'CourierCore', git: 'https://github.com/gojek/courier-iOS.git', branch: 'digital_identity_ios_12'
   pod 'CourierMQTT', git: 'https://github.com/gojek/courier-iOS.git', branch: 'digital_identity_ios_12'
+  pod 'MQTTClientGJ', git: 'https://github.com/gojek/courier-iOS.git', branch: 'digital_identity_ios_12'
 end
 
 target 'Clickstream' do

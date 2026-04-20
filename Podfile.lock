@@ -13,32 +13,52 @@ PODS:
   - SwiftProtobuf (1.30.0)
 
 DEPENDENCIES:
-  - CourierCore
-  - CourierMQTT
+  - CourierCore (from `https://github.com/gojek/courier-iOS.git`, branch `digital_identity_ios_12`)
+  - CourierMQTT (from `https://github.com/gojek/courier-iOS.git`, branch `digital_identity_ios_12`)
   - GRDB.swift (~> 6.7.0)
+  - MQTTClientGJ (from `https://github.com/gojek/courier-iOS.git`, branch `digital_identity_ios_12`)
   - ReachabilitySwift (= 5.2.3)
   - Starscream (= 4.0.5)
   - SwiftProtobuf (~> 1.30.0)
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
-    - CourierCore
-    - CourierMQTT
     - GRDB.swift
-    - MQTTClientGJ
     - ReachabilitySwift
     - Starscream
     - SwiftProtobuf
 
+EXTERNAL SOURCES:
+  CourierCore:
+    :branch: digital_identity_ios_12
+    :git: https://github.com/gojek/courier-iOS.git
+  CourierMQTT:
+    :branch: digital_identity_ios_12
+    :git: https://github.com/gojek/courier-iOS.git
+  MQTTClientGJ:
+    :branch: digital_identity_ios_12
+    :git: https://github.com/gojek/courier-iOS.git
+
+CHECKOUT OPTIONS:
+  CourierCore:
+    :commit: 94623a691ccd1425570d8183acba580d5ecb3971
+    :git: https://github.com/gojek/courier-iOS.git
+  CourierMQTT:
+    :commit: 94623a691ccd1425570d8183acba580d5ecb3971
+    :git: https://github.com/gojek/courier-iOS.git
+  MQTTClientGJ:
+    :commit: 94623a691ccd1425570d8183acba580d5ecb3971
+    :git: https://github.com/gojek/courier-iOS.git
+
 SPEC CHECKSUMS:
-  CourierCore: c5d4ef6f097443ee5f9aaf8e691f911f1e0f975e
-  CourierMQTT: 401287db8ade445e28630318eba3aebaa9228adf
+  CourierCore: 4179da2a09f3dad0618429719d7bd732ead80ea9
+  CourierMQTT: ab728ff37015bca33b7155e7a68e7856ffa268fe
   GRDB.swift: df2fdb0752e88383fc314e1e5d7c3a76d52054eb
-  MQTTClientGJ: 6b2df4141eaad87ef0b982918812bb8f0d9a7cab
+  MQTTClientGJ: 275b0cf3cd8013dc6464c54f0a10a3e8c215319b
   ReachabilitySwift: 7f151ff156cea1481a8411701195ac6a984f4979
   Starscream: 97a24f0636451d134fbb932f2b15cefd89b1a040
   SwiftProtobuf: 3697407f0d5b23bedeba9c2eaaf3ec6fdff69349
 
-PODFILE CHECKSUM: 414f1c4c8f879d94a539b82dab9bf6e77611d9bf
+PODFILE CHECKSUM: 97eab243329a9a922ded210986eea24bf88914d8
 
 COCOAPODS: 1.16.2
