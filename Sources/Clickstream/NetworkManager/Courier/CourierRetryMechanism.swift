@@ -43,18 +43,18 @@ final class CourierRetryMechanism: Retryable {
 
         #if TRACKER_ENABLED
         if !isReachable && Tracker.debugMode && isCSHealthTrackingEnabled {
-            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
+            let healthEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamEventBatchTriggerFailed,
                                                   reason: FailureReason.networkUnavailable.rawValue)
             Tracker.sharedInstance?.record(event: healthEvent)
         }
         
         if !isConnected && Tracker.debugMode && isCSHealthTrackingEnabled {
             if !isConnected && Tracker.debugMode {
-                let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
+                let healthEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamEventBatchTriggerFailed,
                                                       reason: FailureReason.socket_not_open.rawValue)
                 Tracker.sharedInstance?.record(event: healthEvent)
             } else {
-                let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
+                let healthEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamEventBatchTriggerFailed,
                                                       reason: FailureReason.socket_not_open.rawValue)
                 Tracker.sharedInstance?.record(event: healthEvent)
             }
@@ -155,7 +155,7 @@ extension CourierRetryMechanism {
                     checkedSelf.handlePublisedEventRequest(eventRequest: eventRequest)
                 }
             } catch {
-                debugPrint("Filed to publish event Courier \(error)")
+                debugPrint("Failed to publish event Courier \(error)")
             }
         }
     }
@@ -205,7 +205,7 @@ extension CourierRetryMechanism {
     private func handleFailedEventRequest(with eventRequest: CourierEventRequest, error: Error) {
         #if TRACKER_ENABLED
         if networkOptions.courierConfig.courierHealthConfig.csTrackingHealthEventsEnabled {
-            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchErrorResponse,
+            let healthEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamEventBatchErrorResponse,
                                                   eventBatchGUID: eventRequest.guid,
                                                   reason: error.localizedDescription,
                                                   eventCount: eventRequest.eventCount)
@@ -248,7 +248,7 @@ extension CourierRetryMechanism {
             if response.code == .maxConnectionLimitReached {
                 #if TRACKER_ENABLED
                 if Tracker.debugMode && isCSHealthTrackingEnabled {
-                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamConnectionFailure,
+                    let healthEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamConnectionFailure,
                                                           reason: FailureReason.MAX_CONNECTION_LIMIT_REACHED.rawValue)
                     Tracker.sharedInstance?.record(event: healthEvent)
                 }
@@ -263,7 +263,7 @@ extension CourierRetryMechanism {
             if response.code == .maxUserLimitReached {
 
                 if isCSHealthTrackingEnabled {
-                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamConnectionFailure,
+                    let healthEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamConnectionFailure,
                                                           reason: FailureReason.MAX_USER_LIMIT_REACHED.rawValue)
                     Tracker.sharedInstance?.record(event: healthEvent)
                 }
@@ -279,7 +279,7 @@ extension CourierRetryMechanism {
 
                     if isCSHealthTrackingEnabled {
                         var healthEvent: HealthAnalysisEvent!
-                        healthEvent = HealthAnalysisEvent(eventName: .ClickstreamWriteToSocketFailed,
+                        healthEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamWriteToSocketFailed,
                                                           eventBatchGUID: eventRequest.guid,
                                                           reason: FailureReason.ParsingException.rawValue,
                                                           eventCount: eventRequest.eventCount)
@@ -403,7 +403,6 @@ extension CourierRetryMechanism {
                 startObservingFailedBatches()
             case .cancelled, .disconnected:
                 stopObservingFailedBatches()
-                networkService.flushConnectable()
             default:
                 break
             }
@@ -422,7 +421,7 @@ extension CourierRetryMechanism {
                 persistence.deleteOne(eventRequest.guid)
                 #if TRACKER_ENABLED
                 if Tracker.debugMode && isCSHealthTrackingEnabled {
-                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchDropped,
+                    let healthEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamEventBatchDropped,
                                                           eventBatchGUID: fetchedEventRequest.guid,
                                                           eventCount: eventRequest.eventCount)
                     Tracker.sharedInstance?.record(event: healthEvent)
@@ -520,7 +519,7 @@ extension CourierRetryMechanism {
                 // Send event via Courier
                 checkedSelf.trackBatch(with: failedRequest)
             }
-        } else if isHttpRetryEnbled && eventRequest.retriesMade < combinedMaxCount {
+        } else if isHttpRetryEnbled && failedRequest.retriesMade < combinedMaxCount {
             performQueue.asyncAfter(deadline: .now() + httpRetryDelaySeconds, flags: .barrier) { [weak self] in
                 guard let checkedSelf = self else { return }
 
@@ -533,9 +532,13 @@ extension CourierRetryMechanism {
                     checkedSelf.fallbackToHTTP(for: failedRequest, startTime: Date())
                 }
             }
-        } else if isCourierRetryEnabled && isHttpRetryEnbled && eventRequest.retriesMade >= combinedMaxCount {
-            // Delete event request if `isCourierRetryEnabled` & `isHttpRetryEnbled` enabled & has reached `combinedMaxCount`
-            removeFromCache(with: eventRequest.guid)
+        } else if isCourierRetryEnabled && isHttpRetryEnbled && failedRequest.retriesMade >= combinedMaxCount {
+            // Update retryCount to DB
+            failedRequest.resetRetries()
+            self.persistence.update(failedRequest)
+        } else {
+            // remove only when success happens
+//            removeFromCache(with: failedRequest.guid)
         }
     }
 }
@@ -548,7 +551,7 @@ extension CourierRetryMechanism {
         if Tracker.debugMode && networkOptions.courierConfig.courierHealthConfig.csTrackingHealthEventsEnabled {
             guard eventRequest.eventType != Constants.EventType.instant else { return }
             
-            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchSuccessAck,
+            let healthEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamEventBatchSuccessAck,
                                                   eventBatchGUID: eventRequest.guid,
                                                   eventCount: eventRequest.eventCount)
             Tracker.sharedInstance?.record(event: healthEvent)
@@ -563,15 +566,30 @@ extension CourierRetryMechanism: ICourierEventHandler {
 
     func onEvent(_ event: CourierCore.CourierEvent) {
         switch event.type {
-        case .messageSend, .messageSendSuccess:
-            // On received puback
-            guard let lastEventRequest = persistence.fetchFirst(1)?.first else {
+        case .messageSend:
+            break
+        case .messageSendSuccess(_, _, _, let data):
+            guard let guid = extractGuid(from: data) else {
                 return
             }
-
-            handlePublisedEventRequest(eventRequest: lastEventRequest)
+            performQueue.async(flags: .barrier) { [weak self] in
+                guard let checkedSelf = self else { return }
+                guard let eventRequest = checkedSelf.persistence.fetchOne(guid) else {
+                    return
+                }
+                print("++ onEvent(_ event: CourierCore.CourierEvent) \(guid)", .verbose)
+                checkedSelf.handlePublisedEventRequest(eventRequest: eventRequest)
+            }
         default:
             return
         }
+    }
+    
+    private func extractGuid(from data: Data) -> String? {
+        guard let eventRequest = try? Odpf_Raccoon_EventRequest(serializedBytes: data),
+              !eventRequest.reqGuid.isEmpty else {
+            return nil
+        }
+        return eventRequest.reqGuid
     }
 }

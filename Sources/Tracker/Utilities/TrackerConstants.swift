@@ -16,6 +16,7 @@ public enum TrackedVia: String, Codable {
 
 enum HealthEvents: String, Codable, CaseIterable {
     
+    // WebSocket Health Events
     case ClickstreamEventCached = "Clickstream Event Cached" // Clickstream
     case ClickstreamEventBatchCreated = "Clickstream Event Batch Created" // Clickstream
     case ClickstreamBatchSent = "Clickstream Batch Sent" // Clickstream
@@ -31,6 +32,25 @@ enum HealthEvents: String, Codable, CaseIterable {
     case ClickstreamConnectionSuccess = "Clickstream Connection Success"
     case ClickstreamConnectionFailure = "Clickstream Connection Failure"
     case ClickstreamConnectionDropped = "Clickstream Connection Dropped"
+    
+    // Courier Health Events
+    case Courier_ClickstreamEventReceived = "Courier_Clickstream Event Received" // Clickstream
+    case Courier_ClickstreamEventNotCached = "Courier_Clickstream Event Not Cached" // Clickstream
+    case Courier_ClickstreamEventCached = "Courier_Clickstream Event Cached" // Clickstream
+    case Courier_ClickstreamEventBatchCreated = "Courier_Clickstream Event Batch Created" // Clickstream
+    case Courier_ClickstreamBatchSent = "Courier_Clickstream Batch Sent" // Clickstream
+    case Courier_ClickstreamEventBatchSuccessAck = "Courier_Clickstream Event Batch Success Ack" // Clickstream
+    case Courier_ClickstreamFlushOnBackground = "Courier_Clickstream Flush On Background" // Clickstream
+    case Courier_ClickstreamFlushOnForeground = "Courier_Clickstream Flush On Foreground" // Clickstream
+    
+    case Courier_ClickstreamEventBatchTriggerFailed = "Courier_Clickstream Event Batch Trigger Failed"
+    case Courier_ClickstreamWriteToSocketFailed = "Courier_Clickstream Write to Socket Failed"
+    case Courier_ClickstreamEventBatchErrorResponse = "Courier_Clickstream Event Batch Error response"
+    case Courier_ClickstreamEventBatchDropped = "Courier_Clickstream Event Batch Dropped"
+    
+    case Courier_ClickstreamConnectionSuccess = "Courier_Clickstream Connection Success"
+    case Courier_ClickstreamConnectionFailure = "Courier_Clickstream Connection Failure"
+    case Courier_ClickstreamConnectionDropped = "Courier_Clickstream Connection Dropped"
 }
 
 enum FailureReason: String, Codable, CaseIterable {
@@ -88,5 +108,5 @@ public struct TrackerConstant {
         case aggregate = "aggregate"
     }
     
-    static let InstantEvents: [HealthEvents] = [.ClickstreamEventBatchDropped, .ClickstreamConnectionSuccess, .ClickstreamConnectionFailure, .ClickstreamEventBatchErrorResponse, .ClickstreamWriteToSocketFailed, .ClickstreamEventBatchTriggerFailed]
+    static let InstantEvents: [HealthEvents] = [.ClickstreamEventBatchDropped, .ClickstreamConnectionSuccess, .ClickstreamConnectionFailure, .ClickstreamEventBatchErrorResponse, .ClickstreamWriteToSocketFailed, .ClickstreamEventBatchTriggerFailed, .Courier_ClickstreamEventBatchDropped, .Courier_ClickstreamConnectionSuccess, .Courier_ClickstreamConnectionFailure, .Courier_ClickstreamEventBatchErrorResponse, .Courier_ClickstreamWriteToSocketFailed, .Courier_ClickstreamEventBatchTriggerFailed]
 }

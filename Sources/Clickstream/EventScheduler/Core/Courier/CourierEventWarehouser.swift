@@ -43,7 +43,7 @@ final class CourierEventWarehouser: EventWarehouser {
         }
         #endif
         #if TRACKER_ENABLED
-        let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventCached,
+        let healthEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamEventCached,
                                               eventGUID: event.guid,
                                               eventCount: 1)
         if event.type != Constants.EventType.instant.rawValue {

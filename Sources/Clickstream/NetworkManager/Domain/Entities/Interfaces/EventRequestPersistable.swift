@@ -31,6 +31,10 @@ extension EventRequestPersistable {
     mutating func bumpRetriesMade() {
         retriesMade = (retriesMade + 1)
     }
+    
+    mutating func resetRetries() {
+        retriesMade = 0
+    }
 
     mutating func refreshCachingTimeStamp() {
         self.timeStamp = Date()
