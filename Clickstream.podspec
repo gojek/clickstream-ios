@@ -30,8 +30,8 @@ Pod::Spec.new do |s|
   s.dependency    "ReachabilitySwift", '>= 5.0.0'
   s.dependency    "GRDB.swift", "~> 6.7.0"
   s.dependency    "Starscream", "4.0.5"
-  s.dependency    "CourierCore", '1.0.15'
-  s.dependency    "CourierMQTT", '1.0.15'
+  s.dependency    "CourierCore", '1.0.15-ios12'
+  s.dependency    "CourierMQTT", '1.0.15-ios12'
   
   s.static_framework = true
 
