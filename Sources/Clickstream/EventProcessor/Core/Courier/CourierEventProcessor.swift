@@ -105,7 +105,10 @@ final class CourierEventProcessor: EventProcessor {
     private func isExslusiveEvent(_ event: ClickstreamEvent) -> Bool {
         !networkOptions.isWebsocketEnabled || networkOptions.courierExclusiveEventTypes.contains(event.messageName)
     }
-    
+}
+
+#if TRACKER_ENABLED
+extension CourierEventProcessor {
     private func trackHealthEvent(event: ClickstreamEvent, healthEventName: HealthEvents, reason: String) {
         if let classification = self.classifier.getClassification(event: event), classification == "realTime" {
             let healthEvent = HealthAnalysisEvent(eventName: healthEventName, eventGUID: event.guid, reason: reason, eventCount: 1)
@@ -113,3 +116,4 @@ final class CourierEventProcessor: EventProcessor {
         }
     }
 }
+#endif
