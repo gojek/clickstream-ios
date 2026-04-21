@@ -1,64 +1,44 @@
 PODS:
-  - CourierCore (1.0.15)
-  - CourierMQTT (1.0.15):
-    - CourierCore (= 1.0.15)
-    - MQTTClientGJ (= 1.0.15)
+  - CourierCore (1.0.15-ios12)
+  - CourierMQTT (1.0.15-ios12):
+    - CourierCore (= 1.0.15-ios12)
+    - MQTTClientGJ (= 1.0.15-ios12)
     - ReachabilitySwift (>= 5.0.0)
   - GRDB.swift (6.7.0):
     - GRDB.swift/standard (= 6.7.0)
   - GRDB.swift/standard (6.7.0)
-  - MQTTClientGJ (1.0.15)
+  - MQTTClientGJ (1.0.15-ios12)
   - ReachabilitySwift (5.2.3)
   - Starscream (4.0.5)
   - SwiftProtobuf (1.30.0)
 
 DEPENDENCIES:
-  - CourierCore (from `https://github.com/gojek/courier-iOS.git`, branch `digital_identity_ios_12`)
-  - CourierMQTT (from `https://github.com/gojek/courier-iOS.git`, branch `digital_identity_ios_12`)
+  - CourierCore (= 1.0.15-ios12)
+  - CourierMQTT (= 1.0.15-ios12)
   - GRDB.swift (~> 6.7.0)
-  - MQTTClientGJ (from `https://github.com/gojek/courier-iOS.git`, branch `digital_identity_ios_12`)
   - ReachabilitySwift (= 5.2.3)
   - Starscream (= 4.0.5)
   - SwiftProtobuf (~> 1.30.0)
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
+    - CourierCore
+    - CourierMQTT
     - GRDB.swift
+    - MQTTClientGJ
     - ReachabilitySwift
     - Starscream
     - SwiftProtobuf
 
-EXTERNAL SOURCES:
-  CourierCore:
-    :branch: digital_identity_ios_12
-    :git: https://github.com/gojek/courier-iOS.git
-  CourierMQTT:
-    :branch: digital_identity_ios_12
-    :git: https://github.com/gojek/courier-iOS.git
-  MQTTClientGJ:
-    :branch: digital_identity_ios_12
-    :git: https://github.com/gojek/courier-iOS.git
-
-CHECKOUT OPTIONS:
-  CourierCore:
-    :commit: 94623a691ccd1425570d8183acba580d5ecb3971
-    :git: https://github.com/gojek/courier-iOS.git
-  CourierMQTT:
-    :commit: 94623a691ccd1425570d8183acba580d5ecb3971
-    :git: https://github.com/gojek/courier-iOS.git
-  MQTTClientGJ:
-    :commit: 94623a691ccd1425570d8183acba580d5ecb3971
-    :git: https://github.com/gojek/courier-iOS.git
-
 SPEC CHECKSUMS:
-  CourierCore: 4179da2a09f3dad0618429719d7bd732ead80ea9
-  CourierMQTT: ab728ff37015bca33b7155e7a68e7856ffa268fe
+  CourierCore: 7784845af43d51e0140038f4e084b0e2a7792766
+  CourierMQTT: af5ac11877b37f87c96f60da00533248a9122b59
   GRDB.swift: df2fdb0752e88383fc314e1e5d7c3a76d52054eb
-  MQTTClientGJ: 275b0cf3cd8013dc6464c54f0a10a3e8c215319b
+  MQTTClientGJ: 32afa8094a54b641417ab924937e742934eb4e80
   ReachabilitySwift: 7f151ff156cea1481a8411701195ac6a984f4979
   Starscream: 97a24f0636451d134fbb932f2b15cefd89b1a040
   SwiftProtobuf: 3697407f0d5b23bedeba9c2eaaf3ec6fdff69349
 
-PODFILE CHECKSUM: 97eab243329a9a922ded210986eea24bf88914d8
+PODFILE CHECKSUM: 40b2957d849801dab919b1edd01728eeaa2a6a7f
 
 COCOAPODS: 1.16.2

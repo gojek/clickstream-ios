@@ -4,8 +4,7 @@ name: deployment
 on:
   push:
     branches:
-      - 'release/[0-9]+.[0-9]+.[0-9]+'
-
+      - 'release/*-ios12'
 env:
   FASTLANE_SKIP_UPDATE_CHECK: true
   FASTLANE_HIDE_GITHUB_ISSUES: true
@@ -36,16 +35,16 @@ jobs:
       - name: Setup Environment
         uses: ./.github/actions/setup_env
 
-      - name: Bump version files
-        run: bundle exec fastlane bump_version_files
+      # - name: Bump version files
+      #   run: bundle exec fastlane bump_version_files
 
-      - name: Generate CHANGELOG.md
-        run: bundle exec fastlane update_changelog
+      # - name: Generate CHANGELOG.md
+      #   run: bundle exec fastlane update_changelog
 
-      - name: Commit version bump
-        run: bundle exec fastlane commit_push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Commit version bump
+      #   run: bundle exec fastlane commit_push
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish podspecs
         run: pod trunk push --allow-warnings Clickstream.podspec
