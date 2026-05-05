@@ -419,7 +419,8 @@ extension WebsocketRetryMechanism {
                     
                     do {
                         // Refresh the timeStamp before sending the batch!
-                        try _batch.refreshBatchSentTimeStamp()
+                        let isCrashFixEnabled = Clickstream.configurations.batchTimestampUpdateCrashFix
+                        try _batch.refreshBatchSentTimeStamp(isCrashFixEnabled: isCrashFixEnabled)
                     } catch {
                         print("Failed to update batch time on retry. Description: \(error)", .critical)
                         checkedSelf.trackHealthEventBatchRetryFailed(eventRequest: _batch)

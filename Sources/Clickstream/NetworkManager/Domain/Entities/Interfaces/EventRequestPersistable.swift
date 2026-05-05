@@ -40,19 +40,25 @@ extension EventRequestPersistable {
         self.timeStamp = Date()
     }
 
-    mutating func refreshBatchSentTimeStamp() throws {
-        guard let data, !data.isEmpty else {
+    mutating func refreshBatchSentTimeStamp(isCrashFixEnabled: Bool) throws {
+        guard let data else {
             return
         }
 
         var requestProto = try Odpf_Raccoon_EventRequest(serializedBytes: data)
         requestProto.sentTime = Google_Protobuf_Timestamp(date: Date())
 
-        do {
+        if isCrashFixEnabled && !data.isEmpty {
+            let updatedData: Data
+            do {
+                updatedData = try requestProto.serializedData()
+            } catch is BinaryEncodingError {
+                // Fallback to partial encoding for malformed payloads that fail full validation.
+                updatedData = try requestProto.serializedData(partial: true)
+            }
+            self.data = updatedData
+        } else {
             self.data = try requestProto.serializedData()
-        } catch is BinaryEncodingError {
-            // Fallback to partial encoding for malformed payloads that fail full validation.
-            self.data = try requestProto.serializedData(partial: true)
         }
     }
 }

@@ -37,6 +37,9 @@ public struct ClickstreamCourierConstraints: ClickstreamConstraintsContract, Dec
     // Connection retry duration
     private(set) var connectionRetryDuration: TimeInterval
 
+    // Batch timestamp update crash-fix
+    private(set) var batchTimestampUpdateCrashFix: Bool
+    
     /// This is flag which determines whether the contained events be flushed when the app is launched for the first time by the user
     var flushOnAppLaunch: Bool
 
@@ -50,6 +53,7 @@ public struct ClickstreamCourierConstraints: ClickstreamConstraintsContract, Dec
                 maxRetriesPerBatch: Int = 20,
                 maxRetryCacheSize: Int = 5000000,
                 connectionRetryDuration: TimeInterval = 3,
+                batchTimestampUpdateCrashFix: Bool = false,
                 flushOnAppLaunch: Bool = false,
                 minBatteryLevelPercent: Float = 10) {
         self.priorities = priorities
@@ -59,6 +63,7 @@ public struct ClickstreamCourierConstraints: ClickstreamConstraintsContract, Dec
         self.maxRetriesPerBatch = maxRetriesPerBatch
         self.maxRetryCacheSize = maxRetryCacheSize
         self.connectionRetryDuration = connectionRetryDuration
+        self.batchTimestampUpdateCrashFix = batchTimestampUpdateCrashFix
         self.flushOnAppLaunch = flushOnAppLaunch
         self.minBatteryLevelPercent = minBatteryLevelPercent
     }
@@ -71,6 +76,7 @@ public struct ClickstreamCourierConstraints: ClickstreamConstraintsContract, Dec
         case maxRetriesPerBatch
         case maxRetryCacheSize
         case connectionRetryDuration
+        case batchTimestampUpdateCrashFix
         case flushOnAppLaunch
         case minBatteryLevelPercent
     }
@@ -85,6 +91,7 @@ public struct ClickstreamCourierConstraints: ClickstreamConstraintsContract, Dec
         maxRetriesPerBatch = try container.decodeIfPresent(Int.self, forKey: .maxRetriesPerBatch) ?? 20
         maxRetryCacheSize = try container.decodeIfPresent(Int.self, forKey: .maxRetryCacheSize) ?? 5000000
         connectionRetryDuration = try container.decodeIfPresent(TimeInterval.self, forKey: .connectionRetryDuration) ?? 3
+        batchTimestampUpdateCrashFix = try container.decodeIfPresent(Bool.self, forKey: .batchTimestampUpdateCrashFix) ?? false
         flushOnAppLaunch = try container.decodeIfPresent(Bool.self, forKey: .flushOnAppLaunch) ?? false
         minBatteryLevelPercent = try container.decodeIfPresent(Float.self, forKey: .minBatteryLevelPercent) ?? 10
     }

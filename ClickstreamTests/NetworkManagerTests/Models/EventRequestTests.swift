@@ -24,7 +24,7 @@ class EventRequestTests: XCTestCase {
         
         Thread.sleep(forTimeInterval: 0.1)
         
-        try! sut.refreshBatchSentTimeStamp()
+        try! sut.refreshBatchSentTimeStamp(isCrashFixEnabled: false)
         
         let updatedProto = try! Odpf_Raccoon_EventRequest(serializedBytes: sut.data!)
         let updatedDate = updatedProto.sentTime.date
@@ -35,7 +35,42 @@ class EventRequestTests: XCTestCase {
     func test_batchSentTimeRefresh_whenDataIsNil() {
         var sut = EventRequest(guid: UUID().uuidString, data: nil)
         
-        XCTAssertNoThrow(try sut.refreshBatchSentTimeStamp())
+        XCTAssertNoThrow(try sut.refreshBatchSentTimeStamp(isCrashFixEnabled: false))
+    }
+    
+    func test_batchSentTimeRefresh_withValidData_whenCrashFixEnabled() {
+        let originalDate = Date()
+        let eventRequestProto = Odpf_Raccoon_EventRequest.with {
+            $0.reqGuid = UUID().uuidString
+            $0.sentTime = Google_Protobuf_Timestamp(date: originalDate)
+        }
+        
+        let protoData = try! eventRequestProto.serializedData()
+        var sut = EventRequest(guid: UUID().uuidString, data: protoData)
+        
+        Thread.sleep(forTimeInterval: 0.1)
+        
+        XCTAssertNoThrow(try sut.refreshBatchSentTimeStamp(isCrashFixEnabled: true))
+        
+        let updatedProto = try! Odpf_Raccoon_EventRequest(serializedBytes: sut.data!)
+        XCTAssertGreaterThan(updatedProto.sentTime.date, originalDate)
+    }
+    
+    func test_batchSentTimeRefresh_withCorruptedData_whenCrashFixEnabled() {
+        // Arbitrary bytes that are not valid protobuf; deserialization should throw
+        // BinaryDecodingError regardless of isCrashFixEnabled.
+        let corruptData = Data([0xFF, 0xFE, 0xAB, 0xCD, 0x00, 0x11])
+        var sut = EventRequest(guid: UUID().uuidString, data: corruptData)
+        
+        XCTAssertThrowsError(try sut.refreshBatchSentTimeStamp(isCrashFixEnabled: true))
+    }
+    
+    func test_batchSentTimeRefresh_withEmptyData_whenCrashFixEnabled() {
+        // Empty (non-nil) Data decodes to an empty proto successfully;
+        // the function should complete without throwing.
+        var sut = EventRequest(guid: UUID().uuidString, data: Data())
+        
+        XCTAssertNoThrow(try sut.refreshBatchSentTimeStamp(isCrashFixEnabled: true))
     }
     
     func test_bumpRetriesMade() {

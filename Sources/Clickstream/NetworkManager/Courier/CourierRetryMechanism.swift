@@ -484,9 +484,11 @@ extension CourierRetryMechanism {
                     
                     do {
                         // Refresh the timeStamp before sending the batch!
-                        try _batch.refreshBatchSentTimeStamp()
+                        let isCrashFixEnabled = Clickstream.courierConfigurations.batchTimestampUpdateCrashFix
+                        try _batch.refreshBatchSentTimeStamp(isCrashFixEnabled: isCrashFixEnabled)
                     } catch {
-                        print("Failed to update batch time on retry. Description: \(error)",.critical)
+                        print("Failed to update batch time on retry. Description: \(error)", .critical)
+                        checkedSelf.trackHealthEventBatchRetryFailed(eventRequest: _batch)
                     }
                     checkedSelf.retryFailedBatch(with: _batch)
                 }
@@ -551,6 +553,21 @@ extension CourierRetryMechanism {
             let healthEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamEventBatchSuccessAck,
                                                   eventBatchGUID: eventRequest.guid,
                                                   eventCount: eventRequest.eventCount)
+            Tracker.sharedInstance?.record(event: healthEvent)
+            
+        }
+        #endif
+    }
+    
+    func trackHealthEventBatchRetryFailed(eventRequest: CourierEventRequest) {
+        #if TRACKER_ENABLED
+        if Tracker.debugMode {
+            guard eventRequest.eventType != Constants.EventType.instant else { return }
+            
+            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchRetryFailed,
+                                                  eventBatchGUID: eventRequest.guid,
+                                                  eventCount: eventRequest.eventCount)
+                                                  
             Tracker.sharedInstance?.record(event: healthEvent)
             
         }
