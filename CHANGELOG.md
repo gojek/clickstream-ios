@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## [2.0.84] - 2026-05-08
+
+[1c95fe7] Merge pull request #131 from gojek/task/update_podspec (by @Asif)
+[8e42c2a] fix: prevent leakage of build setting flags to main app (by @Asif)
+[4c3c8c3] Fix courier-ios tag (by @Luqman)
+[63fef62] Update to 2.0.83-ios12 (by @Luqman)
+[5091111] Update courier deps version to 1.0.15-ios12 (by @Luqman)
+[082f7be] Update health event tracking behind macros flag (by @Luqman)
+[74dd0ac] Update Clickstream.podspec (by @Kuncoro Galih Gemilang)
+[1666232] Update podspec (by @Kuncoro Galih Gemilang)
+[7c97eb1] Update Clickstream.podspec (by @Kuncoro Galih Gemilang)
+[2afc9a5] Update podfile (by @Kuncoro Galih Gemilang)
+[1db637e] Merge remote-tracking branch 'origin/main' into digital_identity_ios_12 (by @Kuncoro Galih Gemilang)
+[42cbbb9] Change podspec to specific branch (by @Kuncoro Galih Gemilang)
+[7a40b7b] Bring back static (by @Kuncoro Galih Gemilang)
+[4b3ba1f] Bring back type dynamic (by @Kuncoro Galih Gemilang)
+[da6f72e] Revert Reachability version (by @Kuncoro Galih Gemilang)
+[a8420e8] Update reachability to te exact version (by @Kuncoro Galih Gemilang)
+[00ecbf1] Set dynamic framework (by @Kuncoro Galih Gemilang)
+[28bbfbe] Set deployment target to iOS 12 (by @Luqman)
+
 ## [2.0.83] - 2026-04-15
 
 [beec9a4] [CI] Bump version - 2.0.82 (by @github-actions[bot])
