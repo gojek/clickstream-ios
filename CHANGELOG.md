@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [2.0.85] - 2026-05-11
+
+[555c1a3] Merge pull request #130 from gojek/fix/ws_timestamp_update_crash (by @lucmahn88)
+[e09ba11] [CI] Bump version - 2.0.84 (by @github-actions[bot])
+[8d613e0] Add crash-fix config and tests (by @Luqman)
+[8f4adc7] Fix proto data serialisation after updating sentTime property & add health tracking (by @Luqman)
+
 ## [2.0.83] - 2026-04-15
 
 [beec9a4] [CI] Bump version - 2.0.82 (by @github-actions[bot])
