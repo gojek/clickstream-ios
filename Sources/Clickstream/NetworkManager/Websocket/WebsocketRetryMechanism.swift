@@ -419,9 +419,11 @@ extension WebsocketRetryMechanism {
                     
                     do {
                         // Refresh the timeStamp before sending the batch!
-                        try _batch.refreshBatchSentTimeStamp()
+                        let isCrashFixEnabled = Clickstream.configurations.batchTimestampUpdateCrashFix
+                        try _batch.refreshBatchSentTimeStamp(isCrashFixEnabled: isCrashFixEnabled)
                     } catch {
-                        print("Failed to update batch time on retry. Description: \(error)",.critical)
+                        print("Failed to update batch time on retry. Description: \(error)", .critical)
+                        checkedSelf.trackHealthEventBatchRetryFailed(eventRequest: _batch)
                     }
                     checkedSelf.trackBatch(with: _batch)
                 }
@@ -441,6 +443,21 @@ extension WebsocketRetryMechanism {
             let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchSuccessAck,
                                                   eventBatchGUID: eventRequest.guid,
                                                   eventCount: eventRequest.eventCount)
+            Tracker.sharedInstance?.record(event: healthEvent)
+            
+        }
+        #endif
+    }
+
+    func trackHealthEventBatchRetryFailed(eventRequest: EventRequest) {
+        #if TRACKER_ENABLED
+        if Tracker.debugMode {
+            guard eventRequest.eventType != Constants.EventType.instant else { return }
+            
+            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchRetryFailed,
+                                                  eventBatchGUID: eventRequest.guid,
+                                                  eventCount: eventRequest.eventCount)
+                                                  
             Tracker.sharedInstance?.record(event: healthEvent)
             
         }

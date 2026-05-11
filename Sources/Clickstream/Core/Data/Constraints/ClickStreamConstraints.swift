@@ -31,6 +31,9 @@ protocol ClickstreamConstraintsContract {
     // Connection retry duration
     var connectionRetryDuration: TimeInterval { get }
     
+    // Batch timestamp update crash-fix
+    var batchTimestampUpdateCrashFix: Bool { get }
+    
     /// This is flag which determines whether the contained events be flushed when the app is launched for the first time by the user
     var flushOnAppLaunch: Bool { get }
     
@@ -77,6 +80,9 @@ public struct ClickstreamConstraints: ClickstreamConstraintsContract {
     // Connection retry duration
     private(set) var connectionRetryDuration: TimeInterval
     
+    // Batch timestamp update crash-fix
+    private(set) var batchTimestampUpdateCrashFix: Bool
+    
     /// This is flag which determines whether the contained events be flushed when the app is launched for the first time by the user
     var flushOnAppLaunch: Bool
     
@@ -90,6 +96,7 @@ public struct ClickstreamConstraints: ClickstreamConstraintsContract {
                 flushOnBackground: Bool = true, connectionTerminationTimerWaitTime: TimeInterval = 8,
                 maxRequestAckTimeout: TimeInterval = 6, maxRetriesPerBatch: Int = 20,
                 maxRetryCacheSize: Int = 5000000, connectionRetryDuration: TimeInterval = 3,
+                batchTimestampUpdateCrashFix: Bool = false,
                 flushOnAppLaunch: Bool = false, minBatteryLevelPercent: Float = 10) {
         
         self.maxConnectionRetries = maxConnectionRetries
@@ -104,6 +111,7 @@ public struct ClickstreamConstraints: ClickstreamConstraintsContract {
         self.maxRetriesPerBatch = maxRetriesPerBatch
         self.maxRetryCacheSize = maxRetryCacheSize
         self.connectionRetryDuration = connectionRetryDuration
+        self.batchTimestampUpdateCrashFix = batchTimestampUpdateCrashFix
         self.flushOnAppLaunch = flushOnAppLaunch
         self.minBatteryLevelPercent = minBatteryLevelPercent
     }

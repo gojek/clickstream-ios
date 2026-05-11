@@ -21,6 +21,7 @@ enum HealthEvents: String, Codable, CaseIterable {
     case ClickstreamEventBatchCreated = "Clickstream Event Batch Created" // Clickstream
     case ClickstreamBatchSent = "Clickstream Batch Sent" // Clickstream
     case ClickstreamEventBatchSuccessAck = "Clickstream Event Batch Success Ack" // Clickstream
+    case ClickstreamEventBatchRetryFailed = "Clickstream Event Batch Retry Failed" // Clickstream
     case ClickstreamFlushOnBackground = "Clickstream Flush On Background" // Clickstream
     case ClickstreamFlushOnForeground = "Clickstream Flush On Foreground" // Clickstream
     
