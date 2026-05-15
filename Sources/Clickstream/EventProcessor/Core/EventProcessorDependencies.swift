@@ -50,6 +50,7 @@ final class EventProcessorDependencies {
         return CourierEventProcessor(performOnQueue: courierSerialQueue,
                                      classifier: classifier,
                                      eventWarehouser: courierEventWarehouser,
+                                     sampler: socketEventSampler,
                                      networkOptions: networkOptions)
     }
 }
