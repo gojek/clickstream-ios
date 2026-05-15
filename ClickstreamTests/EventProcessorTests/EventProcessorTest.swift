@@ -114,7 +114,7 @@ class EventProcessorTest: XCTestCase {
     }
     
     func testShouldTrackEventWithoutSampler() {
-        XCTAssertTrue(eventProcessor.shouldTrackEvent(event: testEvent))
+        XCTAssertTrue(eventProcessor.sampleEvent(event: testEvent))
     }
     
     func testShouldTrackEventWithSamplerReturnsTrue() {
@@ -127,7 +127,7 @@ class EventProcessorTest: XCTestCase {
             networkOptions: networkOptions
         )
         
-        XCTAssertTrue(processor.shouldTrackEvent(event: testEvent))
+        XCTAssertTrue(processor.sampleEvent(event: testEvent))
     }
     
     func testShouldTrackEventWithSamplerReturnsFalse() {
@@ -140,7 +140,7 @@ class EventProcessorTest: XCTestCase {
             networkOptions: networkOptions
         )
         
-        XCTAssertFalse(processor.shouldTrackEvent(event: testEvent))
+        XCTAssertFalse(processor.sampleEvent(event: testEvent))
     }
     
     func testShouldTrackEventValidWithWebsocketDisabled() {
@@ -155,7 +155,7 @@ class EventProcessorTest: XCTestCase {
             networkOptions: networkOptions
         )
         
-        XCTAssertTrue(processor.shouldTrackEvent(event: testEvent))
+        XCTAssertTrue(processor.sampleEvent(event: testEvent))
     }
     
     func testShouldTrackEventValidWithCourierDisabled() {
@@ -170,7 +170,7 @@ class EventProcessorTest: XCTestCase {
             networkOptions: networkOptions
         )
         
-        XCTAssertTrue(processor.shouldTrackEvent(event: testEvent))
+        XCTAssertTrue(processor.sampleEvent(event: testEvent))
     }
 }
 
