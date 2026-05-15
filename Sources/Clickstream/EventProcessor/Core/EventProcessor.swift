@@ -46,12 +46,13 @@ final class DefaultEventProcessor: EventProcessor {
     
     func createEvent(event: ClickstreamEvent, isUserAuthenticated: Bool) {
         self.serialQueue.async { [weak self] in guard let checkedSelf = self else { return }
+                                
+            guard checkedSelf.shouldTrackEvent(event: event) else {
+                return
+            }
+                                
             if checkedSelf.networkOptions.courierExclusiveEventsEnabled {
                 guard event.shouldTrackOnWebsocket(isUserLoggedIn: isUserAuthenticated, networkOptions: checkedSelf.networkOptions) else {
-                    return
-                }
-            } else {
-                guard checkedSelf.shouldTrackEvent(event: event) else {
                     return
                 }
             }
