@@ -93,7 +93,7 @@ final class DefaultClickstreamDependencies {
         EventProcessorDependencies(
             socketEventWarehouser: socketEventWarehouser,
             courierEventWarehouser: courierEventWarehouser,
-            socketEventSampler: nil,
+            socketEventSampler: socketEventSampler,
             networkOptions: networkOptions,
         ).makeCourierEventProcessor()
     }()
