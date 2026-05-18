@@ -142,16 +142,20 @@ extension DefaultDatabase {
     }
     
     func fetchAll<T>() throws -> [T]? where T: DatabasePersistable {
-        try dbWriter?.read { db in
-            let objects = try T.fetchAll(db)
-            return objects
+        try autoreleasepool {
+            try dbWriter?.read { db in
+                let objects = try T.fetchAll(db)
+                return objects
+            }
         }
     }
     
     func fetchFirst<T>(_ n : Int) throws -> [T]? where T: DatabasePersistable {
-        try dbWriter?.read { db in
-            let objects = try T.limit(n).fetchAll(db)
-            return objects
+        try autoreleasepool {
+            try dbWriter?.read { db in
+                let objects = try T.limit(n).fetchAll(db)
+                return objects
+            }
         }
     }
     
@@ -163,26 +167,32 @@ extension DefaultDatabase {
     }
     
     func deleteAll<T>() throws -> [T]? where T: DatabasePersistable {
-        try dbWriter?.write { db in
-            let objects = try T.fetchAll(db)
-            _ = try T.deleteAll(db)
-            return objects
+        try autoreleasepool {
+            try dbWriter?.write { db in
+                let objects = try T.fetchAll(db)
+                _ = try T.deleteAll(db)
+                return objects
+            }
         }
     }
     
     func deleteOne<T>(_ primaryKeyValue: String) throws -> T? where T: DatabasePersistable {
-        try dbWriter?.write { db in
-            let object = try T.filter(Column(T.primaryKey) == primaryKeyValue).fetchAll(db)
-            try T.filter(Column(T.primaryKey) == primaryKeyValue).deleteAll(db)
-            return object.first
+        try autoreleasepool {
+            try dbWriter?.write { db in
+                let object = try T.filter(Column(T.primaryKey) == primaryKeyValue).fetchAll(db)
+                try T.filter(Column(T.primaryKey) == primaryKeyValue).deleteAll(db)
+                return object.first
+            }
         }
     }
     
     func deleteWhere<T>(_ column: Column, value: String, n: Int) throws -> [T]? where T : DatabasePersistable {
-        try dbWriter?.write { db in
-            let objects = n > 0 ? try T.limit(n).filter(column == value).fetchAll(db) : try T.filter(column == value).fetchAll(db)
-            _ = n > 0 ? try T.limit(n).filter(column == value).deleteAll(db) : try T.filter(column == value).deleteAll(db)
-            return objects
+        try autoreleasepool {
+            try dbWriter?.write { db in
+                let objects = n > 0 ? try T.limit(n).filter(column == value).fetchAll(db) : try T.filter(column == value).fetchAll(db)
+                _ = n > 0 ? try T.limit(n).filter(column == value).deleteAll(db) : try T.filter(column == value).deleteAll(db)
+                return objects
+            }
         }
     }
 }
