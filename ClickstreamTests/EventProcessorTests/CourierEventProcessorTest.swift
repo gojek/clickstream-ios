@@ -15,6 +15,7 @@ class CourierEventProcessorTest: XCTestCase {
     private var mockQueue: SerialQueue!
     private var mockClassifier: MockEventClassifier!
     private var mockWarehouser: CourierEventWarehouser!
+    private var mockSampler: EventSampler!
     private var courierEventProcessor: CourierEventProcessor!
     private var courierBatchEventProcessor: CourierEventBatchProcessor!
     private var courierBatchCreator: CourierEventBatchCreator!
@@ -57,7 +58,7 @@ class CourierEventProcessorTest: XCTestCase {
         courierEventProcessor = CourierEventProcessor(
             performOnQueue: mockQueue,
             classifier: mockClassifier,
-            eventWarehouser: mockWarehouser,
+            eventWarehouser: mockWarehouser, sampler: mockSampler,
             networkOptions: networkOptions
         )
 
@@ -86,7 +87,7 @@ class CourierEventProcessorTest: XCTestCase {
         courierEventProcessor = CourierEventProcessor(
             performOnQueue: mockQueue,
             classifier: mockClassifier,
-            eventWarehouser: mockWarehouser,
+            eventWarehouser: mockWarehouser, sampler: mockSampler,
             networkOptions: networkOptions
         )
         
@@ -97,7 +98,7 @@ class CourierEventProcessorTest: XCTestCase {
         courierEventProcessor = CourierEventProcessor(
             performOnQueue: mockQueue,
             classifier: mockClassifier,
-            eventWarehouser: mockWarehouser,
+            eventWarehouser: mockWarehouser, sampler: mockSampler,
             networkOptions: networkOptions
         )
         
@@ -113,7 +114,7 @@ class CourierEventProcessorTest: XCTestCase {
         courierEventProcessor = CourierEventProcessor(
             performOnQueue: mockQueue,
             classifier: mockClassifier,
-            eventWarehouser: mockWarehouser,
+            eventWarehouser: mockWarehouser, sampler: mockSampler,
             networkOptions: networkOptions
         )
 
