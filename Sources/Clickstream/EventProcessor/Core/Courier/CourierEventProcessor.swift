@@ -43,7 +43,7 @@ final class CourierEventProcessor: EventProcessor {
     
     func createEvent(event: ClickstreamEvent, isUserAuthenticated: Bool) {
         self.serialQueue.async { [weak self] in guard let checkedSelf = self else { return }
-            guard checkedSelf.samplpeEvent(event: event) else {
+            guard checkedSelf.sampleEvent(event: event) else {
                 return
             }
             
