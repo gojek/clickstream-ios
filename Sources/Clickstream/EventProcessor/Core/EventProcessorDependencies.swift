@@ -15,6 +15,8 @@ final class EventProcessorDependencies {
     private let courierEventWarehouser: CourierEventWarehouser
 
     private let socketEventSampler: EventSampler?
+    
+    private let courierEventSampler: EventSampler?
 
     private lazy var socketSerialQueue: SerialQueue = {
         return SerialQueue(label: Constants.QueueIdentifiers.processor.rawValue)
@@ -31,10 +33,12 @@ final class EventProcessorDependencies {
     init(socketEventWarehouser: DefaultEventWarehouser,
          courierEventWarehouser: CourierEventWarehouser,
          socketEventSampler: EventSampler? = nil,
+         courierEventSampler: EventSampler? = nil,
          networkOptions: ClickstreamNetworkOptions) {
         self.socketEventWarehouser = socketEventWarehouser
         self.courierEventWarehouser = courierEventWarehouser
         self.socketEventSampler = socketEventSampler
+        self.courierEventSampler = courierEventSampler
         self.networkOptions = networkOptions
     }
 

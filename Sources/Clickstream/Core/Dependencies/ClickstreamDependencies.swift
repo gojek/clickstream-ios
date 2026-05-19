@@ -93,12 +93,17 @@ final class DefaultClickstreamDependencies {
         EventProcessorDependencies(
             socketEventWarehouser: socketEventWarehouser,
             courierEventWarehouser: courierEventWarehouser,
-            socketEventSampler: socketEventSampler,
+            courierEventSampler: courierEventSampler,
             networkOptions: networkOptions,
         ).makeCourierEventProcessor()
     }()
 
     lazy var socketEventSampler: EventSampler? = {
+        guard let samplerConfiguration else { return nil }
+        return DefaultEventSampler(config: samplerConfiguration)
+    }()
+    
+    lazy var courierEventSampler: EventSampler? = {
         guard let samplerConfiguration else { return nil }
         return DefaultEventSampler(config: samplerConfiguration)
     }()
