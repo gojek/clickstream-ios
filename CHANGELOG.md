@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [2.0.87] - 2026-05-20
+
+[6c9fa05] Update Courier to 1.0.17 (#138) (by @Abhijeet Mallick)
+[61890e3] [CI] Bump version - 2.0.86 (#137) (by @Abhijeet Mallick)
+[44c645d] [CI] Bump version - 2.0.86 (by @github-actions[bot])
+
 ## [2.0.86] - 2026-05-19
 
 [a29fba5] Adding a EventSampler in CourierProcessor (#135) (by @rishabhabbu-ctrl)
