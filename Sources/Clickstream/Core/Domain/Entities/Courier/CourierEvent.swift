@@ -34,7 +34,12 @@ extension CourierEvent {
     }
 
     static var tableMigrations: [(version: VersionIdentifier, alteration: (TableAlteration) -> Void)]? {
-        return nil
+        let time_to_live: (TableAlteration) -> Void = { t in
+            t.add(column: "ttl", .double).notNull().defaults(to: 1795262686)
+        }
+        
+        return [("adds_ttl_to_courier_event_table", time_to_live)
+        ]
     }
 }
 
