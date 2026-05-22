@@ -18,7 +18,7 @@ struct CourierEvent: EventDatabasePersistable {
     var ttl: Date
     
     private enum CodingKeys: String, CodingKey {
-        case guid, timestamp, type, eventProtoData, date
+        case guid, timestamp, type, eventProtoData, date, ttl
     }
     
     enum Columns {
@@ -32,6 +32,17 @@ extension CourierEvent {
 
     static var tableName: String {
         return "courierEvent"
+    }
+        
+    static var tableDefinition: (TableDefinition) -> Void {
+        return { t in
+            t.primaryKey(["guid"])
+            t.column("guid")
+            t.column("timestamp", .datetime).notNull()
+            t.column("type", .integer).notNull()
+            t.column("eventProtoData", .blob)
+            t.column("ttl", .datetime).notNull()
+        }
     }
 
     static var tableMigrations: [(version: VersionIdentifier, alteration: (TableAlteration) -> Void)]? {
@@ -49,6 +60,6 @@ extension CourierEvent {
         CourierEvent(guid: event.guid,
                      timestamp: event.timestamp,
                      type: event.type,
-                     eventProtoData: event.eventProtoData)
+                     eventProtoData: event.eventProtoData, ttl: Date())
     }
 }
