@@ -18,7 +18,7 @@ struct CourierEvent: EventDatabasePersistable {
     var ttl: Date
     
     private enum CodingKeys: String, CodingKey {
-        case guid, timestamp, type, eventProtoData, date, ttl
+        case guid, timestamp, type, eventProtoData, ttl
     }
     
     enum Columns {
