@@ -115,6 +115,13 @@ final class CourierEventProcessor: EventProcessor {
             return nil
         }
     }
+    
+    private func calculate_time_to_live(event: ClickstreamEvent) -> Date {
+        let ttl: TimeInterval = isExslusiveEvent(event) ? 300 : 3600
+        let ttl_config = Clickstream.courierConfigurations.time_to_live
+        print(ttl_config)
+        return Calendar.current.date(byAdding: .second, value: Int(ttl), to: event.timeStamp) ?? event.timeStamp
+    }
 
     private func isExslusiveEvent(_ event: ClickstreamEvent) -> Bool {
         !networkOptions.isWebsocketEnabled || networkOptions.courierExclusiveEventTypes.contains(event.messageName)

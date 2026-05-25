@@ -41,13 +41,15 @@ extension CourierEvent {
             t.column("timestamp", .datetime).notNull()
             t.column("type", .integer).notNull()
             t.column("eventProtoData", .blob)
-            t.column("ttl", .datetime).notNull()
+            // Setting the default value of ttl to 6 months from now the existing entries on DB will have 6 months to live
+            t.column("ttl", .datetime).notNull().defaults(to: Calendar.current.date(byAdding: .month, value: 6, to: Date()) ?? Date())
         }
     }
 
     static var tableMigrations: [(version: VersionIdentifier, alteration: (TableAlteration) -> Void)]? {
+        // Setting the default value of ttl to 6 months from now the existing entries on DB will have 6 months to live
         let time_to_live: (TableAlteration) -> Void = { t in
-            t.add(column: "ttl", .double).notNull().defaults(to: Date())
+            t.add(column: "ttl", .double).notNull().defaults(to: Calendar.current.date(byAdding: .month, value: 6, to: Date()) ?? Date())
         }
         
         return [("adds_ttl_to_courier_event_table", time_to_live)
