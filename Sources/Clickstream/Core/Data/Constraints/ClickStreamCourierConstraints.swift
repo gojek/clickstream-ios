@@ -58,7 +58,9 @@ public struct ClickstreamCourierConstraints: ClickstreamConstraintsContract, Dec
                 connectionRetryDuration: TimeInterval = 3,
                 batchTimestampUpdateCrashFix: Bool = false,
                 flushOnAppLaunch: Bool = false,
-                minBatteryLevelPercent: Float = 10) {
+                minBatteryLevelPercent: Float = 10,
+                expirationConfig: EventExpirationConfig? = nil
+    ) {
         self.priorities = priorities
         self.flushOnBackground = flushOnBackground
         self.connectionTerminationTimerWaitTime = connectionTerminationTimerWaitTime
@@ -69,6 +71,7 @@ public struct ClickstreamCourierConstraints: ClickstreamConstraintsContract, Dec
         self.batchTimestampUpdateCrashFix = batchTimestampUpdateCrashFix
         self.flushOnAppLaunch = flushOnAppLaunch
         self.minBatteryLevelPercent = minBatteryLevelPercent
+        self.time_to_live = expirationConfig
     }
 
     enum CodingKeys: String, CodingKey {
@@ -101,7 +104,7 @@ public struct ClickstreamCourierConstraints: ClickstreamConstraintsContract, Dec
 }
 
 
-struct EventExpirationConfig: Decodable {
+public struct EventExpirationConfig: Decodable {
     /// Whether TTL is enabled globally
     let isTTLEnabled: Bool
     /// Default expiry in days when an event type isn't specified
@@ -130,7 +133,7 @@ struct EventExpirationConfig: Decodable {
         case ttlPeriodicBackOffDelayInMin = "ttl_periodic_backOff_delay_in_min"
     }
 
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         isTTLEnabled = try container.decodeIfPresent(Bool.self, forKey: .isTTLEnabled) ?? false
         defaultExpiryDays = try container.decodeIfPresent(Int.self, forKey: .defaultExpiryDays) ?? 0
