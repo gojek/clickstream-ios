@@ -30,6 +30,14 @@ final class EventProcessorDependencies {
         return DefaultEventClassifier()
     }()
     
+    private lazy var expiryManager: EventExpirationProtocol = {
+        if let ttl = Clickstream.courierConfigurations.time_to_live {
+            return EventExpiryManager(eventExpiryConfig: ttl)
+        } else {
+            return FallbackEventExpirationManager()
+        }
+    }()
+    
     init(socketEventWarehouser: DefaultEventWarehouser,
          courierEventWarehouser: CourierEventWarehouser,
          socketEventSampler: EventSampler? = nil,
@@ -55,6 +63,6 @@ final class EventProcessorDependencies {
                                      classifier: classifier,
                                      eventWarehouser: courierEventWarehouser,
                                      sampler: socketEventSampler,
-                                     networkOptions: networkOptions)
+                                     networkOptions: networkOptions, eventExpiryManager: expiryManager)
     }
 }

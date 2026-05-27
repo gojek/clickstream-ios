@@ -17,17 +17,20 @@ final class CourierEventProcessor: EventProcessor {
     private let classifier: EventClassifier
     private let sampler: EventSampler?
     private let networkOptions: ClickstreamNetworkOptions
+    private let eventExpirationManager: EventExpirationProtocol
 
     init(performOnQueue: SerialQueue,
          classifier: EventClassifier,
          eventWarehouser: CourierEventWarehouser,
          sampler: EventSampler?,
-         networkOptions: ClickstreamNetworkOptions) {
+         networkOptions: ClickstreamNetworkOptions,
+         eventExpiryManager: EventExpirationProtocol) {
         self.serialQueue = performOnQueue
         self.classifier = classifier
         self.eventWarehouser = eventWarehouser
         self.sampler = sampler
         self.networkOptions = networkOptions
+        self.eventExpirationManager = eventExpiryManager
     }
 
     func shouldTrackEvent(event: ClickstreamEvent) -> Bool {
@@ -110,17 +113,10 @@ final class CourierEventProcessor: EventProcessor {
             return try CourierEvent(guid: event.guid,
                                     timestamp: event.timeStamp,
                                     type: classification,
-                                    eventProtoData: csEvent.serializedData(), ttl: Date())
+                                    eventProtoData: csEvent.serializedData(), ttl: eventExpirationManager.getExpiration(for: event))
         } catch {
             return nil
         }
-    }
-    
-    private func calculate_time_to_live(event: ClickstreamEvent) -> Date {
-        let ttl: TimeInterval = isExslusiveEvent(event) ? 300 : 3600
-        let ttl_config = Clickstream.courierConfigurations.time_to_live
-        print(ttl_config)
-        return Calendar.current.date(byAdding: .second, value: Int(ttl), to: event.timeStamp) ?? event.timeStamp
     }
 
     private func isExslusiveEvent(_ event: ClickstreamEvent) -> Bool {

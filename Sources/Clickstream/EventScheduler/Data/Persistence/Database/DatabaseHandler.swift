@@ -84,6 +84,8 @@ final class DefaultDatabase: Database {
         
         // Connect to a database on disk
         let dbURL = folderURL.appendingPathComponent("db.sqlite")
+        // TOREMOVE:
+        print("~DebugLogsCS Db URL: \(dbURL.path)", .critical)
         var configuration = Configuration()
         configuration.label = qos.rawValue
         if qos == .WAL {

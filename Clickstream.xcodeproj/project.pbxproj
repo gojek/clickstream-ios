@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		68E7BD202456E6F10072549A /* libClickstream.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 68E7BADF244F08C00072549A /* libClickstream.a */; };
+		6926910A2FC59EF0006A48E0 /* CourierExpiryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692691092FC59EDF006A48E0 /* CourierExpiryManager.swift */; };
+		6926910B2FC59EF0006A48E0 /* CourierExpiryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692691092FC59EDF006A48E0 /* CourierExpiryManager.swift */; };
+		6926910D2FC5A151006A48E0 /* CourierEventCleanupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6926910C2FC59EF7006A48E0 /* CourierEventCleanupManager.swift */; };
+		6926910E2FC5A151006A48E0 /* CourierEventCleanupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6926910C2FC59EF7006A48E0 /* CourierEventCleanupManager.swift */; };
 		69CF74AF2E8CE5EC008438D0 /* EventSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69CF74AE2E8CE5E2008438D0 /* EventSampler.swift */; };
 		69CF74B02E8CE5EC008438D0 /* EventSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69CF74AE2E8CE5E2008438D0 /* EventSampler.swift */; };
 		69CF74B52E8CE616008438D0 /* EventSamplerConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69CF74B42E8CE60D008438D0 /* EventSamplerConstants.swift */; };
@@ -309,6 +313,8 @@
 		5E561B35C0082DAE47E3BDE1 /* libPods-Clickstream.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Clickstream.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		68E7BADF244F08C00072549A /* libClickstream.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libClickstream.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		68E7BD1B2456E6F10072549A /* ClickstreamTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClickstreamTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		692691092FC59EDF006A48E0 /* CourierExpiryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierExpiryManager.swift; sourceTree = "<group>"; };
+		6926910C2FC59EF7006A48E0 /* CourierEventCleanupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierEventCleanupManager.swift; sourceTree = "<group>"; };
 		69CF74AE2E8CE5E2008438D0 /* EventSampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSampler.swift; sourceTree = "<group>"; };
 		69CF74B42E8CE60D008438D0 /* EventSamplerConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSamplerConstants.swift; sourceTree = "<group>"; };
 		69CF74B72E8CE74F008438D0 /* EventSamplerConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSamplerConfiguration.swift; sourceTree = "<group>"; };
@@ -1277,6 +1283,8 @@
 		D8A7F7C82EC6AE2E00DFC9AE /* Courier */ = {
 			isa = PBXGroup;
 			children = (
+				6926910C2FC59EF7006A48E0 /* CourierEventCleanupManager.swift */,
+				692691092FC59EDF006A48E0 /* CourierExpiryManager.swift */,
 				D8A7F7C92EC6AE3900DFC9AE /* CourierEventProcessor.swift */,
 			);
 			path = Courier;
@@ -1513,9 +1521,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1599,12 +1611,14 @@
 				D8F38D672E950C5D00C4281E /* CourierNetworkService.swift in Sources */,
 				D8F38D682E950C5D00C4281E /* CourierNetworkBuilder.swift in Sources */,
 				BD6BDB9029FBC1360006B04A /* Notifiable.swift in Sources */,
+				6926910B2FC59EF0006A48E0 /* CourierExpiryManager.swift in Sources */,
 				BD6BDB9C29FBC1360006B04A /* HealthTrackerDTO.swift in Sources */,
 				BDE468272A5BD72000BFA976 /* DeviceInfo.swift in Sources */,
 				BDE4682D2A5BD72000BFA976 /* EventBatch.swift in Sources */,
 				BD6BDB7E29FBC1360006B04A /* EventsHelper.swift in Sources */,
 				BDE4685F2A5BD72000BFA976 /* EventBatchCreator.swift in Sources */,
 				BD6BDB8C29FBC1360006B04A /* Tracker.swift in Sources */,
+				6926910E2FC5A151006A48E0 /* CourierEventCleanupManager.swift in Sources */,
 				BDE468732A5BD72000BFA976 /* TableDefinable.swift in Sources */,
 				D8F38D8F2E9CB08300C4281E /* QoS+Int.swift in Sources */,
 				BDE4682F2A5BD72000BFA976 /* EventRequest.pb.swift in Sources */,
@@ -1745,6 +1759,7 @@
 				BDE467782A5BD24500BFA976 /* EventSchedulerDependenciesTests.swift in Sources */,
 				BDE4681E2A5BD72000BFA976 /* ClickStreamEventClassification.swift in Sources */,
 				BDE467722A5BD24500BFA976 /* EventBatchTests.swift in Sources */,
+				6926910D2FC5A151006A48E0 /* CourierEventCleanupManager.swift in Sources */,
 				BDE468642A5BD72000BFA976 /* EventWarehouser.swift in Sources */,
 				BD6BDB9129FBC1360006B04A /* Notifiable.swift in Sources */,
 				BD6BDB9729FBC1360006B04A /* Health.pb.swift in Sources */,
@@ -1797,6 +1812,7 @@
 				BDE468702A5BD72000BFA976 /* DatabaseHandler.swift in Sources */,
 				BDE4680C2A5BD72000BFA976 /* DeviceStatusNotifier.swift in Sources */,
 				BD6BDB7929FBC1360006B04A /* EventDetailsViewModel.swift in Sources */,
+				6926910A2FC59EF0006A48E0 /* CourierExpiryManager.swift in Sources */,
 				BDE468762A5BD72000BFA976 /* DatabasePersistable.swift in Sources */,
 				BDE4677D2A5BD24500BFA976 /* EventWarehouserTests.swift in Sources */,
 				BD6BDB8B29FBC1360006B04A /* HealthAnalysisEventBatch.swift in Sources */,

@@ -29,16 +29,20 @@ final class DefaultEventWarehouser: EventWarehouser {
     private let eventBatchProcessor: DefaultEventBatchProcessor
     private let persistence: DefaultDatabaseDAO<Event>
     private let batchRegulator: DefaultBatchSizeRegulator
+    private let eventCleanupManager: CourierEventCleanupManager?
     
     init(with eventBatchProcessor: DefaultEventBatchProcessor,
          performOnQueue: SerialQueue,
          persistence: DefaultDatabaseDAO<Event>,
-         batchSizeRegulator: DefaultBatchSizeRegulator) {
+         batchSizeRegulator: DefaultBatchSizeRegulator,
+         eventCleanupScheduler: CourierEventCleanupManager? = nil) {
         self.eventBatchProcessor = eventBatchProcessor
         self.performQueue = performOnQueue
         self.persistence = persistence
         self.batchRegulator = batchSizeRegulator
+        self.eventCleanupManager = eventCleanupScheduler
         start()
+        eventCleanupScheduler?.schedule()
     }
     
     /// This method starts the event batch processor.
