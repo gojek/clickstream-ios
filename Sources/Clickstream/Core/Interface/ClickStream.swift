@@ -187,10 +187,10 @@ public final class Clickstream {
     }
 
     /// Tracks a binary event received from a web bridge.
-    /// The encoded protobuf payload is forwarded as-is via the courier channel.
+    /// The encoded protobuf payload is forwarded as-is via the websocket channel.
     /// - Parameter event: A `CSBinaryEvent` carrying the base64-encoded proto payload and its type.
     public func trackBinaryEvent(_ event: CSBinaryEvent) {
-        courierEventProcessor.createBinaryEvent(event: event, isUserAuthenticated: isUserAuthenticated)
+        socketEventProcessor.createBinaryEvent(event: event, isUserAuthenticated: isUserAuthenticated)
     }
     
     /// Initializes an instance of the API with the given configurations.

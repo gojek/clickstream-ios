@@ -120,7 +120,7 @@ final class CourierEventProcessor: EventProcessor {
             guid: event.guid,
             timeStamp: event.timestamp,
             message: nil,
-            eventName: event.type,
+            eventName: event.eventName,
             eventData: Data(),
             product: event.product ?? ""
         )
@@ -130,8 +130,8 @@ final class CourierEventProcessor: EventProcessor {
         do {
             let csEvent = Odpf_Raccoon_Event.with {
                 $0.eventBytes = decodedData
-                $0.type = event.type
-                $0.eventName = event.type
+                $0.type = event.type.lowercased()
+                $0.eventName = event.eventName
                 $0.product = event.product ?? ""
                 $0.eventTimestamp = Google_Protobuf_Timestamp(date: event.timestamp)
                 $0.isExclusive = true

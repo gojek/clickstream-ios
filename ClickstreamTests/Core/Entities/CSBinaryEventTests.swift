@@ -24,6 +24,7 @@ class CSBinaryEventTests: XCTestCase {
         let event = CSBinaryEvent(type: "gopay-container-page", encodedData: "dGVzdA==")
 
         XCTAssertEqual(event.type, "gopay-container-page")
+        XCTAssertEqual(event.eventName, "gopay-container-page")
         XCTAssertEqual(event.encodedData, "dGVzdA==")
         XCTAssertNil(event.product)
     }
@@ -32,6 +33,19 @@ class CSBinaryEventTests: XCTestCase {
         let event = CSBinaryEvent(type: "gopay-container-component", encodedData: "dGVzdA==", product: "gopay")
 
         XCTAssertEqual(event.product, "gopay")
+    }
+
+    func testEventNameDefaultsToTypeWhenNotProvided() {
+        let event = CSBinaryEvent(type: "gopay-container-page", encodedData: "dGVzdA==")
+
+        XCTAssertEqual(event.eventName, event.type)
+    }
+
+    func testEventNameCanBeSetIndependentlyFromType() {
+        let event = CSBinaryEvent(type: "gopay-container-page", encodedData: "dGVzdA==", eventName: "page-view")
+
+        XCTAssertEqual(event.type, "gopay-container-page")
+        XCTAssertEqual(event.eventName, "page-view")
     }
 
     func testEachInstanceHasUniqueGuid() {

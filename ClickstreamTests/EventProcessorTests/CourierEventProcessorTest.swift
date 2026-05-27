@@ -155,7 +155,7 @@ class CourierEventProcessorTest: XCTestCase {
     func testCreateBinaryEventWithValidBase64() {
         let payload = "hello binary".data(using: .utf8)!
         let base64 = payload.base64EncodedString()
-        let event = CSBinaryEvent(type: "gopay-container-page", encodedData: base64, product: "gopay")
+        let event = CSBinaryEvent(type: "Gopay-Container-Page", encodedData: base64, product: "gopay")
 
         courierEventProcessor.createBinaryEvent(event: event, isUserAuthenticated: false)
 
@@ -164,6 +164,12 @@ class CourierEventProcessorTest: XCTestCase {
             expectation.fulfill()
         }
         wait(for: [expectation], timeout: 2.0)
+    }
+
+    func testCreateBinaryEventTypeIsLowercased() {
+        let event = CSBinaryEvent(type: "Gopay-Container-Page", encodedData: "dGVzdA==")
+
+        XCTAssertEqual(event.type.lowercased(), "gopay-container-page")
     }
 
     func testCreateBinaryEventWithInvalidBase64IsDropped() {
