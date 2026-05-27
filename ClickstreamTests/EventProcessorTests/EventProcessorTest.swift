@@ -172,6 +172,46 @@ class EventProcessorTest: XCTestCase {
         
         XCTAssertTrue(processor.shouldTrackEvent(event: testEvent))
     }
+
+    func testCreateBinaryEventWithValidBase64() {
+        let payload = "hello binary".data(using: .utf8)!
+        let base64 = payload.base64EncodedString()
+        let event = CSBinaryEvent(type: "gopay-container-component", encodedData: base64, product: "gopay")
+
+        eventProcessor.createBinaryEvent(event: event, isUserAuthenticated: false)
+
+        let expectation = XCTestExpectation(description: "binary event stored")
+        processorQueueMock.async {
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 2.0)
+    }
+
+    func testCreateBinaryEventWithInvalidBase64IsDropped() {
+        let event = CSBinaryEvent(type: "gopay-container-component", encodedData: "not-valid-base64!!!")
+
+        eventProcessor.createBinaryEvent(event: event, isUserAuthenticated: false)
+
+        let expectation = XCTestExpectation(description: "invalid binary event handled")
+        processorQueueMock.async {
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 2.0)
+    }
+
+    func testCreateBinaryEventWithNilClassificationIsDropped() {
+        mockClassifier.classificationResult = nil
+        let payload = "data".data(using: .utf8)!
+        let event = CSBinaryEvent(type: "gopay-container-component", encodedData: payload.base64EncodedString())
+
+        eventProcessor.createBinaryEvent(event: event, isUserAuthenticated: false)
+
+        let expectation = XCTestExpectation(description: "nil classification handled")
+        processorQueueMock.async {
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 2.0)
+    }
 }
 
 class MockEventSampler: EventSampler {
