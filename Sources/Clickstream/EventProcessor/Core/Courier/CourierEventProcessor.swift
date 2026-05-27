@@ -105,6 +105,49 @@ final class CourierEventProcessor: EventProcessor {
     private func isExslusiveEvent(_ event: ClickstreamEvent) -> Bool {
         !networkOptions.isWebsocketEnabled || networkOptions.courierExclusiveEventTypes.contains(event.messageName)
     }
+
+    func createBinaryEvent(event: CSBinaryEvent, isUserAuthenticated: Bool) {
+        self.serialQueue.async { [weak self] in
+            guard let checkedSelf = self else { return }
+            if let eventToStore = checkedSelf.constructBinaryEvent(event: event) {
+                checkedSelf.eventWarehouser.store(eventToStore)
+            }
+        }
+    }
+
+    private func constructBinaryEvent(event: CSBinaryEvent) -> CourierEvent? {
+        let placeholder = ClickstreamEvent(
+            guid: event.guid,
+            timeStamp: event.timestamp,
+            message: nil,
+            eventName: event.type,
+            eventData: Data(),
+            product: event.product ?? ""
+        )
+        guard let classification = classifier.getClassification(event: placeholder) else { return nil }
+        guard let decodedData = Data(base64Encoded: event.encodedData) else { return nil }
+
+        do {
+            let csEvent = Odpf_Raccoon_Event.with {
+                $0.eventBytes = decodedData
+                $0.type = event.type
+                $0.eventName = event.type
+                $0.product = event.product ?? ""
+                $0.eventTimestamp = Google_Protobuf_Timestamp(date: event.timestamp)
+                $0.isExclusive = true
+                $0.appVersion = Clickstream.appVersion
+                $0.platform = .ios
+            }
+            return try CourierEvent(
+                guid: event.guid,
+                timestamp: event.timestamp,
+                type: classification,
+                eventProtoData: csEvent.serializedData()
+            )
+        } catch {
+            return nil
+        }
+    }
 }
 
 #if TRACKER_ENABLED
