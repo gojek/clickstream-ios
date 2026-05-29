@@ -49,7 +49,14 @@ protocol Database {
     ///   - value: A value for the where clause.
     ///   - n: The count of the objects to be deleted.
     func deleteWhere<T: DatabasePersistable>(_ column: Column, value: String, n: Int) throws -> [T]?
-    
+
+    /// Use this method to delete objects from a table where the given column's value is
+    /// strictly less than the supplied value.
+    /// - Parameters:
+    ///   - column: GRDB column to evaluate.
+    ///   - lessThan: The upper bound (exclusive) for the where clause.
+    func deleteWhere<T: DatabasePersistable>(_ column: Column, lessThan value: DatabaseValueConvertible) throws -> [T]?
+
     /// Suggests whether a table with the name exists or not.
     /// - Parameter name: name of table.
     func doesTableExist(with name: String) throws -> Bool?
@@ -184,6 +191,14 @@ extension DefaultDatabase {
         try dbWriter?.write { db in
             let objects = n > 0 ? try T.limit(n).filter(column == value).fetchAll(db) : try T.filter(column == value).fetchAll(db)
             _ = n > 0 ? try T.limit(n).filter(column == value).deleteAll(db) : try T.filter(column == value).deleteAll(db)
+            return objects
+        }
+    }
+
+    func deleteWhere<T>(_ column: Column, lessThan value: DatabaseValueConvertible) throws -> [T]? where T : DatabasePersistable {
+        try dbWriter?.write { db in
+            let objects = try T.filter(column < value).fetchAll(db)
+            _ = try T.filter(column < value).deleteAll(db)
             return objects
         }
     }

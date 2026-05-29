@@ -48,10 +48,10 @@ class CourierEventCleanupManager: EventCleanupProtocol {
     
     func cleanUpExpiredEvents() {
         self.schedule()
-        self.expiredEventsCleanupScheduler.subscriber = { [weak self] (priority) in guard let checkedSelf = self else { return }
-            print("Schduler is running every \(checkedSelf.cleanupConfiguration.ttlCleanupIntervalInMin) minutes", .critical)
+        self.expiredEventsCleanupScheduler.subscriber = { [weak self] _ in
+            guard let checkedSelf = self else { return }
+            checkedSelf.persistence.deleteWhere(CourierEvent.Columns.ttl, lessThan: Date())
         }
-
     }
 }
 
@@ -80,8 +80,9 @@ class DefaultEventCleanupManager: EventCleanupProtocol {
     
     func cleanUpExpiredEvents() {
         self.schedule()
-        self.expiredEventsCleanupScheduler.subscriber = { [weak self] (priority) in guard let checkedSelf = self else { return }
-            print("Schduler is running every 10 seconds", .critical)
+        self.expiredEventsCleanupScheduler.subscriber = { [weak self] _ in
+            guard let checkedSelf = self else { return }
+            checkedSelf.persistence.deleteWhere(CourierEvent.Columns.ttl, lessThan: Date())
         }
     }
 }

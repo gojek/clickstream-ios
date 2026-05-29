@@ -23,6 +23,7 @@ struct CourierEvent: EventDatabasePersistable {
     
     enum Columns {
         static let type = Column(CodingKeys.type)
+        static let ttl = Column(CodingKeys.ttl)
     }
 }
 
