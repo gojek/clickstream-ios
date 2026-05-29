@@ -38,7 +38,7 @@ final class DefaultEventWarehouser: EventWarehouser {
         self.performQueue = performOnQueue
         self.persistence = persistence
         self.batchRegulator = batchSizeRegulator
-
+        start()
     }
     
     /// This method starts the event batch processor.
