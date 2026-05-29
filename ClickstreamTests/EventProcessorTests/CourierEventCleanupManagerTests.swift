@@ -55,7 +55,7 @@ final class CourierEventCleanupManagerTests: XCTestCase {
                      timestamp: Date(),
                      type: type,
                      eventProtoData: Data(),
-                     expiryTime: ttl)
+                     expiryTime: expiryTime)
     }
 
     // MARK: - CourierEventCleanupManager
@@ -90,7 +90,7 @@ final class CourierEventCleanupManagerTests: XCTestCase {
 
         [expired1, expired2, future1, future2].forEach { persistence.insert($0) }
 
-        let removed = persistence.deleteWhere(CourierEvent.Columns.ttl, lessThan: Date())
+        let removed = persistence.deleteWhere(CourierEvent.Columns.expiryTime, lessThan: Date())
 
         XCTAssertEqual(removed?.count, 2)
         let removedGuids = Set((removed ?? []).map { $0.guid })
@@ -105,7 +105,7 @@ final class CourierEventCleanupManagerTests: XCTestCase {
         let future = makeEvent(guid: "f", expiryTime: Date().addingTimeInterval(3600))
         persistence.insert(future)
 
-        let removed = persistence.deleteWhere(CourierEvent.Columns.ttl, lessThan: Date())
+        let removed = persistence.deleteWhere(CourierEvent.Columns.expiryTime, lessThan: Date())
 
         XCTAssertEqual(removed?.count, 0)
         XCTAssertEqual(persistence.fetchAll()?.count, 1)
@@ -153,7 +153,7 @@ final class CourierEventCleanupManagerTests: XCTestCase {
 
         // Manually invoke the deletion path that the scheduler tick would invoke, to
         // avoid waiting on a minutes-based scheduler in unit tests.
-        persistence.deleteWhere(CourierEvent.Columns.ttl, lessThan: Date())
+        persistence.deleteWhere(CourierEvent.Columns.expiryTime, lessThan: Date())
 
         let remaining = persistence.fetchAll() ?? []
         XCTAssertEqual(remaining.map { $0.guid }, ["live"])
