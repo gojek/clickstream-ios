@@ -50,12 +50,12 @@ final class CourierEventCleanupManagerTests: XCTestCase {
 
     private func makeEvent(guid: String = UUID().uuidString,
                            type: String = "standard",
-                           ttl: Date) -> CourierEvent {
+                           expiryTime: Date) -> CourierEvent {
         CourierEvent(guid: guid,
                      timestamp: Date(),
                      type: type,
                      eventProtoData: Data(),
-                     ttl: ttl)
+                     expiryTime: ttl)
     }
 
     // MARK: - CourierEventCleanupManager
@@ -83,10 +83,10 @@ final class CourierEventCleanupManagerTests: XCTestCase {
     /// (which is in minutes) by driving the cleanup logic directly via `persistence.deleteWhere`
     /// to keep this test fast and deterministic.
     func testDeleteWhereTTLLessThanNow_removesExpiredAndPreservesFuture() {
-        let expired1 = makeEvent(guid: "expired-1", ttl: Date().addingTimeInterval(-3600))
-        let expired2 = makeEvent(guid: "expired-2", ttl: Date().addingTimeInterval(-1))
-        let future1 = makeEvent(guid: "future-1", ttl: Date().addingTimeInterval(3600))
-        let future2 = makeEvent(guid: "future-2", ttl: Date().addingTimeInterval(86_400))
+        let expired1 = makeEvent(guid: "expired-1", expiryTime: Date().addingTimeInterval(-3600))
+        let expired2 = makeEvent(guid: "expired-2", expiryTime: Date().addingTimeInterval(-1))
+        let future1 = makeEvent(guid: "future-1", expiryTime: Date().addingTimeInterval(3600))
+        let future2 = makeEvent(guid: "future-2", expiryTime: Date().addingTimeInterval(86_400))
 
         [expired1, expired2, future1, future2].forEach { persistence.insert($0) }
 
@@ -102,7 +102,7 @@ final class CourierEventCleanupManagerTests: XCTestCase {
     }
 
     func testDeleteWhereTTLLessThanNow_noExpiredRows_returnsEmpty() {
-        let future = makeEvent(guid: "f", ttl: Date().addingTimeInterval(3600))
+        let future = makeEvent(guid: "f", expiryTime: Date().addingTimeInterval(3600))
         persistence.insert(future)
 
         let removed = persistence.deleteWhere(CourierEvent.Columns.ttl, lessThan: Date())
@@ -144,8 +144,8 @@ final class CourierEventCleanupManagerTests: XCTestCase {
         let config = try makeConfig(ttlCleanupIntervalInMin: 60)
         let sut = CourierEventCleanupManager(cleanupConfiguration: config, persistence: persistence)
 
-        let expired = makeEvent(guid: "exp", ttl: Date().addingTimeInterval(-10))
-        let live = makeEvent(guid: "live", ttl: Date().addingTimeInterval(3600))
+        let expired = makeEvent(guid: "exp", expiryTime: Date().addingTimeInterval(-10))
+        let live = makeEvent(guid: "live", expiryTime: Date().addingTimeInterval(3600))
         persistence.insert(expired)
         persistence.insert(live)
 

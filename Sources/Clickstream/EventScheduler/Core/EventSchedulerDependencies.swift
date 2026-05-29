@@ -115,7 +115,7 @@ final class EventSchedulerDependencies {
     }()
     
     private lazy var eventCleanupManager: CourierEventCleanupManager? = {
-        if let ttl_config = Clickstream.courierConfigurations.time_to_live {
+        if let ttl_config = Clickstream.courierConfigurations.time_to_live, ttl_config.isTTLEnabled, ttl_config.isTTLCleanupEnabled {
             return CourierEventCleanupManager(cleanupConfiguration: ttl_config, persistence: courierPersistence)
         } else {
             return nil

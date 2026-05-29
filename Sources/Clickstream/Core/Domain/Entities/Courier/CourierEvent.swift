@@ -15,15 +15,15 @@ struct CourierEvent: EventDatabasePersistable {
     var timestamp: Date
     var type: PriorityType
     var eventProtoData: Data
-    var ttl: Date
+    var expiryTime: Date
     
     private enum CodingKeys: String, CodingKey {
-        case guid, timestamp, type, eventProtoData, ttl
+        case guid, timestamp, type, eventProtoData, expiryTime
     }
     
     enum Columns {
         static let type = Column(CodingKeys.type)
-        static let ttl = Column(CodingKeys.ttl)
+        static let expiryTime = Column(CodingKeys.expiryTime)
     }
 }
 
@@ -43,14 +43,14 @@ extension CourierEvent {
             t.column("type", .integer).notNull()
             t.column("eventProtoData", .blob)
             // Setting the default value of ttl to 6 months from now the existing entries on DB will have 6 months to live
-            t.column("ttl", .datetime).notNull().defaults(to: Calendar.current.date(byAdding: .month, value: 6, to: Date()) ?? Date())
+            t.column("expiryTime", .datetime).notNull().defaults(to: Calendar.current.date(byAdding: .month, value: 6, to: Date()) ?? Date())
         }
     }
 
     static var tableMigrations: [(version: VersionIdentifier, alteration: (TableAlteration) -> Void)]? {
         // Setting the default value of ttl to 6 months from now the existing entries on DB will have 6 months to live
         let time_to_live: (TableAlteration) -> Void = { t in
-            t.add(column: "ttl", .double).notNull().defaults(to: Calendar.current.date(byAdding: .month, value: 6, to: Date()) ?? Date())
+            t.add(column: "expiryTime", .double).notNull().defaults(to: Calendar.current.date(byAdding: .month, value: 6, to: Date()) ?? Date())
         }
         
         return [("adds_ttl_to_courier_event_table", time_to_live)
@@ -63,7 +63,7 @@ extension CourierEvent {
         CourierEvent(guid: event.guid,
                      timestamp: event.timestamp,
                      type: event.type,
-                     eventProtoData: event.eventProtoData, ttl: Date())
+                     eventProtoData: event.eventProtoData, expiryTime: Date())
     }
 }
 
@@ -71,5 +71,5 @@ extension CourierEvent {
 /// `CourierEvent` carries an explicit `ttl` column, so it opts into TTL-aware
 /// persistence queries by exposing that column to the database layer.
 extension CourierEvent: TTLPersistable {
-    static var ttlColumn: Column { Columns.ttl }
+    static var ttlColumn: Column { Columns.expiryTime }
 }

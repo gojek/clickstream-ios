@@ -113,7 +113,7 @@ final class CourierEventProcessor: EventProcessor {
             return try CourierEvent(guid: event.guid,
                                     timestamp: event.timeStamp,
                                     type: classification,
-                                    eventProtoData: csEvent.serializedData(), ttl: eventExpirationManager.getExpiration(for: event))
+                                    eventProtoData: csEvent.serializedData(), expiryTime: eventExpirationManager.getExpiration(for: event))
         } catch {
             return nil
         }

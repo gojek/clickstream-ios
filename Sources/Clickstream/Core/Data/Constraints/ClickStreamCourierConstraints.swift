@@ -136,7 +136,7 @@ public struct EventExpirationConfig: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         isTTLEnabled = try container.decodeIfPresent(Bool.self, forKey: .isTTLEnabled) ?? false
-        defaultExpiryDays = try container.decodeIfPresent(Int.self, forKey: .defaultExpiryDays) ?? 60
+        defaultExpiryDays = try container.decodeIfPresent(Int.self, forKey: .defaultExpiryDays) ?? 180
         minimumExpiryDays = try container.decodeIfPresent(Int.self, forKey: .minimumExpiryDays) ?? 2
         eventsTTL = try container.decodeIfPresent([String: Int].self, forKey: .eventsTTL) ?? [:]
         isTTLCleanupEnabled = try container.decodeIfPresent(Bool.self, forKey: .isTTLCleanupEnabled) ?? false
