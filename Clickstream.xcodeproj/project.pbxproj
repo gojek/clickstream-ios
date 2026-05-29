@@ -26,6 +26,9 @@
 		9A0BBA892BC3A59300F7DC01 /* URLRequest+Equality.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0BBA872BC3A59300F7DC01 /* URLRequest+Equality.swift */; };
 		9A0BBA8D2BC3CA5500F7DC01 /* PerformanceTracer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0BBA8C2BC3CA5500F7DC01 /* PerformanceTracer.swift */; };
 		9A0BBA8E2BC3CA5500F7DC01 /* PerformanceTracer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0BBA8C2BC3CA5500F7DC01 /* PerformanceTracer.swift */; };
+		9F60491D2FC9781700190D5C /* CSBinaryEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F60491C2FC9781700190D5C /* CSBinaryEvent.swift */; };
+		9F60491E2FC9781700190D5C /* CSBinaryEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F60491C2FC9781700190D5C /* CSBinaryEvent.swift */; };
+		9F6049202FC979B700190D5C /* CSBinaryEventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F60491F2FC979B700190D5C /* CSBinaryEventTests.swift */; };
 		BD6BDB6829FBC1360006B04A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD6BDB3E29FBC1360006B04A /* Assets.xcassets */; };
 		BD6BDB6929FBC1360006B04A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD6BDB3E29FBC1360006B04A /* Assets.xcassets */; };
 		BD6BDB6A29FBC1360006B04A /* RadioLabelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD6BDB4129FBC1360006B04A /* RadioLabelTableViewCell.swift */; };
@@ -325,6 +328,8 @@
 		88F9204101C5E8D41805FD1A /* Pods-ClickstreamTests.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.production.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.production.xcconfig"; sourceTree = "<group>"; };
 		9A0BBA872BC3A59300F7DC01 /* URLRequest+Equality.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+Equality.swift"; sourceTree = "<group>"; };
 		9A0BBA8C2BC3CA5500F7DC01 /* PerformanceTracer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceTracer.swift; sourceTree = "<group>"; };
+		9F60491C2FC9781700190D5C /* CSBinaryEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSBinaryEvent.swift; sourceTree = "<group>"; };
+		9F60491F2FC979B700190D5C /* CSBinaryEventTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSBinaryEventTests.swift; sourceTree = "<group>"; };
 		9D31FA91B32979CBBA2C3849 /* Pods-ClickstreamTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.debug.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A870FFC059A664D0DF0292E5 /* Pods-ClickstreamTests.alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.alpha.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.alpha.xcconfig"; sourceTree = "<group>"; };
 		A8F29FD3E426DD04C26B8560 /* Pods-ClickstreamTests.integration.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.integration.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.integration.xcconfig"; sourceTree = "<group>"; };
@@ -769,6 +774,7 @@
 				D8A7F7D52EC6B94500DFC9AE /* Courier */,
 				BDE467492A5BD24500BFA976 /* EventBatchTests.swift */,
 				BDE4674A2A5BD24500BFA976 /* EventTests.swift */,
+				9F60491F2FC979B700190D5C /* CSBinaryEventTests.swift */,
 				D8F38D4F2E94CCD300C4281E /* ClickstreamNetworkOptionsTests.swift */,
 				D8D18A372F2C9468000146A6 /* ClickstreamEventTests.swift */,
 			);
@@ -1101,6 +1107,7 @@
 				D8A7F7CF2EC6B60900DFC9AE /* Interfaces */,
 				D8A7F7BB2EC5EFE200DFC9AE /* Courier */,
 				BDE467B92A5BD72000BFA976 /* Event.swift */,
+				9F60491C2FC9781700190D5C /* CSBinaryEvent.swift */,
 				BDE467BB2A5BD72000BFA976 /* EventBatch.swift */,
 				BDE467BA2A5BD72000BFA976 /* ClickstreamEvent.swift */,
 			);
@@ -1684,6 +1691,7 @@
 				BD6BDB8829FBC1360006B04A /* HealthAnalysisEvent.swift in Sources */,
 				9A0BBA882BC3A59300F7DC01 /* URLRequest+Equality.swift in Sources */,
 				D8A7F7CD2EC6B5F800DFC9AE /* EventBatchPersistable.swift in Sources */,
+				9F60491D2FC9781700190D5C /* CSBinaryEvent.swift in Sources */,
 				BD6BDB6C29FBC1360006B04A /* FilterTextFieldTableViewCell.swift in Sources */,
 				BDE467FF2A5BD72000BFA976 /* Heartbeat.swift in Sources */,
 				BDE468652A5BD72000BFA976 /* EventBatchProcessor.swift in Sources */,
@@ -1718,6 +1726,7 @@
 				D859DC4D2E9F52B7008D900F /* ClickstreamCourierConfigTests.swift in Sources */,
 				D859DC482E9F5224008D900F /* ClickstreamCourierUserCredentialsTests.swift in Sources */,
 				BD6BDB9F29FBC1360006B04A /* CSCommonPropertiesDTO.swift in Sources */,
+				9F60491E2FC9781700190D5C /* CSBinaryEvent.swift in Sources */,
 				D8A7F7F62EC6D72D00DFC9AE /* ClickstreamCourierRetryPolicy.swift in Sources */,
 				BDE467752A5BD24500BFA976 /* BatchSizeRegulatorMock.swift in Sources */,
 				BDE4680E2A5BD72000BFA976 /* NetworkReachability.swift in Sources */,
@@ -1813,6 +1822,7 @@
 				D8E4B89C2EA9EF940001D3D6 /* CourierHandlerTests.swift in Sources */,
 				BDE467832A5BD24500BFA976 /* NetworkReachabilityMock.swift in Sources */,
 				D8F38D902E9CB08300C4281E /* QoS+Int.swift in Sources */,
+				9F6049202FC979B700190D5C /* CSBinaryEventTests.swift in Sources */,
 				D8F38D502E94CCD300C4281E /* ClickstreamNetworkOptionsTests.swift in Sources */,
 				BDE4681C2A5BD72000BFA976 /* ClickStreamConstraints.swift in Sources */,
 				BDE468702A5BD72000BFA976 /* DatabaseHandler.swift in Sources */,
