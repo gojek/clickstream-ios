@@ -58,7 +58,7 @@ public struct ClickstreamCourierConstraints: ClickstreamConstraintsContract, Dec
                 connectionRetryDuration: TimeInterval = 3,
                 batchTimestampUpdateCrashFix: Bool = false,
                 flushOnAppLaunch: Bool = false,
-                minBatteryLevelPercent: Float = 10,y
+                minBatteryLevelPercent: Float = 10,
                 expirationConfig: EventExpirationConfig? = nil
     ) {
         self.priorities = priorities
