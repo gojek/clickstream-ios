@@ -55,38 +55,6 @@ class CourierEventCleanupManager: EventCleanupProtocol {
     }
 }
 
-class DefaultEventCleanupManager: EventCleanupProtocol {
-    
-    internal let persistence: DefaultDatabaseDAO<CourierEvent>
-    
-    init(persistence: DefaultDatabaseDAO<CourierEvent>) {
-        self.persistence = persistence
-    }
-    
-    private let cleanupExpiredEventsSchedulerQueue = SerialQueue(label: Constants.QueueIdentifiers.scheduler.rawValue, qos: .utility)
-    
-    private lazy var expiredEventsCleanupScheduler : SchedulerService = {
-        let cleanupIntervalSeconds: TimeInterval =  10
-        return EventCleanupScheduler(with: Priority(priority: 0, identifier: "cleanup", maxTimeBetweenTwoBatches: cleanupIntervalSeconds), performOnQueue: cleanupExpiredEventsSchedulerQueue)
-    }()
-    
-    func schedule() {
-        expiredEventsCleanupScheduler.start()
-    }
-    
-    func stop() {
-        expiredEventsCleanupScheduler.stop()
-    }
-    
-    func cleanUpExpiredEvents() {
-        self.schedule()
-        self.expiredEventsCleanupScheduler.subscriber = { [weak self] _ in
-            guard let checkedSelf = self else { return }
-            checkedSelf.persistence.deleteWhere(CourierEvent.Columns.ttl, lessThan: Date())
-        }
-    }
-}
-
 
 final class EventCleanupScheduler: SchedulerService {
     

@@ -66,3 +66,8 @@ extension CourierEvent {
                      eventProtoData: event.eventProtoData, ttl: Date())
     }
 }
+
+// MARK: - TTLPersistable
+extension CourierEvent: TTLPersistable {
+    static var ttlColumn: Column { Columns.ttl }
+}

@@ -59,7 +59,7 @@ class CourierEventProcessorTest: XCTestCase {
             performOnQueue: mockQueue,
             classifier: mockClassifier,
             eventWarehouser: mockWarehouser, sampler: mockSampler,
-            networkOptions: networkOptions
+            networkOptions: networkOptions, eventExpiryManager: FallbackEventExpirationManager()
         )
 
         testEvent = ClickstreamEvent(
@@ -88,7 +88,7 @@ class CourierEventProcessorTest: XCTestCase {
             performOnQueue: mockQueue,
             classifier: mockClassifier,
             eventWarehouser: mockWarehouser, sampler: mockSampler,
-            networkOptions: networkOptions
+            networkOptions: networkOptions, eventExpiryManager: FallbackEventExpirationManager()
         )
         
         XCTAssertNotNil(courierEventProcessor)
@@ -99,7 +99,7 @@ class CourierEventProcessorTest: XCTestCase {
             performOnQueue: mockQueue,
             classifier: mockClassifier,
             eventWarehouser: mockWarehouser, sampler: mockSampler,
-            networkOptions: networkOptions
+            networkOptions: networkOptions, eventExpiryManager: FallbackEventExpirationManager()
         )
         
         XCTAssertNotNil(courierEventProcessor)
@@ -115,7 +115,7 @@ class CourierEventProcessorTest: XCTestCase {
             performOnQueue: mockQueue,
             classifier: mockClassifier,
             eventWarehouser: mockWarehouser, sampler: mockSampler,
-            networkOptions: networkOptions
+            networkOptions: networkOptions, eventExpiryManager: FallbackEventExpirationManager()
         )
 
         XCTAssertFalse(courierEventProcessor.shouldTrackEvent(event: testEvent))
