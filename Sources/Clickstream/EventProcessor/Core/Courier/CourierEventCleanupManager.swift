@@ -117,7 +117,7 @@ final class EventCleanupScheduler: SchedulerService {
             guard let self = self else { return }
             self.subscriber?(self.priority)
         }
-        self.timer?.resume()
+        timer.resume()
         return timer
     }
     
