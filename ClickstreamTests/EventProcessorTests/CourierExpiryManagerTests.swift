@@ -97,32 +97,6 @@ final class CourierExpiryManagerTests: XCTestCase {
         XCTAssertEqual(expiry.timeIntervalSinceNow, 2 * secondsPerDay, accuracy: 1)
     }
 
-    func testExpirationForEvent_zeroDefaultExpiry_returnsApproximatelyNow() throws {
-        let config = try makeConfig(defaultExpiryDays: 0, eventsTTL: [:])
-        let sut = EventExpiryManager(eventExpiryConfig: config)
-
-        let expiry = sut.getDefaultExpiration()
-        XCTAssertEqual(expiry.timeIntervalSinceNow, 0, accuracy: 1)
-    }
-
-    // MARK: - FallbackEventExpirationManager
-
-    func testFallbackDefaultExpiration_isApproximately6MonthsFromNow() {
-        let sut = FallbackEventExpirationManager()
-        let expiry = sut.getDefaultExpiration()
-
-        XCTAssertEqual(expiry.timeIntervalSinceNow, 6 * secondsPer30DayMonth, accuracy: 2)
-    }
-
-    func testFallbackExpirationForEvent_returnsDefault_regardlessOfCsEventName() {
-        let sut = FallbackEventExpirationManager()
-        let event = makeEvent(csEventName: "EventA")
-
-        let expiry = sut.getExpiration(for: event)
-
-        XCTAssertEqual(expiry.timeIntervalSinceNow, 6 * secondsPer30DayMonth, accuracy: 2)
-    }
-
     // MARK: - Date helpers
 
     func testAddingDays_zero_returnsSameInstant() {

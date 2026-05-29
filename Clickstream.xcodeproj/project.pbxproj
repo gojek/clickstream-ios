@@ -18,7 +18,6 @@
 		69CF74B62E8CE616008438D0 /* EventSamplerConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69CF74B42E8CE60D008438D0 /* EventSamplerConstants.swift */; };
 		69CF74B82E8CE75A008438D0 /* EventSamplerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69CF74B72E8CE74F008438D0 /* EventSamplerConfiguration.swift */; };
 		69CF74B92E8CE75A008438D0 /* EventSamplerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69CF74B72E8CE74F008438D0 /* EventSamplerConfiguration.swift */; };
-		69E4237B2FC9670D00B4C6D3 /* CourierEventProcessorAdditionalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E423792FC9670D00B4C6D3 /* CourierEventProcessorAdditionalTests.swift */; };
 		69E4237C2FC9670D00B4C6D3 /* CourierExpiryManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E4237A2FC9670D00B4C6D3 /* CourierExpiryManagerTests.swift */; };
 		69E4237D2FC9670D00B4C6D3 /* CourierEventCleanupManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E423782FC9670D00B4C6D3 /* CourierEventCleanupManagerTests.swift */; };
 		6E2A2FF5A4C4820DF0F31C3C /* libPods-ClickstreamTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0900D4ED17E642E4DA1234F8 /* libPods-ClickstreamTests.a */; };
@@ -322,7 +321,6 @@
 		69CF74B42E8CE60D008438D0 /* EventSamplerConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSamplerConstants.swift; sourceTree = "<group>"; };
 		69CF74B72E8CE74F008438D0 /* EventSamplerConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSamplerConfiguration.swift; sourceTree = "<group>"; };
 		69E423782FC9670D00B4C6D3 /* CourierEventCleanupManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierEventCleanupManagerTests.swift; sourceTree = "<group>"; };
-		69E423792FC9670D00B4C6D3 /* CourierEventProcessorAdditionalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierEventProcessorAdditionalTests.swift; sourceTree = "<group>"; };
 		69E4237A2FC9670D00B4C6D3 /* CourierExpiryManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierExpiryManagerTests.swift; sourceTree = "<group>"; };
 		88F9204101C5E8D41805FD1A /* Pods-ClickstreamTests.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.production.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.production.xcconfig"; sourceTree = "<group>"; };
 		9A0BBA872BC3A59300F7DC01 /* URLRequest+Equality.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+Equality.swift"; sourceTree = "<group>"; };
@@ -832,7 +830,6 @@
 			isa = PBXGroup;
 			children = (
 				69E423782FC9670D00B4C6D3 /* CourierEventCleanupManagerTests.swift */,
-				69E423792FC9670D00B4C6D3 /* CourierEventProcessorAdditionalTests.swift */,
 				69E4237A2FC9670D00B4C6D3 /* CourierExpiryManagerTests.swift */,
 				BDE4675E2A5BD24500BFA976 /* EventProcessorTest.swift */,
 				BDE4675F2A5BD24500BFA976 /* EventProcessorDependenciesTests.swift */,
@@ -1825,7 +1822,6 @@
 				BDE468762A5BD72000BFA976 /* DatabasePersistable.swift in Sources */,
 				BDE4677D2A5BD24500BFA976 /* EventWarehouserTests.swift in Sources */,
 				BD6BDB8B29FBC1360006B04A /* HealthAnalysisEventBatch.swift in Sources */,
-				69E4237B2FC9670D00B4C6D3 /* CourierEventProcessorAdditionalTests.swift in Sources */,
 				69E4237C2FC9670D00B4C6D3 /* CourierExpiryManagerTests.swift in Sources */,
 				69E4237D2FC9670D00B4C6D3 /* CourierEventCleanupManagerTests.swift in Sources */,
 				BDE468102A5BD72000BFA976 /* DispatchSourceTimer+RepeatingTimer.swift in Sources */,

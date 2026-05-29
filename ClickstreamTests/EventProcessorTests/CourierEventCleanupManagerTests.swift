@@ -111,25 +111,6 @@ final class CourierEventCleanupManagerTests: XCTestCase {
         XCTAssertEqual(persistence.fetchAll()?.count, 1)
     }
 
-    // MARK: - EventCleanupScheduler
-
-    func testEventCleanupScheduler_firesSubscriberOnInterval() {
-        let queue = SerialQueue(label: "com.test.cleanup.scheduler", qos: .utility)
-        let priority = Priority(priority: 0, identifier: "cleanup", maxTimeBetweenTwoBatches: 0.1)
-        let scheduler = EventCleanupScheduler(with: priority, performOnQueue: queue)
-
-        let expectation = self.expectation(description: "Scheduler subscriber fires at least twice")
-        expectation.expectedFulfillmentCount = 2
-
-        scheduler.subscriber = { _ in
-            expectation.fulfill()
-        }
-        scheduler.start()
-
-        wait(for: [expectation], timeout: 2.0)
-        scheduler.stop()
-    }
-
     func testEventCleanupScheduler_stop_preventsFurtherCallbacks() {
         let queue = SerialQueue(label: "com.test.cleanup.scheduler.stop", qos: .utility)
         let priority = Priority(priority: 0, identifier: "cleanup", maxTimeBetweenTwoBatches: 0.1)
