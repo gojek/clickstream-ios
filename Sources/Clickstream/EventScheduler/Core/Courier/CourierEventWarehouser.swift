@@ -28,7 +28,7 @@ final class CourierEventWarehouser: EventWarehouser {
         
         start()
         
-        eventCleanupManager?.schedule()
+        eventCleanupManager?.cleanUpExpiredEvents()
     }
     
     /// This method starts the event batch processor.
