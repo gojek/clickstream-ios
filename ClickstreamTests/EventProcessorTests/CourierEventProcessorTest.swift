@@ -13,6 +13,7 @@ import SwiftProtobuf
 class CourierEventProcessorTest: XCTestCase {
     
     private var mockQueue: SerialQueue!
+    private let dbQueueMock = SerialQueue(label: "test.courier.db.queue", qos: .utility, attributes: .concurrent)
     private var mockClassifier: MockEventClassifier!
     private var mockWarehouser: CourierEventWarehouser!
     private var courierEventProcessor: CourierEventProcessor!
@@ -34,7 +35,7 @@ class CourierEventProcessorTest: XCTestCase {
 
         networkOptions = ClickstreamNetworkOptions()
         batchSizeRegulator = CourierBatchSizeRegulator()
-        persitance = DefaultDatabaseDAO<CourierEvent>(database: db, performOnQueue: mockQueue)
+        persitance = DefaultDatabaseDAO<CourierEvent>(database: db, performOnQueue: dbQueueMock)
         
         courierNetworkBuilder = MockNetworkBuilder()
         courierBatchCreator = CourierEventBatchCreator(with: courierNetworkBuilder, performOnQueue: mockQueue, healthTrackingConfig: .init())
