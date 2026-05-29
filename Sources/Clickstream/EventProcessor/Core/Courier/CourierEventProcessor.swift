@@ -106,7 +106,7 @@ final class CourierEventProcessor: EventProcessor {
         !networkOptions.isWebsocketEnabled || networkOptions.courierExclusiveEventTypes.contains(event.messageName)
     }
 
-    func createBinaryEvent(event: CSBinaryEvent, isUserAuthenticated: Bool) {
+    func createBinaryEvent(event: CSBinaryEvent) {
         self.serialQueue.async { [weak self] in
             guard let checkedSelf = self else { return }
             if let eventToStore = checkedSelf.constructBinaryEvent(event: event) {

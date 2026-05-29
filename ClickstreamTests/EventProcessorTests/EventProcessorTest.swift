@@ -178,7 +178,7 @@ class EventProcessorTest: XCTestCase {
         let base64 = payload.base64EncodedString()
         let event = CSBinaryEvent(type: "Gopay-Container-Component", encodedData: base64, product: "gopay")
 
-        eventProcessor.createBinaryEvent(event: event, isUserAuthenticated: false)
+        eventProcessor.createBinaryEvent(event: event)
 
         let expectation = XCTestExpectation(description: "binary event stored")
         processorQueueMock.async {
@@ -211,7 +211,7 @@ class EventProcessorTest: XCTestCase {
     func testCreateBinaryEventWithInvalidBase64IsDropped() {
         let event = CSBinaryEvent(type: "gopay-container-component", encodedData: "not-valid-base64!!!")
 
-        eventProcessor.createBinaryEvent(event: event, isUserAuthenticated: false)
+        eventProcessor.createBinaryEvent(event: event)
 
         let expectation = XCTestExpectation(description: "invalid binary event handled")
         processorQueueMock.async {
@@ -225,7 +225,7 @@ class EventProcessorTest: XCTestCase {
         let payload = "data".data(using: .utf8)!
         let event = CSBinaryEvent(type: "gopay-container-component", encodedData: payload.base64EncodedString())
 
-        eventProcessor.createBinaryEvent(event: event, isUserAuthenticated: false)
+        eventProcessor.createBinaryEvent(event: event)
 
         let expectation = XCTestExpectation(description: "nil classification handled")
         processorQueueMock.async {

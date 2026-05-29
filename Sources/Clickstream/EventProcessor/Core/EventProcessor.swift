@@ -11,7 +11,7 @@ import SwiftProtobuf
 
 protocol EventProcessorInput {
     func createEvent(event: ClickstreamEvent, isUserAuthenticated: Bool)
-    func createBinaryEvent(event: CSBinaryEvent, isUserAuthenticated: Bool)
+    func createBinaryEvent(event: CSBinaryEvent)
 }
 
 protocol EventProcessorOutput { }
@@ -108,7 +108,7 @@ final class DefaultEventProcessor: EventProcessor {
         }
     }
 
-    func createBinaryEvent(event: CSBinaryEvent, isUserAuthenticated: Bool) {
+    func createBinaryEvent(event: CSBinaryEvent) {
         self.serialQueue.async { [weak self] in
             guard let checkedSelf = self else { return }
             if let eventToStore = checkedSelf.constructBinaryEvent(event: event) {

@@ -190,7 +190,7 @@ public final class Clickstream {
     /// The encoded protobuf payload is forwarded as-is via the websocket channel.
     /// - Parameter event: A `CSBinaryEvent` carrying the base64-encoded proto payload and its type.
     public func trackBinaryEvent(_ event: CSBinaryEvent) {
-        socketEventProcessor.createBinaryEvent(event: event, isUserAuthenticated: isUserAuthenticated)
+        socketEventProcessor.createBinaryEvent(event: event)
     }
     
     /// Initializes an instance of the API with the given configurations.
