@@ -70,7 +70,7 @@ class CourierEventCleanupManager: EventCleanupProtocol {
         self.schedule()
         self.expiredEventsCleanupScheduler.subscriber = { [weak self] _ in
             guard let checkedSelf = self else { return }
-            checkedSelf.persistence.deleteWhere(CourierEvent.Columns.ttl, lessThan: Date())
+            checkedSelf.persistence.deleteWhere(CourierEvent.Columns.expiryTime, lessThan: Date())
         }
     }
 }
