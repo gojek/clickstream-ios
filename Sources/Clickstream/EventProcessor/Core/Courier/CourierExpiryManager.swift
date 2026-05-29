@@ -33,7 +33,7 @@ class EventExpiryManager: EventExpirationProtocol {
 
     /// `Date()` advanced by `defaultExpiryDays`.
     func getDefaultExpiration() -> Date {
-        let default_ttl = eventExpiryConfig.defaultExpiryDays
+        let default_ttl = calculateMinimumExpiryDays(for: eventExpiryConfig.defaultExpiryDays)
         let date = Date().addingDays(default_ttl)
         return date
     }
@@ -45,11 +45,20 @@ class EventExpiryManager: EventExpirationProtocol {
         }
 
         if let ttl = eventExpiryConfig.eventsTTL[csEventName] {
-            let date = Date().addingDays(ttl)
+            let date = Date().addingDays(calculateMinimumExpiryDays(for: ttl))
             return date
         }
 
         return getDefaultExpiration()
+    }
+    
+    /// Calculate the minimum days
+    func calculateMinimumExpiryDays(for days: Int) -> Int {
+        let minimumExpiryDays = eventExpiryConfig.minimumExpiryDays
+        if days < minimumExpiryDays {
+            return minimumExpiryDays
+        }
+        return days
     }
 }
 
@@ -58,7 +67,7 @@ class EventExpiryManager: EventExpirationProtocol {
 class FallbackEventExpirationManager: EventExpirationProtocol {
 
     func getDefaultExpiration() -> Date {
-        return Date().addingMonthsWith30days(6)
+        return Date().addingMonthsWith30days(2)
     }
 
     func getExpiration(for event: ClickstreamEvent) -> Date {
