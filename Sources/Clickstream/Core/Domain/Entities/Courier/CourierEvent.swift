@@ -68,6 +68,8 @@ extension CourierEvent {
 }
 
 // MARK: - TTLPersistable
+/// `CourierEvent` carries an explicit `ttl` column, so it opts into TTL-aware
+/// persistence queries by exposing that column to the database layer.
 extension CourierEvent: TTLPersistable {
     static var ttlColumn: Column { Columns.ttl }
 }
