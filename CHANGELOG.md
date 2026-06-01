@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [2.0.88] - 2026-06-01
+
+[e294493] Add TTL-based cleanup for persisted Courier events (#140) (by @rishabhabbu-ctrl)
+[0203a8e] [CI] Bump version - 2.0.87 (by @github-actions[bot])
+
 ## [2.0.86] - 2026-05-19
 
 [a29fba5] Adding a EventSampler in CourierProcessor (#135) (by @rishabhabbu-ctrl)
