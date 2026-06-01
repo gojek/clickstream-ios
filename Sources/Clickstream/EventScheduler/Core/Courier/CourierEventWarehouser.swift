@@ -10,20 +10,25 @@ final class CourierEventWarehouser: EventWarehouser {
     private let batchProcessor: CourierEventBatchProcessor
     private let batchSizeRegulator: CourierBatchSizeRegulator
     private let networkOptions: ClickstreamNetworkOptions
+    private let eventCleanupManager: CourierEventCleanupManager?
 
     init(with batchProcessor: CourierEventBatchProcessor,
          performOnQueue: SerialQueue,
          persistence: DefaultDatabaseDAO<CourierEvent>,
          batchSizeRegulator: CourierBatchSizeRegulator,
-         networkOptions: ClickstreamNetworkOptions) {
+         networkOptions: ClickstreamNetworkOptions,
+         eventCleanupManager: CourierEventCleanupManager? = nil) {
 
         self.performQueue = performOnQueue
         self.persistence = persistence
         self.batchProcessor = batchProcessor
         self.batchSizeRegulator = batchSizeRegulator
         self.networkOptions = networkOptions
-
+        self.eventCleanupManager = eventCleanupManager
+        
         start()
+        
+        eventCleanupManager?.cleanUpExpiredEvents()
     }
     
     /// This method starts the event batch processor.

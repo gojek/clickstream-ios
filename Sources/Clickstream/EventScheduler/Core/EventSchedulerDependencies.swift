@@ -113,6 +113,14 @@ final class EventSchedulerDependencies {
     private lazy var courierBatchSizeRegulator: CourierBatchSizeRegulator = {
         CourierBatchSizeRegulator()
     }()
+    
+    private lazy var eventCleanupManager: CourierEventCleanupManager? = {
+        if let ttl_config = Clickstream.courierConfigurations.time_to_live, ttl_config.isTTLEnabled, ttl_config.isTTLCleanupEnabled {
+            return CourierEventCleanupManager(cleanupConfiguration: ttl_config, persistence: courierPersistence)
+        } else {
+            return nil
+        }
+    }()
 
     /// Call this method to get the EventWarehouser instance.
     /// - Returns: EventWarehouser instance.
@@ -131,7 +139,8 @@ final class EventSchedulerDependencies {
             performOnQueue: courierwarehouserQueue,
             persistence: courierPersistence,
             batchSizeRegulator: courierBatchSizeRegulator,
-            networkOptions: networkOptions
+            networkOptions: networkOptions,
+            eventCleanupManager: eventCleanupManager
         )
     }
 }

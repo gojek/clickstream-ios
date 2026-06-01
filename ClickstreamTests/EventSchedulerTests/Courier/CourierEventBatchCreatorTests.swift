@@ -101,6 +101,6 @@ class MockNetworkBuilder: NetworkBuildable {
 
 extension CourierEvent {
     static func mock(type: String = "test_event", guid: String = UUID().uuidString) -> Self {
-        return CourierEvent(guid: guid, timestamp: Date(), type: type, eventProtoData: Data())
+        return CourierEvent(guid: guid, timestamp: Date(), type: type, eventProtoData: Data(), expiryTime: Date())
     }
 }

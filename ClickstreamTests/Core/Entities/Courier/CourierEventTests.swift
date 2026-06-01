@@ -10,7 +10,7 @@ final class CourierEventTests: XCTestCase {
         let type = "realtime"
         let eventProtoData = "test data".data(using: .utf8)!
         
-        let event = CourierEvent(guid: guid, timestamp: timestamp, type: type, eventProtoData: eventProtoData)
+        let event = CourierEvent(guid: guid, timestamp: timestamp, type: type, eventProtoData: eventProtoData, expiryTime: Date())
         
         XCTAssertEqual(event.guid, guid)
         XCTAssertEqual(event.timestamp, timestamp)
@@ -24,7 +24,7 @@ final class CourierEventTests: XCTestCase {
         let type = "realtime"
         let eventProtoData = Data()
         
-        let event = CourierEvent(guid: guid, timestamp: timestamp, type: type, eventProtoData: eventProtoData)
+        let event = CourierEvent(guid: guid, timestamp: timestamp, type: type, eventProtoData: eventProtoData, expiryTime: Date())
         
         XCTAssertEqual(event.guid, guid)
         XCTAssertEqual(event.timestamp, timestamp)
@@ -34,8 +34,8 @@ final class CourierEventTests: XCTestCase {
     
     func testEventComparison_basedOnTimestamp() {
         let baseDate = Date()
-        let firstEvent = CourierEvent(guid: "1", timestamp: baseDate, type: "realtime", eventProtoData: Data())
-        let secondEvent = CourierEvent(guid: "2", timestamp: Date(timeInterval: 1, since: baseDate), type: "realtime", eventProtoData: Data())
+        let firstEvent = CourierEvent(guid: "1", timestamp: baseDate, type: "realtime", eventProtoData: Data(), expiryTime: Date())
+        let secondEvent = CourierEvent(guid: "2", timestamp: Date(timeInterval: 1, since: baseDate), type: "realtime", eventProtoData: Data(), expiryTime: Date())
         
         XCTAssertTrue(firstEvent < secondEvent)
         XCTAssertFalse(secondEvent < firstEvent)
@@ -43,8 +43,8 @@ final class CourierEventTests: XCTestCase {
     
     func testEventComparison_equalTimestamps() {
         let timestamp = Date()
-        let firstEvent = CourierEvent(guid: "1", timestamp: timestamp, type: "realtime", eventProtoData: Data())
-        let secondEvent = CourierEvent(guid: "2", timestamp: timestamp, type: "realtime", eventProtoData: Data())
+        let firstEvent = CourierEvent(guid: "1", timestamp: timestamp, type: "realtime", eventProtoData: Data(), expiryTime: Date())
+        let secondEvent = CourierEvent(guid: "2", timestamp: timestamp, type: "realtime", eventProtoData: Data(), expiryTime: Date())
         
         XCTAssertFalse(firstEvent < secondEvent)
         XCTAssertFalse(secondEvent < firstEvent)
@@ -56,8 +56,8 @@ final class CourierEventTests: XCTestCase {
         let type = "realtime"
         let eventProtoData = Data()
         
-        let event1 = CourierEvent(guid: guid, timestamp: timestamp, type: type, eventProtoData: eventProtoData)
-        let event2 = CourierEvent(guid: guid, timestamp: timestamp, type: type, eventProtoData: eventProtoData)
+        let event1 = CourierEvent(guid: guid, timestamp: timestamp, type: type, eventProtoData: eventProtoData, expiryTime: Date())
+        let event2 = CourierEvent(guid: guid, timestamp: timestamp, type: type, eventProtoData: eventProtoData, expiryTime: Date())
         
         XCTAssertEqual(event1, event2)
     }
@@ -67,8 +67,8 @@ final class CourierEventTests: XCTestCase {
         let type = "realtime"
         let eventProtoData = Data()
         
-        let event1 = CourierEvent(guid: "guid1", timestamp: timestamp, type: type, eventProtoData: eventProtoData)
-        let event2 = CourierEvent(guid: "guid2", timestamp: timestamp, type: type, eventProtoData: eventProtoData)
+        let event1 = CourierEvent(guid: "guid1", timestamp: timestamp, type: type, eventProtoData: eventProtoData, expiryTime: Date())
+        let event2 = CourierEvent(guid: "guid2", timestamp: timestamp, type: type, eventProtoData: eventProtoData, expiryTime: Date())
         
         XCTAssertNotEqual(event1, event2)
     }
@@ -78,7 +78,7 @@ final class CourierEventTests: XCTestCase {
             guid: UUID().uuidString,
             timestamp: Date(),
             type: "realtime",
-            eventProtoData: "test".data(using: .utf8)!
+            eventProtoData: "test".data(using: .utf8)!, expiryTime: Date()
         )
         
         let encoded = try JSONEncoder().encode(event)
@@ -91,10 +91,6 @@ final class CourierEventTests: XCTestCase {
     
     func testEventTableName() {
         XCTAssertEqual(CourierEvent.tableName, "courierEvent")
-    }
-    
-    func testEventTableMigrations() {
-        XCTAssertNil(CourierEvent.tableMigrations)
     }
     
     func testEventColumns() {

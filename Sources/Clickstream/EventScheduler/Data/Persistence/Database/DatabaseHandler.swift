@@ -9,6 +9,12 @@
 import Foundation
 import GRDB
 
+/// Conformance opts a `DatabasePersistable` type into TTL-aware queries by exposing the
+/// column that stores its expiration date.
+protocol TTLPersistable {
+    static var ttlColumn: Column { get }
+}
+
 protocol Database {
     
     /// Use this method to create a table in the db, if needed.
@@ -49,7 +55,23 @@ protocol Database {
     ///   - value: A value for the where clause.
     ///   - n: The count of the objects to be deleted.
     func deleteWhere<T: DatabasePersistable>(_ column: Column, value: String, n: Int) throws -> [T]?
-    
+
+    /// Use this method to delete first `n` objects from a table with a `where` clause,
+    /// restricted to rows whose TTL column is still in the future (i.e. not expired).
+    /// Only applicable to types conforming to `TTLPersistable`.
+    /// - Parameters:
+    ///   - column: GRDB column for the equality clause.
+    ///   - value: A value for the where clause.
+    ///   - n: The count of the objects to be deleted. If `n == 0` delete all matches.
+    func deleteWhereNotExpired<T: DatabasePersistable & TTLPersistable>(_ column: Column, value: String, n: Int) throws -> [T]?
+
+    /// Use this method to delete objects from a table where the given column's value is
+    /// strictly less than the supplied value.
+    /// - Parameters:
+    ///   - column: GRDB column to evaluate.
+    ///   - lessThan: The upper bound (exclusive) for the where clause.
+    func deleteWhere<T: DatabasePersistable>(_ column: Column, lessThan value: DatabaseValueConvertible) throws -> [T]?
+
     /// Suggests whether a table with the name exists or not.
     /// - Parameter name: name of table.
     func doesTableExist(with name: String) throws -> Bool?
@@ -182,6 +204,24 @@ extension DefaultDatabase {
         try dbWriter?.write { db in
             let objects = n > 0 ? try T.limit(n).filter(column == value).fetchAll(db) : try T.filter(column == value).fetchAll(db)
             _ = n > 0 ? try T.limit(n).filter(column == value).deleteAll(db) : try T.filter(column == value).deleteAll(db)
+            return objects
+        }
+    }
+
+    func deleteWhereNotExpired<T>(_ column: Column, value: String, n: Int) throws -> [T]? where T : DatabasePersistable & TTLPersistable {
+        try dbWriter?.write { db in
+            let baseRequest = T.filter(column == value && T.ttlColumn >= Date())
+            let request = n > 0 ? baseRequest.limit(n) : baseRequest
+            let objects = try request.fetchAll(db)
+            _ = try request.deleteAll(db)
+            return objects
+        }
+    }
+
+    func deleteWhere<T>(_ column: Column, lessThan value: DatabaseValueConvertible) throws -> [T]? where T : DatabasePersistable {
+        try dbWriter?.write { db in
+            let objects = try T.filter(column < value).fetchAll(db)
+            _ = try T.filter(column < value).deleteAll(db)
             return objects
         }
     }

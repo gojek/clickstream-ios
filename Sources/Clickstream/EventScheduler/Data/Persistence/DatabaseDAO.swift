@@ -146,7 +146,44 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
             }
         }
     }
-    
+
+    /// Use this method to delete first `n` non-expired entries with a `where` clause.
+    /// Only available when `Object` exposes a TTL column via `TTLPersistable`.
+    /// - Parameters:
+    ///   - column: GRDB column for the equality clause.
+    ///   - value: A value for the where clause.
+    ///   - n: The count of the objects to be deleted. If `n == 0` delete all matches.
+    /// - Returns: An array of removed `DatabasePersistable` objects.
+    @discardableResult
+    func deleteWhereNotExpired(_ column: Column, value: String, n: Int = 0) -> [Object]? where Object: TTLPersistable {
+        performQueue.sync(flags: .barrier) {
+            do {
+                return try database.deleteWhereNotExpired(column, value: value, n: n)
+            } catch {
+                print(error)
+                return nil
+            }
+        }
+    }
+
+    /// Use this method to delete all entries where the given column's value is strictly
+    /// less than the supplied value.
+    /// - Parameters:
+    ///   - column: GRDB column to evaluate.
+    ///   - lessThan: The upper bound (exclusive) for the where clause.
+    /// - Returns: An array of removed `DatabasePersistable` objects.
+    @discardableResult
+    func deleteWhere(_ column: Column, lessThan value: DatabaseValueConvertible) -> [Object]? {
+        performQueue.sync(flags: .barrier) {
+            do {
+                return try database.deleteWhere(column, lessThan: value)
+            } catch {
+                print(error)
+                return nil
+            }
+        }
+    }
+
     func doesTableExist(with name: String) -> Bool? {
         performQueue.sync(flags: .barrier) {
             do {

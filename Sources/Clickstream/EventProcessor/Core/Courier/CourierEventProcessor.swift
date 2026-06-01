@@ -17,17 +17,20 @@ final class CourierEventProcessor: EventProcessor {
     private let classifier: EventClassifier
     private let sampler: EventSampler?
     private let networkOptions: ClickstreamNetworkOptions
+    private let eventExpirationManager: EventExpirationProtocol
 
     init(performOnQueue: SerialQueue,
          classifier: EventClassifier,
          eventWarehouser: CourierEventWarehouser,
          sampler: EventSampler?,
-         networkOptions: ClickstreamNetworkOptions) {
+         networkOptions: ClickstreamNetworkOptions,
+         eventExpiryManager: EventExpirationProtocol) {
         self.serialQueue = performOnQueue
         self.classifier = classifier
         self.eventWarehouser = eventWarehouser
         self.sampler = sampler
         self.networkOptions = networkOptions
+        self.eventExpirationManager = eventExpiryManager
     }
 
     func shouldTrackEvent(event: ClickstreamEvent) -> Bool {
@@ -110,7 +113,7 @@ final class CourierEventProcessor: EventProcessor {
             return try CourierEvent(guid: event.guid,
                                     timestamp: event.timeStamp,
                                     type: classification,
-                                    eventProtoData: csEvent.serializedData())
+                                    eventProtoData: csEvent.serializedData(), expiryTime: eventExpirationManager.getExpiration(for: event))
         } catch {
             return nil
         }
