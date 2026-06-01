@@ -10,7 +10,7 @@ import Foundation
 import SwiftProtobuf
 import GRDB
 
-struct EventRequest: EventRequestDatabasePersistable {
+struct EventRequest: EventRequestDatabasePersistable, Decodable {
 
     let guid: String
     var data: Data?
@@ -21,6 +21,10 @@ struct EventRequest: EventRequestDatabasePersistable {
     var isInternal: Bool?
     var eventCount: Int
     
+    enum CodingKeys: String, CodingKey {
+        case guid, data, timeStamp, retriesMade, createdTimestamp, eventType, isInternal, eventCount
+    }
+    
     init(guid: String, data: Data? = nil) {
         self.guid = guid
         self.data = data
@@ -30,18 +34,6 @@ struct EventRequest: EventRequestDatabasePersistable {
         self.isInternal = false
         self.eventType = .realTime
         self.eventCount = 0
-    }
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.guid = try container.decode(String.self, forKey: .guid)
-        self.data = try? container.decodeIfPresent(Data.self, forKey: .data)
-        self.timeStamp = try container.decode(Date.self, forKey: .timeStamp)
-        self.retriesMade = try container.decode(Int.self, forKey: .retriesMade)
-        self.createdTimestamp = try? container.decodeIfPresent(Date.self, forKey: .createdTimestamp)
-        self.eventType = try? container.decodeIfPresent(Constants.EventType.self, forKey: .eventType)
-        self.isInternal = try? container.decodeIfPresent(Bool.self, forKey: .isInternal)
-        self.eventCount = (try? container.decodeIfPresent(Int.self, forKey: .eventCount)) ?? 0
     }
 }
 
