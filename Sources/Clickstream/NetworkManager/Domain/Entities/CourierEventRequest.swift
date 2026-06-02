@@ -29,7 +29,7 @@ struct CourierEventRequest: EventRequestDatabasePersistable {
         self.isInternal = false
         self.eventType = .realTime
         self.eventCount = 0
-    }    
+    }
 }
 
 // MARK: - DatabasePersistable
