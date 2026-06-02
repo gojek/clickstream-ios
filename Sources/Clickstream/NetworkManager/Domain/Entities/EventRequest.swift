@@ -10,7 +10,7 @@ import Foundation
 import SwiftProtobuf
 import GRDB
 
-struct EventRequest: EventRequestDatabasePersistable, Decodable {
+struct EventRequest: EventRequestDatabasePersistable {
 
     let guid: String
     var data: Data?
@@ -20,10 +20,6 @@ struct EventRequest: EventRequestDatabasePersistable, Decodable {
     var eventType: Constants.EventType?
     var isInternal: Bool?
     var eventCount: Int
-    
-    enum CodingKeys: String, CodingKey {
-        case guid, data, timeStamp, retriesMade, createdTimestamp, eventType, isInternal, eventCount
-    }
     
     init(guid: String, data: Data? = nil) {
         self.guid = guid
