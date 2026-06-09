@@ -50,10 +50,21 @@ final class CourierEventBatchProcessor: EventBatchProcessor {
                     let numberOfEventsToBeFetched = checkedSelf
                         .batchSizeRegulator
                         .regulatedNumberOfItemsPerBatch(expectedBatchSize: maxBatchSize)
-
-                    let events = checkedSelf.persistence.deleteWhere(CourierEvent.Columns.type,
-                                                                     value: priority.identifier,
-                                                                     n: numberOfEventsToBeFetched)
+                    
+                    let courierConfigurations = Clickstream.courierConfigurations
+                    
+                    var events: [CourierEvent]?
+                    
+                    if let ttl_config = courierConfigurations.time_to_live, ttl_config.isTTLEnabled {
+                        events = checkedSelf.persistence.deleteWhereNotExpired(CourierEvent.Columns.type,
+                                                                                   value: priority.identifier,
+                                                                                   n: numberOfEventsToBeFetched)
+                    } else {
+                        
+                        events = checkedSelf.persistence.deleteWhere(CourierEvent.Columns.type,
+                                                                         value: priority.identifier,
+                                                                         n: numberOfEventsToBeFetched)
+                    }
                     guard let events, !events.isEmpty else {
                         return
                     }
@@ -152,8 +163,24 @@ final class CourierEventBatchProcessor: EventBatchProcessor {
     }
     
     func sendP0(classificationType: String) {
-        guard eventBatchCreator.canForward, let events = self.persistence.deleteWhere(CourierEvent.Columns.type, value: classificationType),
-              !events.isEmpty else { return }
+        guard eventBatchCreator.canForward else { return }
+        
+        let courierConfigurations = Clickstream.courierConfigurations
+        
+        var events: [CourierEvent]?
+        
+        if let ttl_config = courierConfigurations.time_to_live, ttl_config.isTTLEnabled {
+            events = self.persistence.deleteWhereNotExpired(CourierEvent.Columns.type,
+                                                                       value: classificationType)
+        } else {
+            
+            events = self.persistence.deleteWhere(CourierEvent.Columns.type,
+                                                             value: classificationType)
+        }
+        
+        guard let events, !events.isEmpty else {
+            return
+        }
         
         _ = self.eventBatchCreator.forward(with: events)
     }

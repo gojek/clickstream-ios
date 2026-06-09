@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [2.0.86] - 2026-05-19
+
+[a29fba5] Adding a EventSampler in CourierProcessor (#135) (by @rishabhabbu-ctrl)
+[498ac91] Update EventProcessor.swift so that the EventSampler starts working a… (#134) (by @rishabhabbu-ctrl)
+[8d837ae] Merge pull request #133 from gojek/release/2.0.85 (by @lucmahn88)
+
 ## [2.0.85] - 2026-05-11
 
 [555c1a3] Merge pull request #130 from gojek/fix/ws_timestamp_update_crash (by @lucmahn88)

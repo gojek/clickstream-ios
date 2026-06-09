@@ -36,7 +36,8 @@ final class DefaultClickstreamDependencies {
         self.samplerConfiguration = samplerConfiguration
         self.networkOptions = networkOptions
 
-        let db = try DefaultDatabase(qos: .WAL)
+        let db = try DefaultDatabase(qos: .WAL,
+                                     recoveryEnabled: Clickstream.dbCorruptionRecoveryEnabled)
         database = db
         networkManagerDependencies = NetworkManagerDependencies(with: request, db: db, networkOptions: networkOptions)
     }
@@ -93,12 +94,17 @@ final class DefaultClickstreamDependencies {
         EventProcessorDependencies(
             socketEventWarehouser: socketEventWarehouser,
             courierEventWarehouser: courierEventWarehouser,
-            socketEventSampler: nil,
+            courierEventSampler: courierEventSampler,
             networkOptions: networkOptions,
         ).makeCourierEventProcessor()
     }()
 
     lazy var socketEventSampler: EventSampler? = {
+        guard let samplerConfiguration else { return nil }
+        return DefaultEventSampler(config: samplerConfiguration)
+    }()
+    
+    lazy var courierEventSampler: EventSampler? = {
         guard let samplerConfiguration else { return nil }
         return DefaultEventSampler(config: samplerConfiguration)
     }()

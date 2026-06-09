@@ -43,6 +43,10 @@ public final class Tracker {
     /// Tells whether the debugMode is enabled or not.
     public static var debugMode: Bool = false
     
+    /// Set when the persistent store was found corrupt and recreated before the tracker was ready.
+    /// Flushed as a `ClickstreamDBCorrupted` health event once the tracker is initialised.
+    static var pendingDatabaseCorruptionRecovery: Bool = false
+    
     var location: CSLocation?
     
     private static let queue = SerialQueue(label: Constants.QueueIdentifiers.tracker.rawValue, qos: .utility)
@@ -105,11 +109,23 @@ public final class Tracker {
                 sharedInstance = Tracker(appStateNotifier: DefaultAppStateNotifierService(with: queue),
                                          db: db, dataSource: dataSource, delegate: delegate)
                 sharedInstance?.commonProperties = commonProperties
+                flushPendingDatabaseCorruptionEventIfNeeded()
                 return sharedInstance
             }
+            flushPendingDatabaseCorruptionEventIfNeeded()
             return instance
         }
         return nil
+    }
+    
+    /// Records a deferred `ClickstreamDBCorrupted` health event captured before the tracker existed.
+    private static func flushPendingDatabaseCorruptionEventIfNeeded() {
+        guard pendingDatabaseCorruptionRecovery else { return }
+        pendingDatabaseCorruptionRecovery = false
+        if let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamDBCorrupted,
+                                                 reason: FailureReason.db_corrupted.rawValue) {
+            sharedInstance?.record(event: healthEvent)
+        }
     }
     
     func record(event: AnalysisEvent?) {

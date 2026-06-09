@@ -36,6 +36,10 @@ enum Constants {
         
         // MARK: - Coefficients
         static let coefficientOfConnectionRetries = 1.3
+        
+        // MARK: - Database
+        /// Time (in seconds) a database connection waits for a held lock before failing with `SQLITE_BUSY`.
+        static let databaseBusyTimeout: TimeInterval = 5
     }
     
     enum QueueIdentifiers: QueueIdentifier {

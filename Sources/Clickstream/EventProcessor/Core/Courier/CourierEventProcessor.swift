@@ -15,24 +15,41 @@ final class CourierEventProcessor: EventProcessor {
     private let eventWarehouser: CourierEventWarehouser
     private let serialQueue: SerialQueue
     private let classifier: EventClassifier
+    private let sampler: EventSampler?
     private let networkOptions: ClickstreamNetworkOptions
+    private let eventExpirationManager: EventExpirationProtocol
 
     init(performOnQueue: SerialQueue,
          classifier: EventClassifier,
          eventWarehouser: CourierEventWarehouser,
-         networkOptions: ClickstreamNetworkOptions) {
+         sampler: EventSampler?,
+         networkOptions: ClickstreamNetworkOptions,
+         eventExpiryManager: EventExpirationProtocol) {
         self.serialQueue = performOnQueue
         self.classifier = classifier
         self.eventWarehouser = eventWarehouser
+        self.sampler = sampler
         self.networkOptions = networkOptions
+        self.eventExpirationManager = eventExpiryManager
     }
 
     func shouldTrackEvent(event: ClickstreamEvent) -> Bool {
         networkOptions.courierEventTypes.contains(event.messageName)
     }
+
+    func sampleEvent(event: ClickstreamEvent) -> Bool {
+        if let eventSampler = sampler {
+            return eventSampler.shouldTrack(event: event)
+        }
+        return true
+    }
     
     func createEvent(event: ClickstreamEvent, isUserAuthenticated: Bool) {
         self.serialQueue.async { [weak self] in guard let checkedSelf = self else { return }
+            guard checkedSelf.sampleEvent(event: event) else {
+                return
+            }
+            
             #if TRACKER_ENABLED
             if Tracker.debugMode {
                 let isCourierWhitelisted = checkedSelf.networkOptions.courierEventTypes.contains(event.messageName)
@@ -96,7 +113,7 @@ final class CourierEventProcessor: EventProcessor {
             return try CourierEvent(guid: event.guid,
                                     timestamp: event.timeStamp,
                                     type: classification,
-                                    eventProtoData: csEvent.serializedData())
+                                    eventProtoData: csEvent.serializedData(), expiryTime: eventExpirationManager.getExpiration(for: event))
         } catch {
             return nil
         }

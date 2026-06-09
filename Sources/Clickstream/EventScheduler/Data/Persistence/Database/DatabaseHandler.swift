@@ -9,6 +9,12 @@
 import Foundation
 import GRDB
 
+/// Conformance opts a `DatabasePersistable` type into TTL-aware queries by exposing the
+/// column that stores its expiration date.
+protocol TTLPersistable {
+    static var ttlColumn: Column { get }
+}
+
 protocol Database {
     
     /// Use this method to create a table in the db, if needed.
@@ -49,7 +55,23 @@ protocol Database {
     ///   - value: A value for the where clause.
     ///   - n: The count of the objects to be deleted.
     func deleteWhere<T: DatabasePersistable>(_ column: Column, value: String, n: Int) throws -> [T]?
-    
+
+    /// Use this method to delete first `n` objects from a table with a `where` clause,
+    /// restricted to rows whose TTL column is still in the future (i.e. not expired).
+    /// Only applicable to types conforming to `TTLPersistable`.
+    /// - Parameters:
+    ///   - column: GRDB column for the equality clause.
+    ///   - value: A value for the where clause.
+    ///   - n: The count of the objects to be deleted. If `n == 0` delete all matches.
+    func deleteWhereNotExpired<T: DatabasePersistable & TTLPersistable>(_ column: Column, value: String, n: Int) throws -> [T]?
+
+    /// Use this method to delete objects from a table where the given column's value is
+    /// strictly less than the supplied value.
+    /// - Parameters:
+    ///   - column: GRDB column to evaluate.
+    ///   - lessThan: The upper bound (exclusive) for the where clause.
+    func deleteWhere<T: DatabasePersistable>(_ column: Column, lessThan value: DatabaseValueConvertible) throws -> [T]?
+
     /// Suggests whether a table with the name exists or not.
     /// - Parameter name: name of table.
     func doesTableExist(with name: String) throws -> Bool?
@@ -69,8 +91,13 @@ final class DefaultDatabase: Database {
     private let qos: QoS
     private var registeredMigrations: Set<String> = Set()
     
-    init(qos: QoS = .utility) throws {
+    /// When `true`, the store is integrity-checked on open and recreated if corrupt.
+    /// Gated behind a client-supplied feature flag; defaults to `false` to preserve legacy behaviour.
+    private let recoveryEnabled: Bool
+    
+    init(qos: QoS = .utility, recoveryEnabled: Bool = false) throws {
         self.qos = qos
+        self.recoveryEnabled = recoveryEnabled
         try prepareDatabase()
     }
     
@@ -84,14 +111,84 @@ final class DefaultDatabase: Database {
         
         // Connect to a database on disk
         let dbURL = folderURL.appendingPathComponent("db.sqlite")
+        
+        guard recoveryEnabled else {
+            // Legacy behaviour: open the store directly without integrity validation.
+            var configuration = Configuration()
+            configuration.label = qos.rawValue
+            dbWriter = try open(at: dbURL, configuration: configuration)
+            return
+        }
+        
+        do {
+            dbWriter = try makeResilientWriter(at: dbURL)
+            // Validate the store before any record is read. A corrupt on-disk store would
+            // otherwise hand back a bogus blob length while decoding (e.g. `EventRequest.data`),
+            // which crashes hard inside `Data` initialisation on a reader connection and cannot
+            // be caught with `try?`.
+            try verifyIntegrity()
+        } catch {
+            // The store is unusable/corrupt. Discard it and start fresh so the SDK recovers
+            // instead of crash-looping on every read of the bad database.
+            print("Clickstream database is corrupt, recreating it. Description: \(error)")
+            dbWriter = nil
+            try discardDatabaseFiles(at: dbURL)
+            dbWriter = try makeResilientWriter(at: dbURL)
+            reportDatabaseCorruption()
+        }
+    }
+    
+    /// Emits a health event when a corrupt store had to be recreated. The tracker is usually not
+    /// ready yet at SDK-initialisation time, so the event is deferred and flushed once the tracker
+    /// is available.
+    private func reportDatabaseCorruption() {
+        #if TRACKER_ENABLED
+        if let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamDBCorrupted,
+                                                 reason: FailureReason.db_corrupted.rawValue) {
+            Tracker.sharedInstance?.record(event: healthEvent)
+        } else {
+            Tracker.pendingDatabaseCorruptionRecovery = true
+        }
+        #endif
+    }
+    
+    /// Opens the on-disk store with the connection type matching the configured `QoS`.
+    private func open(at dbURL: URL, configuration: Configuration) throws -> DatabaseWriter {
+        if qos == .WAL {
+            return try DatabasePool(path: dbURL.path, configuration: configuration)
+        } else {
+            return try DatabaseQueue(path: dbURL.path, configuration: configuration)
+        }
+    }
+    
+    /// Opens the store with a busy timeout so concurrent access waits for held locks instead of
+    /// failing immediately with `SQLITE_BUSY`.
+    private func makeResilientWriter(at dbURL: URL) throws -> DatabaseWriter {
         var configuration = Configuration()
         configuration.label = qos.rawValue
-        if qos == .WAL {
-            dbWriter = try DatabasePool(path: dbURL.path,
-                                           configuration: configuration)
-        } else {
-            dbWriter = try DatabaseQueue(path: dbURL.path,
-                                           configuration: configuration)
+        configuration.busyMode = .timeout(Constants.Defaults.databaseBusyTimeout)
+        return try open(at: dbURL, configuration: configuration)
+    }
+    
+    /// Runs a SQLite integrity check and throws when the store reports corruption.
+    private func verifyIntegrity() throws {
+        try dbWriter?.read { db in
+            let result = try String.fetchOne(db, sql: "PRAGMA quick_check") ?? ""
+            guard result.caseInsensitiveCompare("ok") == .orderedSame else {
+                throw DatabaseError(resultCode: .SQLITE_CORRUPT,
+                                    message: "Integrity check failed: \(result)")
+            }
+        }
+    }
+    
+    /// Removes the SQLite database file together with its `-wal` and `-shm` side files.
+    private func discardDatabaseFiles(at dbURL: URL) throws {
+        let fileManager = FileManager()
+        for suffix in ["", "-wal", "-shm"] {
+            let url = URL(fileURLWithPath: dbURL.path + suffix)
+            if fileManager.fileExists(atPath: url.path) {
+                try fileManager.removeItem(at: url)
+            }
         }
     }
     
@@ -193,6 +290,24 @@ extension DefaultDatabase {
                 _ = n > 0 ? try T.limit(n).filter(column == value).deleteAll(db) : try T.filter(column == value).deleteAll(db)
                 return objects
             }
+        }
+    }
+
+    func deleteWhereNotExpired<T>(_ column: Column, value: String, n: Int) throws -> [T]? where T : DatabasePersistable & TTLPersistable {
+        try dbWriter?.write { db in
+            let baseRequest = T.filter(column == value && T.ttlColumn >= Date())
+            let request = n > 0 ? baseRequest.limit(n) : baseRequest
+            let objects = try request.fetchAll(db)
+            _ = try request.deleteAll(db)
+            return objects
+        }
+    }
+
+    func deleteWhere<T>(_ column: Column, lessThan value: DatabaseValueConvertible) throws -> [T]? where T : DatabasePersistable {
+        try dbWriter?.write { db in
+            let objects = try T.filter(column < value).fetchAll(db)
+            _ = try T.filter(column < value).deleteAll(db)
+            return objects
         }
     }
 }

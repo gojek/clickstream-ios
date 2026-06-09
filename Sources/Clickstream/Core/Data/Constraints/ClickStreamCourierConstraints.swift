@@ -45,6 +45,9 @@ public struct ClickstreamCourierConstraints: ClickstreamConstraintsContract, Dec
 
     /// This is flag which determines whether the contained events be sent when the device's battery is more that it
     var minBatteryLevelPercent: Float
+    
+    /// This is to configure time to live for events
+    var time_to_live: EventExpirationConfig?
 
     public init(priorities: [Priority] = [Priority()],
                 flushOnBackground: Bool = true,
@@ -55,7 +58,9 @@ public struct ClickstreamCourierConstraints: ClickstreamConstraintsContract, Dec
                 connectionRetryDuration: TimeInterval = 3,
                 batchTimestampUpdateCrashFix: Bool = false,
                 flushOnAppLaunch: Bool = false,
-                minBatteryLevelPercent: Float = 10) {
+                minBatteryLevelPercent: Float = 10,
+                expirationConfig: EventExpirationConfig? = nil
+    ) {
         self.priorities = priorities
         self.flushOnBackground = flushOnBackground
         self.connectionTerminationTimerWaitTime = connectionTerminationTimerWaitTime
@@ -66,6 +71,7 @@ public struct ClickstreamCourierConstraints: ClickstreamConstraintsContract, Dec
         self.batchTimestampUpdateCrashFix = batchTimestampUpdateCrashFix
         self.flushOnAppLaunch = flushOnAppLaunch
         self.minBatteryLevelPercent = minBatteryLevelPercent
+        self.time_to_live = expirationConfig
     }
 
     enum CodingKeys: String, CodingKey {
@@ -94,5 +100,48 @@ public struct ClickstreamCourierConstraints: ClickstreamConstraintsContract, Dec
         batchTimestampUpdateCrashFix = try container.decodeIfPresent(Bool.self, forKey: .batchTimestampUpdateCrashFix) ?? false
         flushOnAppLaunch = try container.decodeIfPresent(Bool.self, forKey: .flushOnAppLaunch) ?? false
         minBatteryLevelPercent = try container.decodeIfPresent(Float.self, forKey: .minBatteryLevelPercent) ?? 10
+    }
+}
+
+
+public struct EventExpirationConfig: Decodable {
+    /// Whether TTL is enabled globally
+    let isTTLEnabled: Bool
+    /// Default expiry in days when an event type isn't specified
+    let defaultExpiryDays: Int
+    /// Minimum allowed expiry in days
+    let minimumExpiryDays: Int
+    /// Per-event TTL overrides (in days)
+    let eventsTTL: [String: Int]
+    /// Whether periodic TTL cleanup is enabled
+    let isTTLCleanupEnabled: Bool
+    /// Cleanup interval in minutes
+    let ttlCleanupIntervalInMin: Int
+    /// Backoff policy for periodic cleanup
+    let ttlPeriodicBackOffPolicy: String
+    /// Backoff delay in minutes
+    let ttlPeriodicBackOffDelayInMin: Int
+
+    enum CodingKeys: String, CodingKey {
+        case isTTLEnabled = "is_ttl_enabled"
+        case defaultExpiryDays = "default_expiry_days"
+        case minimumExpiryDays = "minimum_expiry_days"
+        case eventsTTL = "events_ttl"
+        case isTTLCleanupEnabled = "is_ttl_cleanup_enabled"
+        case ttlCleanupIntervalInMin = "ttl_cleanup_interval_in_min"
+        case ttlPeriodicBackOffPolicy = "ttl_periodic_backOff_policy"
+        case ttlPeriodicBackOffDelayInMin = "ttl_periodic_backOff_delay_in_min"
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        isTTLEnabled = try container.decodeIfPresent(Bool.self, forKey: .isTTLEnabled) ?? false
+        defaultExpiryDays = try container.decodeIfPresent(Int.self, forKey: .defaultExpiryDays) ?? 180
+        minimumExpiryDays = try container.decodeIfPresent(Int.self, forKey: .minimumExpiryDays) ?? 2
+        eventsTTL = try container.decodeIfPresent([String: Int].self, forKey: .eventsTTL) ?? [:]
+        isTTLCleanupEnabled = try container.decodeIfPresent(Bool.self, forKey: .isTTLCleanupEnabled) ?? false
+        ttlCleanupIntervalInMin = try container.decodeIfPresent(Int.self, forKey: .ttlCleanupIntervalInMin) ?? 60
+        ttlPeriodicBackOffPolicy = try container.decodeIfPresent(String.self, forKey: .ttlPeriodicBackOffPolicy) ?? "NONE"
+        ttlPeriodicBackOffDelayInMin = try container.decodeIfPresent(Int.self, forKey: .ttlPeriodicBackOffDelayInMin) ?? 0
     }
 }

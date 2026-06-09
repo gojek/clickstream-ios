@@ -15,6 +15,8 @@ final class EventProcessorDependencies {
     private let courierEventWarehouser: CourierEventWarehouser
 
     private let socketEventSampler: EventSampler?
+    
+    private let courierEventSampler: EventSampler?
 
     private lazy var socketSerialQueue: SerialQueue = {
         return SerialQueue(label: Constants.QueueIdentifiers.processor.rawValue)
@@ -28,13 +30,23 @@ final class EventProcessorDependencies {
         return DefaultEventClassifier()
     }()
     
+    private lazy var expiryManager: EventExpirationProtocol = {
+        if let ttl = Clickstream.courierConfigurations.time_to_live {
+            return EventExpiryManager(eventExpiryConfig: ttl)
+        } else {
+            return FallbackEventExpirationManager()
+        }
+    }()
+    
     init(socketEventWarehouser: DefaultEventWarehouser,
          courierEventWarehouser: CourierEventWarehouser,
          socketEventSampler: EventSampler? = nil,
+         courierEventSampler: EventSampler? = nil,
          networkOptions: ClickstreamNetworkOptions) {
         self.socketEventWarehouser = socketEventWarehouser
         self.courierEventWarehouser = courierEventWarehouser
         self.socketEventSampler = socketEventSampler
+        self.courierEventSampler = courierEventSampler
         self.networkOptions = networkOptions
     }
 
@@ -50,6 +62,7 @@ final class EventProcessorDependencies {
         return CourierEventProcessor(performOnQueue: courierSerialQueue,
                                      classifier: classifier,
                                      eventWarehouser: courierEventWarehouser,
-                                     networkOptions: networkOptions)
+                                     sampler: socketEventSampler,
+                                     networkOptions: networkOptions, eventExpiryManager: expiryManager)
     }
 }
