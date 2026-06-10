@@ -135,6 +135,10 @@ public final class Clickstream {
     
     static var priorityEventsEnabled: Bool = false
     
+    /// When enabled, the on-disk store is integrity-checked on open and recreated if corrupt,
+    /// preventing hard crashes while decoding corrupt cached event blobs.
+    static var dbCorruptionRecoveryEnabled: Bool = false
+    
     /// Use this property to pass application name without any space or special characters.
     static var appPrefix: String = ""
     
@@ -207,6 +211,7 @@ public final class Clickstream {
                                                      updateConnectionStatus: Bool = false,
                                                      timerCrashFixFlag: Bool = false,
                                                      priorityEventsEnabled: Bool = false,
+                                                     dbCorruptionRecoveryEnabled: Bool = false,
                                                      appPrefix: String,
                                                      appVersion: String,
                                                      samplerConfiguration: EventSamplerConfiguration? = nil,
@@ -221,6 +226,7 @@ public final class Clickstream {
                 updateConnectionStatus: updateConnectionStatus,
                 timerCrashFixFlag: timerCrashFixFlag,
                 priorityEventsEnabled: priorityEventsEnabled,
+                dbCorruptionRecoveryEnabled: dbCorruptionRecoveryEnabled,
                 appPrefix: appPrefix,
                 appVersion: appVersion,
                 samplerConfiguration: samplerConfiguration,
@@ -239,6 +245,7 @@ public final class Clickstream {
                                                      delegate: ClickstreamDelegate? = nil,
                                                      updateConnectionStatus: Bool = false,
                                                      timerCrashFixFlag: Bool = false,
+                                                     dbCorruptionRecoveryEnabled: Bool = false,
                                                      appPrefix: String,
                                                      appVersion: String,
                                                      samplerConfiguration: EventSamplerConfiguration? = nil,
@@ -252,6 +259,7 @@ public final class Clickstream {
                 delegate: delegate,
                 updateConnectionStatus: updateConnectionStatus,
                 timerCrashFixFlag: timerCrashFixFlag,
+                dbCorruptionRecoveryEnabled: dbCorruptionRecoveryEnabled,
                 appPrefix: appPrefix,
                 appVersion: appVersion,
                 samplerConfiguration: samplerConfiguration,
@@ -272,6 +280,7 @@ public final class Clickstream {
                                       updateConnectionStatus: Bool = false,
                                       timerCrashFixFlag: Bool = false,
                                       priorityEventsEnabled: Bool = false,
+                                      dbCorruptionRecoveryEnabled: Bool = false,
                                       appPrefix: String,
                                       appVersion: String,
                                       samplerConfiguration: EventSamplerConfiguration? = nil,
@@ -292,6 +301,7 @@ public final class Clickstream {
             Clickstream.updateConnectionStatus = updateConnectionStatus
             Clickstream.timerCrashFixFlag = timerCrashFixFlag
             Clickstream.priorityEventsEnabled = priorityEventsEnabled
+            Clickstream.dbCorruptionRecoveryEnabled = dbCorruptionRecoveryEnabled
             Clickstream.appPrefix = appPrefix.lowercased().replacingOccurrences(of: " ", with: "")
             Clickstream.appVersion = appVersion
             

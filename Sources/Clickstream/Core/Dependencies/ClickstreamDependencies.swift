@@ -36,7 +36,8 @@ final class DefaultClickstreamDependencies {
         self.samplerConfiguration = samplerConfiguration
         self.networkOptions = networkOptions
 
-        let db = try DefaultDatabase(qos: .WAL)
+        let db = try DefaultDatabase(qos: .WAL,
+                                     recoveryEnabled: Clickstream.dbCorruptionRecoveryEnabled)
         database = db
         networkManagerDependencies = NetworkManagerDependencies(with: request, db: db, networkOptions: networkOptions)
     }

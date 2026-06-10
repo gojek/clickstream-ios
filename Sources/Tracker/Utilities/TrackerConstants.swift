@@ -29,6 +29,7 @@ enum HealthEvents: String, Codable, CaseIterable {
     case ClickstreamWriteToSocketFailed = "Clickstream Write to Socket Failed"
     case ClickstreamEventBatchErrorResponse = "Clickstream Event Batch Error response"
     case ClickstreamEventBatchDropped = "Clickstream Event Batch Dropped"
+    case ClickstreamDBCorrupted = "Clickstream DB Corrupted"
     
     case ClickstreamConnectionSuccess = "Clickstream Connection Success"
     case ClickstreamConnectionFailure = "Clickstream Connection Failure"
@@ -67,6 +68,7 @@ enum FailureReason: String, Codable, CaseIterable {
     case networkUnavailable = "network_unavailable"
     case lowBattery = "low_battery"
     case socket_not_open = "socket_not_open"
+    case db_corrupted = "db_corrupted"
 }
 
 public struct TrackerConstant {
@@ -109,5 +111,5 @@ public struct TrackerConstant {
         case aggregate = "aggregate"
     }
     
-    static let InstantEvents: [HealthEvents] = [.ClickstreamEventBatchDropped, .ClickstreamConnectionSuccess, .ClickstreamConnectionFailure, .ClickstreamEventBatchErrorResponse, .ClickstreamWriteToSocketFailed, .ClickstreamEventBatchTriggerFailed, .Courier_ClickstreamEventBatchDropped, .Courier_ClickstreamConnectionSuccess, .Courier_ClickstreamConnectionFailure, .Courier_ClickstreamEventBatchErrorResponse, .Courier_ClickstreamWriteToSocketFailed, .Courier_ClickstreamEventBatchTriggerFailed]
+    static let InstantEvents: [HealthEvents] = [.ClickstreamEventBatchDropped, .ClickstreamConnectionSuccess, .ClickstreamConnectionFailure, .ClickstreamEventBatchErrorResponse, .ClickstreamWriteToSocketFailed, .ClickstreamEventBatchTriggerFailed, .ClickstreamDBCorrupted, .Courier_ClickstreamEventBatchDropped, .Courier_ClickstreamConnectionSuccess, .Courier_ClickstreamConnectionFailure, .Courier_ClickstreamEventBatchErrorResponse, .Courier_ClickstreamWriteToSocketFailed, .Courier_ClickstreamEventBatchTriggerFailed]
 }
