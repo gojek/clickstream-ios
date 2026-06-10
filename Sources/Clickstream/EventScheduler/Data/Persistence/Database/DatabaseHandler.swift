@@ -143,11 +143,13 @@ final class DefaultDatabase: Database {
     /// is available.
     private func reportDatabaseCorruption() {
         #if TRACKER_ENABLED
-        if let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamDBCorrupted,
-                                                 reason: FailureReason.db_corrupted.rawValue) {
-            Tracker.sharedInstance?.record(event: healthEvent)
-        } else {
-            Tracker.pendingDatabaseCorruptionRecovery = true
+        if Tracker.debugMode {
+            if let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamDBCorrupted,
+                                                     reason: FailureReason.db_corrupted.rawValue) {
+                Tracker.sharedInstance?.record(event: healthEvent)
+            } else {
+                Tracker.pendingDatabaseCorruptionRecovery = true
+            }
         }
         #endif
     }
