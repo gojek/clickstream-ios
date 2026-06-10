@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## [2.0.89] - 2026-06-10
+
+[535f599] Merge pull request #136 from gojek/fix/grdb-crash (by @rishabhabbu-ctrl)
+[29457b3] Add debug mode check for database corruption reporting (by @rishabhabbu-ctrl)
+[8f38ce0] Update DatabaseHandler.swift (by @rishabhabbu-ctrl)
+[7ee0626] Merge branch 'main' of github.com:gojek/clickstream-ios into fix/grdb-crash (by @AbhijeetMallick)
+[85a6d0e] [CI] Bump version - 2.0.88 (#141) (by @Abhijeet Mallick)
+[0031908] Merge branch 'fix/grdb-crash' of github.com:gojek/clickstream-ios into fix/grdb-crash (by @AbhijeetMallick)
+[8b4f091] Fix corrupted DB crash (by @AbhijeetMallick)
+[f57f278] Refactor EventRequest struct by removing Decodable (by @rishabhabbu-ctrl)
+[2a6defe] Fix formatting in CourierEventRequest.swift (by @rishabhabbu-ctrl)
+[459861a] Updating podfile lock (by @Rishab Habbu)
+[a0f87da] [CI] Bump version - 2.0.88 (by @github-actions[bot])
+[ae42354] Fix ' RangeReplaceableCollection.append<A>(contentsOf:)' (by @AbhijeetMallick)
+[88a9bb2] Fix `protocol witness for static StatementColumnConvertible.fromStatement(_:atUncheckedIndex:) in conformance Data` crash (by @AbhijeetMallick)
+
 ## [2.0.88] - 2026-06-01
 
 [e294493] Add TTL-based cleanup for persisted Courier events (#140) (by @rishabhabbu-ctrl)
