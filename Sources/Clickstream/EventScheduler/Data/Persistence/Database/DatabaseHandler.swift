@@ -310,22 +310,4 @@ extension DefaultDatabase {
             return objects
         }
     }
-
-    func deleteWhereNotExpired<T>(_ column: Column, value: String, n: Int) throws -> [T]? where T : DatabasePersistable & TTLPersistable {
-        try dbWriter?.write { db in
-            let baseRequest = T.filter(column == value && T.ttlColumn >= Date())
-            let request = n > 0 ? baseRequest.limit(n) : baseRequest
-            let objects = try request.fetchAll(db)
-            _ = try request.deleteAll(db)
-            return objects
-        }
-    }
-
-    func deleteWhere<T>(_ column: Column, lessThan value: DatabaseValueConvertible) throws -> [T]? where T : DatabasePersistable {
-        try dbWriter?.write { db in
-            let objects = try T.filter(column < value).fetchAll(db)
-            _ = try T.filter(column < value).deleteAll(db)
-            return objects
-        }
-    }
 }
