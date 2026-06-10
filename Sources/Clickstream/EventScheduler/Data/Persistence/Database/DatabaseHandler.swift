@@ -22,7 +22,7 @@ protocol Database {
     ///   - t: A TableDefinable type is passed to define the table characteristics.
     ///   - completion: a completion callback for the table creation
     func createTable(_ t: TableDefinable.Type, _ completion: @escaping ()-> Void) throws
-        
+    
     /// Use this method to insert a supported type to db.
     /// - Parameter object: a `DatabasePersistable` object to be inserted.
     func insert(_ object: DatabasePersistable) throws
@@ -55,7 +55,7 @@ protocol Database {
     ///   - value: A value for the where clause.
     ///   - n: The count of the objects to be deleted.
     func deleteWhere<T: DatabasePersistable>(_ column: Column, value: String, n: Int) throws -> [T]?
-
+    
     /// Use this method to delete first `n` objects from a table with a `where` clause,
     /// restricted to rows whose TTL column is still in the future (i.e. not expired).
     /// Only applicable to types conforming to `TTLPersistable`.
@@ -64,14 +64,14 @@ protocol Database {
     ///   - value: A value for the where clause.
     ///   - n: The count of the objects to be deleted. If `n == 0` delete all matches.
     func deleteWhereNotExpired<T: DatabasePersistable & TTLPersistable>(_ column: Column, value: String, n: Int) throws -> [T]?
-
+    
     /// Use this method to delete objects from a table where the given column's value is
     /// strictly less than the supplied value.
     /// - Parameters:
     ///   - column: GRDB column to evaluate.
     ///   - lessThan: The upper bound (exclusive) for the where clause.
     func deleteWhere<T: DatabasePersistable>(_ column: Column, lessThan value: DatabaseValueConvertible) throws -> [T]?
-
+    
     /// Suggests whether a table with the name exists or not.
     /// - Parameter name: name of table.
     func doesTableExist(with name: String) throws -> Bool?
@@ -143,14 +143,14 @@ final class DefaultDatabase: Database {
     /// is available.
     private func reportDatabaseCorruption() {
         #if TRACKER_ENABLED
-        if Tracker.debugMode {
-            if let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamDBCorrupted,
-                                                     reason: FailureReason.db_corrupted.rawValue) {
-                Tracker.sharedInstance?.record(event: healthEvent)
-            } else {
-                Tracker.pendingDatabaseCorruptionRecovery = true
+            if Tracker.debugMode {
+                if let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamDBCorrupted,
+                                                        reason: FailureReason.db_corrupted.rawValue) {
+                    Tracker.sharedInstance?.record(event: healthEvent)
+                } else {
+                    Tracker.pendingDatabaseCorruptionRecovery = true
+                }
             }
-        }
         #endif
     }
     
@@ -226,7 +226,7 @@ final class DefaultDatabase: Database {
             try migrator.migrate(dbWriter)
         }
     }
-
+    
     /// Returns `true` when the error is SQLite's "duplicate column name" failure, raised when a
     /// migration tries to add a column that already exists on the table.
     private static func isDuplicateColumn(_ error: DatabaseError) -> Bool {
@@ -256,20 +256,16 @@ extension DefaultDatabase {
     }
     
     func fetchAll<T>() throws -> [T]? where T: DatabasePersistable {
-        try autoreleasepool {
-            try dbWriter?.read { db in
-                let objects = try T.fetchAll(db)
-                return objects
-            }
+        try dbWriter?.read { db in
+            let objects = try T.fetchAll(db)
+            return objects
         }
     }
     
     func fetchFirst<T>(_ n : Int) throws -> [T]? where T: DatabasePersistable {
-        try autoreleasepool {
-            try dbWriter?.read { db in
-                let objects = try T.limit(n).fetchAll(db)
-                return objects
-            }
+        try dbWriter?.read { db in
+            let objects = try T.limit(n).fetchAll(db)
+            return objects
         }
     }
     
@@ -281,35 +277,31 @@ extension DefaultDatabase {
     }
     
     func deleteAll<T>() throws -> [T]? where T: DatabasePersistable {
-        try autoreleasepool {
-            try dbWriter?.write { db in
-                let objects = try T.fetchAll(db)
-                _ = try T.deleteAll(db)
-                return objects
-            }
+        try dbWriter?.write { db in
+            let objects = try T.fetchAll(db)
+            _ = try T.deleteAll(db)
+            return objects
         }
     }
     
     func deleteOne<T>(_ primaryKeyValue: String) throws -> T? where T: DatabasePersistable {
-        try autoreleasepool {
-            try dbWriter?.write { db in
-                let object = try T.filter(Column(T.primaryKey) == primaryKeyValue).fetchAll(db)
-                try T.filter(Column(T.primaryKey) == primaryKeyValue).deleteAll(db)
-                return object.first
-            }
+        try dbWriter?.write { db in
+            let object = try T.filter(Column(T.primaryKey) == primaryKeyValue).fetchAll(db)
+            try T.filter(Column(T.primaryKey) == primaryKeyValue).deleteAll(db)
+            return object.first
         }
+        
     }
     
     func deleteWhere<T>(_ column: Column, value: String, n: Int) throws -> [T]? where T : DatabasePersistable {
-        try autoreleasepool {
-            try dbWriter?.write { db in
-                let objects = n > 0 ? try T.limit(n).filter(column == value).fetchAll(db) : try T.filter(column == value).fetchAll(db)
-                _ = n > 0 ? try T.limit(n).filter(column == value).deleteAll(db) : try T.filter(column == value).deleteAll(db)
-                return objects
-            }
+        try dbWriter?.write { db in
+            let objects = n > 0 ? try T.limit(n).filter(column == value).fetchAll(db) : try T.filter(column == value).fetchAll(db)
+            _ = n > 0 ? try T.limit(n).filter(column == value).deleteAll(db) : try T.filter(column == value).deleteAll(db)
+            return objects
         }
+        
     }
-
+    
     func deleteWhereNotExpired<T>(_ column: Column, value: String, n: Int) throws -> [T]? where T : DatabasePersistable & TTLPersistable {
         try dbWriter?.write { db in
             let baseRequest = T.filter(column == value && T.ttlColumn >= Date())
@@ -319,7 +311,7 @@ extension DefaultDatabase {
             return objects
         }
     }
-
+    
     func deleteWhere<T>(_ column: Column, lessThan value: DatabaseValueConvertible) throws -> [T]? where T : DatabasePersistable {
         try dbWriter?.write { db in
             let objects = try T.filter(column < value).fetchAll(db)
@@ -328,4 +320,3 @@ extension DefaultDatabase {
         }
     }
 }
-
