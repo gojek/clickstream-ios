@@ -207,8 +207,17 @@ final class DefaultDatabase: Database {
         t.tableMigrations?.forEach { migration in
             if !registeredMigrations.contains(migration.version) {
                 registeredMigrations.insert(migration.version)
+                let tableName = t.description
                 migrator.registerMigration(migration.version) { db in
-                    try db.alter(table: (t.description), body: migration.alteration)
+                    do {
+                        try db.alter(table: tableName, body: migration.alteration)
+                    } catch let error as DatabaseError where Self.isDuplicateColumn(error) {
+                        // The column already exists, either because it is part of the table's
+                        // base `tableDefinition` for fresh installs, or because a prior run added
+                        // it. Treat the migration as a no-op so the shared migrator records it as
+                        // applied and does not abort, which would otherwise skip every migration
+                        // registered after it (e.g. `adds_ttl_to_courier_event_table`).
+                    }
                 }
             }
         }
@@ -216,6 +225,12 @@ final class DefaultDatabase: Database {
         if let dbWriter = dbWriter {
             try migrator.migrate(dbWriter)
         }
+    }
+
+    /// Returns `true` when the error is SQLite's "duplicate column name" failure, raised when a
+    /// migration tries to add a column that already exists on the table.
+    private static func isDuplicateColumn(_ error: DatabaseError) -> Bool {
+        (error.message?.lowercased().contains("duplicate column")) == true
     }
 }
 
@@ -313,3 +328,4 @@ extension DefaultDatabase {
         }
     }
 }
+
