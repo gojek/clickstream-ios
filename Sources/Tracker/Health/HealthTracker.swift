@@ -103,21 +103,17 @@ final class HealthTracker {
     
     @discardableResult
     func flushFunnelEvents() -> [HealthAnalysisEvent]? {
-        queue.sync {
-            let trackedVia: TrackedVia = Tracker.healthTrackingConfigs.trackedVia == .both ? .both : .internal
-            if let doesTableExist = _persistence.doesTableExist(with: HealthAnalysisEvent.description), doesTableExist {
-                return _persistence.deleteWhere(HealthAnalysisEvent.Columns.trackedVia,
-                                                value: trackedVia.rawValue)
-            }
-            return nil
+        let trackedVia: TrackedVia = Tracker.healthTrackingConfigs.trackedVia == .both ? .both : .internal
+        if let doesTableExist = _persistence.doesTableExist(with: HealthAnalysisEvent.description), doesTableExist {
+            return _persistence.deleteWhere(HealthAnalysisEvent.Columns.trackedVia,
+                                            value: trackedVia.rawValue)
         }
+        return nil
     }
     
     func deleteHealthDataOnAppUpgrade() {
-        queue.sync {
-            if let doesTableExist = _persistence.doesTableExist(with: HealthAnalysisEvent.description), doesTableExist {
-                _persistence.deleteAll()
-            }
+        if let doesTableExist = _persistence.doesTableExist(with: HealthAnalysisEvent.description), doesTableExist {
+            _persistence.deleteAll()
         }
     }
 }

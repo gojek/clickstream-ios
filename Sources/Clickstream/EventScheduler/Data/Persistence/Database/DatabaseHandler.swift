@@ -22,33 +22,33 @@ protocol Database {
     ///   - t: A TableDefinable type is passed to define the table characteristics.
     ///   - completion: a completion callback for the table creation
     func createTable(_ t: TableDefinable.Type, _ completion: @escaping ()-> Void) throws
-        
+
     /// Use this method to insert a supported type to db.
     /// - Parameter object: a `DatabasePersistable` object to be inserted.
     func insert(_ object: DatabasePersistable) throws
-    
+
     /// Use this method to update a supported type in db.
     /// - Parameter object: a `DatabasePersistable` object to be updated.
     func update(_ object: DatabasePersistable) throws
-    
+
     /// Use this method to fetchAll objects for a type.
     func fetchAll<T: DatabasePersistable>() throws -> [T]?
-    
+
     /// Use this method to fetch first `n` objects from the db.
     /// - Parameter n: The count of the objects to be fetched.
     func fetchFirst<T: DatabasePersistable>(_ n : Int) throws -> [T]?
-    
+
     /// Use this method to fetch one object for a given primaryKeyValue.
     /// - Parameter primaryKeyValue: primary key value
     func fetchOne<T: DatabasePersistable>(_ primaryKeyValue: String) throws -> T?
-    
+
     /// Use this method to delete all the objects from a table in the db.
     func deleteAll<T: DatabasePersistable>() throws -> [T]?
-    
+
     /// Use this method to delete one object for a given primaryKeyValue.
     /// - Parameter primaryKeyValue: primary key value
     func deleteOne<T: DatabasePersistable>(_ primaryKeyValue: String) throws -> T?
-    
+
     /// Use this method to delete first `n` objects from a table with a `where` clause.
     /// - Parameters:
     ///   - column: GRDB column
@@ -143,14 +143,14 @@ final class DefaultDatabase: Database {
     /// is available.
     private func reportDatabaseCorruption() {
         #if TRACKER_ENABLED
-        if Tracker.debugMode {
-            if let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamDBCorrupted,
-                                                     reason: FailureReason.db_corrupted.rawValue) {
-                Tracker.sharedInstance?.record(event: healthEvent)
-            } else {
-                Tracker.pendingDatabaseCorruptionRecovery = true
+            if Tracker.debugMode {
+                if let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamDBCorrupted,
+                                                        reason: FailureReason.db_corrupted.rawValue) {
+                    Tracker.sharedInstance?.record(event: healthEvent)
+                } else {
+                    Tracker.pendingDatabaseCorruptionRecovery = true
+                }
             }
-        }
         #endif
     }
     
@@ -207,8 +207,17 @@ final class DefaultDatabase: Database {
         t.tableMigrations?.forEach { migration in
             if !registeredMigrations.contains(migration.version) {
                 registeredMigrations.insert(migration.version)
+                let tableName = t.description
                 migrator.registerMigration(migration.version) { db in
-                    try db.alter(table: (t.description), body: migration.alteration)
+                    do {
+                        try db.alter(table: tableName, body: migration.alteration)
+                    } catch let error as DatabaseError where Self.isDuplicateColumn(error) {
+                        // The column already exists, either because it is part of the table's
+                        // base `tableDefinition` for fresh installs, or because a prior run added
+                        // it. Treat the migration as a no-op so the shared migrator records it as
+                        // applied and does not abort, which would otherwise skip every migration
+                        // registered after it (e.g. `adds_ttl_to_courier_event_table`).
+                    }
                 }
             }
         }
@@ -216,6 +225,12 @@ final class DefaultDatabase: Database {
         if let dbWriter = dbWriter {
             try migrator.migrate(dbWriter)
         }
+    }
+    
+    /// Returns `true` when the error is SQLite's "duplicate column name" failure, raised when a
+    /// migration tries to add a column that already exists on the table.
+    private static func isDuplicateColumn(_ error: DatabaseError) -> Bool {
+        (error.message?.lowercased().contains("duplicate column")) == true
     }
 }
 
@@ -241,20 +256,16 @@ extension DefaultDatabase {
     }
     
     func fetchAll<T>() throws -> [T]? where T: DatabasePersistable {
-        try autoreleasepool {
-            try dbWriter?.read { db in
-                let objects = try T.fetchAll(db)
-                return objects
-            }
+        try dbWriter?.read { db in
+            let objects = try T.fetchAll(db)
+            return objects
         }
     }
     
     func fetchFirst<T>(_ n : Int) throws -> [T]? where T: DatabasePersistable {
-        try autoreleasepool {
-            try dbWriter?.read { db in
-                let objects = try T.limit(n).fetchAll(db)
-                return objects
-            }
+        try dbWriter?.read { db in
+            let objects = try T.limit(n).fetchAll(db)
+            return objects
         }
     }
     
@@ -266,35 +277,31 @@ extension DefaultDatabase {
     }
     
     func deleteAll<T>() throws -> [T]? where T: DatabasePersistable {
-        try autoreleasepool {
-            try dbWriter?.write { db in
-                let objects = try T.fetchAll(db)
-                _ = try T.deleteAll(db)
-                return objects
-            }
+        try dbWriter?.write { db in
+            let objects = try T.fetchAll(db)
+            _ = try T.deleteAll(db)
+            return objects
         }
     }
     
     func deleteOne<T>(_ primaryKeyValue: String) throws -> T? where T: DatabasePersistable {
-        try autoreleasepool {
-            try dbWriter?.write { db in
-                let object = try T.filter(Column(T.primaryKey) == primaryKeyValue).fetchAll(db)
-                try T.filter(Column(T.primaryKey) == primaryKeyValue).deleteAll(db)
-                return object.first
-            }
+        try dbWriter?.write { db in
+            let object = try T.filter(Column(T.primaryKey) == primaryKeyValue).fetchAll(db)
+            try T.filter(Column(T.primaryKey) == primaryKeyValue).deleteAll(db)
+            return object.first
         }
+        
     }
     
     func deleteWhere<T>(_ column: Column, value: String, n: Int) throws -> [T]? where T : DatabasePersistable {
-        try autoreleasepool {
-            try dbWriter?.write { db in
-                let objects = n > 0 ? try T.limit(n).filter(column == value).fetchAll(db) : try T.filter(column == value).fetchAll(db)
-                _ = n > 0 ? try T.limit(n).filter(column == value).deleteAll(db) : try T.filter(column == value).deleteAll(db)
-                return objects
-            }
+        try dbWriter?.write { db in
+            let objects = n > 0 ? try T.limit(n).filter(column == value).fetchAll(db) : try T.filter(column == value).fetchAll(db)
+            _ = n > 0 ? try T.limit(n).filter(column == value).deleteAll(db) : try T.filter(column == value).deleteAll(db)
+            return objects
         }
+        
     }
-
+    
     func deleteWhereNotExpired<T>(_ column: Column, value: String, n: Int) throws -> [T]? where T : DatabasePersistable & TTLPersistable {
         try dbWriter?.write { db in
             let baseRequest = T.filter(column == value && T.ttlColumn >= Date())
@@ -304,7 +311,7 @@ extension DefaultDatabase {
             return objects
         }
     }
-
+    
     func deleteWhere<T>(_ column: Column, lessThan value: DatabaseValueConvertible) throws -> [T]? where T : DatabasePersistable {
         try dbWriter?.write { db in
             let objects = try T.filter(column < value).fetchAll(db)
