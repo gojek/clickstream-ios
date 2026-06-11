@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [2.0.90] - 2026-06-11
+
+[f37a0f9] Merge pull request #142 from gojek/fix/clickstrem_event_issue (by @rishabhabbu-ctrl)
+[3896497] Update DatabaseHandler.swift (by @rishabhabbu-ctrl)
+[0e700b8] Update DatabaseHandler.swift (by @rishabhabbu-ctrl)
+[c9bc6c2] Refactor flushFunnelEvents and deleteHealthDataOnAppUpgrade (by @rishabhabbu-ctrl)
+[ae0bf2c] Remove AutoReleasepool (by @AbhijeetMallick)
+[e35a268] Fix shared GRDB migrator abort causing missing courierEvent.expiryTime column (by @Rishab Habbu)
+[ba734fe] [CI] Bump version - 2.0.89 (by @github-actions[bot])
+
 ## [2.0.88] - 2026-06-01
 
 [e294493] Add TTL-based cleanup for persisted Courier events (#140) (by @rishabhabbu-ctrl)
