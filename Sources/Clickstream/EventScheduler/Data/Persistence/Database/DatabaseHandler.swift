@@ -22,40 +22,40 @@ protocol Database {
     ///   - t: A TableDefinable type is passed to define the table characteristics.
     ///   - completion: a completion callback for the table creation
     func createTable(_ t: TableDefinable.Type, _ completion: @escaping ()-> Void) throws
-    
+        
     /// Use this method to insert a supported type to db.
     /// - Parameter object: a `DatabasePersistable` object to be inserted.
     func insert(_ object: DatabasePersistable) throws
-    
+        
     /// Use this method to update a supported type in db.
     /// - Parameter object: a `DatabasePersistable` object to be updated.
     func update(_ object: DatabasePersistable) throws
-    
+        
     /// Use this method to fetchAll objects for a type.
     func fetchAll<T: DatabasePersistable>() throws -> [T]?
-    
+        
     /// Use this method to fetch first `n` objects from the db.
     /// - Parameter n: The count of the objects to be fetched.
     func fetchFirst<T: DatabasePersistable>(_ n : Int) throws -> [T]?
-    
+        
     /// Use this method to fetch one object for a given primaryKeyValue.
     /// - Parameter primaryKeyValue: primary key value
     func fetchOne<T: DatabasePersistable>(_ primaryKeyValue: String) throws -> T?
-    
+        
     /// Use this method to delete all the objects from a table in the db.
     func deleteAll<T: DatabasePersistable>() throws -> [T]?
-    
+        
     /// Use this method to delete one object for a given primaryKeyValue.
     /// - Parameter primaryKeyValue: primary key value
     func deleteOne<T: DatabasePersistable>(_ primaryKeyValue: String) throws -> T?
-    
+        
     /// Use this method to delete first `n` objects from a table with a `where` clause.
     /// - Parameters:
     ///   - column: GRDB column
     ///   - value: A value for the where clause.
     ///   - n: The count of the objects to be deleted.
     func deleteWhere<T: DatabasePersistable>(_ column: Column, value: String, n: Int) throws -> [T]?
-    
+        
     /// Use this method to delete first `n` objects from a table with a `where` clause,
     /// restricted to rows whose TTL column is still in the future (i.e. not expired).
     /// Only applicable to types conforming to `TTLPersistable`.
@@ -64,14 +64,14 @@ protocol Database {
     ///   - value: A value for the where clause.
     ///   - n: The count of the objects to be deleted. If `n == 0` delete all matches.
     func deleteWhereNotExpired<T: DatabasePersistable & TTLPersistable>(_ column: Column, value: String, n: Int) throws -> [T]?
-    
+        
     /// Use this method to delete objects from a table where the given column's value is
     /// strictly less than the supplied value.
     /// - Parameters:
     ///   - column: GRDB column to evaluate.
     ///   - lessThan: The upper bound (exclusive) for the where clause.
     func deleteWhere<T: DatabasePersistable>(_ column: Column, lessThan value: DatabaseValueConvertible) throws -> [T]?
-    
+        
     /// Suggests whether a table with the name exists or not.
     /// - Parameter name: name of table.
     func doesTableExist(with name: String) throws -> Bool?
