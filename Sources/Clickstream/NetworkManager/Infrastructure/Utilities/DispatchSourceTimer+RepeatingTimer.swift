@@ -15,12 +15,27 @@ import Foundation
 class RepeatingTimer {
 
     static let shared = RepeatingTimer()
-    var timeInterval: TimeInterval = 0
+    private var timeInterval: TimeInterval = 0
+    private var newTimer: DispatchSourceTimer?
     
     private init() { }
     
     init(timeInterval: TimeInterval) {
         self.timeInterval = timeInterval
+    }
+    
+    func setup(timeInterval: TimeInterval) {
+        self.timeInterval = timeInterval
+        setupTimer()
+    }
+    
+    private func setupTimer() {
+        guard timeInterval > 0 else { return }
+        newTimer = DispatchSource.makeTimerSource()
+        newTimer?.schedule(deadline: .now() + timeInterval, repeating: timeInterval)
+        newTimer?.setEventHandler { [weak self] in
+            self?.eventHandler?()
+        }
     }
     
     private lazy var timer: DispatchSourceTimer = { [weak self] in
@@ -44,8 +59,13 @@ class RepeatingTimer {
     private var state: Atomic<State> = Clickstream.timerCrashFixFlag ? Atomic(.notInitialized) : Atomic(.suspended)
 
     deinit {
-        timer.setEventHandler {}
-        timer.cancel()
+        if Clickstream.timerCrashFixFlag {
+            newTimer?.setEventHandler {}
+            newTimer?.cancel()
+        } else {
+            timer.setEventHandler {}
+            timer.cancel()
+        }
         /*
          If the timer is suspended, calling cancel without resuming
          triggers a crash. This is documented here https://forums.developer.apple.com/thread/15902
@@ -68,7 +88,11 @@ class RepeatingTimer {
         state.mutate { state in
             state = .resumed
         }
-        timer.resume()
+        if Clickstream.timerCrashFixFlag {
+            newTimer?.resume()
+        } else {
+            timer.resume()
+        }
     }
 
     func suspend() {
@@ -78,6 +102,11 @@ class RepeatingTimer {
         state.mutate { state in
             state = .suspended
         }
-        timer.suspend()
+        
+        if Clickstream.timerCrashFixFlag {
+            newTimer?.suspend()
+        } else {
+            timer.suspend()
+        }
     }
 }
