@@ -159,7 +159,8 @@ final class CourierEventProcessor: EventProcessor {
                 guid: event.guid,
                 timestamp: event.timestamp,
                 type: classification,
-                eventProtoData: csEvent.serializedData()
+                eventProtoData: csEvent.serializedData(),
+                expiryTime:  Date()
             )
         } catch {
             return nil
