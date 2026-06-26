@@ -61,6 +61,7 @@ final class EventsListViewModel: EventsListViewModelInput {
         self.selectedEventName = selectedEventName ?? ""
 
         let totalCount = self.messages.count
+        let progressBatchSize = max(1, totalCount / 20)
         DispatchQueue.main.async {
             progress(0, totalCount)
         }
@@ -73,8 +74,11 @@ final class EventsListViewModel: EventsListViewModelInput {
 
             for (index, message) in self.messages.enumerated() {
                 renderedCells.append(self.makeViewModel(from: message))
-                DispatchQueue.main.async {
-                    progress(index + 1, totalCount)
+                let processedCount = index + 1
+                if processedCount % progressBatchSize == 0 || processedCount == totalCount {
+                    DispatchQueue.main.async {
+                        progress(processedCount, totalCount)
+                    }
                 }
             }
 
