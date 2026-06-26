@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [2.0.91] - 2026-06-26
+
+[d13053c] [CNTNRSDK-824] track binary implementation (#143) (by @klaes-ashford)
+[00a8b5c] [CI] Bump version - 2.0.90 (by @github-actions[bot])
+
 ## [2.0.88] - 2026-06-01
 
 [e294493] Add TTL-based cleanup for persisted Courier events (#140) (by @rishabhabbu-ctrl)
