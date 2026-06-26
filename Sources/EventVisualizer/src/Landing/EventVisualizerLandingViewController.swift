@@ -1,9 +1,9 @@
 //
 //  EventVisualizerLandingViewController.swift
-//  Launchpad
+//  EventVisualizer
 //
-//  Created by Rishav Gupta on 07/03/22.
-//  Copyright © 2022 PT GoJek Indonesia. All rights reserved.
+//  Created by Rishav Gupta on 09/03/22.
+//  Copyright © 2022 Gojek. All rights reserved.
 //
 
 import SwiftProtobuf

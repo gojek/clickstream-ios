@@ -1,6 +1,6 @@
 //
 //  RadioLabelTableViewCell.swift
-//  SettingsKit
+//  EventVisualizer
 //
 //  Created by Rishav Gupta on 15/03/22.
 //  Copyright © 2022 PT GoJek Indonesia. All rights reserved.

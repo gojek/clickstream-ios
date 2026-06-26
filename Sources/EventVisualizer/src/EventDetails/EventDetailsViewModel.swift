@@ -1,6 +1,6 @@
 //
 //  EventDetailsViewModel.swift
-//  SettingsKit
+//  EventVisualizer
 //
 //  Created by Rishav Gupta on 14/03/22.
 //  Copyright © 2022 PT GoJek Indonesia. All rights reserved.
