@@ -189,6 +189,13 @@ public final class Clickstream {
     public func trackEventViaCourier(with event: ClickstreamEvent) {
         courierEventProcessor.createEvent(event: event, isUserAuthenticated: isUserAuthenticated)
     }
+
+    /// Tracks a binary event received from a web bridge.
+    /// The encoded protobuf payload is forwarded as-is via the websocket channel.
+    /// - Parameter event: A `CSBinaryEvent` carrying the base64-encoded proto payload and its type.
+    public func trackBinaryEvent(_ event: CSBinaryEvent) {
+        socketEventProcessor.createBinaryEvent(event: event)
+    }
     
     /// Initializes an instance of the API with the given configurations.
     /// Returns a new Clickstream instance API object. This allows you to create one instance only.
