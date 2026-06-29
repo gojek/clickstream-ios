@@ -85,9 +85,21 @@ final public class EventsHelper {
 
 extension EventsHelper: EventStateViewable {
     public func sendEvent(_ event: EventData) {
+        /// Precompute the display summary once so the UI can reuse it later.
+        let summary = event.displaySummary ?? EventDisplayFieldReader.summary(from: event.msg)
+        let eventWithSummary = EventData(
+            msg: event.msg,
+            state: event.state,
+            batchId: event.batchId,
+            displaySummary: summary
+        )
+
         /// all events sent by Clickstream is stored here in an array
-        EventsHelper.shared.eventsCaptured.append(event)
-        if let eventGuid = EventDisplayFieldReader.eventGuid(from: event.msg) {
+        EventsHelper.shared.eventsCaptured.append(eventWithSummary)
+
+        if let eventGuid = summary?.eventGuid {
+            stateByEventGuid[eventGuid] = event.state.description
+        } else if let eventGuid = EventDisplayFieldReader.eventGuid(from: event.msg) {
             stateByEventGuid[eventGuid] = event.state.description
         }
     }
@@ -116,7 +128,7 @@ extension EventsHelper: EventStateViewable {
             for eventIndex in foundIndexs {
                 if eventIndex < EventsHelper.shared.eventsCaptured.count {
                     EventsHelper.shared.eventsCaptured[eventIndex].state = state
-                    if let eventGuid = EventDisplayFieldReader.eventGuid(from: EventsHelper.shared.eventsCaptured[eventIndex].msg) {
+                    if let eventGuid = EventsHelper.shared.eventsCaptured[eventIndex].displaySummary?.eventGuid ?? EventDisplayFieldReader.eventGuid(from: EventsHelper.shared.eventsCaptured[eventIndex].msg) {
                         stateByEventGuid[eventGuid] = state.description
                     }
                 }
@@ -126,7 +138,7 @@ extension EventsHelper: EventStateViewable {
 
     private func indexOfEvent(with eventGuid: String) -> Int? {
         for (index, event) in EventsHelper.shared.eventsCaptured.enumerated() {
-            if let currentEventGuid = EventDisplayFieldReader.eventGuid(from: event.msg), currentEventGuid == eventGuid {
+            if let currentEventGuid = event.displaySummary?.eventGuid ?? EventDisplayFieldReader.eventGuid(from: event.msg), currentEventGuid == eventGuid {
                 return index
             }
         }

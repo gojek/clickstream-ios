@@ -11,7 +11,7 @@ import SwiftProtobuf
 
 protocol EventVisualizerLandingViewModelInput: AnyObject {
     
-    var eventsDict: [String: [String: [Message]]] { get set }
+    var eventsDict: [String: [String: [EventData]]] { get set }
     
     var sectionCount: Int { get }
     
@@ -34,13 +34,13 @@ protocol EventVisualizerLandingViewModelInput: AnyObject {
     
     func cellViewModel(for indexPath: IndexPath) -> EventsListingTableViewCell.ViewModel
     
-    func didSelectRow(at indexPath: IndexPath) -> (selectedEventName: String, events: [Message])?
+    func didSelectRow(at indexPath: IndexPath) -> [EventData]?
 }
 
 final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInput {
     
-    /// [proto: [EventName: [Message]]]
-    var eventsDict: [String: [String: [Message]]] = [:]
+    /// [proto: [EventName: [EventData]]]
+    var eventsDict: [String: [String: [EventData]]] = [:]
     
     var sectionCount: Int {
         /// if searching or filtering then there would be no section division
@@ -59,7 +59,7 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
         
     private var searchResult: [String] = []
     
-    private var protoToMessageDict: [String: [Message]] = [:]
+    private var protoToEventDict: [String: [EventData]] = [:]
     
     func cellViewModel(for indexPath: IndexPath) -> EventsListingTableViewCell.ViewModel {
         
@@ -75,19 +75,17 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
             let protoArray = eventsDict.map { $0.key }
             /// get proto name of indexPath.section
             let protoInSection = protoArray[indexPath.section]
-            /// get event dict of that proto in [String: [Message]] form
+            /// get event dict of that proto in [String: [EventData]] form
             if let eventDictInproto = eventsDict[protoInSection] {
                 /// get all event names that that particular proto
                 let eventsListInproto = eventDictInproto.map { $0.key }
                 /// get event name of indexPath.row
                 let messageInEvent = eventsListInproto[indexPath.row]
-                /// get the [Message] to the particular event name -> then
-                /// get the event name from one of the Message
-                if let _message = eventDictInproto[messageInEvent]?.first as? CollectionMapper {
-                    if let eName = _message.asDictionary["eventName"] as? String {
-                        eventName = eName
-                    } else if let eName = _message.asDictionary["storage.eventName"] as? String {
-                        eventName = eName
+                if let firstEvent = eventDictInproto[messageInEvent]?.first {
+                    if let summaryName = firstEvent.displaySummary?.eventName, !summaryName.isEmpty {
+                        eventName = summaryName
+                    } else {
+                        eventName = EventDisplayFieldReader.eventName(from: firstEvent.msg) ?? messageInEvent
                     }
                 }
             }
@@ -115,7 +113,7 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
     
     func cellsCount(section: Int) -> Int {
         if isSearchActive && searchText != "" {
-            /// get all values of proto keys which gives [[eventName: [Message]]] and then flatten it out to [eventName: [Message]]
+            /// get all values of proto keys which gives [[eventName: [EventData]]] and then flatten it out to [eventName: [EventData]]
             let eventInDict = eventsDict.map { $0.value }.flatMap { $0 }
             /// get all event names
             let events = eventInDict.map { $0.key }
@@ -123,7 +121,7 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
             self.searchResult = events.filter { $0.lowercased().contains(searchText.lowercased()) }
             return searchResult.count
         } else if !filterResult.isEmpty {
-            /// get all values of proto keys which gives [[eventName: [Message]]] and then flatten it out to [eventName: [Message]]
+            /// get all values of proto keys which gives [[eventName: [EventData]]] and then flatten it out to [eventName: [EventData]]
             let eventInDict = eventsDict.map { $0.value }.flatMap { $0 }
             /// get all event names
             let events = eventInDict.map { $0.key }
@@ -145,51 +143,46 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
     
     func viewDidLoad() {
         processEvents()
-        /// getting events in form of [String: [Message]] from clickstream sdk as [proto: [Message]]
-        for (proto, eventsArray) in protoToMessageDict {
-            var messageDict: [String: [Message]] = [:]
-            ///  below building dict from [proto: [Message]] to [proto: [EventName: [Message]]]
+        /// getting events in form of [String: [EventData]] from clickstream sdk as [proto: [EventData]]
+        for (proto, eventsArray) in protoToEventDict {
+            var eventsByName: [String: [EventData]] = [:]
             for event in eventsArray {
-                if let _event = event as? CollectionMapper {
-                    var messageKey = proto
-                    if let eName = _event.asDictionary["eventName"] as? String, !eName.isEmpty {
-                        messageKey = eName
-                    } else if let eName = _event.asDictionary["storage.eventName"] as? String, !eName.isEmpty {
-                        messageKey = eName
-                    } else {
-                        messageKey = proto
-                    }
-                    
-                    if let value = messageDict[messageKey] {
-                        messageDict[messageKey] = value + [event as Message]
-                    } else {
-                        messageDict[messageKey] = [event] as [Message]
-                    }
+                let eventName: String
+                if let summaryName = event.displaySummary?.eventName, !summaryName.isEmpty {
+                    eventName = summaryName
+                } else {
+                    eventName = EventDisplayFieldReader.eventName(from: event.msg) ?? proto
+                }
+
+                if let value = eventsByName[eventName] {
+                    eventsByName[eventName] = value + [event]
+                } else {
+                    eventsByName[eventName] = [event]
                 }
             }
-            eventsDict[proto] = messageDict
+            eventsDict[proto] = eventsByName
         }
     }
     
     ///  Action on selecting the row
     /// - Parameter indexPath: indexPath of that cell
-    /// - Returns: returning tuple of (selected-event-name, message-array-of-events-with-that-event-name)
-    func didSelectRow(at indexPath: IndexPath) -> (selectedEventName: String, events: [Message])? {
+    /// - Returns: returning array of events for the selected row
+    func didSelectRow(at indexPath: IndexPath) -> [EventData]? {
         if isSearchActive && searchText != "" {
-            /// get all values of proto keys which gives [[eventName: [Message]]] and then flatten it out to [eventName: [Message]]
+            /// get all values of proto keys which gives [[eventName: [EventData]]] and then flatten it out to [eventName: [EventData]]
             let eventInDict = eventsDict.map { $0.value }.flatMap { $0 }
             let eventSelected = searchResult[indexPath.row]
             let events = eventInDict.filter { $0.key == eventSelected }
             if let messagesInEvent = events.first?.value {
-                return (eventSelected, messagesInEvent)
+                return messagesInEvent
             }
         } else if !filterResult.isEmpty {
-            /// get all values of proto keys which gives [[eventName: [Message]]] and then flatten it out to [eventName: [Message]]
+            /// get all values of proto keys which gives [[eventName: [EventData]]] and then flatten it out to [eventName: [EventData]]
             let eventInDict = eventsDict.map { $0.value }.flatMap { $0 }
             let eventSelected = filterResult[indexPath.row]
             let events = eventInDict.filter { $0.key == eventSelected }
             if let messagesInEvent = events.first?.value {
-                return (eventSelected, messagesInEvent)
+                return messagesInEvent
             }
         } else {
             /// get all protos
@@ -200,7 +193,7 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
                 let eventsListInProto = eventDictInProto.map { $0.key }
                 let eventSelected = eventsListInProto[indexPath.row]
                 if let messagesInEvent = eventDictInProto[eventSelected] {
-                    return (eventSelected, messagesInEvent)
+                    return messagesInEvent
                 }
             }
         }
@@ -208,14 +201,14 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
     }
     
     /// Filtering the event names corresponding the filter key-value pair selected
-    /// - Parameter data: array of tuple of (key-value) pair of the user input from the filter screen
-    /// - Returns: array of event names which corresponding the filter key-value pair selected
+    /// - Parameter data: array of tuple (key-value) pair of the user input from the filter screen
+    /// - Returns: array of event names which corresponding to the filter key-value pair selected
     func getFilteredEvents(data: [(String, String)]) -> [String] {
         var filteredEventNames: [String] = []
-        /// getting [[Message]] and flattening it to [Message]
-        let messageArray = protoToMessageDict.map { $0.value }.flatMap { $0 }
-        for message in messageArray {
-            if let protoComm = message as? CollectionMapper {
+        /// getting [[EventData]] and flattening it to [EventData]
+        let eventArray = protoToEventDict.map { $0.value }.flatMap { $0 }
+        for event in eventArray {
+            if let protoComm = event.msg as? CollectionMapper {
                 /// converting [Message] to [String: Any]
                 var messAsDict = protoComm.asDictionary
                 if let eventGuid = messAsDict[Constants.EventVisualizer.eventGuid] as? String {
@@ -238,10 +231,14 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
                         isMessageConformingtoAllFilters = false
                     }
                 }
-                if isMessageConformingtoAllFilters, let eventName = messAsDict["eventName"] as? String {
-                    filteredEventNames.append(eventName)
-                } else if isMessageConformingtoAllFilters, let eventName = messAsDict["storage.eventName"] as? String {
-                    filteredEventNames.append(eventName)
+                if isMessageConformingtoAllFilters {
+                    if let eventName = event.displaySummary?.eventName, !eventName.isEmpty {
+                        filteredEventNames.append(eventName)
+                    } else if let eventName = messAsDict["eventName"] as? String {
+                        filteredEventNames.append(eventName)
+                    } else if let eventName = messAsDict["storage.eventName"] as? String {
+                        filteredEventNames.append(eventName)
+                    }
                 }
             }
         }
@@ -260,17 +257,16 @@ final class EventVisualizerLandingViewModel: EventVisualizerLandingViewModelInpu
         return nil
     }
     
-    /// Capturing events in Clickstream static dictionary with type of event as key and event message as value [proto: [Message]]
+    /// Capturing events in Clickstream static dictionary with type of event as key and event message as value [proto: [EventData]]
     func processEvents() {
-        var messageArray: [Message] = []
-        messageArray = EventsHelper.shared.eventsCaptured.map { $0.msg }
+        let eventArray = EventsHelper.shared.eventsCaptured
         
-        for message in messageArray {
-            if let typeOfEvent = type(of: message).protoMessageName.components(separatedBy: ".").last?.lowercased() {
-                if let value = protoToMessageDict[typeOfEvent] {
-                    protoToMessageDict[typeOfEvent] = value + [message as Message]
+        for event in eventArray {
+            if let typeOfEvent = type(of: event.msg).protoMessageName.components(separatedBy: ".").last?.lowercased() {
+                if let value = protoToEventDict[typeOfEvent] {
+                    protoToEventDict[typeOfEvent] = value + [event]
                 } else {
-                    protoToMessageDict[typeOfEvent] = [message] as [Message]
+                    protoToEventDict[typeOfEvent] = [event]
                 }
             }
         }

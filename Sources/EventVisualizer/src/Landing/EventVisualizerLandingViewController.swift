@@ -147,8 +147,8 @@ extension EventVisualizerLandingViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if tableView == self.tableView {
             tableView.deselectRow(at: indexPath, animated: true)
-            if let (selectedEventName, events) = viewModel.didSelectRow(at: indexPath) {
-                showEventListView(selectedEventName, events)
+            if let events = viewModel.didSelectRow(at: indexPath) {
+                showEventListView(events)
             }
         } else {
             if let cell = tableView.cellForRow(at: indexPath) as? RadioLabelTableViewCell {
@@ -220,10 +220,9 @@ extension EventVisualizerLandingViewController: UITableViewDataSource {
         }
     }
     
-    func showEventListView(_ selectedEventName: String, _ eventDict: [Message]) {
+    func showEventListView(_ events: [EventData]) {
         let viewController = EventsListViewController()
-        viewController.selectedEventName = selectedEventName
-        viewController.eventDict = eventDict
+        viewController.events = events
         viewController.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(viewController, animated: true)
         

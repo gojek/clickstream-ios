@@ -17,8 +17,7 @@ final class EventsListViewController: UIViewController {
     private let loadingStackView: UIStackView = UIStackView()
 
     private let viewModel: EventsListViewModel = EventsListViewModel()
-    var selectedEventName: String?
-    var eventDict: [Message]?
+    var events: [EventData]?
 
     // MARK: - View Life Cycle
     override func loadView() {
@@ -127,7 +126,7 @@ final class EventsListViewController: UIViewController {
     }
 
     private func loadEvents() {
-        viewModel.viewDidLoad(messages: eventDict, selectedEventName: selectedEventName, progress: { [weak self] processedCount, totalCount in
+        viewModel.viewDidLoad(messages: events, progress: { [weak self] processedCount, totalCount in
             guard let self = self else { return }
             self.loadingProgressLabel.text = "Processed \(processedCount) / \(totalCount) messages"
         }, completion: { [weak self] in
