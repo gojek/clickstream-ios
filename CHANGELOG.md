@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [2.0.92] - 2026-06-30
+
+[9901869] Event visualiser performance improvements (#145) (by @Asif)
+[70875f6] [CI] Bump version - 2.0.91 (#144) (by @Abhijeet Mallick)
+[261c7c6] [CI] Bump version - 2.0.91 (by @github-actions[bot])
+
 ## [2.0.91] - 2026-06-26
 
 [d13053c] [CNTNRSDK-824] track binary implementation (#143) (by @klaes-ashford)
