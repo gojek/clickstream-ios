@@ -33,8 +33,7 @@ enum EventDisplayFieldReader {
         let eventName = extractFirstString(in: message, matching: eventNameLabels)
             ?? dictionaryString(from: message, keys: ["eventName", "storage.eventName"])
             ?? ""
-        let eventGuid = extractFirstString(in: message, matching: eventGuidLabels)
-            ?? dictionaryString(from: message, keys: ["eventGuid", "guid", "storage.meta.storage.eventGuid"])
+        let eventGuid = eventGuid(from: message)
         let timestamp = extractTimestampString(in: message) ?? ""
 
         guard !eventName.isEmpty || !timestamp.isEmpty || eventGuid != nil else {
@@ -46,8 +45,74 @@ enum EventDisplayFieldReader {
 
     static func eventGuid(from message: Any) -> String? {
         guard message is CollectionMapper else { return nil }
+        // Targeted shallow scan: navigate _StorageClass → meta → eventGuid.
+        // At most 4 Mirror reflections regardless of how many fields the event has.
+        // Eliminates the full recursive Mirror walk and the asDictionary allocation.
+        if let guid = shallowEventGuid(in: message) {
+            return guid
+        }
+
+        // Last-resort fallback for non-standard schemas (events without a meta field,
+        // or with a differently-named GUID field).
         return extractFirstString(in: message, matching: eventGuidLabels)
             ?? dictionaryString(from: message, keys: ["eventGuid", "guid", "storage.meta.storage.eventGuid"])
+    }
+
+    /// Walks at most 4 Mirror levels to find `meta.eventGuid` without doing a full
+    /// recursive reflection or building an `asDictionary` snapshot.
+    ///
+    /// Handles two SwiftProtobuf storage layouts:
+    /// - Simple structs: fields are direct children of the message mirror.
+    /// - Complex structs: fields live on a `_StorageClass` child (`_storage`).
+    private static func shallowEventGuid(in message: Any) -> String? {
+        let messageMirror = Mirror(reflecting: message)
+
+        for child in messageMirror.children {
+            // Layout A — meta is a direct child of the message struct.
+            if child.label == "meta" || child.label == "_meta" {
+                if let guid = extractGuidFromMeta(child.value) { return guid }
+            }
+
+            // Layout B — SwiftProtobuf _StorageClass pattern:
+            // message._storage._meta: EventMeta?
+            if child.label == "_storage" {
+                let storageMirror = Mirror(reflecting: child.value)
+                for storageChild in storageMirror.children {
+                    if storageChild.label == "meta" || storageChild.label == "_meta" {
+                        if let guid = extractGuidFromMeta(storageChild.value) { return guid }
+                    }
+                }
+            }
+        }
+
+        return nil
+    }
+
+    /// Given the raw value of a `meta` / `_meta` child (possibly Optional-wrapped),
+    /// resolves it and returns the `eventGuid` string.
+    ///
+    /// - Does a shallow Mirror of the meta value itself, covering both
+    ///   direct-field and `_StorageClass`-backed `EventMeta` layouts.
+    private static func extractGuidFromMeta(_ value: Any) -> String? {
+        guard let meta = resolvedValue(value) else { return nil }
+
+        let metaMirror = Mirror(reflecting: meta)
+        for child in metaMirror.children {
+            if child.label == "eventGuid" || child.label == "_eventGuid" {
+                if let str = resolvedValue(child.value) as? String, !str.isEmpty { return str }
+            }
+            // EventMeta may itself use _StorageClass.
+            if child.label == "_storage" {
+                let metaStorageMirror = Mirror(reflecting: child.value)
+                for metaStorageChild in metaStorageMirror.children {
+                    if metaStorageChild.label == "eventGuid" || metaStorageChild.label == "_eventGuid" {
+                        if let str = resolvedValue(metaStorageChild.value) as? String, !str.isEmpty { return str }
+                    }
+                }
+            }
+        }
+
+        return nil
     }
 
     static func eventName(from message: Any) -> String? {
