@@ -30,9 +30,7 @@ enum EventDisplayFieldReader {
     static func summary(from message: Any) -> EventDisplaySummary? {
         guard message is CollectionMapper else { return nil }
 
-        let eventName = extractFirstString(in: message, matching: eventNameLabels)
-            ?? dictionaryString(from: message, keys: ["eventName", "storage.eventName"])
-            ?? ""
+        let eventName = eventName(from: message) ?? ""
         let eventGuid = eventGuid(from: message)
         let timestamp = extractTimestampString(in: message) ?? ""
 
@@ -117,8 +115,47 @@ enum EventDisplayFieldReader {
 
     static func eventName(from message: Any) -> String? {
         guard message is CollectionMapper else { return nil }
+
+        // Targeted shallow scan: event_name is a direct field on every top-level
+        // event struct, so it lives either as a direct child or inside _StorageClass.
+        // At most 2 Mirror reflections regardless of how many fields the event has.
+        if let name = shallowEventName(in: message) {
+            return name
+        }
+
+        // Last-resort fallback for non-standard schemas.
         return extractFirstString(in: message, matching: eventNameLabels)
             ?? dictionaryString(from: message, keys: ["eventName", "storage.eventName"])
+    }
+
+    /// Walks at most 2 Mirror levels to find `eventName` without a full recursive
+    /// reflection or `asDictionary` allocation.
+    ///
+    /// Handles two SwiftProtobuf storage layouts:
+    /// - Simple structs: `eventName` / `_eventName` is a direct child of the message.
+    /// - Complex structs: the field lives inside a `_StorageClass` child (`_storage`).
+    private static func shallowEventName(in message: Any) -> String? {
+        let messageMirror = Mirror(reflecting: message)
+
+        for child in messageMirror.children {
+            // Layout A — direct field on the message struct.
+            if child.label == "eventName" || child.label == "_eventName" {
+                if let str = resolvedValue(child.value) as? String, !str.isEmpty { return str }
+            }
+
+            // Layout B — SwiftProtobuf _StorageClass pattern:
+            // message._storage._eventName: String
+            if child.label == "_storage" {
+                let storageMirror = Mirror(reflecting: child.value)
+                for storageChild in storageMirror.children {
+                    if storageChild.label == "eventName" || storageChild.label == "_eventName" {
+                        if let str = resolvedValue(storageChild.value) as? String, !str.isEmpty { return str }
+                    }
+                }
+            }
+        }
+
+        return nil
     }
 
     static func timestampString(from message: Any) -> String? {
