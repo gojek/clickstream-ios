@@ -1,6 +1,6 @@
 //
 //  EventsListViewModel.swift
-//  SettingsKit
+//  EventVisualizer
 //
 //  Created by Rishav Gupta on 14/03/22.
 //  Copyright © 2022 PT GoJek Indonesia. All rights reserved.
@@ -8,92 +8,94 @@
 
 import Foundation
 import SwiftProtobuf
+import UIKit
 
 protocol EventsListViewModelInput: AnyObject {
-    
     var cellsCount: Int { get }
-    
-    var messages: [Message] { get set }
-    
-    var selectedEventName: String { get set }
-        
-    func viewDidLoad(messages: [Message]?, selectedEventName: String?)
-    
+
+    func viewDidLoad(
+        messages: [EventData]?,
+        progress: @escaping (_ processedCount: Int, _ totalCount: Int) -> Void,
+        completion: @escaping () -> Void
+    )
+
     func cellViewModel(for indexPath: IndexPath) -> EventsListingTableViewCell.ViewModel
-    
+
     func didSelectRow(at indexPath: IndexPath) -> Message?
 }
 
-struct EventDisplayKeys {
-    let eventTimeStamp: String
+private struct EventListItem {
+    let timestamp: String
     let state: String
 }
 
 final class EventsListViewModel: EventsListViewModelInput {
-    
-    var messages: [Message] = []
-    
-    var selectedEventName: String = ""
-    
-    func cellViewModel(for indexPath: IndexPath) -> EventsListingTableViewCell.ViewModel {
-        let values = getValues(index: indexPath)
-        
-        return EventsListingTableViewCell.ViewModel(
-            name: values.eventTimeStamp,
-            value: values.state
-        )
+
+    private var events: [EventData] = []
+    private var listItems: [EventListItem] = []
+
+    private let processingQueue = DispatchQueue(label: "com.clickstream.eventvisualizer.eventslist.processing", qos: .userInitiated)
+
+    var cellsCount: Int {
+        return listItems.count
     }
-    
-    func getValues(index: IndexPath) -> EventDisplayKeys {
-        var eventTimeStamp = ""
-        var state = ""
-        if let message = messages[index.row] as? CollectionMapper {
-            if let eventGuid = message.asDictionary[Constants.EventVisualizer.eventGuid] as? String {
-                if let timestamp = message.asDictionary["_\(Constants.EventVisualizer.eventTimestamp)"] as? Date {
-                    eventTimeStamp = "\(timestamp)"
-                } else if let timestamp = message.asDictionary["\(Constants.EventVisualizer.eventTimestamp)"] as? Date {
-                    eventTimeStamp = "\(timestamp)"
+
+    func viewDidLoad(
+        messages: [EventData]?,
+        progress: @escaping (_ processedCount: Int, _ totalCount: Int) -> Void,
+        completion: @escaping () -> Void
+    ) {
+        guard let messages = messages else {
+            self.events = []
+            self.listItems = []
+            progress(0, 0)
+            completion()
+            return
+        }
+
+        self.events = Array(messages.reversed())
+
+        let totalCount = self.events.count
+        let progressBatchSize = max(1, totalCount / 20)
+        DispatchQueue.main.async {
+            progress(0, totalCount)
+        }
+
+        processingQueue.async { [weak self] in
+            guard let self = self else { return }
+
+            var renderedItems: [EventListItem] = []
+            renderedItems.reserveCapacity(totalCount)
+
+            for (index, event) in self.events.enumerated() {
+                renderedItems.append(self.makeListItem(from: event))
+                let processedCount = index + 1
+                if processedCount % progressBatchSize == 0 || processedCount == totalCount {
+                    DispatchQueue.main.async {
+                        progress(processedCount, totalCount)
+                    }
                 }
-                state = EventsHelper.shared.getState(of: eventGuid)
-            } else if let eventGuid = message.asDictionary["storage.\(Constants.EventVisualizer.eventGuid)"] as? String,
-                      let timestamp = message.asDictionary["storage.\(Constants.EventVisualizer.eventTimestamp)"] as? Date {
-                eventTimeStamp = "\(timestamp)"
-                state = EventsHelper.shared.getState(of: eventGuid)
-            } else if let eventGuid = message.asDictionary["\(Constants.EventVisualizer.guid)"] as? String,
-                      let timestamp = message.asDictionary["\(Constants.EventVisualizer.deviceTimestamp)"] as? Date {
-                eventTimeStamp = "\(timestamp)"
-                state = EventsHelper.shared.getState(of: eventGuid)
-            } else if let eventGuid = message.asDictionary["storage.meta.storage.\(Constants.EventVisualizer.eventGID)"] as? String,
-                      let timestamp = message.asDictionary["storage.\(Constants.EventVisualizer.eventTimestamp)"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
-                eventTimeStamp = "\(timestamp.date)"
-                state = EventsHelper.shared.getState(of: eventGuid)
-            } else if let eventGuid = message.asDictionary["storage.meta.storage.\(Constants.EventVisualizer.eventGID)"] as? String {
-                if let timestamp = message.asDictionary["storage.\(Constants.EventVisualizer.eventTimestamp)"] as? SwiftProtobuf.Google_Protobuf_Timestamp {
-                    eventTimeStamp = "\(timestamp.date)"
-                } else if let nanos = message.asDictionary["storage.eventTimestamp.nanos"] as? Int32,
-                            let seconds = message.asDictionary["storage.eventTimestamp.seconds"] as? Int64 {
-                    let timestamp = SwiftProtobuf.Google_Protobuf_Timestamp(seconds: seconds, nanos: nanos)
-                    eventTimeStamp = "\(timestamp.date)"
-                }
-                state = EventsHelper.shared.getState(of: eventGuid)
+            }
+
+            DispatchQueue.main.async {
+                self.listItems = renderedItems
+                completion()
             }
         }
-        return EventDisplayKeys(eventTimeStamp: eventTimeStamp, state: state)
     }
-    
-    var cellsCount: Int {
-        return messages.count
+
+    func cellViewModel(for indexPath: IndexPath) -> EventsListingTableViewCell.ViewModel {
+        let item = listItems[indexPath.row]
+        return EventsListingTableViewCell.ViewModel(name: item.timestamp, value: item.state)
     }
-    
-    func viewDidLoad(messages: [Message]?, selectedEventName: String?) {
-        if let messages = messages, let selectedEventName = selectedEventName {
-            /// Displaying the events making the most recent displayed on top
-            self.messages = messages.reversed()
-            self.selectedEventName = selectedEventName
-        }
-    }
-    
+
     func didSelectRow(at indexPath: IndexPath) -> Message? {
-        return messages[indexPath.row]
+        return events[indexPath.row].msg
+    }
+
+    private func makeListItem(from event: EventData) -> EventListItem {
+        let timestamp = event.displaySummary?.timestamp ?? EventDisplayFieldReader.timestampString(from: event.msg) ?? ""
+        let state = event.state.description
+        return EventListItem(timestamp: timestamp, state: state)
     }
 }

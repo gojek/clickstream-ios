@@ -3,7 +3,7 @@
 //  EventVisualizer
 //
 //  Created by Rishav Gupta on 29/03/22.
-//  Copyright © 2022 PT GoJek Indonesia. All rights reserved.
+//  Copyright © 2022 Gojek. All rights reserved.
 //
 
 import UIKit
@@ -23,6 +23,7 @@ final public class EventsHelper {
     
     /// used for capturing the events sent by Clickstream
     public var eventsCaptured: [EventData] = []
+    private var stateByEventGuid: [String: String] = [:]
     
     public var clickstreamConnectionState: Clickstream.ConnectionState {
         return Clickstream.getInstance()?.clickstreamConnectionState ?? .failed
@@ -30,8 +31,14 @@ final public class EventsHelper {
     
     /// returns the state of the event given the eventGuid
     public func getState(of providedEventGuid: String) -> String {
+        if let cachedState = stateByEventGuid[providedEventGuid] {
+            return cachedState
+        }
+
         if let foundIndex = indexOfEvent(with: providedEventGuid) {
-            return EventsHelper.shared.eventsCaptured[foundIndex].state.description
+            let state = EventsHelper.shared.eventsCaptured[foundIndex].state.description
+            stateByEventGuid[providedEventGuid] = state
+            return state
         }
         return ""
     }
@@ -49,6 +56,7 @@ final public class EventsHelper {
     }
     public func clearData() {
         EventsHelper.shared.eventsCaptured = []
+        stateByEventGuid = [:]
     }
     
     @available(iOS 13.0, *)
@@ -77,8 +85,23 @@ final public class EventsHelper {
 
 extension EventsHelper: EventStateViewable {
     public func sendEvent(_ event: EventData) {
+        /// Precompute the display summary once so the UI can reuse it later.
+        let summary = event.displaySummary ?? EventDisplayFieldReader.summary(from: event.msg)
+        let eventWithSummary = EventData(
+            msg: event.msg,
+            state: event.state,
+            batchId: event.batchId,
+            displaySummary: summary
+        )
+
         /// all events sent by Clickstream is stored here in an array
-        EventsHelper.shared.eventsCaptured.append(event)
+        EventsHelper.shared.eventsCaptured.append(eventWithSummary)
+
+        if let eventGuid = summary?.eventGuid {
+            stateByEventGuid[eventGuid] = event.state.description
+        } else if let eventGuid = EventDisplayFieldReader.eventGuid(from: event.msg) {
+            stateByEventGuid[eventGuid] = event.state.description
+        }
     }
     
     /// When providedEventGuid is not nil, then: Update the state of the event and
@@ -96,6 +119,7 @@ extension EventsHelper: EventStateViewable {
             foundIndex < EventsHelper.shared.eventsCaptured.count {
             
             EventsHelper.shared.eventsCaptured[foundIndex].state = state
+            stateByEventGuid[providedEventGuid] = state.description
             if let eventBatch = eventBatch {
                 EventsHelper.shared.eventsCaptured[foundIndex].batchId = eventBatch
             }
@@ -104,28 +128,18 @@ extension EventsHelper: EventStateViewable {
             for eventIndex in foundIndexs {
                 if eventIndex < EventsHelper.shared.eventsCaptured.count {
                     EventsHelper.shared.eventsCaptured[eventIndex].state = state
+                    if let eventGuid = EventsHelper.shared.eventsCaptured[eventIndex].displaySummary?.eventGuid ?? EventDisplayFieldReader.eventGuid(from: EventsHelper.shared.eventsCaptured[eventIndex].msg) {
+                        stateByEventGuid[eventGuid] = state.description
+                    }
                 }
             }
         }
     }
-    
+
     private func indexOfEvent(with eventGuid: String) -> Int? {
-        let events = EventsHelper.shared.eventsCaptured.map { $0.msg }
-        for (index, message) in events.enumerated() {
-            if let productComm = message as? CollectionMapper {
-                let flattenedDict = productComm.asDictionary
-                if let currentEventGuid = flattenedDict[Constants.EventVisualizer.eventGuid] as? String, currentEventGuid == eventGuid {
-                    return index
-                } else if let currentEventGuid = flattenedDict["storage.\(Constants.EventVisualizer.eventGuid)"] as? String,
-                          currentEventGuid == eventGuid {
-                    return index
-                } else if let currentEventGuid = flattenedDict[Constants.EventVisualizer.guid] as? String,
-                          currentEventGuid == eventGuid {
-                    return index
-                } else if let currentEventGuid = flattenedDict["storage.meta.storage.\(Constants.EventVisualizer.eventGID)"] as? String,
-                          currentEventGuid == eventGuid {
-                    return index
-                }
+        for (index, event) in EventsHelper.shared.eventsCaptured.enumerated() {
+            if let currentEventGuid = event.displaySummary?.eventGuid ?? EventDisplayFieldReader.eventGuid(from: event.msg), currentEventGuid == eventGuid {
+                return index
             }
         }
         return nil
@@ -133,9 +147,8 @@ extension EventsHelper: EventStateViewable {
     
     private func indexOfEventBatch(with eventBatchGuid: String) -> [Int] {
         var foundEventsArray: [Int] = []
-        let batchesId = EventsHelper.shared.eventsCaptured.map { $0.batchId }
-        for (index, batchId) in batchesId.enumerated() {
-            if batchId == eventBatchGuid {
+        for (index, event) in EventsHelper.shared.eventsCaptured.enumerated() {
+            if event.batchId == eventBatchGuid {
                 foundEventsArray.append(index)
             }
         }

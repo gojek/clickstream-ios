@@ -49,6 +49,18 @@ public enum EventState: CustomStringConvertible {
     }
 }
 
+public struct EventDisplaySummary {
+    public let eventName: String
+    public let timestamp: String
+    public let eventGuid: String?
+
+    public init(eventName: String, timestamp: String, eventGuid: String?) {
+        self.eventName = eventName
+        self.timestamp = timestamp
+        self.eventGuid = eventGuid
+    }
+}
+
 public struct EventData {
     /// contains message which has all the event details
     public let msg: Message
@@ -59,4 +71,18 @@ public struct EventData {
     /// When event is acknowledged, we have the event batch ID and not the event ID.
     /// Thus, batch ID is used to update the state of the event to Acknowledged.
     public var batchId: String?
+    /// small precomputed summary used by the visualizer screens to avoid repeated parsing
+    public var displaySummary: EventDisplaySummary?
+
+    public init(
+        msg: Message,
+        state: EventState,
+        batchId: String? = nil,
+        displaySummary: EventDisplaySummary? = nil
+    ) {
+        self.msg = msg
+        self.state = state
+        self.batchId = batchId
+        self.displaySummary = displaySummary
+    }
 }

@@ -287,6 +287,8 @@
 		D8F38D992E9CC33800C4281E /* CourierConnect.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D972E9CC33800C4281E /* CourierConnect.swift */; };
 		D8F38D9B2E9E0DF300C4281E /* ClickstreamCourierUserCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D9A2E9E0DF300C4281E /* ClickstreamCourierUserCredentials.swift */; };
 		D8F38D9C2E9E0DF300C4281E /* ClickstreamCourierUserCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F38D9A2E9E0DF300C4281E /* ClickstreamCourierUserCredentials.swift */; };
+		E06B9B712FF2712900F57EC5 /* EventDisplayFieldReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E06B9B702FF2712900F57EC5 /* EventDisplayFieldReader.swift */; };
+		E06B9B722FF2713400F57EC5 /* EventDisplayFieldReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E06B9B702FF2712900F57EC5 /* EventDisplayFieldReader.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -328,9 +330,9 @@
 		88F9204101C5E8D41805FD1A /* Pods-ClickstreamTests.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.production.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.production.xcconfig"; sourceTree = "<group>"; };
 		9A0BBA872BC3A59300F7DC01 /* URLRequest+Equality.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+Equality.swift"; sourceTree = "<group>"; };
 		9A0BBA8C2BC3CA5500F7DC01 /* PerformanceTracer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceTracer.swift; sourceTree = "<group>"; };
+		9D31FA91B32979CBBA2C3849 /* Pods-ClickstreamTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.debug.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.debug.xcconfig"; sourceTree = "<group>"; };
 		9F60491C2FC9781700190D5C /* CSBinaryEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSBinaryEvent.swift; sourceTree = "<group>"; };
 		9F60491F2FC979B700190D5C /* CSBinaryEventTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSBinaryEventTests.swift; sourceTree = "<group>"; };
-		9D31FA91B32979CBBA2C3849 /* Pods-ClickstreamTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.debug.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A870FFC059A664D0DF0292E5 /* Pods-ClickstreamTests.alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.alpha.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.alpha.xcconfig"; sourceTree = "<group>"; };
 		A8F29FD3E426DD04C26B8560 /* Pods-ClickstreamTests.integration.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClickstreamTests.integration.xcconfig"; path = "Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests.integration.xcconfig"; sourceTree = "<group>"; };
 		BD6BDB3E29FBC1360006B04A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -490,6 +492,7 @@
 		D8F38D972E9CC33800C4281E /* CourierConnect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierConnect.swift; sourceTree = "<group>"; };
 		D8F38D9A2E9E0DF300C4281E /* ClickstreamCourierUserCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickstreamCourierUserCredentials.swift; sourceTree = "<group>"; };
 		D982B8160D113D472BF2C8E0 /* Pods-Clickstream.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.production.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.production.xcconfig"; sourceTree = "<group>"; };
+		E06B9B702FF2712900F57EC5 /* EventDisplayFieldReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDisplayFieldReader.swift; sourceTree = "<group>"; };
 		E083FF5B9C4808DB73B36B32 /* Pods-Clickstream.alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clickstream.alpha.xcconfig"; path = "Target Support Files/Pods-Clickstream/Pods-Clickstream.alpha.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -657,6 +660,7 @@
 		BD6BDB4F29FBC1360006B04A /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				E06B9B702FF2712900F57EC5 /* EventDisplayFieldReader.swift */,
 				BD6BDB5029FBC1360006B04A /* EventsHelper.swift */,
 				BD6BDB5129FBC1360006B04A /* UITableViewExtensions.swift */,
 				BD6BDB5229FBC1360006B04A /* EventStateViewable.swift */,
@@ -1662,6 +1666,7 @@
 				BD6BDB7A29FBC1360006B04A /* EventDetailsViewController.swift in Sources */,
 				BD6BDB9229FBC1360006B04A /* AppVersionChecker.swift in Sources */,
 				BDE4681D2A5BD72000BFA976 /* ClickStreamEventClassification.swift in Sources */,
+				E06B9B712FF2712900F57EC5 /* EventDisplayFieldReader.swift in Sources */,
 				D872F6232E8FB8F5006F077E /* ClickstreamNetworkOptions.swift in Sources */,
 				BDE468612A5BD72000BFA976 /* EventSchedulerDependencies.swift in Sources */,
 				BD6BDB8629FBC1360006B04A /* HealthTracker.swift in Sources */,
@@ -1746,6 +1751,7 @@
 				BDE468682A5BD72000BFA976 /* AppStateNotifierService.swift in Sources */,
 				BDE468122A5BD72000BFA976 /* KeepAliveService.swift in Sources */,
 				BD6BDB9929FBC1360006B04A /* CSLocationDTO.swift in Sources */,
+				E06B9B722FF2713400F57EC5 /* EventDisplayFieldReader.swift in Sources */,
 				D872F5FD2E8F8646006F077E /* WebsocketRetryMechanism.swift in Sources */,
 				D872F5FF2E8F8646006F077E /* WebsocketNetworkService.swift in Sources */,
 				D872F6022E8F8646006F077E /* WebsocketNetworkBuilder.swift in Sources */,

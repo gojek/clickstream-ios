@@ -1,6 +1,6 @@
 # Uncomment the next line to define a global platform for your project
 
-source 'https://github.com/CocoaPods/Specs.git'
+source 'https://cdn.cocoapods.org/'
 
 platform :ios, '15.0'
 use_modular_headers!
