@@ -19,6 +19,7 @@ struct CourierEventRequest: EventRequestDatabasePersistable {
     var eventType: Constants.EventType?
     var isInternal: Bool?
     var eventCount: Int
+    var qos: Int?
     
     init(guid: String, data: Data? = nil) {
         self.guid = guid

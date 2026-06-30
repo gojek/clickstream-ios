@@ -122,6 +122,33 @@ final class EventSchedulerDependencies {
         }
     }()
 
+    private var isTTLEnabled: Bool {
+        Clickstream.courierConfigurations.time_to_live?.isTTLEnabled ?? false
+    }
+
+    private lazy var classificationAppStateNotifier: AppStateNotifierService = {
+        return DefaultAppStateNotifierService(with: courierSchedulerQueue)
+    }()
+
+    private lazy var courierSchedulerFactory: CourierEventSchedulerFactory = {
+        CourierEventSchedulerFactory(persistence: courierPersistence,
+                                     batchCreator: courierEventBatchCreator,
+                                     performOnQueue: courierSchedulerQueue,
+                                     ttlEnabled: isTTLEnabled)
+    }()
+
+    private lazy var classificationCoordinator: CourierClassificationCoordinator? = {
+        guard let properties = Clickstream.classificationConfig, properties.isClassificationEnabled else {
+            return nil
+        }
+        return CourierClassificationCoordinator(config: properties,
+                                                factory: courierSchedulerFactory,
+                                                batchCreator: courierEventBatchCreator,
+                                                persistence: courierPersistence,
+                                                appStateNotifier: classificationAppStateNotifier,
+                                                ttlEnabled: isTTLEnabled)
+    }()
+
     /// Call this method to get the EventWarehouser instance.
     /// - Returns: EventWarehouser instance.
     func makeEventWarehouser() -> DefaultEventWarehouser {
@@ -140,7 +167,8 @@ final class EventSchedulerDependencies {
             persistence: courierPersistence,
             batchSizeRegulator: courierBatchSizeRegulator,
             networkOptions: networkOptions,
-            eventCleanupManager: eventCleanupManager
+            eventCleanupManager: eventCleanupManager,
+            classificationCoordinator: classificationCoordinator
         )
     }
 }

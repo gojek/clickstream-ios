@@ -53,6 +53,26 @@ public final class Clickstream {
     /// Holds the event classification for the sdk.
     internal static var eventClassifier: ClickstreamEventClassification = ClickstreamEventClassification()
 
+    /// Holds the courier event-classification remote configuration.
+    ///
+    /// When `nil` or when `isClassificationEnabled` is `false`, the SDK uses the legacy courier
+    /// scheduling flow and behaviour is unchanged. Set this before calling `initialise` to opt in.
+    internal static var classificationConfig: EventClassificationRemoteConfig.Properties?
+
+    /// True when classification-based courier scheduling is enabled.
+    internal static var isClassificationEnabled: Bool {
+        classificationConfig?.isClassificationEnabled == true
+    }
+
+    /// Configures courier event classification.
+    ///
+    /// Must be called before `initialise` to take effect for the current session. Passing `nil`
+    /// (the default) keeps the legacy courier scheduling flow.
+    /// - Parameter properties: The classification settings, typically decoded from remote config.
+    public static func setEventClassification(_ properties: EventClassificationRemoteConfig.Properties?) {
+        classificationConfig = properties
+    }
+
     
     /// Clickstream shared instance.
     private static var sharedInstance: Clickstream?
