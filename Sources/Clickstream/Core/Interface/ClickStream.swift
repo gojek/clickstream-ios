@@ -56,7 +56,8 @@ public final class Clickstream {
     /// Holds the courier event-classification remote configuration.
     ///
     /// When `nil` or when `isClassificationEnabled` is `false`, the SDK uses the legacy courier
-    /// scheduling flow and behaviour is unchanged. Set this before calling `initialise` to opt in.
+    /// scheduling flow and behaviour is unchanged. Set via the `classificationConfig` parameter of
+    /// `initialise` to opt in.
     internal static var classificationConfig: EventClassificationRemoteConfig.Properties?
 
     /// True when classification-based courier scheduling is enabled.
@@ -64,16 +65,7 @@ public final class Clickstream {
         classificationConfig?.isClassificationEnabled == true
     }
 
-    /// Configures courier event classification.
-    ///
-    /// Must be called before `initialise` to take effect for the current session. Passing `nil`
-    /// (the default) keeps the legacy courier scheduling flow.
-    /// - Parameter properties: The classification settings, typically decoded from remote config.
-    public static func setEventClassification(_ properties: EventClassificationRemoteConfig.Properties?) {
-        classificationConfig = properties
-    }
 
-    
     /// Clickstream shared instance.
     private static var sharedInstance: Clickstream?
     
@@ -227,6 +219,8 @@ public final class Clickstream {
     ///   - request: URL request with secret code for the services to authenticate.
     ///   - appPrefix: Application name without any space or special characters that needs
     ///   to be passed from integrating app.
+    ///   - classificationConfig: Courier event-classification remote configuration. Pass `nil`
+    ///   (the default) to keep the legacy courier scheduling flow.
     /// - Returns: returns a Clickstream instance to keep throughout the project.
     ///            You can always get the instance by calling getInstance()
     #if TRACKER_ENABLED
@@ -242,6 +236,7 @@ public final class Clickstream {
                                                      appPrefix: String,
                                                      appVersion: String,
                                                      samplerConfiguration: EventSamplerConfiguration? = nil,
+                                                     classificationConfig: EventClassificationRemoteConfig.Properties? = nil,
                                                      networkOptions: ClickstreamNetworkOptions) throws -> Clickstream? {
         do {
             return try initializeClickstream(
@@ -257,6 +252,7 @@ public final class Clickstream {
                 appPrefix: appPrefix,
                 appVersion: appVersion,
                 samplerConfiguration: samplerConfiguration,
+                classificationConfig: classificationConfig,
                 networkOptions: networkOptions)
         } catch {
             print("Cannot initialise Clickstream. Dependencies could not be initialised.",.critical)
@@ -276,6 +272,7 @@ public final class Clickstream {
                                                      appPrefix: String,
                                                      appVersion: String,
                                                      samplerConfiguration: EventSamplerConfiguration? = nil,
+                                                     classificationConfig: EventClassificationRemoteConfig.Properties? = nil,
                                                      networkOptions: ClickstreamNetworkOptions) throws -> Clickstream? {
         do {
             return try initializeClickstream(
@@ -290,6 +287,7 @@ public final class Clickstream {
                 appPrefix: appPrefix,
                 appVersion: appVersion,
                 samplerConfiguration: samplerConfiguration,
+                classificationConfig: classificationConfig,
                 networkOptions: networkOptions)
         } catch {
             print("Cannot initialise Clickstream. Dependencies could not be initialised.",.critical)
@@ -311,6 +309,7 @@ public final class Clickstream {
                                       appPrefix: String,
                                       appVersion: String,
                                       samplerConfiguration: EventSamplerConfiguration? = nil,
+                                      classificationConfig: EventClassificationRemoteConfig.Properties? = nil,
                                       networkOptions: ClickstreamNetworkOptions) throws -> Clickstream? {
 
         let semaphore = DispatchSemaphore(value: 1)
@@ -329,6 +328,7 @@ public final class Clickstream {
             Clickstream.timerCrashFixFlag = timerCrashFixFlag
             Clickstream.priorityEventsEnabled = priorityEventsEnabled
             Clickstream.dbCorruptionRecoveryEnabled = dbCorruptionRecoveryEnabled
+            Clickstream.classificationConfig = classificationConfig
             Clickstream.appPrefix = appPrefix.lowercased().replacingOccurrences(of: " ", with: "")
             Clickstream.appVersion = appVersion
             
