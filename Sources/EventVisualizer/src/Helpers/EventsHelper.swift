@@ -8,6 +8,7 @@
 
 import UIKit
 import Foundation
+import os
 
 struct ClickstreamConnectionStatusView {
     var statusLabel: UILabel
@@ -20,27 +21,52 @@ final public class EventsHelper {
     
     /// singleton variable
     public static let shared: EventsHelper = EventsHelper()
-    
+
+    /// Guards every access to `_eventsCaptured` and `stateByEventGuid`.
+    /// Writes arrive on multiple background serial queues (event processing,
+    /// scheduling, network, retry) while reads happen on the main thread from
+    /// the visualizer UI, so all access must be serialized. Allocated via a
+    /// stable pointer to avoid the `&property` inout pitfall; the singleton
+    /// lives for the process lifetime so it is never deallocated.
+    private let unfairLock: os_unfair_lock_t = {
+        let lock = os_unfair_lock_t.allocate(capacity: 1)
+        lock.initialize(to: os_unfair_lock())
+        return lock
+    }()
+
+    private func withLock<T>(_ body: () -> T) -> T {
+        os_unfair_lock_lock(unfairLock)
+        defer { os_unfair_lock_unlock(unfairLock) }
+        return body()
+    }
+
+    private var _eventsCaptured: [EventData] = []
+
     /// used for capturing the events sent by Clickstream
-    public var eventsCaptured: [EventData] = []
+    public var eventsCaptured: [EventData] {
+        get { withLock { _eventsCaptured } }
+        set { withLock { _eventsCaptured = newValue } }
+    }
     private var stateByEventGuid: [String: String] = [:]
-    
+
     public var clickstreamConnectionState: Clickstream.ConnectionState {
         return Clickstream.getInstance()?.clickstreamConnectionState ?? .failed
     }
     
     /// returns the state of the event given the eventGuid
     public func getState(of providedEventGuid: String) -> String {
-        if let cachedState = stateByEventGuid[providedEventGuid] {
-            return cachedState
-        }
+        return withLock {
+            if let cachedState = stateByEventGuid[providedEventGuid] {
+                return cachedState
+            }
 
-        if let foundIndex = indexOfEvent(with: providedEventGuid) {
-            let state = EventsHelper.shared.eventsCaptured[foundIndex].state.description
-            stateByEventGuid[providedEventGuid] = state
-            return state
+            if let foundIndex = indexOfEvent(with: providedEventGuid) {
+                let state = _eventsCaptured[foundIndex].state.description
+                stateByEventGuid[providedEventGuid] = state
+                return state
+            }
+            return ""
         }
-        return ""
     }
     
     public func startCapturing() {
@@ -55,8 +81,10 @@ final public class EventsHelper {
         #endif
     }
     public func clearData() {
-        EventsHelper.shared.eventsCaptured = []
-        stateByEventGuid = [:]
+        withLock {
+            _eventsCaptured = []
+            stateByEventGuid = [:]
+        }
     }
     
     @available(iOS 13.0, *)
@@ -94,13 +122,15 @@ extension EventsHelper: EventStateViewable {
             displaySummary: summary
         )
 
-        /// all events sent by Clickstream is stored here in an array
-        EventsHelper.shared.eventsCaptured.append(eventWithSummary)
+        withLock {
+            /// all events sent by Clickstream is stored here in an array
+            _eventsCaptured.append(eventWithSummary)
 
-        if let eventGuid = summary?.eventGuid {
-            stateByEventGuid[eventGuid] = event.state.description
-        } else if let eventGuid = EventDisplayFieldReader.eventGuid(from: event.msg) {
-            stateByEventGuid[eventGuid] = event.state.description
+            if let eventGuid = summary?.eventGuid {
+                stateByEventGuid[eventGuid] = event.state.description
+            } else if let eventGuid = EventDisplayFieldReader.eventGuid(from: event.msg) {
+                stateByEventGuid[eventGuid] = event.state.description
+            }
         }
     }
     
@@ -114,40 +144,44 @@ extension EventsHelper: EventStateViewable {
     ///   - eventBatch: this is the eventBatchGuid for a particular event batch
     ///   - state: this is the state in which the event is in
     public func updateStatus(providedEventGuid: String? = nil, eventBatchID eventBatch: String? = nil, state: EventState) {
-        if let providedEventGuid = providedEventGuid,
-            let foundIndex = indexOfEvent(with: providedEventGuid),
-            foundIndex < EventsHelper.shared.eventsCaptured.count {
-            
-            EventsHelper.shared.eventsCaptured[foundIndex].state = state
-            stateByEventGuid[providedEventGuid] = state.description
-            if let eventBatch = eventBatch {
-                EventsHelper.shared.eventsCaptured[foundIndex].batchId = eventBatch
-            }
-        } else if let eventBatch = eventBatch {
-            let foundIndexs = indexOfEventBatch(with: eventBatch)
-            for eventIndex in foundIndexs {
-                if eventIndex < EventsHelper.shared.eventsCaptured.count {
-                    EventsHelper.shared.eventsCaptured[eventIndex].state = state
-                    if let eventGuid = EventsHelper.shared.eventsCaptured[eventIndex].displaySummary?.eventGuid ?? EventDisplayFieldReader.eventGuid(from: EventsHelper.shared.eventsCaptured[eventIndex].msg) {
-                        stateByEventGuid[eventGuid] = state.description
+        withLock {
+            if let providedEventGuid = providedEventGuid,
+                let foundIndex = indexOfEvent(with: providedEventGuid),
+                foundIndex < _eventsCaptured.count {
+
+                _eventsCaptured[foundIndex].state = state
+                stateByEventGuid[providedEventGuid] = state.description
+                if let eventBatch = eventBatch {
+                    _eventsCaptured[foundIndex].batchId = eventBatch
+                }
+            } else if let eventBatch = eventBatch {
+                let foundIndexs = indexOfEventBatch(with: eventBatch)
+                for eventIndex in foundIndexs {
+                    if eventIndex < _eventsCaptured.count {
+                        _eventsCaptured[eventIndex].state = state
+                        if let eventGuid = _eventsCaptured[eventIndex].displaySummary?.eventGuid ?? EventDisplayFieldReader.eventGuid(from: _eventsCaptured[eventIndex].msg) {
+                            stateByEventGuid[eventGuid] = state.description
+                        }
                     }
                 }
             }
         }
     }
 
+    /// Callers must already hold `unfairLock`.
     private func indexOfEvent(with eventGuid: String) -> Int? {
-        for (index, event) in EventsHelper.shared.eventsCaptured.enumerated() {
+        for (index, event) in _eventsCaptured.enumerated() {
             if let currentEventGuid = event.displaySummary?.eventGuid ?? EventDisplayFieldReader.eventGuid(from: event.msg), currentEventGuid == eventGuid {
                 return index
             }
         }
         return nil
     }
-    
+
+    /// Callers must already hold `unfairLock`.
     private func indexOfEventBatch(with eventBatchGuid: String) -> [Int] {
         var foundEventsArray: [Int] = []
-        for (index, event) in EventsHelper.shared.eventsCaptured.enumerated() {
+        for (index, event) in _eventsCaptured.enumerated() {
             if event.batchId == eventBatchGuid {
                 foundEventsArray.append(index)
             }
