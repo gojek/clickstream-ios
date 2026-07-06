@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [2.0.93] - 2026-07-06
+
+[3ccd60a] fix: concurrent thread safety crash in dictionaries in EV (#148) (by @Asif)
+[309d3b5] [CI] Bump version - 2.0.92 (#146) (by @Abhijeet Mallick)
+[cdca8ab] [CI] Bump version - 2.0.92 (by @github-actions[bot])
+
 ## [2.0.92] - 2026-06-30
 
 [9901869] Event visualiser performance improvements (#145) (by @Asif)
