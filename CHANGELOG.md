@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [2.0.94] - 2026-07-14
+
+[34c554c] fix tracking via courier (#151) (by @klaes-ashford)
+[2e70b9e] [CI] Bump version - 2.0.93 (#149) (by @Abhijeet Mallick)
+[111978c] [CI] Bump version - 2.0.93 (by @github-actions[bot])
+
 ## [2.0.93] - 2026-07-06
 
 [3ccd60a] fix: concurrent thread safety crash in dictionaries in EV (#148) (by @Asif)
