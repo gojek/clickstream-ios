@@ -123,9 +123,10 @@ final class CourierEventProcessor: EventProcessor {
         !networkOptions.isWebsocketEnabled || networkOptions.courierExclusiveEventTypes.contains(event.messageName)
     }
 
-    func createBinaryEvent(event: CSBinaryEvent) {
+    func createBinaryEvent(event: CSBinaryEvent, isUserAuthenticated: Bool) {
         self.serialQueue.async { [weak self] in
             guard let checkedSelf = self else { return }
+            guard event.shouldTrackOnCourier(isUserLoggedIn: isUserAuthenticated, networkOptions: checkedSelf.networkOptions) else { return }
             if let eventToStore = checkedSelf.constructBinaryEvent(event: event) {
                 checkedSelf.eventWarehouser.store(eventToStore)
             }
@@ -160,7 +161,7 @@ final class CourierEventProcessor: EventProcessor {
                 timestamp: event.timestamp,
                 type: classification,
                 eventProtoData: csEvent.serializedData(),
-                expiryTime:  Date()
+                expiryTime: eventExpirationManager.getExpiration(for: placeholder)
             )
         } catch {
             return nil

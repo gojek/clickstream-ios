@@ -11,7 +11,7 @@ import SwiftProtobuf
 
 protocol EventProcessorInput {
     func createEvent(event: ClickstreamEvent, isUserAuthenticated: Bool)
-    func createBinaryEvent(event: CSBinaryEvent)
+    func createBinaryEvent(event: CSBinaryEvent, isUserAuthenticated: Bool)
 }
 
 protocol EventProcessorOutput { }
@@ -109,9 +109,12 @@ final class DefaultEventProcessor: EventProcessor {
         }
     }
 
-    func createBinaryEvent(event: CSBinaryEvent) {
+    func createBinaryEvent(event: CSBinaryEvent, isUserAuthenticated: Bool) {
         self.serialQueue.async { [weak self] in
             guard let checkedSelf = self else { return }
+            if checkedSelf.networkOptions.courierExclusiveEventsEnabled {
+                guard event.shouldTrackOnWebsocket(isUserLoggedIn: isUserAuthenticated, networkOptions: checkedSelf.networkOptions) else { return }
+            }
             if let eventToStore = checkedSelf.constructBinaryEvent(event: event) {
                 checkedSelf.eventWarehouser.store(eventToStore)
             }

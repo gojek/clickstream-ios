@@ -28,3 +28,24 @@ public struct CSBinaryEvent {
         self.product = product
     }
 }
+
+extension CSBinaryEvent {
+
+    func shouldTrackOnCourier(isUserLoggedIn: Bool, networkOptions: ClickstreamNetworkOptions) -> Bool {
+        let isUserEligible = isUserLoggedIn || networkOptions.isCourierPreAuthEnabled
+        let isCourierWhitelisted = networkOptions.courierEventTypes.contains(self.type)
+        let isCourierExclusive = networkOptions.courierExclusiveEventTypes.contains(self.type)
+
+        guard networkOptions.isCourierEnabled && isUserEligible else { return false }
+        if networkOptions.isWebsocketEnabled && !isCourierWhitelisted && !isCourierExclusive { return false }
+        return true
+    }
+
+    func shouldTrackOnWebsocket(isUserLoggedIn: Bool, networkOptions: ClickstreamNetworkOptions) -> Bool {
+        let isUserEligible = isUserLoggedIn || networkOptions.isCourierPreAuthEnabled
+        let isCourierExclusive = networkOptions.courierExclusiveEventTypes.contains(self.type)
+
+        if networkOptions.isCourierEnabled && isUserEligible && isCourierExclusive { return false }
+        return true
+    }
+}
