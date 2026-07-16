@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [2.0.95] - 2026-07-16
+
+[75eefbd] Merge pull request #150 from gojek/fix/courier_retry_crash_final (by @rishabhabbu-ctrl)
+[9fd9244] [CI] Bump version - 2.0.94 (#152) (by @Abhijeet Mallick)
+[7867fae] [CI] Bump version - 2.0.94 (by @github-actions[bot])
+[babf786] Fix Courier Retry Mechanism crash (by @Rishab Habbu)
+
 ## [2.0.94] - 2026-07-14
 
 [34c554c] fix tracking via courier (#151) (by @klaes-ashford)
