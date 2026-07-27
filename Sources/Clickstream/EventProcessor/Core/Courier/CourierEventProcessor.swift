@@ -98,6 +98,10 @@ final class CourierEventProcessor: EventProcessor {
         guard let classification = classifier.getClassification(event: event) else {
             return nil
         }
+
+        let resolved = resolveClassification(for: event,
+                                             legacy: classification,
+                                             defaultExpiry: eventExpirationManager.getExpiration(for: event))
         
         do {
             let csEvent = Odpf_Raccoon_Event.with {
@@ -112,11 +116,37 @@ final class CourierEventProcessor: EventProcessor {
             }
             return try CourierEvent(guid: event.guid,
                                     timestamp: event.timeStamp,
-                                    type: classification,
-                                    eventProtoData: csEvent.serializedData(), expiryTime: eventExpirationManager.getExpiration(for: event))
+                                    type: resolved.type,
+                                    eventProtoData: csEvent.serializedData(), expiryTime: resolved.expiry)
         } catch {
             return nil
         }
+    }
+
+    /// Resolves the routing `type` and expiry for an event.
+    ///
+    /// When classification is disabled the legacy classification and expiry are returned unchanged.
+    /// When enabled, instant and P0 events keep their legacy routing (preserving the current fast
+    /// paths); all other events are routed by their resolved classification id and expire per the
+    /// classification's TTL.
+    private func resolveClassification(for event: ClickstreamEvent,
+                                       legacy: String,
+                                       defaultExpiry: Date) -> (type: String, expiry: Date) {
+        guard Clickstream.isClassificationEnabled, let properties = Clickstream.classificationConfig else {
+            return (legacy, defaultExpiry)
+        }
+
+        if legacy == Constants.EventType.instant.rawValue || legacy == Constants.EventType.p0Event.rawValue {
+            return (legacy, defaultExpiry)
+        }
+
+        let classificationId = properties.resolveClassificationId(protoName: event.messageName,
+                                                                  eventName: event.eventName,
+                                                                  csEventName: event.csEventName)
+        if let config = properties.configs.first(where: { $0.classificationId == classificationId }) {
+            return (classificationId, config.expiryDate(from: event.timeStamp))
+        }
+        return (classificationId, defaultExpiry)
     }
 
     private func isExslusiveEvent(_ event: ClickstreamEvent) -> Bool {

@@ -11,13 +11,15 @@ final class CourierEventWarehouser: EventWarehouser {
     private let batchSizeRegulator: CourierBatchSizeRegulator
     private let networkOptions: ClickstreamNetworkOptions
     private let eventCleanupManager: CourierEventCleanupManager?
+    private let classificationCoordinator: CourierClassificationCoordinator?
 
     init(with batchProcessor: CourierEventBatchProcessor,
          performOnQueue: SerialQueue,
          persistence: DefaultDatabaseDAO<CourierEvent>,
          batchSizeRegulator: CourierBatchSizeRegulator,
          networkOptions: ClickstreamNetworkOptions,
-         eventCleanupManager: CourierEventCleanupManager? = nil) {
+         eventCleanupManager: CourierEventCleanupManager? = nil,
+         classificationCoordinator: CourierClassificationCoordinator? = nil) {
 
         self.performQueue = performOnQueue
         self.persistence = persistence
@@ -25,6 +27,7 @@ final class CourierEventWarehouser: EventWarehouser {
         self.batchSizeRegulator = batchSizeRegulator
         self.networkOptions = networkOptions
         self.eventCleanupManager = eventCleanupManager
+        self.classificationCoordinator = classificationCoordinator
         
         start()
         
@@ -32,8 +35,15 @@ final class CourierEventWarehouser: EventWarehouser {
     }
     
     /// This method starts the event batch processor.
+    ///
+    /// When classification is enabled, the classification coordinator drives scheduling instead of
+    /// the legacy batch processor (which is left dormant to avoid double-draining persistence).
     private func start() {
-        batchProcessor.start()
+        if let classificationCoordinator {
+            classificationCoordinator.start()
+        } else {
+            batchProcessor.start()
+        }
     }
 
     /// Track event for Visualiaser
@@ -64,6 +74,11 @@ extension CourierEventWarehouser {
         performQueue.async { [weak self] in
             guard let checkedSelf = self else { return }
 
+            if let coordinator = checkedSelf.classificationCoordinator {
+                checkedSelf.store(event, using: coordinator)
+                return
+            }
+
             if event.type == Constants.EventType.instant.rawValue {
                 _ = checkedSelf.batchProcessor.sendInstantly(event: event)
             } else {
@@ -82,8 +97,32 @@ extension CourierEventWarehouser {
             }
         }
     }
+
+    /// Routes an event through the classification coordinator while preserving the instant and
+    /// P0 fast paths from the legacy flow.
+    private func store(_ event: CourierEvent, using coordinator: CourierClassificationCoordinator) {
+        if event.type == Constants.EventType.instant.rawValue {
+            coordinator.sendInstantly(event)
+            return
+        }
+
+        if event.type == Constants.EventType.p0Event.rawValue {
+            persistence.insert(event)
+            coordinator.sendP0(classificationType: event.type)
+            trackEventVisualizer(event)
+            return
+        }
+
+        batchSizeRegulator.observe(event)
+        coordinator.store(event, classificationId: event.type)
+        trackEventVisualizer(event)
+    }
     
     func stop() {
-        batchProcessor.stop()
+        if let classificationCoordinator {
+            classificationCoordinator.stop()
+        } else {
+            batchProcessor.stop()
+        }
     }
 }

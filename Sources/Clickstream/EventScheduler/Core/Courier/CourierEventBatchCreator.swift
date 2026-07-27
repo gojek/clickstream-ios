@@ -30,6 +30,19 @@ final class CourierEventBatchCreator: EventBatchCreator {
 
         return true
     }
+
+    /// Forwards a batch carrying an explicit MQTT QoS level resolved from the event classification.
+    @discardableResult
+    func forward(with events: [CourierEvent], qos: Int?) -> Bool {
+        let batch = CourierEventBatch(uuid: UUID().uuidString, events: events, qos: qos)
+        networkBuilder.trackBatch(batch, completion: nil)
+
+        if isCSHealthTrackingEnabled {
+            self.trackHealthEvents(batch: batch, events: events)
+        }
+
+        return true
+    }
     
     func requestForConnection() {
         networkBuilder.openConnectionForcefully()

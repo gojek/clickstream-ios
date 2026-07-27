@@ -50,6 +50,7 @@ extension CourierNetworkBuilder {
                 }
                 
                 eventRequest.eventCount = eventBatch.events.count
+                eventRequest.qos = (eventBatch as? CourierEventBatch)?.qos
                 checkedSelf.retryMech.trackBatch(with: eventRequest)
                 
                 #if EVENT_VISUALIZER_ENABLED
