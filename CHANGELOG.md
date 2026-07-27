@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## [2.0.96] - 2026-07-27
+
+[659bebb] Merge pull request #147 from gojek/feature/classification_events (by @rishabhabbu-ctrl)
+[32ac210] [CI] Bump version - 2.0.95 (#153) (by @Abhijeet Mallick)
+[c54209e] [CI] Bump version - 2.0.95 (by @github-actions[bot])
+[3b7934f] Add classification config to initialize func (by @Rishab Habbu)
+[eba97ff] Add Classification of courier events based on event type and qos (by @Rishab Habbu)
+
 ## [2.0.95] - 2026-07-16
 
 [75eefbd] Merge pull request #150 from gojek/fix/courier_retry_crash_final (by @rishabhabbu-ctrl)
