@@ -67,7 +67,7 @@ extension EventClassificationRemoteConfig.Properties {
     ///   - eventName: The event's full event name.
     ///   - csEventName: The clickstream event name, when available.
     /// - Returns: The resolved classification identifier.
-    func resolveClassificationId(protoName: String, eventName: String, csEventName: String?) -> String {
+    public func resolveClassificationId(protoName: String, eventName: String, csEventName: String?) -> String {
         let ordered = configs.sorted { $0.priority < $1.priority }
 
         for config in ordered {
