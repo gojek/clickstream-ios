@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [2.0.97] - 2026-07-30
+
+[4b1a6fe] Merge pull request #155 from gojek/rishabhabbu-ctrl-patch-1 (by @rishabhabbu-ctrl)
+[19062cd] Change resolveClassificationId to public access level (by @rishabhabbu-ctrl)
+[3f5e59c] [CI] Bump version - 2.0.96 (by @github-actions[bot])
+
 ## [2.0.95] - 2026-07-16
 
 [75eefbd] Merge pull request #150 from gojek/fix/courier_retry_crash_final (by @rishabhabbu-ctrl)
