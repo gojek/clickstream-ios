@@ -40,7 +40,7 @@ class EventBatchProcessorTests: XCTestCase {
       
         let retryMech = WebsocketRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: DefaultDeviceStatus(performOnQueue: schedulerQueueMock), appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: schedulerQueueMock, persistence: persistence, keepAliveService: keepAliveService)
         let networkBuilder = WebsocketNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: schedulerQueueMock)
-        let eventBatchCreator = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock)
+        let eventBatchCreator = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock, healthTrackingConfig: ClickstreamCourierHealthConfig())
         let schedulerServiceMock = DefaultSchedulerService(with: prioritiesMock, performOnQueue: schedulerQueueMock)
         
         // clear previous data
@@ -85,7 +85,7 @@ class EventBatchProcessorTests: XCTestCase {
 
         let retryMech = WebsocketRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: DefaultDeviceStatus(performOnQueue: schedulerQueueMock), appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: schedulerQueueMock, persistence: persistence, keepAliveService: keepAliveService)
         let networkBuilder = WebsocketNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: schedulerQueueMock)
-        let eventBatchCreator = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock)
+        let eventBatchCreator = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock, healthTrackingConfig: ClickstreamCourierHealthConfig())
         let schedulerServiceMock = DefaultSchedulerService(with: prioritiesMock, performOnQueue: schedulerQueueMock)
         
         //ensuring old data is wiped before adding more
