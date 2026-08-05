@@ -540,7 +540,6 @@
 				DC322BB13FE808983D47C443 /* CourierEventSchedulerFactory.swift */,
 				92808D153DE30249F4DF68A0 /* CourierClassificationCoordinator.swift */,
 			);
-			name = Classification;
 			path = Classification;
 			sourceTree = "<group>";
 		};
@@ -1567,9 +1566,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ClickstreamTests/Pods-ClickstreamTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
