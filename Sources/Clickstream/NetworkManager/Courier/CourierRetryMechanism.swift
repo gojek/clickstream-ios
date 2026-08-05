@@ -9,19 +9,26 @@
 import Foundation
 import CourierCore
 
-class CourierRetryMechanism: Retryable {
+final class CourierRetryMechanism: Retryable {
 
     typealias EventRequestType = CourierEventRequest
 
     private var networkOptions: ClickstreamNetworkOptions
     private var reachability: NetworkReachability
     private let networkService: NetworkService
-    fileprivate let performQueue: SerialQueue
+    private let performQueue: SerialQueue
     private let appStateNotifier: AppStateNotifierService
     private var terminationCountDown: DispatchSourceTimer?
     private var networkServiceState: ConnectableState?
     private var persistence: DefaultDatabaseDAO<CourierEventRequest>
-    fileprivate var retryTimer: DispatchSourceTimer?
+    private var retryTimer: DispatchSourceTimer?
+    /// Serializes every access to `retryTimer`. The timer is created, cancelled and
+    /// nil-ed from several execution contexts — the Courier connection-status callback
+    /// thread (`connectionStatusListener`), the reachability / teardown paths
+    /// (`stopTracking` runs from `deinit`) and the timer's own event handler on
+    /// `performQueue`. Without this lock those accesses race, over-releasing the
+    /// `DispatchSourceTimer` and crashing in `_os_object_retain`.
+    private let retryTimerLock = NSLock()
     private var identifiers: ClickstreamClientIdentifiers?
     private var authProvider: IConnectionServiceProvider?
     private var pubSubAnalytics: ICourierEventHandler?
@@ -441,23 +448,33 @@ extension CourierRetryMechanism {
     }
     
     private func startObservingFailedBatches() {
+        retryTimerLock.lock()
+        defer { retryTimerLock.unlock() }
+
         guard retryTimer == nil else { return }
-        retryTimer = DispatchSource.makeTimerSource(flags: .strict, queue: performQueue)
-        retryTimer?.schedule(deadline: .now() + Clickstream.courierConfigurations.maxRequestAckTimeout,
-                             repeating: Clickstream.courierConfigurations.maxRequestAckTimeout)
-        retryTimer?.setEventHandler(handler: { [weak self] in
+        // Build and start the timer atomically under the lock so a concurrent
+        // stopObservingFailedBatches() can never release a half-configured or
+        // still-suspended source.
+        let timer = DispatchSource.makeTimerSource(flags: .strict, queue: performQueue)
+        timer.schedule(deadline: .now() + Clickstream.courierConfigurations.maxRequestAckTimeout,
+                       repeating: Clickstream.courierConfigurations.maxRequestAckTimeout)
+        timer.setEventHandler(handler: { [weak self] in
             guard let checkedSelf = self else { return }
             checkedSelf.retryFailedBatches()
         })
-        retryTimer?.resume()
+        retryTimer = timer
+        timer.resume()
     }
-    
+
     private func stopObservingFailedBatches() {
+        retryTimerLock.lock()
+        defer { retryTimerLock.unlock() }
+
         retryTimer?.cancel()
         retryTimer = nil
     }
     
-    fileprivate func retryFailedBatches() {
+    private func retryFailedBatches() {
         guard isAvailble && isCourierConnectable else {
             stopObservingFailedBatches()
             return
@@ -605,45 +622,5 @@ extension CourierRetryMechanism: ICourierEventHandler {
             return nil
         }
         return eventRequest.reqGuid
-    }
-}
-
-final class CourierRetryMechV2: CourierRetryMechanism {
-    /// Serializes every access to `retryTimer`. The timer is created, cancelled and
-    /// nil-ed from several execution contexts — the Courier connection-status callback
-    /// thread (`connectionStatusListener`), the reachability / teardown paths
-    /// (`stopTracking` runs from `deinit`) and the timer's own event handler on
-    /// `performQueue`. Without this lock those accesses race, over-releasing the
-    /// `DispatchSourceTimer` and crashing in `_os_object_retain`.
-    private let retryTimerLock = NSLock()
-}
-
-extension CourierRetryMechV2 {
-    
-    private func startObservingFailedBatches() {
-        retryTimerLock.lock()
-        defer { retryTimerLock.unlock() }
-
-        guard retryTimer == nil else { return }
-        // Build and start the timer atomically under the lock so a concurrent
-        // stopObservingFailedBatches() can never release a half-configured or
-        // still-suspended source.
-        let timer = DispatchSource.makeTimerSource(flags: .strict, queue: performQueue)
-        timer.schedule(deadline: .now() + Clickstream.courierConfigurations.maxRequestAckTimeout,
-                       repeating: Clickstream.courierConfigurations.maxRequestAckTimeout)
-        timer.setEventHandler(handler: { [weak self] in
-            guard let checkedSelf = self else { return }
-            checkedSelf.retryFailedBatches()
-        })
-        retryTimer = timer
-        timer.resume()
-    }
-
-    private func stopObservingFailedBatches() {
-        retryTimerLock.lock()
-        defer { retryTimerLock.unlock() }
-
-        retryTimer?.cancel()
-        retryTimer = nil
     }
 }

@@ -94,15 +94,6 @@ final class NetworkManagerDependencies {
                               performOnQueue: courierNetworkQueue,
                               persistence: courierPersistance)
     }()
-    
-    private lazy var courierRetryMechV2: CourierRetryMechV2 = {
-        CourierRetryMechV2(networkOptions: networkOptions,
-                              networkService: courierNetworkService,
-                              reachability: courierReachability,
-                              appStateNotifier: courierAppStateNotifier,
-                              performOnQueue: courierNetworkQueue,
-                              persistence: courierPersistance)
-    }()
 
     private func getNetworkConfig() -> DefaultNetworkConfiguration {
         DefaultNetworkConfiguration(request: request, networkOptions: networkOptions)
@@ -116,7 +107,7 @@ final class NetworkManagerDependencies {
 
     func makeCourierNetworkBuilder() -> CourierNetworkBuilder {
         CourierNetworkBuilder(networkConfigs: getNetworkConfig(),
-                              retryMech: networkOptions.enableCourierMechanismV2 ? courierRetryMechV2 : courierRetryMech,
+                              retryMech: courierRetryMech,
                               performOnQueue: courierNetworkQueue)
     }
 
