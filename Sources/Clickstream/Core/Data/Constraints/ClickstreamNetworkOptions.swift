@@ -23,6 +23,7 @@ public struct ClickstreamNetworkOptions {
     public let courierRetryHTTPPolicy: ClickstreamCourierHTTPRetryPolicy
     public let courierConfig: ClickstreamCourierClientConfig
     public let clickstreamConstraints: ClickstreamCourierConstraints
+    public let enableCourierMechanismV2: Bool
 
     public init(isWebsocketEnabled: Bool = true,
                 isCourierEnabled: Bool = true,
@@ -33,7 +34,8 @@ public struct ClickstreamNetworkOptions {
                 courierRetryPolicy: ClickstreamCourierRetryPolicy = .init(),
                 courierRetryHTTPPolicy: ClickstreamCourierHTTPRetryPolicy = .init(),
                 courierConfig: ClickstreamCourierClientConfig = .init(),
-                clickstreamConstraints: ClickstreamCourierConstraints = .init()) {
+                clickstreamConstraints: ClickstreamCourierConstraints = .init(),
+                enableCourierMechanismV2: Bool = false) {
 
         self.isWebsocketEnabled = isWebsocketEnabled
         self.isCourierEnabled = isCourierEnabled
@@ -45,5 +47,6 @@ public struct ClickstreamNetworkOptions {
         self.courierRetryHTTPPolicy = courierRetryHTTPPolicy
         self.courierConfig = courierConfig
         self.clickstreamConstraints = clickstreamConstraints
+        self.enableCourierMechanismV2 = enableCourierMechanismV2
     }
 }
