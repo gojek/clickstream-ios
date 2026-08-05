@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## [2.0.98] - 2026-08-05
+
+[477857b] Merge pull request #157 from gojek/fix/retryMechCrashSafeRollout (by @rishabhabbu-ctrl)
+[b9c78eb] Add a config to control the rollout for the crash fix of CourierretryMechanism timer (by @Rishab Habbu)
+[dfd8d04] Revert "Add a config to control the rollout for the crash fix of CourierretryMechanism timer" (by @Rishab Habbu)
+[207470c] Add a config to control the rollout for the crash fix of CourierretryMechanism timer (by @Rishab Habbu)
+[d0834a9] [CI] Bump version - 2.0.97 (by @github-actions[bot])
+
 ## [2.0.95] - 2026-07-16
 
 [75eefbd] Merge pull request #150 from gojek/fix/courier_retry_crash_final (by @rishabhabbu-ctrl)
