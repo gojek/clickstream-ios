@@ -63,6 +63,7 @@ class EventProcessorDependenciesTests: XCTestCase {
         
         let courierNetworkBuilder = CourierNetworkBuilder(networkConfigs: config,
                                                           retryMech: courierRetryMech,
+                                                          retryMechV2: nil,
                                                           performOnQueue: mockQueue)
 
         let socketEventBatchCreator = DefaultEventBatchCreator(with: socketNetworkBuilder, performOnQueue: mockQueue)
