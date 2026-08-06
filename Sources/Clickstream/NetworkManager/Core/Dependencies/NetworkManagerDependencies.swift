@@ -86,17 +86,19 @@ final class NetworkManagerDependencies {
                                 keepAliveService: keepAliveService)
     }()
 
-    private lazy var courierRetryMech: CourierRetryMechanism = {
-        CourierRetryMechanism(networkOptions: networkOptions,
+    private lazy var courierRetryMech: CourierRetryMechanism? = {
+        guard !networkOptions.enableCourierMechanismV2 else { return nil }
+        return CourierRetryMechanism(networkOptions: networkOptions,
                               networkService: courierNetworkService,
                               reachability: courierReachability,
                               appStateNotifier: courierAppStateNotifier,
                               performOnQueue: courierNetworkQueue,
                               persistence: courierPersistance)
     }()
-    
-    private lazy var courierRetryMechV2: CourierRetryMechV2 = {
-        CourierRetryMechV2(networkOptions: networkOptions,
+
+    private lazy var courierRetryMechV2: CourierRetryMechanismV2? = {
+        guard networkOptions.enableCourierMechanismV2 else { return nil }
+        return CourierRetryMechanismV2(networkOptions: networkOptions,
                               networkService: courierNetworkService,
                               reachability: courierReachability,
                               appStateNotifier: courierAppStateNotifier,
@@ -116,7 +118,8 @@ final class NetworkManagerDependencies {
 
     func makeCourierNetworkBuilder() -> CourierNetworkBuilder {
         CourierNetworkBuilder(networkConfigs: getNetworkConfig(),
-                              retryMech: networkOptions.enableCourierMechanismV2 ? courierRetryMechV2 : courierRetryMech,
+                              retryMech: courierRetryMech,
+                              retryMechV2: courierRetryMechV2,
                               performOnQueue: courierNetworkQueue)
     }
 
@@ -133,13 +136,24 @@ final class NetworkManagerDependencies {
                                   authProvider: IConnectionServiceProvider,
                                   pubSubAnalytics: ICourierEventHandler?) {
 
-        courierRetryMech.configureIdentifiers(with: identifiers,
-                                              topic: topic,
-                                              authProvider: authProvider,
-                                              pubSubAnalytics: pubSubAnalytics)
+        if let courierRetryMechV2 {
+            courierRetryMechV2.configureIdentifiers(with: identifiers,
+                                                    topic: topic,
+                                                    authProvider: authProvider,
+                                                    pubSubAnalytics: pubSubAnalytics)
+        } else {
+            courierRetryMech?.configureIdentifiers(with: identifiers,
+                                                   topic: topic,
+                                                   authProvider: authProvider,
+                                                   pubSubAnalytics: pubSubAnalytics)
+        }
     }
 
     func removeClientIdentifiers() {
-        courierRetryMech.removeIdentifiers()
+        if let courierRetryMechV2 {
+            courierRetryMechV2.removeIdentifiers()
+        } else {
+            courierRetryMech?.removeIdentifiers()
+        }
     }
 }

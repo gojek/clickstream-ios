@@ -13,18 +13,24 @@ final class CourierNetworkBuilder: NetworkBuildable {
     typealias BatchType = CourierEventBatch
     
     private let networkConfigs: NetworkConfigurable
-    private let retryMech: CourierRetryMechanism
+    private let retryMech: CourierRetryMechanism?
+    private let retryMechV2: CourierRetryMechanismV2?
     private let performQueue: SerialQueue
-    
+
     var isAvailable: Bool {
-        return retryMech.isAvailble
+        if let retryMechV2 {
+            return retryMechV2.isAvailble
+        }
+        return retryMech?.isAvailble ?? false
     }
-    
+
     init(networkConfigs: NetworkConfigurable,
-         retryMech: CourierRetryMechanism,
+         retryMech: CourierRetryMechanism?,
+         retryMechV2: CourierRetryMechanismV2?,
          performOnQueue: SerialQueue) {
         self.networkConfigs = networkConfigs
         self.retryMech = retryMech
+        self.retryMechV2 = retryMechV2
         self.performQueue = performOnQueue
     }
 }
@@ -51,7 +57,11 @@ extension CourierNetworkBuilder {
                 
                 eventRequest.eventCount = eventBatch.events.count
                 eventRequest.qos = (eventBatch as? CourierEventBatch)?.qos
-                checkedSelf.retryMech.trackBatch(with: eventRequest)
+                if let retryMechV2 = checkedSelf.retryMechV2 {
+                    retryMechV2.trackBatch(with: eventRequest)
+                } else {
+                    checkedSelf.retryMech?.trackBatch(with: eventRequest)
+                }
                 
                 #if EVENT_VISUALIZER_ENABLED
                 /// Update status of the event batch to sent to network
@@ -74,13 +84,21 @@ extension CourierNetworkBuilder {
     }
     
     func openConnectionForcefully() {
-        retryMech.openConnectionForcefully()
+        if let retryMechV2 {
+            retryMechV2.openConnectionForcefully()
+        } else {
+            retryMech?.openConnectionForcefully()
+        }
     }
-    
+
     func stopTracking() {
-        performQueue.async { [weak self] in 
+        performQueue.async { [weak self] in
             guard let checkedSelf = self else { return }
-            checkedSelf.retryMech.stopTracking()
+            if let retryMechV2 = checkedSelf.retryMechV2 {
+                retryMechV2.stopTracking()
+            } else {
+                checkedSelf.retryMech?.stopTracking()
+            }
         }
     }
 }

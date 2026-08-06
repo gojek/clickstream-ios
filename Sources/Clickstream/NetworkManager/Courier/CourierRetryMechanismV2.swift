@@ -1,15 +1,15 @@
 //
-//  CourierRetryMechanism.swift
+//  CourierRetryMechanismV2.swift
 //  Clickstream
 //
-//  Created by Luqman Fauzi on 06/10/25.
-//  Copyright © 2025 Gojek. All rights reserved.
+//  Created by Rishab Habbu on 06/08/26.
+//  Copyright © 2026 Gojek. All rights reserved.
 //
 
 import Foundation
 import CourierCore
 
-final class CourierRetryMechanism: Retryable {
+final class CourierRetryMechanismV2: Retryable {
 
     typealias EventRequestType = CourierEventRequest
 
@@ -22,6 +22,13 @@ final class CourierRetryMechanism: Retryable {
     private var networkServiceState: ConnectableState?
     private var persistence: DefaultDatabaseDAO<CourierEventRequest>
     private var retryTimer: DispatchSourceTimer?
+    /// Serializes every access to `retryTimer`. The timer is created, cancelled and
+    /// nil-ed from several execution contexts — the Courier connection-status callback
+    /// thread (`connectionStatusListener`), the reachability / teardown paths
+    /// (`stopTracking` runs from `deinit`) and the timer's own event handler on
+    /// `performQueue`. Without this lock those accesses race, over-releasing the
+    /// `DispatchSourceTimer` and crashing in `_os_object_retain`.
+    private let retryTimerLock = NSLock()
     private var identifiers: ClickstreamClientIdentifiers?
     private var authProvider: IConnectionServiceProvider?
     private var pubSubAnalytics: ICourierEventHandler?
@@ -86,14 +93,14 @@ final class CourierRetryMechanism: Retryable {
     
     /// Adding a subscription to the app state changes.
     private func observeAppStateChanges() {
-        print("++ [CourierRetryMechanism]:[observeAppStateChanges] CALLING appStateNotifier.start on \(appStateNotifier)", .verbose)
+        print("++ [CourierRetryMechanismV2]:[observeAppStateChanges] CALLING appStateNotifier.start on \(appStateNotifier)", .verbose)
         appStateNotifier.start { [weak self] (stateNotification) in
-            print("++ [CourierRetryMechanism]:[observeAppStateChanges] CALLBACK fired: \(stateNotification), self=\(String(describing: self))", .verbose)
+            print("++ [CourierRetryMechanismV2]:[observeAppStateChanges] CALLBACK fired: \(stateNotification), self=\(String(describing: self))", .verbose)
             guard let checkedSelf = self else {
-                print("++ [CourierRetryMechanism]:[observeAppStateChanges] self is nil, returning", .verbose)
+                print("++ [CourierRetryMechanismV2]:[observeAppStateChanges] self is nil, returning", .verbose)
                 return
             }
-            print("++ [CourierRetryMechanism]:[observeAppStateChanges] handling: \(stateNotification)", .verbose)
+            print("++ [CourierRetryMechanismV2]:[observeAppStateChanges] handling: \(stateNotification)", .verbose)
             switch stateNotification {
             case .willResignActive:
                 checkedSelf.prepareForTerminatingConnection()
@@ -110,12 +117,12 @@ final class CourierRetryMechanism: Retryable {
         do {
             reachability.whenReachable = { [weak self] (_) in
                 guard let checkedSelf = self else { return }
-                print("++ [CourierRetryMechanism]:[observeNetworkConnectivity] whenReachable fired", .verbose)
+                print("++ [CourierRetryMechanismV2]:[observeNetworkConnectivity] whenReachable fired", .verbose)
                 checkedSelf.establishConnection()
             }
             reachability.whenUnreachable = { [weak self] (_) in
                 guard let checkedSelf = self else { return }
-                print("++ [CourierRetryMechanism]:[observeNetworkConnectivity] whenUnreachable fired", .verbose)
+                print("++ [CourierRetryMechanismV2]:[observeNetworkConnectivity] whenUnreachable fired", .verbose)
                 checkedSelf.stopObservingFailedBatches()
             }
             try reachability.startNotifier()
@@ -134,7 +141,7 @@ final class CourierRetryMechanism: Retryable {
     }
 }
 
-extension CourierRetryMechanism {
+extension CourierRetryMechanismV2 {
     
     func trackBatch(with eventRequest: CourierEventRequest) {
         if let eventType = eventRequest.eventType, eventType != .instant {
@@ -323,7 +330,7 @@ extension CourierRetryMechanism {
     }
 }
 
-extension CourierRetryMechanism {
+extension CourierRetryMechanismV2 {
     
     private func terminateConnection(cleanCredentials: Bool = false) {
         performQueue.async(flags: .barrier) { [weak self] in
@@ -412,7 +419,7 @@ extension CourierRetryMechanism {
     }
 }
 
-extension CourierRetryMechanism {
+extension CourierRetryMechanismV2 {
     
     private func addToCache(with eventRequest: CourierEventRequest) {
         if var fetchedEventRequest = persistence.fetchOne(eventRequest.guid) {
@@ -441,18 +448,28 @@ extension CourierRetryMechanism {
     }
     
     private func startObservingFailedBatches() {
+        retryTimerLock.lock()
+        defer { retryTimerLock.unlock() }
+
         guard retryTimer == nil else { return }
-        retryTimer = DispatchSource.makeTimerSource(flags: .strict, queue: performQueue)
-        retryTimer?.schedule(deadline: .now() + Clickstream.courierConfigurations.maxRequestAckTimeout,
-                             repeating: Clickstream.courierConfigurations.maxRequestAckTimeout)
-        retryTimer?.setEventHandler(handler: { [weak self] in
+        // Build and start the timer atomically under the lock so a concurrent
+        // stopObservingFailedBatches() can never release a half-configured or
+        // still-suspended source.
+        let timer = DispatchSource.makeTimerSource(flags: .strict, queue: performQueue)
+        timer.schedule(deadline: .now() + Clickstream.courierConfigurations.maxRequestAckTimeout,
+                       repeating: Clickstream.courierConfigurations.maxRequestAckTimeout)
+        timer.setEventHandler(handler: { [weak self] in
             guard let checkedSelf = self else { return }
             checkedSelf.retryFailedBatches()
         })
-        retryTimer?.resume()
+        retryTimer = timer
+        timer.resume()
     }
-    
+
     private func stopObservingFailedBatches() {
+        retryTimerLock.lock()
+        defer { retryTimerLock.unlock() }
+
         retryTimer?.cancel()
         retryTimer = nil
     }
@@ -543,7 +560,7 @@ extension CourierRetryMechanism {
 }
 
 // MARK: - Track Clickstream health.
-extension CourierRetryMechanism {
+extension CourierRetryMechanismV2 {
     
     func trackHealthAndPerformanceEvents(eventRequest: CourierEventRequest, startTime: Date) {
         #if TRACKER_ENABLED
@@ -576,7 +593,7 @@ extension CourierRetryMechanism {
 }
 
 // MARK: - Observe Courier's events
-extension CourierRetryMechanism: ICourierEventHandler {
+extension CourierRetryMechanismV2: ICourierEventHandler {
 
     func onEvent(_ event: CourierCore.CourierEvent) {
         switch event.type {
