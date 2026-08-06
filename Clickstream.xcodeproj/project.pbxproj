@@ -18,6 +18,8 @@
 		6926910B2FC59EF0006A48E0 /* CourierExpiryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692691092FC59EDF006A48E0 /* CourierExpiryManager.swift */; };
 		6926910D2FC5A151006A48E0 /* CourierEventCleanupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6926910C2FC59EF7006A48E0 /* CourierEventCleanupManager.swift */; };
 		6926910E2FC5A151006A48E0 /* CourierEventCleanupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6926910C2FC59EF7006A48E0 /* CourierEventCleanupManager.swift */; };
+		697B75833024637600E11219 /* CourierRetryMechV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 697B75823024636B00E11219 /* CourierRetryMechV2.swift */; };
+		697B75843024637600E11219 /* CourierRetryMechV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 697B75823024636B00E11219 /* CourierRetryMechV2.swift */; };
 		69CF74AF2E8CE5EC008438D0 /* EventSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69CF74AE2E8CE5E2008438D0 /* EventSampler.swift */; };
 		69CF74B02E8CE5EC008438D0 /* EventSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69CF74AE2E8CE5E2008438D0 /* EventSampler.swift */; };
 		69CF74B52E8CE616008438D0 /* EventSamplerConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69CF74B42E8CE60D008438D0 /* EventSamplerConstants.swift */; };
@@ -333,6 +335,7 @@
 		68E7BD1B2456E6F10072549A /* ClickstreamTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClickstreamTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		692691092FC59EDF006A48E0 /* CourierExpiryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierExpiryManager.swift; sourceTree = "<group>"; };
 		6926910C2FC59EF7006A48E0 /* CourierEventCleanupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierEventCleanupManager.swift; sourceTree = "<group>"; };
+		697B75823024636B00E11219 /* CourierRetryMechV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourierRetryMechV2.swift; sourceTree = "<group>"; };
 		69CF74AE2E8CE5E2008438D0 /* EventSampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSampler.swift; sourceTree = "<group>"; };
 		69CF74B42E8CE60D008438D0 /* EventSamplerConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSamplerConstants.swift; sourceTree = "<group>"; };
 		69CF74B72E8CE74F008438D0 /* EventSamplerConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSamplerConfiguration.swift; sourceTree = "<group>"; };
@@ -1399,6 +1402,7 @@
 				D8F38D5F2E950C5D00C4281E /* CourierNetworkBuilder.swift */,
 				D8F38D602E950C5D00C4281E /* CourierNetworkService.swift */,
 				D8F38D612E950C5D00C4281E /* CourierRetryMechanism.swift */,
+				697B75823024636B00E11219 /* CourierRetryMechV2.swift */,
 			);
 			path = Courier;
 			sourceTree = "<group>";
@@ -1633,6 +1637,7 @@
 				BD6BDB7229FBC1360006B04A /* EventVisualizerLandingViewController.swift in Sources */,
 				9A0BBA8D2BC3CA5500F7DC01 /* PerformanceTracer.swift in Sources */,
 				D872F6042E8F8646006F077E /* WebsocketRetryMechanism.swift in Sources */,
+				697B75843024637600E11219 /* CourierRetryMechV2.swift in Sources */,
 				D872F6062E8F8646006F077E /* WebsocketNetworkService.swift in Sources */,
 				D8A7F7F52EC6D72D00DFC9AE /* ClickstreamCourierRetryPolicy.swift in Sources */,
 				D8F38D9C2E9E0DF300C4281E /* ClickstreamCourierUserCredentials.swift in Sources */,
@@ -1860,6 +1865,7 @@
 				BD6BDB8729FBC1360006B04A /* HealthTracker.swift in Sources */,
 				D8E4B89C2EA9EF940001D3D6 /* CourierHandlerTests.swift in Sources */,
 				BDE467832A5BD24500BFA976 /* NetworkReachabilityMock.swift in Sources */,
+				697B75833024637600E11219 /* CourierRetryMechV2.swift in Sources */,
 				D8F38D902E9CB08300C4281E /* QoS+Int.swift in Sources */,
 				9F6049202FC979B700190D5C /* CSBinaryEventTests.swift in Sources */,
 				D8F38D502E94CCD300C4281E /* ClickstreamNetworkOptionsTests.swift in Sources */,

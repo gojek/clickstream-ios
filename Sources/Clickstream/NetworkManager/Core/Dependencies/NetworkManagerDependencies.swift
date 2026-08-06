@@ -116,7 +116,8 @@ final class NetworkManagerDependencies {
 
     func makeCourierNetworkBuilder() -> CourierNetworkBuilder {
         CourierNetworkBuilder(networkConfigs: getNetworkConfig(),
-                              retryMech: networkOptions.enableCourierMechanismV2 ? courierRetryMechV2 : courierRetryMech,
+                              retryMech: courierRetryMech,
+                              retryMechV2: networkOptions.enableCourierMechanismV2 ? courierRetryMechV2 : nil,
                               performOnQueue: courierNetworkQueue)
     }
 
