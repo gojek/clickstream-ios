@@ -1,5 +1,5 @@
 //
-//  CourierRetryMechV2.swift
+//  CourierRetryMechanismV2.swift
 //  Clickstream
 //
 //  Created by Rishab Habbu on 06/08/26.
@@ -9,7 +9,7 @@
 import Foundation
 import CourierCore
 
-final class CourierRetryMechV2: Retryable {
+final class CourierRetryMechanismV2: Retryable {
 
     typealias EventRequestType = CourierEventRequest
 
@@ -93,14 +93,14 @@ final class CourierRetryMechV2: Retryable {
     
     /// Adding a subscription to the app state changes.
     private func observeAppStateChanges() {
-        print("++ [CourierRetryMechV2]:[observeAppStateChanges] CALLING appStateNotifier.start on \(appStateNotifier)", .verbose)
+        print("++ [CourierRetryMechanismV2]:[observeAppStateChanges] CALLING appStateNotifier.start on \(appStateNotifier)", .verbose)
         appStateNotifier.start { [weak self] (stateNotification) in
-            print("++ [CourierRetryMechV2]:[observeAppStateChanges] CALLBACK fired: \(stateNotification), self=\(String(describing: self))", .verbose)
+            print("++ [CourierRetryMechanismV2]:[observeAppStateChanges] CALLBACK fired: \(stateNotification), self=\(String(describing: self))", .verbose)
             guard let checkedSelf = self else {
-                print("++ [CourierRetryMechV2]:[observeAppStateChanges] self is nil, returning", .verbose)
+                print("++ [CourierRetryMechanismV2]:[observeAppStateChanges] self is nil, returning", .verbose)
                 return
             }
-            print("++ [CourierRetryMechV2]:[observeAppStateChanges] handling: \(stateNotification)", .verbose)
+            print("++ [CourierRetryMechanismV2]:[observeAppStateChanges] handling: \(stateNotification)", .verbose)
             switch stateNotification {
             case .willResignActive:
                 checkedSelf.prepareForTerminatingConnection()
@@ -117,12 +117,12 @@ final class CourierRetryMechV2: Retryable {
         do {
             reachability.whenReachable = { [weak self] (_) in
                 guard let checkedSelf = self else { return }
-                print("++ [CourierRetryMechV2]:[observeNetworkConnectivity] whenReachable fired", .verbose)
+                print("++ [CourierRetryMechanismV2]:[observeNetworkConnectivity] whenReachable fired", .verbose)
                 checkedSelf.establishConnection()
             }
             reachability.whenUnreachable = { [weak self] (_) in
                 guard let checkedSelf = self else { return }
-                print("++ [CourierRetryMechV2]:[observeNetworkConnectivity] whenUnreachable fired", .verbose)
+                print("++ [CourierRetryMechanismV2]:[observeNetworkConnectivity] whenUnreachable fired", .verbose)
                 checkedSelf.stopObservingFailedBatches()
             }
             try reachability.startNotifier()
@@ -141,7 +141,7 @@ final class CourierRetryMechV2: Retryable {
     }
 }
 
-extension CourierRetryMechV2 {
+extension CourierRetryMechanismV2 {
     
     func trackBatch(with eventRequest: CourierEventRequest) {
         if let eventType = eventRequest.eventType, eventType != .instant {
@@ -330,7 +330,7 @@ extension CourierRetryMechV2 {
     }
 }
 
-extension CourierRetryMechV2 {
+extension CourierRetryMechanismV2 {
     
     private func terminateConnection(cleanCredentials: Bool = false) {
         performQueue.async(flags: .barrier) { [weak self] in
@@ -419,7 +419,7 @@ extension CourierRetryMechV2 {
     }
 }
 
-extension CourierRetryMechV2 {
+extension CourierRetryMechanismV2 {
     
     private func addToCache(with eventRequest: CourierEventRequest) {
         if var fetchedEventRequest = persistence.fetchOne(eventRequest.guid) {
@@ -560,7 +560,7 @@ extension CourierRetryMechV2 {
 }
 
 // MARK: - Track Clickstream health.
-extension CourierRetryMechV2 {
+extension CourierRetryMechanismV2 {
     
     func trackHealthAndPerformanceEvents(eventRequest: CourierEventRequest, startTime: Date) {
         #if TRACKER_ENABLED
@@ -593,7 +593,7 @@ extension CourierRetryMechV2 {
 }
 
 // MARK: - Observe Courier's events
-extension CourierRetryMechV2: ICourierEventHandler {
+extension CourierRetryMechanismV2: ICourierEventHandler {
 
     func onEvent(_ event: CourierCore.CourierEvent) {
         switch event.type {

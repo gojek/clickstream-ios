@@ -13,19 +13,20 @@ final class CourierNetworkBuilder: NetworkBuildable {
     typealias BatchType = CourierEventBatch
     
     private let networkConfigs: NetworkConfigurable
-    private let retryMech: CourierRetryMechanism
-    private let retryMechV2: CourierRetryMechV2?
+    private let retryMech: CourierRetryMechanism?
+    private let retryMechV2: CourierRetryMechanismV2?
     private let performQueue: SerialQueue
-    
+
     var isAvailable: Bool {
         if let retryMechV2 {
             return retryMechV2.isAvailble
         }
-        return retryMech.isAvailble
+        return retryMech?.isAvailble ?? false
     }
-    
+
     init(networkConfigs: NetworkConfigurable,
-         retryMech: CourierRetryMechanism, retryMechV2: CourierRetryMechV2? = nil,
+         retryMech: CourierRetryMechanism?,
+         retryMechV2: CourierRetryMechanismV2?,
          performOnQueue: SerialQueue) {
         self.networkConfigs = networkConfigs
         self.retryMech = retryMech
@@ -59,7 +60,7 @@ extension CourierNetworkBuilder {
                 if let retryMechV2 = checkedSelf.retryMechV2 {
                     retryMechV2.trackBatch(with: eventRequest)
                 } else {
-                    checkedSelf.retryMech.trackBatch(with: eventRequest)
+                    checkedSelf.retryMech?.trackBatch(with: eventRequest)
                 }
                 
                 #if EVENT_VISUALIZER_ENABLED
@@ -86,17 +87,17 @@ extension CourierNetworkBuilder {
         if let retryMechV2 {
             retryMechV2.openConnectionForcefully()
         } else {
-            retryMech.openConnectionForcefully()
+            retryMech?.openConnectionForcefully()
         }
     }
-    
+
     func stopTracking() {
-        performQueue.async { [weak self] in 
+        performQueue.async { [weak self] in
             guard let checkedSelf = self else { return }
             if let retryMechV2 = checkedSelf.retryMechV2 {
                 retryMechV2.stopTracking()
             } else {
-                checkedSelf.retryMech.stopTracking()
+                checkedSelf.retryMech?.stopTracking()
             }
         }
     }
