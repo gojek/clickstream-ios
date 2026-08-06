@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## [2.0.99] - 2026-08-06
+
+[452b216] Merge pull request #158 from gojek/fix/retryMechSafeFixFinal (by @rishabhabbu-ctrl)
+[2dfcc78] Fix tests (by @Rishab Habbu)
+[56ea301] Separated logic for V1 and V2 retry mechanism (by @AbhijeetMallick)
+[cac1c57] Code review create a seperate mechanism class instead of sub class (by @Rishab Habbu)
+[1bca563] [CI] Bump version - 2.0.98 (by @github-actions[bot])
+
 ## [2.0.95] - 2026-07-16
 
 [75eefbd] Merge pull request #150 from gojek/fix/courier_retry_crash_final (by @rishabhabbu-ctrl)
