@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [3.0.0] - 2026-08-10
+
+[927025d] Merge pull request #156 from gojek/task/incoming-message-persistence-crash-fix (by @rishabhabbu-ctrl)
+[09c87b7] bump courier version to 1.0.20 (by @Rishab Habbu)
+[4572fa7] [CI] Bump version - 2.0.99 (by @github-actions[bot])
+[bb5d147] Fix crash on Incoming Message class (by @AbhijeetMallick)
+
 ## [2.0.95] - 2026-07-16
 
 [75eefbd] Merge pull request #150 from gojek/fix/courier_retry_crash_final (by @rishabhabbu-ctrl)
