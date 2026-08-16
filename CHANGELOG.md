@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [3.0.1] - 2026-08-16
+
+[4c10d6e] Merge pull request #159 from gojek/fix/samplerConfigForCourier (by @rishabhabbu-ctrl)
+[0562bfa] Change sampler to courierEventSampler in EventProcessor (by @rishabhabbu-ctrl)
+[402dcd4] [CI] Bump version - 3.0.0 (by @github-actions[bot])
+
 ## [2.0.95] - 2026-07-16
 
 [75eefbd] Merge pull request #150 from gojek/fix/courier_retry_crash_final (by @rishabhabbu-ctrl)
