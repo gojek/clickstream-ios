@@ -68,6 +68,62 @@ final class CourierHandlerTests: XCTestCase {
     func testDisconnect_WhenCalled_DoesNotThrow() {
         XCTAssertNoThrow(sut.destroyAndDisconnect())
     }
+
+    // MARK: - Teardown guard (publish-into-destroyed-client use-after-free)
+
+    func testPublishMessage_AfterDestroy_ThrowsSessionNotExist() {
+        sut = makeSUT(fixPublishAfterDestroyCrash: true)
+        sut.destroyAndDisconnect()
+
+        let eventRequest = CourierEventRequest(guid: "12345", data: "test message".data(using: .utf8)!)
+
+        // Once the client is torn down the publish must be refused rather than reaching
+        // into a destroyed CourierClient. The event stays in the retry cache.
+        XCTAssertThrowsError(try sut.publishMessage(eventRequest, topic: "clickstream/topic")) { error in
+            XCTAssertEqual(error as? CourierError, .sessionNotExist)
+        }
+    }
+
+    func testIsConnected_AfterDestroy_ReturnsFalse() {
+        sut = makeSUT(fixPublishAfterDestroyCrash: true)
+        sut.destroyAndDisconnect()
+        XCTAssertFalse(sut.isConnected.value)
+    }
+
+    func testDestroyAndDisconnect_CalledTwice_DoesNotThrow() {
+        // The latch makes teardown idempotent, so a second destroy must not re-enter
+        // CourierClient.destroy().
+        sut = makeSUT(fixPublishAfterDestroyCrash: true)
+        XCTAssertNoThrow(sut.destroyAndDisconnect())
+        XCTAssertNoThrow(sut.destroyAndDisconnect())
+    }
+
+    func testPublishMessage_ConcurrentWithDestroy_DoesNotCrash() {
+        // Reproduces the production shape: the retry mechanism drains a batch on its own
+        // queue while the client is torn down underneath it. Run under Thread Sanitizer to
+        // assert the absence of a data race on `courierClient`.
+        sut = makeSUT(fixPublishAfterDestroyCrash: true)
+        let eventRequest = CourierEventRequest(guid: "12345", data: "test message".data(using: .utf8)!)
+        let exp = expectation(description: "publishers and teardown finished")
+        exp.expectedFulfillmentCount = 5
+
+        for _ in 0..<4 {
+            DispatchQueue.global(qos: .userInitiated).async { [sut] in
+                for _ in 0..<500 {
+                    try? sut?.publishMessage(eventRequest, topic: "clickstream/topic")
+                }
+                exp.fulfill()
+            }
+        }
+        DispatchQueue.global(qos: .userInitiated).async { [sut] in
+            for _ in 0..<100 {
+                sut?.destroyAndDisconnect()
+            }
+            exp.fulfill()
+        }
+
+        wait(for: [exp], timeout: 60)
+    }
     
     func testSetup_WithoutConnectionCallback_CompletesSuccessfully() async {
         
@@ -411,6 +467,14 @@ final class CourierHandlerTests: XCTestCase {
 
 extension CourierHandlerTests {
     
+    private func makeSUT(fixPublishAfterDestroyCrash: Bool) -> DefaultCourierHandler {
+        DefaultCourierHandler(
+            config: ClickstreamCourierClientConfig(fixPublishAfterDestroyCrash: fixPublishAfterDestroyCrash),
+            userCredentials: mockCredentials,
+            pubSubAnalytics: nil
+        )
+    }
+
     private func createMockConfig() -> ClickstreamCourierClientConfig {
         ClickstreamCourierClientConfig()
     }

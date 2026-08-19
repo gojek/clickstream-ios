@@ -60,6 +60,7 @@ enum Constants {
         case warehouser = "com.clickstream.courier.warehouser"
         case dao = "com.clickstream.courier.dao"
         case connectableAccess = "com.clickstream.courier.connectableAccess"
+        case courierClientAccess = "com.clickstream.courier.courierClientAccess"
     }
     
     enum EventType: String, Codable {

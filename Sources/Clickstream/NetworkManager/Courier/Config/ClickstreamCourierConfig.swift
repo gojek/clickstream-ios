@@ -31,6 +31,15 @@ public struct ClickstreamCourierClientConfig {
     public let fixCxxDestructCrash: Bool
     public let useSafeDeleteForNonSQLiteStore: Bool
     public let fixMultipleConnectionCrash: Bool
+
+    /// Refuses publishes once the Courier client has been torn down, instead of forwarding
+    /// them into a destroyed client (a use-after-free that crashed in `objc_retain` reading
+    /// the MQTT session, and in `objc_msgSend` inside `-[MQTTSession nextMsgId]`).
+    ///
+    /// Read once by the host app and passed in here: the value is captured for the lifetime
+    /// of the courier handler, so changing it takes effect on the next Clickstream setup.
+    public let fixPublishAfterDestroyCrash: Bool
+
     public let courierConnectPolicy: ClickstreamCourierConnectPolicy
     public let courierInactivityPolicy: ClickstreamCourierInactivityPolicy
     public let courierHealthConfig: ClickstreamCourierHealthConfig
@@ -55,6 +64,7 @@ public struct ClickstreamCourierClientConfig {
         fixCxxDestructCrash: Bool = false,
         useSafeDeleteForNonSQLiteStore: Bool = false,
         fixMultipleConnectionCrash: Bool = false,
+        fixPublishAfterDestroyCrash: Bool = false,
         courierConnectPolicy: ClickstreamCourierConnectPolicy = .init(),
         courierInactivityPolicy: ClickstreamCourierInactivityPolicy = .init(),
         courierHealthConfig: ClickstreamCourierHealthConfig = .init()
@@ -78,6 +88,7 @@ public struct ClickstreamCourierClientConfig {
         self.fixCxxDestructCrash = fixCxxDestructCrash
         self.useSafeDeleteForNonSQLiteStore = useSafeDeleteForNonSQLiteStore
         self.fixMultipleConnectionCrash = fixMultipleConnectionCrash
+        self.fixPublishAfterDestroyCrash = fixPublishAfterDestroyCrash
         self.courierConnectPolicy = courierConnectPolicy
         self.courierInactivityPolicy = courierInactivityPolicy
         self.courierHealthConfig = courierHealthConfig
