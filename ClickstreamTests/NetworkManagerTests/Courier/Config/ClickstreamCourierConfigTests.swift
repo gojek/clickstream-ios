@@ -38,6 +38,12 @@ class ClickstreamCourierClientConfigTests: XCTestCase {
         XCTAssertEqual(config.courierInactivityPolicy.readTimeoutSecs, 40)
         XCTAssertEqual(config.courierHealthConfig.pubSubEventProbability, 0)
         XCTAssertEqual(config.courierHealthConfig.csTrackingHealthEventsEnabled, false)
+        XCTAssertFalse(config.serializeSessionAccess)
+    }
+
+    func testSerializeSessionAccessIsCarriedThrough() {
+        XCTAssertTrue(ClickstreamCourierClientConfig(serializeSessionAccess: true).serializeSessionAccess)
+        XCTAssertFalse(ClickstreamCourierClientConfig(serializeSessionAccess: false).serializeSessionAccess)
     }
     
     func testCustomInitialization() {

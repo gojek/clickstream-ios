@@ -166,7 +166,8 @@ extension DefaultCourierHandler {
                                           messageCleanupInterval: TimeInterval(config.courierMessageCleanupInterval),
                                           shouldInitializeCoreDataPersistenceContext: config.courierInitCoreDataPersistenceContextEnabled,
                                           fixCxxDestructCrash: config.fixCxxDestructCrash,
-                                          useSafeDeleteForNonSQLiteStore: config.useSafeDeleteForNonSQLiteStore)
+                                          useSafeDeleteForNonSQLiteStore: config.useSafeDeleteForNonSQLiteStore,
+                                          serializeSessionAccess: config.serializeSessionAccess)
 
         return CourierClientFactory().makeMQTTClient(config: mqttConfig)
     }

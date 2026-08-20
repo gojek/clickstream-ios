@@ -1,20 +1,20 @@
 PODS:
-  - CourierCore (1.0.21)
-  - CourierMQTT (1.0.21):
-    - CourierCore (= 1.0.21)
-    - MQTTClientGJ (= 1.0.21)
+  - CourierCore (1.0.17)
+  - CourierMQTT (1.0.17):
+    - CourierCore (= 1.0.17)
+    - MQTTClientGJ (= 1.0.17)
     - ReachabilitySwift (>= 5.0.0)
   - GRDB.swift (6.7.0):
     - GRDB.swift/standard (= 6.7.0)
   - GRDB.swift/standard (6.7.0)
-  - MQTTClientGJ (1.0.21)
+  - MQTTClientGJ (1.0.17)
   - ReachabilitySwift (5.2.3)
   - Starscream (4.0.5)
   - SwiftProtobuf (1.30.0)
 
 DEPENDENCIES:
-  - CourierCore (= 1.0.21)
-  - CourierMQTT (= 1.0.21)
+  - CourierCore (from `https://github.com/gojek/courier-iOS`, branch `fix/accessConnectionSrially`)
+  - CourierMQTT (from `https://github.com/gojek/courier-iOS`, branch `fix/accessConnectionSrially`)
   - GRDB.swift (~> 6.7.0)
   - ReachabilitySwift (= 5.2.3)
   - Starscream (= 4.0.5)
@@ -27,19 +27,33 @@ SPEC REPOS:
     - Starscream
     - SwiftProtobuf
   trunk:
-    - CourierCore
-    - CourierMQTT
     - MQTTClientGJ
 
+EXTERNAL SOURCES:
+  CourierCore:
+    :branch: fix/accessConnectionSrially
+    :git: https://github.com/gojek/courier-iOS
+  CourierMQTT:
+    :branch: fix/accessConnectionSrially
+    :git: https://github.com/gojek/courier-iOS
+
+CHECKOUT OPTIONS:
+  CourierCore:
+    :commit: e71fd058b64dbdeb0434838fb2c4dfd603a6f450
+    :git: https://github.com/gojek/courier-iOS
+  CourierMQTT:
+    :commit: e71fd058b64dbdeb0434838fb2c4dfd603a6f450
+    :git: https://github.com/gojek/courier-iOS
+
 SPEC CHECKSUMS:
-  CourierCore: 1a4196c70c3a8fcd087a97ca40433a3dd82fbde5
-  CourierMQTT: 1bb4698a85139d6d58a2041b6804c2acb5caac3c
+  CourierCore: 5cd24d10a2e7de954eb794ca09f0fc96f0df814c
+  CourierMQTT: fb1679030fb512f27602a0c36218709456303cf2
   GRDB.swift: df2fdb0752e88383fc314e1e5d7c3a76d52054eb
-  MQTTClientGJ: c8a345d212d0dcc94679b0a22ef563d4200d810f
+  MQTTClientGJ: d5a0c27304205cef4b52a5443666d532f954d131
   ReachabilitySwift: 7f151ff156cea1481a8411701195ac6a984f4979
   Starscream: 97a24f0636451d134fbb932f2b15cefd89b1a040
   SwiftProtobuf: 3697407f0d5b23bedeba9c2eaaf3ec6fdff69349
 
-PODFILE CHECKSUM: d8f66736da69c93ca75650efd0e95610a70f4706
+PODFILE CHECKSUM: d4ff8e9b7864ade9cb63ad6b40091e30f35322db
 
 COCOAPODS: 1.16.2
