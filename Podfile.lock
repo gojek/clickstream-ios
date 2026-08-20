@@ -1,20 +1,20 @@
 PODS:
-  - CourierCore (1.0.20)
-  - CourierMQTT (1.0.20):
-    - CourierCore (= 1.0.20)
-    - MQTTClientGJ (= 1.0.20)
+  - CourierCore (1.0.21)
+  - CourierMQTT (1.0.21):
+    - CourierCore (= 1.0.21)
+    - MQTTClientGJ (= 1.0.21)
     - ReachabilitySwift (>= 5.0.0)
   - GRDB.swift (6.7.0):
     - GRDB.swift/standard (= 6.7.0)
   - GRDB.swift/standard (6.7.0)
-  - MQTTClientGJ (1.0.20)
+  - MQTTClientGJ (1.0.21)
   - ReachabilitySwift (5.2.3)
   - Starscream (4.0.5)
   - SwiftProtobuf (1.30.0)
 
 DEPENDENCIES:
-  - CourierCore (from `https://github.com/gojek/courier-ios.git`, tag `1.0.20`)
-  - CourierMQTT (from `https://github.com/gojek/courier-ios.git`, tag `1.0.20`)
+  - CourierCore (= 1.0.21)
+  - CourierMQTT (= 1.0.21)
   - GRDB.swift (~> 6.7.0)
   - ReachabilitySwift (= 5.2.3)
   - Starscream (= 4.0.5)
@@ -27,33 +27,19 @@ SPEC REPOS:
     - Starscream
     - SwiftProtobuf
   trunk:
+    - CourierCore
+    - CourierMQTT
     - MQTTClientGJ
 
-EXTERNAL SOURCES:
-  CourierCore:
-    :git: https://github.com/gojek/courier-ios.git
-    :tag: 1.0.20
-  CourierMQTT:
-    :git: https://github.com/gojek/courier-ios.git
-    :tag: 1.0.20
-
-CHECKOUT OPTIONS:
-  CourierCore:
-    :git: https://github.com/gojek/courier-ios.git
-    :tag: 1.0.20
-  CourierMQTT:
-    :git: https://github.com/gojek/courier-ios.git
-    :tag: 1.0.20
-
 SPEC CHECKSUMS:
-  CourierCore: af9fad7c3722a9f38279f6e619606270a01f74bb
-  CourierMQTT: 3267bfcb511f1f58966e925ad5d534204dcc281a
+  CourierCore: 1a4196c70c3a8fcd087a97ca40433a3dd82fbde5
+  CourierMQTT: 1bb4698a85139d6d58a2041b6804c2acb5caac3c
   GRDB.swift: df2fdb0752e88383fc314e1e5d7c3a76d52054eb
-  MQTTClientGJ: c3ade198bab4bf90e6ad384f230c08496b2d5876
+  MQTTClientGJ: c8a345d212d0dcc94679b0a22ef563d4200d810f
   ReachabilitySwift: 7f151ff156cea1481a8411701195ac6a984f4979
   Starscream: 97a24f0636451d134fbb932f2b15cefd89b1a040
   SwiftProtobuf: 3697407f0d5b23bedeba9c2eaaf3ec6fdff69349
 
-PODFILE CHECKSUM: 6b82a4810a2e894e34651d0a0bbcce96d2d4a698
+PODFILE CHECKSUM: d8f66736da69c93ca75650efd0e95610a70f4706
 
 COCOAPODS: 1.16.2
