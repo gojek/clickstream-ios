@@ -31,6 +31,24 @@ public struct ClickstreamCourierClientConfig {
     public let fixCxxDestructCrash: Bool
     public let useSafeDeleteForNonSQLiteStore: Bool
     public let fixMultipleConnectionCrash: Bool
+
+    /// Serialises every call into Courier's underlying `MQTTSession` onto the session's own
+    /// queue, fixing the `-[MQTTSession subscribeToTopics:subscribeHandler:]` data race where
+    /// an app-issued subscribe raced the re-subscribe driven by the session's CONNACK handling
+    /// and corrupted the session's handler dictionaries.
+    ///
+    /// Read once by the host app and passed in here: Courier captures the value for the
+    /// lifetime of the client, so changing it takes effect on the next Clickstream setup.
+    public let serializeSessionAccess: Bool
+
+    /// Refuses publishes once the Courier client has been torn down, instead of forwarding
+    /// them into a destroyed client (a use-after-free that crashed in `objc_retain` reading
+    /// the MQTT session, and in `objc_msgSend` inside `-[MQTTSession nextMsgId]`).
+    ///
+    /// Read once by the host app and passed in here: the value is captured for the lifetime
+    /// of the courier handler, so changing it takes effect on the next Clickstream setup.
+    public let fixPublishAfterDestroyCrash: Bool
+
     public let courierConnectPolicy: ClickstreamCourierConnectPolicy
     public let courierInactivityPolicy: ClickstreamCourierInactivityPolicy
     public let courierHealthConfig: ClickstreamCourierHealthConfig
@@ -55,6 +73,8 @@ public struct ClickstreamCourierClientConfig {
         fixCxxDestructCrash: Bool = false,
         useSafeDeleteForNonSQLiteStore: Bool = false,
         fixMultipleConnectionCrash: Bool = false,
+        fixPublishAfterDestroyCrash: Bool = false,
+        serializeSessionAccess: Bool = false,
         courierConnectPolicy: ClickstreamCourierConnectPolicy = .init(),
         courierInactivityPolicy: ClickstreamCourierInactivityPolicy = .init(),
         courierHealthConfig: ClickstreamCourierHealthConfig = .init()
@@ -78,6 +98,8 @@ public struct ClickstreamCourierClientConfig {
         self.fixCxxDestructCrash = fixCxxDestructCrash
         self.useSafeDeleteForNonSQLiteStore = useSafeDeleteForNonSQLiteStore
         self.fixMultipleConnectionCrash = fixMultipleConnectionCrash
+        self.fixPublishAfterDestroyCrash = fixPublishAfterDestroyCrash
+        self.serializeSessionAccess = serializeSessionAccess
         self.courierConnectPolicy = courierConnectPolicy
         self.courierInactivityPolicy = courierInactivityPolicy
         self.courierHealthConfig = courierHealthConfig

@@ -1,45 +1,44 @@
 PODS:
-  - CourierCore (1.0.21)
-  - CourierMQTT (1.0.21):
-    - CourierCore (= 1.0.21)
-    - MQTTClientGJ (= 1.0.21)
+  - CourierCore (1.0.22)
+  - CourierMQTT (1.0.22):
+    - CourierCore (= 1.0.22)
+    - MQTTClientGJ (= 1.0.22)
     - ReachabilitySwift (>= 5.0.0)
   - GRDB.swift (6.7.0):
     - GRDB.swift/standard (= 6.7.0)
   - GRDB.swift/standard (6.7.0)
-  - MQTTClientGJ (1.0.21)
+  - MQTTClientGJ (1.0.22)
   - ReachabilitySwift (5.2.3)
   - Starscream (4.0.5)
   - SwiftProtobuf (1.30.0)
 
 DEPENDENCIES:
-  - CourierCore (= 1.0.21)
-  - CourierMQTT (= 1.0.21)
+  - CourierCore (= 1.0.22)
+  - CourierMQTT (= 1.0.22)
   - GRDB.swift (~> 6.7.0)
   - ReachabilitySwift (= 5.2.3)
   - Starscream (= 4.0.5)
   - SwiftProtobuf (~> 1.30.0)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
-    - GRDB.swift
-    - ReachabilitySwift
-    - Starscream
-    - SwiftProtobuf
   trunk:
     - CourierCore
     - CourierMQTT
+    - GRDB.swift
     - MQTTClientGJ
+    - ReachabilitySwift
+    - Starscream
+    - SwiftProtobuf
 
 SPEC CHECKSUMS:
-  CourierCore: 1a4196c70c3a8fcd087a97ca40433a3dd82fbde5
-  CourierMQTT: 1bb4698a85139d6d58a2041b6804c2acb5caac3c
+  CourierCore: 5f43094c448d5796347f5c51ff1fdf6cebf7f7d9
+  CourierMQTT: 3a2de7d1e3c317b1b1347efe6445c2a1dbedc23a
   GRDB.swift: df2fdb0752e88383fc314e1e5d7c3a76d52054eb
-  MQTTClientGJ: c8a345d212d0dcc94679b0a22ef563d4200d810f
+  MQTTClientGJ: efc3642896b27407921caab1c486ae43077ad900
   ReachabilitySwift: 7f151ff156cea1481a8411701195ac6a984f4979
   Starscream: 97a24f0636451d134fbb932f2b15cefd89b1a040
   SwiftProtobuf: 3697407f0d5b23bedeba9c2eaaf3ec6fdff69349
 
-PODFILE CHECKSUM: d8f66736da69c93ca75650efd0e95610a70f4706
+PODFILE CHECKSUM: a0c689166e34ae6019ad7bf8d7f68a70eb11866a
 
 COCOAPODS: 1.16.2
