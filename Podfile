@@ -13,8 +13,8 @@ def clickstream_pods
   pod 'ReachabilitySwift', '5.2.3'
   pod 'GRDB.swift', '~> 6.7.0'
   pod 'Starscream', '4.0.5'
-  pod 'CourierCore', git: 'https://github.com/gojek/courier-iOS', branch: 'fix/accessConnectionSrially'
-  pod 'CourierMQTT', git: 'https://github.com/gojek/courier-iOS', branch: 'fix/accessConnectionSrially'
+  pod 'CourierCore', '1.0.22'
+  pod 'CourierMQTT', '1.0.22'
 end
 
 target 'Clickstream' do
