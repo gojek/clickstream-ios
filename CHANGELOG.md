@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## [3.0.2] - 2026-08-24
+
+[c4dd0bc] Merge pull request #160 from gojek/fix/publishMessageCrash (by @rishabhabbu-ctrl)
+[cb0f624] Wiring crash fix flags for serializeAccess and publishMessage and sqlLite to Courier and Clickstream SDKs (by @Rishab Habbu)
+[f7383fa] Wiring crash fix flags for serializeAccess and publishMessage and sqlLite to Courier and Clickstream SDKs (by @Rishab Habbu)
+[05cbfc8] Wiring the coinfig to control the serial Access fix for the common courier client (by @Rishab Habbu)
+[6e7fa93] Merge branch 'main' into fix/publishMessageCrash (by @Rishab Habbu)
+[14154e6] Merge pull request #161 from gojek/fix/podBumpForcourier (by @rishabhabbu-ctrl)
+[edaffd0] Revert pod remote source chnages (by @Rishab Habbu)
+[b1a9935] Revert pod remote source chnages (by @Rishab Habbu)
+[2995bbf] Add a flag to safely publish message after teardown of client (by @Rishab Habbu)
+[2daa063] [CI] Bump version - 3.0.1 (by @github-actions[bot])
+
 ## [2.0.95] - 2026-07-16
 
 [75eefbd] Merge pull request #150 from gojek/fix/courier_retry_crash_final (by @rishabhabbu-ctrl)
