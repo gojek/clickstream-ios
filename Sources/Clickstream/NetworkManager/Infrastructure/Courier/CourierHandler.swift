@@ -39,18 +39,20 @@ final class DefaultCourierHandler: CourierHandler {
     /// Kill switch for the teardown guard. Captured with `config` at init, never re-read
     /// per call: a value that flipped mid-flight would leave one thread guarding and another
     /// not, which is still a use-after-free while reporting as enabled.
-    private var isTeardownGuardEnabled: Bool {
-        config.fixPublishAfterDestroyCrash
-    }
+    private let isTeardownGuardEnabled: Bool
 
-    /// The live client, or `nil` once it has been torn down.
+    /// The live client, or `nil` once it has been torn down. Guarded path only — with the
+    /// kill switch off every call site reads `courierClient` directly, as it did before
+    /// the fix.
     private var activeClient: CourierClient? {
-        guard isTeardownGuardEnabled else { return courierClient }
-        return clientAccessQueue.sync { isClientTornDown ? nil : courierClient }
+        clientAccessQueue.sync { isClientTornDown ? nil : courierClient }
     }
 
     var isConnected: Atomic<Bool> {
-        .init(activeClient?.connectionState == .connected)
+        guard isTeardownGuardEnabled else {
+            return .init(courierClient?.connectionState == .connected)
+        }
+        return .init(activeClient?.connectionState == .connected)
     }
 
     init(config: ClickstreamCourierClientConfig,
@@ -60,6 +62,7 @@ final class DefaultCourierHandler: CourierHandler {
         self.config = config
         self.userCredentials = userCredentials
         self.pubSubAnalytics = pubSubAnalytics
+        self.isTeardownGuardEnabled = config.fixPublishAfterDestroyCrash
     }
     
     func publishMessage(_ eventRequest: CourierEventRequest, topic: String) throws {
@@ -116,6 +119,21 @@ final class DefaultCourierHandler: CourierHandler {
                connectionCallback: ConnectionStatus?,
                eventHandler: ICourierEventHandler) {
 
+        guard isTeardownGuardEnabled else {
+            courierClient?.destroy()
+            cancellables.removeAll()
+
+            courierClient = getCourierClient(authServiceProvider: authProvider)
+            courierClient?.addEventHandler(eventHandler)
+
+            if let pubSubAnalytics {
+                courierClient?.addEventHandler(pubSubAnalytics)
+            }
+
+            connect(connectionCallback: connectionCallback)
+            return
+        }
+
         destroyAndDisconnect()
         cancellables.removeAll()
 
@@ -126,14 +144,10 @@ final class DefaultCourierHandler: CourierHandler {
             client.addEventHandler(pubSubAnalytics)
         }
 
-        if isTeardownGuardEnabled {
-            // Publish the new client and re-arm the latch only once it is fully configured.
-            clientAccessQueue.sync(flags: .barrier) {
-                courierClient = client
-                isClientTornDown = false
-            }
-        } else {
+        // Publish the new client and re-arm the latch only once it is fully configured.
+        clientAccessQueue.sync(flags: .barrier) {
             courierClient = client
+            isClientTornDown = false
         }
 
         connect(connectionCallback: connectionCallback)
@@ -173,19 +187,31 @@ extension DefaultCourierHandler {
     }
 
     private func connect(connectionCallback: ConnectionStatus?) {
+        guard isTeardownGuardEnabled else {
+            courierClient?.connect(source: "clickstream")
+            courierClient?.connectionStatePublisher.sink { state in
+                Self.notify(state: state, to: connectionCallback)
+            }.store(in: &cancellables)
+            return
+        }
+
         guard let client = activeClient else { return }
         client.connect(source: "clickstream")
         client.connectionStatePublisher.sink { state in
-            switch state {
-            case .connected:
-                connectionCallback?(.success(.connected))
-            case .connecting:
-                connectionCallback?(.success(.connecting))
-            case .disconnected:
-                connectionCallback?(.failure(.failed))
-            @unknown default:
-                return
-            }
+            Self.notify(state: state, to: connectionCallback)
         }.store(in: &cancellables)
+    }
+
+    private static func notify(state: ConnectionState, to connectionCallback: ConnectionStatus?) {
+        switch state {
+        case .connected:
+            connectionCallback?(.success(.connected))
+        case .connecting:
+            connectionCallback?(.success(.connecting))
+        case .disconnected:
+            connectionCallback?(.failure(.failed))
+        @unknown default:
+            return
+        }
     }
 }
