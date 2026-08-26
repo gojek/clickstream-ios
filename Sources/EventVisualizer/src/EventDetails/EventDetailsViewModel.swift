@@ -86,6 +86,8 @@ final class EventDetailsViewModel: EventDetailsModelInput {
             (value as? Int32 != nil) ||
             (value as? Int64 != nil) ||
             (value as? Int != nil) ||
+            (value as? UInt32 != nil) ||
+            (value as? UInt64 != nil) ||
             (value as? Double != nil) ||
             (value as? Float != nil) ||
             (value is NSArray) ||
