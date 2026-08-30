@@ -50,7 +50,7 @@ class EventProcessorTest: XCTestCase {
         
         /// Event Splitter
         prioritiesMock = [Priority(priority: 0, identifier: "realTime", maxBatchSize: 50000.0, maxTimeBetweenTwoBatches: 1)]
-        eventBatchCreator = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: processorQueueMock)
+        eventBatchCreator = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: processorQueueMock, healthTrackingConfig: ClickstreamCourierHealthConfig())
         schedulerServiceMock = DefaultSchedulerService(with: prioritiesMock, performOnQueue: processorQueueMock)
         appStateNotifierMock = AppStateNotifierMock(state: .didBecomeActive)
         defaultEventBatchProcessor = DefaultEventBatchProcessor(with: eventBatchCreator, schedulerService: schedulerServiceMock, appStateNotifier: appStateNotifierMock, batchSizeRegulator: batchSizeRegulator, persistence: eventPersistence)

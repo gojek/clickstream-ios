@@ -66,7 +66,7 @@ class EventProcessorDependenciesTests: XCTestCase {
                                                           retryMechV2: nil,
                                                           performOnQueue: mockQueue)
 
-        let socketEventBatchCreator = DefaultEventBatchCreator(with: socketNetworkBuilder, performOnQueue: mockQueue)
+        let socketEventBatchCreator = DefaultEventBatchCreator(with: socketNetworkBuilder, performOnQueue: mockQueue, healthTrackingConfig: ClickstreamCourierHealthConfig())
         let courierEventBatchCreator = CourierEventBatchCreator(with: courierNetworkBuilder, performOnQueue: mockQueue, healthTrackingConfig: .init())
         
         let schedulerServiceMock = DefaultSchedulerService(with: prioritiesMock, performOnQueue: mockQueue)

@@ -29,7 +29,7 @@ class EventCreatorTests: XCTestCase {
         let retryMech = WebsocketRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: networkQueue, persistence: persistence,keepAliveService: keepAliveService)
         let networkBuilder = WebsocketNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: networkQueue)
         //when
-        let sut = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock)
+        let sut = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock, healthTrackingConfig: ClickstreamCourierHealthConfig())
         //then
         networkQueue.async {
             XCTAssertTrue(sut.canForward)
@@ -48,7 +48,7 @@ class EventCreatorTests: XCTestCase {
         let retryMech = WebsocketRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: false), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: networkQueue, persistence: persistence, keepAliveService: keepAliveService)
         let networkBuilder = WebsocketNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: networkQueue)
         //when
-        let sut = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock)
+        let sut = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock, healthTrackingConfig: ClickstreamCourierHealthConfig())
         //then
         XCTAssertFalse(sut.canForward)
     }
@@ -66,7 +66,7 @@ class EventCreatorTests: XCTestCase {
         let retryMech = WebsocketRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: networkQueue, persistence: persistence, keepAliveService: keepAliveService)
         let networkBuilder = WebsocketNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: networkQueue)
         //when
-        let sut = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock)
+        let sut = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock, healthTrackingConfig: ClickstreamCourierHealthConfig())
         
         //then
         networkQueue.async {
@@ -87,7 +87,7 @@ class EventCreatorTests: XCTestCase {
         let retryMech = WebsocketRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: false), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .didBecomeActive), performOnQueue: networkQueue, persistence: persistence, keepAliveService: keepAliveService)
         let networkBuilder = WebsocketNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: networkQueue)
         //when
-        let sut = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock)
+        let sut = DefaultEventBatchCreator(with: networkBuilder, performOnQueue: schedulerQueueMock, healthTrackingConfig: ClickstreamCourierHealthConfig())
         
         //then
         networkQueue.async {

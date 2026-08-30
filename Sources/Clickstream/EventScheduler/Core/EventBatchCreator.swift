@@ -39,11 +39,14 @@ final class DefaultEventBatchCreator: EventBatchCreator {
     
     private let networkBuilder: any NetworkBuildable
     private let performOnQueue: SerialQueue
+    private let healthTrackingConfig: ClickstreamCourierHealthConfig
     
     init(with networkBuilder: any NetworkBuildable,
-         performOnQueue: SerialQueue) {
+         performOnQueue: SerialQueue,
+         healthTrackingConfig: ClickstreamCourierHealthConfig) {
         self.networkBuilder = networkBuilder
         self.performOnQueue = performOnQueue
+        self.healthTrackingConfig = healthTrackingConfig
     }
     
     func forward(with events: [Event]) -> Bool {
@@ -51,8 +54,9 @@ final class DefaultEventBatchCreator: EventBatchCreator {
         
         let batch = EventBatch(uuid: UUID().uuidString, events: events)
         networkBuilder.trackBatch(batch, completion: nil)
-        
-        self.trackHealthEvents(batch: batch, events: events)
+        if isCSHealthTrackingEnabled {
+            self.trackHealthEvents(batch: batch, events: events)
+        }
         return true
     }
     
@@ -68,6 +72,10 @@ final class DefaultEventBatchCreator: EventBatchCreator {
 extension DefaultEventBatchCreator {
     var canForward: Bool {
         networkBuilder.isAvailable
+    }
+    
+    var isCSHealthTrackingEnabled: Bool {
+        healthTrackingConfig.csTrackingHealthEventsEnabled
     }
 }
 
