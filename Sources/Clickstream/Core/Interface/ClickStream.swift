@@ -111,8 +111,18 @@ public final class Clickstream {
     
     private var postAuthUserIdentifiers: ClickstreamClientPostAuthIdentifiers?
     private var preAuthUserIdentifiers: ClickstreamClientPreAuthIdentifiers?
+    /// Fix storage for the identifiers, used only while `Clickstream.pipelineRaceFixFlag` is on.
+    /// They are written from the client's login/logout threads while the tracking queues read
+    /// them on every event (via `isUserAuthenticated`), and the plain vars above tear under that
+    /// concurrent write, crashing in the optional's copy/destroy. With the flag off only the
+    /// plain vars are touched, so the pre-fix code runs unchanged.
+    private let postAuthUserIdentifiersAtomic = Atomic<ClickstreamClientPostAuthIdentifiers?>(nil)
+    private let preAuthUserIdentifiersAtomic = Atomic<ClickstreamClientPreAuthIdentifiers?>(nil)
     private var isUserAuthenticated: Bool {
-        postAuthUserIdentifiers != nil && preAuthUserIdentifiers == nil
+        if Clickstream.pipelineRaceFixFlag {
+            return postAuthUserIdentifiersAtomic.value != nil && preAuthUserIdentifiersAtomic.value == nil
+        }
+        return postAuthUserIdentifiers != nil && preAuthUserIdentifiers == nil
     }
 
     /// Private initialiser for the Clickstream Interface.
@@ -144,7 +154,10 @@ public final class Clickstream {
     static var updateConnectionStatus: Bool = false
     
     static var timerCrashFixFlag: Bool = false
-    
+
+    /// Gates the pipeline race fixes (atomic pre/post-auth identifier storage). Set from `initialise`.
+    static var pipelineRaceFixFlag: Bool = false
+
     static var priorityEventsEnabled: Bool = false
     
     /// When enabled, the on-disk store is integrity-checked on open and recreated if corrupt,
@@ -234,6 +247,7 @@ public final class Clickstream {
                                                      timerCrashFixFlag: Bool = false,
                                                      priorityEventsEnabled: Bool = false,
                                                      dbCorruptionRecoveryEnabled: Bool = false,
+                                                     pipelineRaceFixFlag: Bool = false,
                                                      appPrefix: String,
                                                      appVersion: String,
                                                      samplerConfiguration: EventSamplerConfiguration? = nil,
@@ -250,6 +264,7 @@ public final class Clickstream {
                 timerCrashFixFlag: timerCrashFixFlag,
                 priorityEventsEnabled: priorityEventsEnabled,
                 dbCorruptionRecoveryEnabled: dbCorruptionRecoveryEnabled,
+                pipelineRaceFixFlag: pipelineRaceFixFlag,
                 appPrefix: appPrefix,
                 appVersion: appVersion,
                 samplerConfiguration: samplerConfiguration,
@@ -270,6 +285,7 @@ public final class Clickstream {
                                                      updateConnectionStatus: Bool = false,
                                                      timerCrashFixFlag: Bool = false,
                                                      dbCorruptionRecoveryEnabled: Bool = false,
+                                                     pipelineRaceFixFlag: Bool = false,
                                                      appPrefix: String,
                                                      appVersion: String,
                                                      samplerConfiguration: EventSamplerConfiguration? = nil,
@@ -285,6 +301,7 @@ public final class Clickstream {
                 updateConnectionStatus: updateConnectionStatus,
                 timerCrashFixFlag: timerCrashFixFlag,
                 dbCorruptionRecoveryEnabled: dbCorruptionRecoveryEnabled,
+                pipelineRaceFixFlag: pipelineRaceFixFlag,
                 appPrefix: appPrefix,
                 appVersion: appVersion,
                 samplerConfiguration: samplerConfiguration,
@@ -307,6 +324,7 @@ public final class Clickstream {
                                       timerCrashFixFlag: Bool = false,
                                       priorityEventsEnabled: Bool = false,
                                       dbCorruptionRecoveryEnabled: Bool = false,
+                                      pipelineRaceFixFlag: Bool = false,
                                       appPrefix: String,
                                       appVersion: String,
                                       samplerConfiguration: EventSamplerConfiguration? = nil,
@@ -327,6 +345,7 @@ public final class Clickstream {
             Clickstream.eventClassifier = eventClassification
             Clickstream.updateConnectionStatus = updateConnectionStatus
             Clickstream.timerCrashFixFlag = timerCrashFixFlag
+            Clickstream.pipelineRaceFixFlag = pipelineRaceFixFlag
             Clickstream.priorityEventsEnabled = priorityEventsEnabled
             Clickstream.dbCorruptionRecoveryEnabled = dbCorruptionRecoveryEnabled
             Clickstream.classificationConfig = classificationConfig
@@ -433,7 +452,11 @@ extension Clickstream {
                                                 authProvider: IConnectionServiceProvider,
                                                 pubSubAnalytics: ICourierEventHandler?) {
 
-        preAuthUserIdentifiers = identifiers
+        if Clickstream.pipelineRaceFixFlag {
+            preAuthUserIdentifiersAtomic.mutate { $0 = identifiers }
+        } else {
+            preAuthUserIdentifiers = identifiers
+        }
         dependencies?.provideAuthClientIdentifiers(with: identifiers,
                                                    topic: topic,
                                                    authProvider: authProvider,
@@ -442,7 +465,11 @@ extension Clickstream {
     
     /// Remove post-auth courier's identifiers
     public func removePreAuthClientIdentifiers() {
-        preAuthUserIdentifiers = nil
+        if Clickstream.pipelineRaceFixFlag {
+            preAuthUserIdentifiersAtomic.mutate { $0 = nil }
+        } else {
+            preAuthUserIdentifiers = nil
+        }
         dependencies?.removeAuthClientIdentifiers()
     }
 
@@ -457,7 +484,11 @@ extension Clickstream {
                                                  authProvider: IConnectionServiceProvider,
                                                  pubSubAnalytics: ICourierEventHandler?) {
 
-        postAuthUserIdentifiers = identifiers
+        if Clickstream.pipelineRaceFixFlag {
+            postAuthUserIdentifiersAtomic.mutate { $0 = identifiers }
+        } else {
+            postAuthUserIdentifiers = identifiers
+        }
         dependencies?.provideAuthClientIdentifiers(with: identifiers,
                                                    topic: topic,
                                                    authProvider: authProvider,
@@ -466,7 +497,11 @@ extension Clickstream {
 
     /// Remove post-auth courier's identifiers
     public func removePostAuthClientIdentifiers() {
-        postAuthUserIdentifiers = nil
+        if Clickstream.pipelineRaceFixFlag {
+            postAuthUserIdentifiersAtomic.mutate { $0 = nil }
+        } else {
+            postAuthUserIdentifiers = nil
+        }
         dependencies?.removeAuthClientIdentifiers()
     }
 }
