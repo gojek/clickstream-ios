@@ -49,6 +49,16 @@ public struct ClickstreamCourierClientConfig {
     /// of the courier handler, so changing it takes effect on the next Clickstream setup.
     public let fixPublishAfterDestroyCrash: Bool
 
+    /// Publishes events to a placeholder-based topic instead of one carrying the explicit
+    /// user id: the user-id (terminal) path segment of the topic supplied via
+    /// `providePreAuthClientIdentifiers`/`providePostAuthClientIdentifiers` is replaced with
+    /// Courier's `%u` placeholder, which the courier layer resolves to the MQTT connection's
+    /// username at publish time.
+    ///
+    /// Mirrors clickstream-android's `CSCourierConfig.isTopicPlaceholderEnabled`. Requires a
+    /// courier-iOS version with topic placeholder support.
+    public let isTopicPlaceholderEnabled: Bool
+
     public let courierConnectPolicy: ClickstreamCourierConnectPolicy
     public let courierInactivityPolicy: ClickstreamCourierInactivityPolicy
     public let courierHealthConfig: ClickstreamCourierHealthConfig
@@ -75,6 +85,7 @@ public struct ClickstreamCourierClientConfig {
         fixMultipleConnectionCrash: Bool = false,
         fixPublishAfterDestroyCrash: Bool = false,
         serializeSessionAccess: Bool = false,
+        isTopicPlaceholderEnabled: Bool = false,
         courierConnectPolicy: ClickstreamCourierConnectPolicy = .init(),
         courierInactivityPolicy: ClickstreamCourierInactivityPolicy = .init(),
         courierHealthConfig: ClickstreamCourierHealthConfig = .init()
@@ -100,9 +111,33 @@ public struct ClickstreamCourierClientConfig {
         self.fixMultipleConnectionCrash = fixMultipleConnectionCrash
         self.fixPublishAfterDestroyCrash = fixPublishAfterDestroyCrash
         self.serializeSessionAccess = serializeSessionAccess
+        self.isTopicPlaceholderEnabled = isTopicPlaceholderEnabled
         self.courierConnectPolicy = courierConnectPolicy
         self.courierInactivityPolicy = courierInactivityPolicy
         self.courierHealthConfig = courierHealthConfig
+    }
+}
+
+/// Rewrites publish topics for `ClickstreamCourierClientConfig.isTopicPlaceholderEnabled`.
+///
+/// Android publishes to `clickstream/v2/{app-type}/{user-type}/%u` instead of
+/// `clickstream/v2/{app-type}/{user-type}/{user-id}` when the flag is on. On iOS the host
+/// app supplies the fully-built topic, so the equivalent is swapping its user-id (terminal)
+/// path segment for the `%u` placeholder; courier-iOS resolves `%u` to the MQTT connection's
+/// username when the message is published.
+enum CourierTopicPlaceholder {
+
+    static let userPlaceholder = "%u"
+
+    /// Returns `topic` with its last path segment replaced by `%u`.
+    /// An empty topic, or one already ending in `%u`, is returned unchanged.
+    static func applyingUserPlaceholder(to topic: String) -> String {
+        var segments = topic.components(separatedBy: "/")
+        guard let last = segments.last, !last.isEmpty, last != userPlaceholder else {
+            return topic
+        }
+        segments[segments.count - 1] = userPlaceholder
+        return segments.joined(separator: "/")
     }
 }
 
