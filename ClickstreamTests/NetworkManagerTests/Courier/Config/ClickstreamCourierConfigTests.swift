@@ -39,11 +39,43 @@ class ClickstreamCourierClientConfigTests: XCTestCase {
         XCTAssertEqual(config.courierHealthConfig.pubSubEventProbability, 0)
         XCTAssertEqual(config.courierHealthConfig.csTrackingHealthEventsEnabled, false)
         XCTAssertFalse(config.serializeSessionAccess)
+        XCTAssertFalse(config.isTopicPlaceholderEnabled)
     }
 
     func testSerializeSessionAccessIsCarriedThrough() {
         XCTAssertTrue(ClickstreamCourierClientConfig(serializeSessionAccess: true).serializeSessionAccess)
         XCTAssertFalse(ClickstreamCourierClientConfig(serializeSessionAccess: false).serializeSessionAccess)
+    }
+
+    func testIsTopicPlaceholderEnabledIsCarriedThrough() {
+        XCTAssertTrue(ClickstreamCourierClientConfig(isTopicPlaceholderEnabled: true).isTopicPlaceholderEnabled)
+        XCTAssertFalse(ClickstreamCourierClientConfig(isTopicPlaceholderEnabled: false).isTopicPlaceholderEnabled)
+    }
+
+    func testTopicPlaceholderReplacesUserIdSegment() {
+        XCTAssertEqual(
+            CourierTopicPlaceholder.applyingUserPlaceholder(to: "clickstream/v2/consumer/customer/12345"),
+            "clickstream/v2/consumer/customer/%u"
+        )
+    }
+
+    func testTopicPlaceholderLeavesAlreadyResolvedTopicUnchanged() {
+        XCTAssertEqual(
+            CourierTopicPlaceholder.applyingUserPlaceholder(to: "clickstream/v2/consumer/customer/%u"),
+            "clickstream/v2/consumer/customer/%u"
+        )
+    }
+
+    func testTopicPlaceholderLeavesEmptyOrTrailingSlashTopicUnchanged() {
+        XCTAssertEqual(CourierTopicPlaceholder.applyingUserPlaceholder(to: ""), "")
+        XCTAssertEqual(
+            CourierTopicPlaceholder.applyingUserPlaceholder(to: "clickstream/v2/consumer/customer/"),
+            "clickstream/v2/consumer/customer/"
+        )
+    }
+
+    func testTopicPlaceholderOnSingleSegmentTopic() {
+        XCTAssertEqual(CourierTopicPlaceholder.applyingUserPlaceholder(to: "12345"), "%u")
     }
     
     func testCustomInitialization() {

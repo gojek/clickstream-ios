@@ -136,14 +136,22 @@ final class NetworkManagerDependencies {
                                   authProvider: IConnectionServiceProvider,
                                   pubSubAnalytics: ICourierEventHandler?) {
 
+        // When topic placeholders are enabled, the user-id (terminal) segment of the
+        // host-supplied topic is swapped for `%u`, resolved by courier-iOS to the
+        // connection's username at publish time. Mirrors clickstream-android's
+        // `isTopicPlaceholderEnabled` switch between the explicit and placeholder topics.
+        let resolvedTopic = networkOptions.courierConfig.isTopicPlaceholderEnabled
+            ? CourierTopicPlaceholder.applyingUserPlaceholder(to: topic)
+            : topic
+
         if let courierRetryMechV2 {
             courierRetryMechV2.configureIdentifiers(with: identifiers,
-                                                    topic: topic,
+                                                    topic: resolvedTopic,
                                                     authProvider: authProvider,
                                                     pubSubAnalytics: pubSubAnalytics)
         } else {
             courierRetryMech?.configureIdentifiers(with: identifiers,
-                                                   topic: topic,
+                                                   topic: resolvedTopic,
                                                    authProvider: authProvider,
                                                    pubSubAnalytics: pubSubAnalytics)
         }
