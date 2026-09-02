@@ -55,29 +55,6 @@ extension ClickstreamEvent {
         let isCourierEnabled = networkOptions.isCourierEnabled
         let isUserEligible = isUserLoggedIn == true || networkOptions.isCourierPreAuthEnabled
 
-        let isWebsocketEnabled = networkOptions.isWebsocketEnabled
-        let isCourierWhitelisted = networkOptions.courierEventTypes.contains(self.messageName)
-        let isCourierExclusive = networkOptions.courierExclusiveEventTypes.contains(self.messageName)
-
-        guard isCourierEnabled && isUserEligible else {
-            return false
-        }
-
-        if isWebsocketEnabled && !isCourierWhitelisted && !isCourierExclusive {
-            return false
-        }
-        return true
-    }
-
-    func shouldTrackOnWebsocket(isUserLoggedIn: Bool, networkOptions: ClickstreamNetworkOptions) -> Bool {
-        let isCourierEnabled = networkOptions.isCourierEnabled
-        let isUserEligible = isUserLoggedIn == true || networkOptions.isCourierPreAuthEnabled
-
-        let isCourierExclusive = networkOptions.courierExclusiveEventTypes.contains(self.messageName)
-
-        if isCourierEnabled && isUserEligible && isCourierExclusive {
-            return false
-        }
-        return true
+        return isCourierEnabled && isUserEligible
     }
 }

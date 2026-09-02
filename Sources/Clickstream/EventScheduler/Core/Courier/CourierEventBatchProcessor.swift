@@ -219,8 +219,7 @@ private extension CourierEventBatchProcessor {
               let events = Tracker.sharedInstance?.sendHealthEventsToInternalParty(),
               !events.isEmpty else { return }
         
-        let courierEvents = events.map({ CourierEvent.initialise(from: $0) })
-        _ = eventBatchCreator.forward(with: courierEvents)
+        _ = eventBatchCreator.forward(with: events)
         #endif
     }
 }

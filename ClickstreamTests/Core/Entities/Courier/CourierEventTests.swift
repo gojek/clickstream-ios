@@ -55,9 +55,10 @@ final class CourierEventTests: XCTestCase {
         let timestamp = Date()
         let type = "realtime"
         let eventProtoData = Data()
+        let expiryTime = Date()
         
-        let event1 = CourierEvent(guid: guid, timestamp: timestamp, type: type, eventProtoData: eventProtoData, expiryTime: Date())
-        let event2 = CourierEvent(guid: guid, timestamp: timestamp, type: type, eventProtoData: eventProtoData, expiryTime: Date())
+        let event1 = CourierEvent(guid: guid, timestamp: timestamp, type: type, eventProtoData: eventProtoData, expiryTime: expiryTime)
+        let event2 = CourierEvent(guid: guid, timestamp: timestamp, type: type, eventProtoData: eventProtoData, expiryTime: expiryTime)
         
         XCTAssertEqual(event1, event2)
     }
@@ -82,7 +83,7 @@ final class CourierEventTests: XCTestCase {
         )
         
         let encoded = try JSONEncoder().encode(event)
-        let decoded = try JSONDecoder().decode(Event.self, from: encoded)
+        let decoded = try JSONDecoder().decode(CourierEvent.self, from: encoded)
         
         XCTAssertEqual(event.guid, decoded.guid)
         XCTAssertEqual(event.type, decoded.type)

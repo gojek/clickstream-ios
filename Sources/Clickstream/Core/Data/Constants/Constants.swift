@@ -14,7 +14,6 @@ typealias SerialQueue = DispatchQueue
 
 enum Constants {
     
-    static let SocketConnectionNotification = NSNotification.Name(rawValue: "SocketConnectionNotification")
     static let CourierConnectionNotification = NSNotification.Name(rawValue: "CourierConnectionNotification")
     static let HealthEventType = "healthEvent"
     
@@ -34,21 +33,14 @@ enum Constants {
     // MARK: - SDK Defaults
     enum Defaults {
         
-        // MARK: - Coefficients
-        static let coefficientOfConnectionRetries = 1.3
-        
         // MARK: - Database
         /// Time (in seconds) a database connection waits for a held lock before failing with `SQLITE_BUSY`.
         static let databaseBusyTimeout: TimeInterval = 5
     }
     
     enum QueueIdentifiers: QueueIdentifier {
-        case network = "com.clickstream.network"
         case scheduler = "com.clickstream.schedule"
-        case processor = "com.clickstream.processor"
-        case warehouser = "com.clickstream.warehouser"
         case dao = "com.clickstream.dao"
-        case connectableAccess = "com.clickstream.connectableAccess"
         case atomicAccess = "com.clickstream.atomicAccess"
         case tracker = "com.gojek.clickstream.tracker"
     }

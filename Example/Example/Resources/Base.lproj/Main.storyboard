@@ -141,7 +141,6 @@
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="1ks-E1-0At">
                                 <rect key="frame" x="132.66666666666666" y="169" width="174.99999999999997" height="32"/>
                                 <segments>
-                                    <segment title="Websocket"/>
                                     <segment title="Courier"/>
                                 </segments>
                                 <connections>

@@ -18,7 +18,6 @@ final class EventSchedulerDependenciesAdditionalTests: XCTestCase {
     private var mockQueue: SerialQueue!
     private var dbQueueMock: SerialQueue!
     private var config: DefaultNetworkConfiguration!
-    private var socketNetworkBuilder: WebsocketNetworkBuilder!
     private var courierNetworkBuilder: CourierNetworkBuilder!
 
     override func setUp() {
@@ -30,24 +29,7 @@ final class EventSchedulerDependenciesAdditionalTests: XCTestCase {
         database = try! DefaultDatabase(qos: .WAL)
         mockQueue = SerialQueue(label: "com.test.esda.queue", qos: .utility)
         dbQueueMock = SerialQueue(label: "com.test.esda.dao", qos: .utility, attributes: .concurrent)
-        config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
-
-        let socketService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: mockQueue)
-        let deviceStatus = DefaultDeviceStatus(performOnQueue: mockQueue)
-        let socketPersistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
-        let keepAlive = DefaultKeepAliveServiceWithSafeTimer(with: mockQueue,
-                                                              duration: 2,
-                                                              reachability: NetworkReachabilityMock(isReachable: true))
-        let socketRetry = WebsocketRetryMechanism(networkService: socketService,
-                                                  reachability: NetworkReachabilityMock(isReachable: true),
-                                                  deviceStatus: deviceStatus,
-                                                  appStateNotifier: AppStateNotifierMock(state: .didBecomeActive),
-                                                  performOnQueue: mockQueue,
-                                                  persistence: socketPersistence,
-                                                  keepAliveService: keepAlive)
-        socketNetworkBuilder = WebsocketNetworkBuilder(networkConfigs: config,
-                                                       retryMech: socketRetry,
-                                                       performOnQueue: mockQueue)
+        config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "https://mock.clickstream.com")!))
 
         let courierService = CourierNetworkService<DefaultCourierHandler>(with: config, performOnQueue: mockQueue)
         let courierPersistence = DefaultDatabaseDAO<CourierEventRequest>(database: database, performOnQueue: dbQueueMock)
@@ -63,7 +45,6 @@ final class EventSchedulerDependenciesAdditionalTests: XCTestCase {
     }
 
     override func tearDown() {
-        socketNetworkBuilder = nil
         courierNetworkBuilder = nil
         config = nil
         dbQueueMock = nil
@@ -74,8 +55,7 @@ final class EventSchedulerDependenciesAdditionalTests: XCTestCase {
     }
 
     private func makeDeps() -> EventSchedulerDependencies {
-        EventSchedulerDependencies(socketNetworkBuider: socketNetworkBuilder,
-                                   courierNetworkBuider: courierNetworkBuilder,
+        EventSchedulerDependencies(courierNetworkBuider: courierNetworkBuilder,
                                    db: database,
                                    networkOptions: networkOptions)
     }
@@ -115,13 +95,11 @@ final class EventSchedulerDependenciesAdditionalTests: XCTestCase {
         Clickstream.courierConfigurations = MockConstants.courierConstraints
     }
 
-    func testMakeSocketAndCourierWarehouserShareSameDatabase() {
+    func testMakeCourierWarehouser_returnsInstance() {
         let deps = makeDeps()
 
-        let socketWarehouser = deps.makeEventWarehouser()
         let courierWarehouser = deps.makeCourierEventWarehouser()
 
-        XCTAssertNotNil(socketWarehouser)
         XCTAssertNotNil(courierWarehouser)
         courierWarehouser.stop()
     }

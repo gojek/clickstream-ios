@@ -58,15 +58,6 @@ extension CourierEvent {
     }
 }
 
-extension CourierEvent {
-    static func initialise(from event: Event) -> Self {
-        CourierEvent(guid: event.guid,
-                     timestamp: event.timestamp,
-                     type: event.type,
-                     eventProtoData: event.eventProtoData, expiryTime: Date())
-    }
-}
-
 // MARK: - TTLPersistable
 /// `CourierEvent` carries an explicit `ttl` column, so it opts into TTL-aware
 /// persistence queries by exposing that column to the database layer.

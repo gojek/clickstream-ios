@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [Unreleased]
+
+- Removed the deprecated Websocket network flow. Courier is now the only network channel.
+  - Deleted `WebsocketNetworkBuilder`, `WebsocketNetworkService`, `WebsocketRetryMechanism`, `DefaultSocketHandler`, `Heartbeat`, `KeepAliveService`, `DeviceStatusNotifier`, `EventRequest`, `Event`, `EventBatch`, `DefaultEventProcessor`, `DefaultEventWarehouser`, `DefaultEventBatchProcessor`, `DefaultEventBatchCreator`, `DefaultSchedulerService`, `DefaultBatchSizeRegulator` and the `Connectable` protocol.
+  - Dropped the `Starscream` dependency.
+  - Breaking: removed `Clickstream.trackEventViaWebsocket(with:)`, `Clickstream.isClickstreamConnectedToWebsocket` and `ClickstreamNetworkOptions.isWebsocketEnabled`. Events are no longer gated on the courier whitelist when they are tracked via courier.
+
 ## [2.0.95] - 2026-07-16
 
 [75eefbd] Merge pull request #150 from gojek/fix/courier_retry_crash_final (by @rishabhabbu-ctrl)

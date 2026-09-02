@@ -19,10 +19,6 @@ final class DefaultClickstreamDependencies {
     private let samplerConfiguration: EventSamplerConfiguration?
 
     private let networkOptions: ClickstreamNetworkOptions
-    
-    var isSocketConnected: Bool {
-        networkManagerDependencies.isSocketConnected
-    }
 
     var isCourierConnected: Bool {
         networkManagerDependencies.isCourierConnected
@@ -47,30 +43,16 @@ final class DefaultClickstreamDependencies {
         A NetworkBuildable instance. This instance acts as the only source of NetworkBuildable,
         hence ensuring only one instane is tied to the Clickstream class.
      */
-    lazy var socketNetworkBuilder: any NetworkBuildable = {
-         networkManagerDependencies.makeNetworkBuilder()
-    }()
-
     lazy var courierNetworkBuilder: any NetworkBuildable = {
          networkManagerDependencies.makeCourierNetworkBuilder()
     }()
 
-    /** A EventWarehouser instance.
-        This instance acts as the only source of EventWarehouser,
+    /** A CourierEventWarehouser instance.
+        This instance acts as the only source of CourierEventWarehouser,
         hence ensuring only one instane is tied to the Clickstream class.
      */
-    lazy var socketEventWarehouser: DefaultEventWarehouser = {
-        EventSchedulerDependencies(
-            socketNetworkBuider: socketNetworkBuilder,
-            courierNetworkBuider: courierNetworkBuilder,
-            db: database,
-            networkOptions: networkOptions
-        ).makeEventWarehouser()
-    }()
-
     lazy var courierEventWarehouser: CourierEventWarehouser = {
         EventSchedulerDependencies(
-            socketNetworkBuider: socketNetworkBuilder,
             courierNetworkBuider: courierNetworkBuilder,
             db: database,
             networkOptions: networkOptions
@@ -78,30 +60,15 @@ final class DefaultClickstreamDependencies {
     }()
 
     /**
-        EventProcessor instance.
-        This instance acts as the only source of EventProcessor, hence ensuring only one instane is tied to the Clickstream class.
+        CourierEventProcessor instance.
+        This instance acts as the only source of CourierEventProcessor, hence ensuring only one instane is tied to the Clickstream class.
      */
-    lazy var socketEventProcessor: DefaultEventProcessor = {
-        EventProcessorDependencies(
-            socketEventWarehouser: socketEventWarehouser,
-            courierEventWarehouser: courierEventWarehouser,
-            socketEventSampler: socketEventSampler,
-            networkOptions: networkOptions,
-        ).makeEventProcessor()
-    }()
-    
     lazy var courierEventProcessor: CourierEventProcessor = {
         EventProcessorDependencies(
-            socketEventWarehouser: socketEventWarehouser,
             courierEventWarehouser: courierEventWarehouser,
             courierEventSampler: courierEventSampler,
             networkOptions: networkOptions,
         ).makeCourierEventProcessor()
-    }()
-
-    lazy var socketEventSampler: EventSampler? = {
-        guard let samplerConfiguration else { return nil }
-        return DefaultEventSampler(config: samplerConfiguration)
     }()
     
     lazy var courierEventSampler: EventSampler? = {

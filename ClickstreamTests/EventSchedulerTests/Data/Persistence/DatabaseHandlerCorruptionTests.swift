@@ -36,17 +36,17 @@ final class DatabaseHandlerCorruptionTests: XCTestCase {
         // Initialising must not crash or throw: the corrupt store should be discarded and recreated.
         let database = try DefaultDatabase(qos: .WAL, recoveryEnabled: true)
 
-        let persistence = DefaultDatabaseDAO<Event>(
+        let persistence = DefaultDatabaseDAO<CourierEvent>(
             database: database,
             performOnQueue: SerialQueue(label: "com.mock.gojek.clickstream.corruption",
                                         qos: .utility,
                                         attributes: .concurrent)
         )
 
-        let event = Event(guid: UUID().uuidString, timestamp: Date(), type: "realTime", eventProtoData: Data())
+        let event = CourierEvent(guid: UUID().uuidString, timestamp: Date(), type: "realTime", eventProtoData: Data(), expiryTime: Date())
         persistence.insert(event)
 
-        let events: [Event]? = persistence.fetchAll()
+        let events: [CourierEvent]? = persistence.fetchAll()
         XCTAssertTrue(events?.map { $0.guid }.contains(event.guid) ?? false,
                       "A fresh, usable database should be available after recovery")
     }
@@ -57,24 +57,24 @@ final class DatabaseHandlerCorruptionTests: XCTestCase {
         removeStore(at: dbURL)
 
         let firstDatabase = try DefaultDatabase(qos: .WAL, recoveryEnabled: true)
-        let firstPersistence = DefaultDatabaseDAO<Event>(
+        let firstPersistence = DefaultDatabaseDAO<CourierEvent>(
             database: firstDatabase,
             performOnQueue: SerialQueue(label: "com.mock.gojek.clickstream.healthy",
                                         qos: .utility,
                                         attributes: .concurrent)
         )
-        let event = Event(guid: UUID().uuidString, timestamp: Date(), type: "realTime", eventProtoData: Data())
+        let event = CourierEvent(guid: UUID().uuidString, timestamp: Date(), type: "realTime", eventProtoData: Data(), expiryTime: Date())
         firstPersistence.insert(event)
 
         // Re-opening a healthy store must preserve the data (no false-positive recovery).
         let secondDatabase = try DefaultDatabase(qos: .WAL, recoveryEnabled: true)
-        let secondPersistence = DefaultDatabaseDAO<Event>(
+        let secondPersistence = DefaultDatabaseDAO<CourierEvent>(
             database: secondDatabase,
             performOnQueue: SerialQueue(label: "com.mock.gojek.clickstream.healthy.reopen",
                                         qos: .utility,
                                         attributes: .concurrent)
         )
-        let events: [Event]? = secondPersistence.fetchAll()
+        let events: [CourierEvent]? = secondPersistence.fetchAll()
         XCTAssertTrue(events?.map { $0.guid }.contains(event.guid) ?? false,
                       "Healthy database content must be preserved across re-initialisation")
     }

@@ -147,7 +147,7 @@ class MockBatchSizeRegulator: BatchSizeRegulator {
         return regulatedNumberResult
     }
     
-    func observe(_ event: Event) {
+    func observe(_ event: CourierEvent) {
         observeCallCount += 1
     }
 }

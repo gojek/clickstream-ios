@@ -27,28 +27,11 @@ class ClickstreamTests: XCTestCase {
         XCTAssertNotNil(clickStream)
     }
     
-    func testInitialiseClickstreamWithNetworkOptionsWebsocket() {
-        // when
-        let dummyRequest = URLRequest(url: URL(string: "dummy_url")!)
-        let networkOptions = ClickstreamNetworkOptions(isWebsocketEnabled: true)
-        let clickStream = try! Clickstream.initialise(with: dummyRequest,
-                                                      configurations: MockConstants.constraints,
-                                                      courierConfigurations: MockConstants.courierConstraints,
-                                                      eventClassification: MockConstants.eventClassification,
-                                                      appPrefix: "",
-                                                      appVersion: "1.0.0",
-                                                      networkOptions: networkOptions)
-        
-        // then
-        XCTAssertNotNil(clickStream)
-    }
-
     func testInitialiseClickstreamWithNetworkOptionsCourier() {
         // when
         let dummyRequest = URLRequest(url: URL(string: "dummy_url")!)
         let whitelistedEvents: Set<CourierEventIdentifier> = ["CSCourierEvent1", "CSCourierEvent2", "CSCourierEvent3"]
-        let networkOptions = ClickstreamNetworkOptions(isWebsocketEnabled: true,
-                                                       isCourierEnabled: true,
+        let networkOptions = ClickstreamNetworkOptions(isCourierEnabled: true,
                                                        courierEventTypes: whitelistedEvents)
 
         let clickStream = try! Clickstream.initialise(with: dummyRequest,

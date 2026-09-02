@@ -22,15 +22,15 @@ public final class Clickstream {
     
     /// States the various states of Clicstream connection
     public enum ConnectionState {
-        // When the socket is trying to connect
+        // When the connection is being established
         case connecting
-        // When the socket is about to be closed. can be called when the app moves to backgroud
+        // When the connection is about to be closed. can be called when the app moves to backgroud
         case closing
-        // When the socket connection is closed
+        // When the connection is closed
         case closed
-        // When the socket connection is fails
+        // When the connection fails
         case failed
-        // When the socket connection gets connected
+        // When the connection gets connected
         case connected
     }
     
@@ -100,13 +100,10 @@ public final class Clickstream {
     private weak var delegate: ClickstreamDelegate?
     
     // MARK: - Building blocks of the SDK.
-    private let socketNetworkBuilder: any NetworkBuildable
     private let courierNetworkBuilder: any NetworkBuildable
 
-    private let socketEventProcessor: EventProcessor
     private let courierEventProcessor: EventProcessor
 
-    private let socketEventWarehouser: any EventWarehouser
     private let courierEventWarehouser: any EventWarehouser
     
     private var postAuthUserIdentifiers: ClickstreamClientPostAuthIdentifiers?
@@ -121,21 +118,13 @@ public final class Clickstream {
     ///   - eventWarehouser: event warehouser instance
     ///   - eventProcessor: event processor instance
     ///   - dataSource: dataSource for Clickstream
-    private init(socketNetworkBuilder: any NetworkBuildable,
-                 courierNetworkBuilder: any NetworkBuildable,
-                 socketEventWarehouser: any EventWarehouser,
+    private init(courierNetworkBuilder: any NetworkBuildable,
                  courierEventWarehouser: any EventWarehouser,
-                 socketEventProcessor: EventProcessor,
                  courierEventProcessor: EventProcessor,
                  delegate: ClickstreamDelegate? = nil) {
 
-        self.socketNetworkBuilder = socketNetworkBuilder
         self.courierNetworkBuilder = courierNetworkBuilder
-
-        self.socketEventWarehouser = socketEventWarehouser
         self.courierEventWarehouser = courierEventWarehouser
-
-        self.socketEventProcessor = socketEventProcessor
         self.courierEventProcessor = courierEventProcessor
 
         self.delegate = delegate
@@ -167,11 +156,6 @@ public final class Clickstream {
         Logger.logLevel = level
     }
     
-    /// Provides whether clickstream is connected to the websocket network or not
-    public var isClickstreamConnectedToWebsocket: Bool {
-        return dependencies?.isSocketConnected ?? false
-    }
-
     /// Provides whether clickstream is connected to the courier network or not
     public var isClickstreamConnectedToCourier: Bool {
         return dependencies?.isCourierConnected ?? false
@@ -179,7 +163,6 @@ public final class Clickstream {
     
     /// Stops the Clickstream tracking.
     public static func stopTracking() {
-        sharedInstance?.socketEventWarehouser.stop()
         sharedInstance?.courierEventWarehouser.stop()
     }
     
@@ -190,12 +173,6 @@ public final class Clickstream {
         sharedInstance = nil
     }
 
-    /// Tracks Clickstream event via websocket network channel
-    /// - Parameter event: Client's Clickstream Event
-    public func trackEventViaWebsocket(with event: ClickstreamEvent) {
-        socketEventProcessor.createEvent(event: event, isUserAuthenticated: isUserAuthenticated)
-    }
-
     /// Tracks Clickstream event via courier network channel
     /// - Parameter event: Client's Clickstream Event
     public func trackEventViaCourier(with event: ClickstreamEvent) {
@@ -203,17 +180,16 @@ public final class Clickstream {
     }
 
     /// Tracks a binary event received from a web bridge.
-    /// The encoded protobuf payload is forwarded via both the websocket and courier channels.
+    /// The encoded protobuf payload is forwarded via the courier channel.
     /// - Parameter event: A `CSBinaryEvent` carrying the base64-encoded proto payload and its type.
     public func trackBinaryEvent(_ event: CSBinaryEvent) {
-        socketEventProcessor.createBinaryEvent(event: event, isUserAuthenticated: isUserAuthenticated)
         courierEventProcessor.createBinaryEvent(event: event, isUserAuthenticated: isUserAuthenticated)
     }
     
     /// Initializes an instance of the API with the given configurations.
     /// Returns a new Clickstream instance API object. This allows you to create one instance only.
     /// - Parameters:
-    ///   - networkConfiguration: Network Configurations needed for connecting socket
+    ///   - networkConfiguration: Network Configurations needed for connecting to courier
     ///   - constraints: Clickstream constraints passed from the integrating app.
     ///   - dataSource: ClickstreamDataSource instance passed from the integrating app.
     ///   - eventClassification: Clickstream event classification passed from the integrating app.
@@ -340,11 +316,8 @@ public final class Clickstream {
                                                                       samplerConfiguration: samplerConfiguration,
                                                                       networkOptions: networkOptions)
 
-                sharedInstance = Clickstream(socketNetworkBuilder: dependencies.socketNetworkBuilder,
-                                             courierNetworkBuilder: dependencies.courierNetworkBuilder,
-                                             socketEventWarehouser: dependencies.socketEventWarehouser,
+                sharedInstance = Clickstream(courierNetworkBuilder: dependencies.courierNetworkBuilder,
                                              courierEventWarehouser: dependencies.courierEventWarehouser,
-                                             socketEventProcessor: dependencies.socketEventProcessor,
                                              courierEventProcessor: dependencies.courierEventProcessor,
                                              delegate: delegate)
 

@@ -11,16 +11,9 @@ import Foundation
 final class EventProcessorDependencies {
     
     private let networkOptions: ClickstreamNetworkOptions
-    private let socketEventWarehouser: DefaultEventWarehouser
     private let courierEventWarehouser: CourierEventWarehouser
-
-    private let socketEventSampler: EventSampler?
     
     private let courierEventSampler: EventSampler?
-
-    private lazy var socketSerialQueue: SerialQueue = {
-        return SerialQueue(label: Constants.QueueIdentifiers.processor.rawValue)
-    }()
     
     private lazy var courierSerialQueue: SerialQueue = {
         return SerialQueue(label: Constants.CourierQueueIdentifiers.processor.rawValue)
@@ -38,24 +31,12 @@ final class EventProcessorDependencies {
         }
     }()
     
-    init(socketEventWarehouser: DefaultEventWarehouser,
-         courierEventWarehouser: CourierEventWarehouser,
-         socketEventSampler: EventSampler? = nil,
+    init(courierEventWarehouser: CourierEventWarehouser,
          courierEventSampler: EventSampler? = nil,
          networkOptions: ClickstreamNetworkOptions) {
-        self.socketEventWarehouser = socketEventWarehouser
         self.courierEventWarehouser = courierEventWarehouser
-        self.socketEventSampler = socketEventSampler
         self.courierEventSampler = courierEventSampler
         self.networkOptions = networkOptions
-    }
-
-    func makeEventProcessor() -> DefaultEventProcessor {
-        return DefaultEventProcessor(performOnQueue: socketSerialQueue,
-                                     classifier: classifier,
-                                     eventWarehouser: socketEventWarehouser,
-                                     sampler: socketEventSampler,
-                                     networkOptions: networkOptions)
     }
 
     func makeCourierEventProcessor() -> CourierEventProcessor {
