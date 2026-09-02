@@ -25,25 +25,20 @@ class ClickstreamViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configBarButtonItem.isEnabled = false
+        configBarButtonItem.isEnabled = true
         analyticsManager = AnalyticsManager()
     }
     
     @IBAction func connectClickstream(_ sender: UIButton) {
-        if segementedTab.selectedSegmentIndex == 0 {
-            // Websocket
-            analyticsManager.initialiseClickstream(networkOptions: .init(isWebsocketEnabled: true, isCourierEnabled: false))
-        } else {
-            // Courier
-            guard let networkOptions = analyticsManager.networkOptions,
-                let userCredentials = analyticsManager.courierUserCredentials else {
-                presentAlert(title: "Unable to Connect to Courier", message: "Please setup Courier Configurations first")
-                return
-            }
-
-            analyticsManager.initialiseClickstream(networkOptions: networkOptions)
-            analyticsManager.provideUserCredentials(with: userCredentials)
+        // Courier
+        guard let networkOptions = analyticsManager.networkOptions,
+            let userCredentials = analyticsManager.courierUserCredentials else {
+            presentAlert(title: "Unable to Connect to Courier", message: "Please setup Courier Configurations first")
+            return
         }
+
+        analyticsManager.initialiseClickstream(networkOptions: networkOptions)
+        analyticsManager.provideUserCredentials(with: userCredentials)
     }
     
     @IBAction func disconnectClickstream(_ sender: UIButton) {
@@ -72,7 +67,8 @@ class ClickstreamViewController: UIViewController {
     }
     
     @IBAction func switchNetworkSourceTarget(_ sender: UISegmentedControl) {
-        navigationItem.rightBarButtonItem?.isEnabled = sender.selectedSegmentIndex == 1
+        // Courier is the only network source, so the config button is always available.
+        navigationItem.rightBarButtonItem?.isEnabled = true
     }
     
     @IBAction func didTapConfigButton(_ sender: UIBarButtonItem) {
@@ -83,8 +79,7 @@ class ClickstreamViewController: UIViewController {
 
         configView.didSaveConfig = { [weak self] (config, userCredentials, topic) in
             let whitelistedEvents = ["User"]
-            let defaultNetworkOptions = ClickstreamNetworkOptions(isWebsocketEnabled: false,
-                                                                  isCourierEnabled: true,
+            let defaultNetworkOptions = ClickstreamNetworkOptions(isCourierEnabled: true,
                                                                   courierEventTypes: Set(whitelistedEvents),
                                                                   courierConfig: config)
 

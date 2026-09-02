@@ -28,15 +28,6 @@
       }
     },
     {
-      "identity" : "starscream",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/daltoniam/Starscream.git",
-      "state" : {
-        "revision" : "7b1e5bb60d9f1ce9fa0c732df54c5f7f74f35645",
-        "version" : "4.0.5"
-      }
-    },
-    {
       "identity" : "swift-protobuf",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-protobuf.git",

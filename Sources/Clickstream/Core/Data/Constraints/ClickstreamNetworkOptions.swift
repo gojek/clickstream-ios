@@ -13,7 +13,6 @@ public typealias CourierEventIdentifier = String
 
 public struct ClickstreamNetworkOptions {
 
-    public let isWebsocketEnabled: Bool
     public let isCourierEnabled: Bool
     public let isCourierPreAuthEnabled: Bool
     public let courierEventTypes: Set<CourierEventIdentifier>
@@ -25,8 +24,7 @@ public struct ClickstreamNetworkOptions {
     public let clickstreamConstraints: ClickstreamCourierConstraints
     public let enableCourierMechanismV2: Bool
 
-    public init(isWebsocketEnabled: Bool = true,
-                isCourierEnabled: Bool = true,
+    public init(isCourierEnabled: Bool = true,
                 isCourierPreAuthEnabled: Bool = false,
                 courierEventTypes: Set<CourierEventIdentifier> = [],
                 courierExclusiveEventTypes: Set<CourierEventIdentifier> = [],
@@ -37,7 +35,6 @@ public struct ClickstreamNetworkOptions {
                 clickstreamConstraints: ClickstreamCourierConstraints = .init(),
                 enableCourierMechanismV2: Bool = false) {
 
-        self.isWebsocketEnabled = isWebsocketEnabled
         self.isCourierEnabled = isCourierEnabled
         self.isCourierPreAuthEnabled = isCourierPreAuthEnabled
         self.courierEventTypes = courierEventTypes

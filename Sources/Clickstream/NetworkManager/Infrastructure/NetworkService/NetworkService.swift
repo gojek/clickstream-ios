@@ -8,16 +8,8 @@
 
 import Foundation
 import CourierCore
-import SwiftProtobuf
 
 protocol NetworkServiceInputs {
-    
-    /// Initiates a connection through a connectable.
-    /// - Parameters:
-    ///   - connectionStatusListener: A callback to listen to the change in the status.
-    ///   - keepTrying: allow connectable to try reconnection exponentially
-    func initiateWebsocketConnection(connectionStatusListener: ConnectionStatus?, keepTrying: Bool)
-
     
     /// Initiates a Courier connection through a connectable.
     /// - Parameters:
@@ -32,12 +24,6 @@ protocol NetworkServiceInputs {
                                    eventHandler: ICourierEventHandler,
                                    pubSubAnalytics: ICourierEventHandler?,
                                    isForced: Bool)
-
-    /// Writes data to the given connectable and fires a completion event after the write is completed.
-    /// - Parameters:
-    ///   - data:  Data to be written/sent.
-    ///   - completion: A callback to listen to the result thus produced by the write action.
-    func write<T: SwiftProtobuf.Message>(_ data: Data, completion: @escaping (Result<T, ConnectableError>) -> Void)
     
     /// Terminates the established connection.
     func terminateConnection()
@@ -53,14 +39,3 @@ protocol NetworkServiceOutputs {
 }
 
 protocol NetworkService: NetworkServiceInputs, NetworkServiceOutputs { }
-
-extension NetworkService {
-    func initiateWebsocketConnection(connectionStatusListener: ConnectionStatus?, keepTrying: Bool) {}
-    func initiateCourierConnection(connectionStatusListener: ConnectionStatus?,
-                                   identifiers: ClickstreamClientIdentifiers,
-                                   authProvider: IConnectionServiceProvider,
-                                   eventHandler: ICourierEventHandler,
-                                   pubSubAnalytics: ICourierEventHandler?,
-                                   isForced: Bool) {}
-    func write<T: SwiftProtobuf.Message>(_ data: Data, completion: @escaping (Result<T, ConnectableError>) -> Void) {}
-}

@@ -11,7 +11,7 @@ import Foundation
 
 final class BatchSizeRegulatorMock: BatchSizeRegulator {
     
-    func observe(_ event: Event) { }
+    func observe(_ event: CourierEvent) { }
     
     func regulatedNumberOfItemsPerBatch(expectedBatchSize: Double) -> Int {
         return 50

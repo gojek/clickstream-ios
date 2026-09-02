@@ -15,7 +15,6 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.0.0"),
         .package(url: "https://github.com/ashleymills/Reachability.swift.git", from: "5.0.0"),
         .package(url: "https://github.com/groue/GRDB.swift.git", from: "6.7.0"),
-        .package(url: "https://github.com/daltoniam/Starscream.git", exact: "4.0.5"),
         .package(url: "https://github.com/gojek/courier-iOS.git", exact: "1.0.20")
     ],
     targets: [
@@ -25,7 +24,6 @@ let package = Package(
                 .product(name: "SwiftProtobuf", package: "swift-protobuf"),
                 .product(name: "Reachability", package: "Reachability.swift"),
                 .product(name: "GRDB", package: "GRDB.swift"),
-                .product(name: "Starscream", package: "Starscream"),
                 .product(name: "CourierCore", package: "courier-iOS"),
                 .product(name: "CourierMQTT", package: "courier-iOS")
             ],

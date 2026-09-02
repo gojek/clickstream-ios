@@ -44,5 +44,5 @@ struct Constants {
 }
 
 enum NetworkSource {
-    case websocket, courier
+    case courier
 }

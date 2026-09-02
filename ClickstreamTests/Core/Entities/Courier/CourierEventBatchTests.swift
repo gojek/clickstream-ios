@@ -51,7 +51,7 @@ class CourierEventBatchTests: XCTestCase {
         let eventBatch = CourierEventBatch(uuid: uuid, events: [event])
         
         let encoded = try JSONEncoder().encode(eventBatch)
-        let decoded = try JSONDecoder().decode(EventBatch.self, from: encoded)
+        let decoded = try JSONDecoder().decode(CourierEventBatch.self, from: encoded)
         
         XCTAssertEqual(eventBatch.uuid, decoded.uuid)
         XCTAssertEqual(eventBatch.events.count, decoded.events.count)

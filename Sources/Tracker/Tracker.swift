@@ -149,10 +149,10 @@ public final class Tracker {
     }
     
     /// Send health events to Clickstream
-    func sendHealthEventsToInternalParty() -> [Event]? {
+    func sendHealthEventsToInternalParty() -> [CourierEvent]? {
         guard Tracker.healthTrackingConfigs.trackedVia == .internal || Tracker.healthTrackingConfigs.trackedVia == .both else { return nil }
            
-        var events = [Event]()
+        var events = [CourierEvent]()
         
         // get the health events which need to be send to CS
         guard let eventsToBeFlushed = healthTracker.flushFunnelEvents() else { return nil }
@@ -179,8 +179,8 @@ public final class Tracker {
         return events
     }
     
-    private func getInstantEvents(instantEvents: [HealthAnalysisEvent], metaData: Gojek_Clickstream_Internal_HealthMeta) -> [Event] {
-        var events = [Event]()
+    private func getInstantEvents(instantEvents: [HealthAnalysisEvent], metaData: Gojek_Clickstream_Internal_HealthMeta) -> [CourierEvent] {
+        var events = [CourierEvent]()
         for event in instantEvents {
             let eventGuid = UUID().uuidString
             
@@ -224,8 +224,8 @@ public final class Tracker {
         return events
     }
     
-    private func getAggregatedEvents(aggregatedEvents: [HealthAnalysisEvent], metaData: Gojek_Clickstream_Internal_HealthMeta) -> [Event] {
-        var events = [Event]()
+    private func getAggregatedEvents(aggregatedEvents: [HealthAnalysisEvent], metaData: Gojek_Clickstream_Internal_HealthMeta) -> [CourierEvent] {
+        var events = [CourierEvent]()
         let groupingDictionary = Dictionary(grouping: aggregatedEvents, by: { $0.eventName })
         for (key, eventNameBasedAggregation) in groupingDictionary {
             let eventGuid = UUID().uuidString
@@ -278,8 +278,8 @@ public final class Tracker {
     /// - Parameters:
     ///   - healthEvent: Gojek_Clickstream_Internal_Health
     ///   - eventGuid: Health meta guid
-    /// - Returns: Event
-    private func constructEvent(healthEvent: Gojek_Clickstream_Internal_Health, eventGuid: String) -> Event? {
+    /// - Returns: CourierEvent
+    private func constructEvent(healthEvent: Gojek_Clickstream_Internal_Health, eventGuid: String) -> CourierEvent? {
         do {
             // Constructing the Gojek_Clickstream_De_Event
             let eventProto = try Odpf_Raccoon_Event.with {
@@ -288,10 +288,11 @@ public final class Tracker {
                     $0.type = typeOfEvent.lowercased()
                 }
             }
-            let event = try Event(guid: eventGuid,
-                                  timestamp: Date(),
-                                  type: TrackerConstant.HealthEventType,
-                                  eventProtoData: eventProto.serializedData())
+            let event = try CourierEvent(guid: eventGuid,
+                                         timestamp: Date(),
+                                         type: TrackerConstant.HealthEventType,
+                                         eventProtoData: eventProto.serializedData(),
+                                         expiryTime: Date())
             return event
         } catch {
             return nil

@@ -15,23 +15,12 @@ class EventSchedulerDependenciesTests: XCTestCase {
     private var database: DefaultDatabase!
     private var dbQueueMock: SerialQueue!
     private var mockQueue: SerialQueue!
-    private var realTimeEvent: Event!
+    private var realTimeEvent: CourierEvent!
     private var config: DefaultNetworkConfiguration!
 
-    private var socketNetworkService: WebsocketNetworkService<SocketHandlerMockSuccess>!
     private var courierNetworkService: CourierNetworkService<DefaultCourierHandler>!
-
-    private var deviceStatus: DefaultDeviceStatus!
-    
-    private var socketPersistence: DefaultDatabaseDAO<EventRequest>!
     private var courierPersistence: DefaultDatabaseDAO<CourierEventRequest>!
-
-    private var keepAliveService: DefaultKeepAliveServiceWithSafeTimer!
-
-    private var socketRetryMech: WebsocketRetryMechanism!
     private var courierRetryMech: CourierRetryMechanism!
-
-    private var socketNetworkBuilder: WebsocketNetworkBuilder!
     private var courierNetworkBuilder: CourierNetworkBuilder!
 
     override func setUp() {
@@ -41,38 +30,17 @@ class EventSchedulerDependenciesTests: XCTestCase {
         database = try! DefaultDatabase(qos: .WAL)
         dbQueueMock = SerialQueue(label: "com.mock.gojek.clickstream.network", qos: .utility, attributes: .concurrent)
         mockQueue = SerialQueue(label: "com.mock.gojek.clickstream.network", qos: .utility)
-        realTimeEvent = Event(guid: "test-guid", timestamp: Date(), type: "realTime", eventProtoData: Data())
+        realTimeEvent = CourierEvent(guid: "test-guid", timestamp: Date(), type: "realTime", eventProtoData: Data(), expiryTime: Date())
         
-        guard let url = URL(string: "ws://mock.clickstream.com") else {
+        guard let url = URL(string: "https://mock.clickstream.com") else {
             XCTFail("Failed to create test URL")
             return
         }
         config = DefaultNetworkConfiguration(request: URLRequest(url: url))
         
-        socketNetworkService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: mockQueue)
         courierNetworkService = CourierNetworkService<DefaultCourierHandler>(with: config, performOnQueue: mockQueue)
-
-        deviceStatus = DefaultDeviceStatus(performOnQueue: mockQueue)
-
-        socketPersistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
         courierPersistence = DefaultDatabaseDAO<CourierEventRequest>(database: database, performOnQueue: dbQueueMock)
 
-        keepAliveService = DefaultKeepAliveServiceWithSafeTimer(
-            with: mockQueue,
-            duration: 2,
-            reachability: NetworkReachabilityMock(isReachable: true)
-        )
-
-        socketRetryMech = WebsocketRetryMechanism(
-            networkService: socketNetworkService,
-            reachability: NetworkReachabilityMock(isReachable: true),
-            deviceStatus: deviceStatus,
-            appStateNotifier: AppStateNotifierMock(state: .didBecomeActive),
-            performOnQueue: mockQueue,
-            persistence: socketPersistence,
-            keepAliveService: keepAliveService
-        )
-        
         courierRetryMech = CourierRetryMechanism(
             networkOptions: networkOptions,
             networkService: courierNetworkService,
@@ -80,12 +48,6 @@ class EventSchedulerDependenciesTests: XCTestCase {
             appStateNotifier: AppStateNotifierMock(state: .didBecomeActive),
             performOnQueue: mockQueue,
             persistence: courierPersistence
-        )
-        
-        socketNetworkBuilder = WebsocketNetworkBuilder(
-            networkConfigs: config,
-            retryMech: socketRetryMech,
-            performOnQueue: mockQueue
         )
         
         courierNetworkBuilder = CourierNetworkBuilder(
@@ -102,238 +64,129 @@ class EventSchedulerDependenciesTests: XCTestCase {
         mockQueue = nil
         realTimeEvent = nil
         config = nil
-        socketNetworkService = nil
-        deviceStatus = nil
-        socketPersistence = nil
-        keepAliveService = nil
-        socketRetryMech = nil
-        socketNetworkBuilder = nil
+        courierNetworkService = nil
+        courierPersistence = nil
+        courierRetryMech = nil
         courierNetworkBuilder = nil
         super.tearDown()
     }
     
-    func testInitialization() {
-        let schedulerDependencies = EventSchedulerDependencies(
-            socketNetworkBuider: socketNetworkBuilder,
-            courierNetworkBuider: courierNetworkBuilder,
+    private func makeDependencies(networkBuilder: (any NetworkBuildable)? = nil) -> EventSchedulerDependencies {
+        EventSchedulerDependencies(
+            courierNetworkBuider: networkBuilder ?? courierNetworkBuilder,
             db: database,
             networkOptions: networkOptions
         )
+    }
+    
+    func testInitialization() {
+        let schedulerDependencies = makeDependencies()
         
         XCTAssertNotNil(schedulerDependencies)
     }
     
-    func testMakeEventWarehouser() {
-        let schedulerDependencies = EventSchedulerDependencies(
-            socketNetworkBuider: socketNetworkBuilder,
-            courierNetworkBuider: courierNetworkBuilder,
-            db: database,
-            networkOptions: networkOptions
-        )
+    func testMakeCourierEventWarehouser() {
+        let schedulerDependencies = makeDependencies()
         
-        let socketEventWarehouser = schedulerDependencies.makeEventWarehouser()
         let courierEventWarehouser = schedulerDependencies.makeCourierEventWarehouser()
 
-        XCTAssertNotNil(socketEventWarehouser)
         XCTAssertNotNil(courierEventWarehouser)
     }
     
     func testMultipleEventWarehouserInstances() {
-        let schedulerDependencies = EventSchedulerDependencies(
-            socketNetworkBuider: socketNetworkBuilder,
-            courierNetworkBuider: courierNetworkBuilder,
-            db: database,
-            networkOptions: networkOptions
-        )
-
-        let socketEventWarehouser1 = schedulerDependencies.makeEventWarehouser()
-        let socketEventWarehouser2 = schedulerDependencies.makeEventWarehouser()
+        let schedulerDependencies = makeDependencies()
 
         let courierEventWarehouser1 = schedulerDependencies.makeCourierEventWarehouser()
         let courierEventWarehouser2 = schedulerDependencies.makeCourierEventWarehouser()
 
-        XCTAssertNotNil(socketEventWarehouser1)
-        XCTAssertNotNil(socketEventWarehouser2)
-
         XCTAssertNotNil(courierEventWarehouser1)
         XCTAssertNotNil(courierEventWarehouser2)
-    }
-    
-    func testEventWarehouseWithDifferentNetworkConfigs() {
-        guard let alternativeUrl = URL(string: "ws://alternative.clickstream.com") else {
-            XCTFail("Failed to create alternative URL")
-            return
-        }
-        
-        let alternativeConfig = DefaultNetworkConfiguration(request: URLRequest(url: alternativeUrl))
-        let alternativeNetworkService = WebsocketNetworkService<SocketHandlerMockSuccess>(
-            with: alternativeConfig,
-            performOnQueue: mockQueue
-        )
-        let alternativeRetryMech = WebsocketRetryMechanism(
-            networkService: alternativeNetworkService,
-            reachability: NetworkReachabilityMock(isReachable: true),
-            deviceStatus: deviceStatus,
-            appStateNotifier: AppStateNotifierMock(state: .didBecomeActive),
-            performOnQueue: mockQueue,
-            persistence: socketPersistence,
-            keepAliveService: keepAliveService
-        )
-        let alternativeNetworkBuildable = WebsocketNetworkBuilder(
-            networkConfigs: alternativeConfig,
-            retryMech: alternativeRetryMech,
-            performOnQueue: mockQueue
-        )
-        
-        let schedulerDependencies = EventSchedulerDependencies(
-            socketNetworkBuider: socketNetworkBuilder,
-            courierNetworkBuider: courierNetworkBuilder,
-            db: database,
-            networkOptions: networkOptions
-        )
-        
-        let eventWarehouser = schedulerDependencies.makeEventWarehouser()
-        
-        XCTAssertNotNil(eventWarehouser)
     }
     
     func testEventWarehouseWithDifferentDatabase() {
         let alternativeDatabase = try! DefaultDatabase(qos: .WAL)
         
         let schedulerDependencies = EventSchedulerDependencies(
-            socketNetworkBuider: socketNetworkBuilder,
             courierNetworkBuider: courierNetworkBuilder,
-            db: database,
+            db: alternativeDatabase,
             networkOptions: networkOptions
         )
         
-        let eventWarehouser = schedulerDependencies.makeEventWarehouser()
+        let eventWarehouser = schedulerDependencies.makeCourierEventWarehouser()
         
         XCTAssertNotNil(eventWarehouser)
     }
     
     func testEventWarehouseWithUnreachableNetwork() {
-        let unreachableRetryMech = WebsocketRetryMechanism(
-            networkService: socketNetworkService,
+        let unreachableRetryMech = CourierRetryMechanism(
+            networkOptions: networkOptions,
+            networkService: courierNetworkService,
             reachability: NetworkReachabilityMock(isReachable: false),
-            deviceStatus: deviceStatus,
             appStateNotifier: AppStateNotifierMock(state: .didBecomeActive),
             performOnQueue: mockQueue,
-            persistence: socketPersistence,
-            keepAliveService: keepAliveService
+            persistence: courierPersistence
         )
-        let unreachableNetworkBuildable = WebsocketNetworkBuilder(
+        let unreachableNetworkBuildable = CourierNetworkBuilder(
             networkConfigs: config,
             retryMech: unreachableRetryMech,
+            retryMechV2: nil,
             performOnQueue: mockQueue
         )
         
-        let schedulerDependencies = EventSchedulerDependencies(
-            socketNetworkBuider: unreachableNetworkBuildable,
-            courierNetworkBuider: courierNetworkBuilder,
-            db: database,
-            networkOptions: networkOptions
-        )
+        let schedulerDependencies = makeDependencies(networkBuilder: unreachableNetworkBuildable)
         
-        let eventWarehouser = schedulerDependencies.makeEventWarehouser()
+        let eventWarehouser = schedulerDependencies.makeCourierEventWarehouser()
         
         XCTAssertNotNil(eventWarehouser)
     }
     
     func testEventWarehouseWithInactiveAppState() {
-        let inactiveRetryMech = WebsocketRetryMechanism(
-            networkService: socketNetworkService,
+        let inactiveRetryMech = CourierRetryMechanism(
+            networkOptions: networkOptions,
+            networkService: courierNetworkService,
             reachability: NetworkReachabilityMock(isReachable: true),
-            deviceStatus: deviceStatus,
             appStateNotifier: AppStateNotifierMock(state: .didEnterBackground),
             performOnQueue: mockQueue,
-            persistence: socketPersistence,
-            keepAliveService: keepAliveService
+            persistence: courierPersistence
         )
-        let inactiveNetworkBuildable = WebsocketNetworkBuilder(
+        let inactiveNetworkBuildable = CourierNetworkBuilder(
             networkConfigs: config,
             retryMech: inactiveRetryMech,
+            retryMechV2: nil,
             performOnQueue: mockQueue
         )
         
-        let schedulerDependencies = EventSchedulerDependencies(
-            socketNetworkBuider: inactiveNetworkBuildable,
-            courierNetworkBuider: courierNetworkBuilder,
-            db: database,
-            networkOptions: networkOptions
-        )
+        let schedulerDependencies = makeDependencies(networkBuilder: inactiveNetworkBuildable)
         
-        let eventWarehouser = schedulerDependencies.makeEventWarehouser()
-        
-        XCTAssertNotNil(eventWarehouser)
-    }
-    
-    func testEventWarehouseWithCustomKeepAliveSettings() {
-        let customKeepAliveService = DefaultKeepAliveServiceWithSafeTimer(
-            with: mockQueue,
-            duration: 10,
-            reachability: NetworkReachabilityMock(isReachable: true)
-        )
-        let customRetryMech = WebsocketRetryMechanism(
-            networkService: socketNetworkService,
-            reachability: NetworkReachabilityMock(isReachable: true),
-            deviceStatus: deviceStatus,
-            appStateNotifier: AppStateNotifierMock(state: .didBecomeActive),
-            performOnQueue: mockQueue,
-            persistence: socketPersistence,
-            keepAliveService: customKeepAliveService
-        )
-        let customNetworkBuildable = WebsocketNetworkBuilder(
-            networkConfigs: config,
-            retryMech: customRetryMech,
-            performOnQueue: mockQueue
-        )
-        
-        let schedulerDependencies = EventSchedulerDependencies(
-            socketNetworkBuider: customNetworkBuildable,
-            courierNetworkBuider: courierNetworkBuilder,
-            db: database,
-            networkOptions: networkOptions
-        )
-        
-        let eventWarehouser = schedulerDependencies.makeEventWarehouser()
+        let eventWarehouser = schedulerDependencies.makeCourierEventWarehouser()
         
         XCTAssertNotNil(eventWarehouser)
     }
     
     func testEventWarehouseWithHighPriorityQueue() {
         let highPriorityQueue = SerialQueue(label: "com.test.high.priority", qos: .userInitiated)
-        let highPriorityNetworkService = WebsocketNetworkService<SocketHandlerMockSuccess>(
+        let highPriorityNetworkService = CourierNetworkService<DefaultCourierHandler>(
             with: config,
             performOnQueue: highPriorityQueue
         )
-        let highPriorityRetryMech = WebsocketRetryMechanism(
+        let highPriorityRetryMech = CourierRetryMechanism(
+            networkOptions: networkOptions,
             networkService: highPriorityNetworkService,
             reachability: NetworkReachabilityMock(isReachable: true),
-            deviceStatus: DefaultDeviceStatus(performOnQueue: highPriorityQueue),
             appStateNotifier: AppStateNotifierMock(state: .didBecomeActive),
             performOnQueue: highPriorityQueue,
-            persistence: DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: highPriorityQueue),
-            keepAliveService: DefaultKeepAliveServiceWithSafeTimer(
-                with: highPriorityQueue,
-                duration: 2,
-                reachability: NetworkReachabilityMock(isReachable: true)
-            )
+            persistence: DefaultDatabaseDAO<CourierEventRequest>(database: database, performOnQueue: highPriorityQueue)
         )
-        let highPriorityNetworkBuildable = WebsocketNetworkBuilder(
+        let highPriorityNetworkBuildable = CourierNetworkBuilder(
             networkConfigs: config,
             retryMech: highPriorityRetryMech,
+            retryMechV2: nil,
             performOnQueue: highPriorityQueue
         )
         
-        let schedulerDependencies = EventSchedulerDependencies(
-            socketNetworkBuider: highPriorityNetworkBuildable,
-            courierNetworkBuider: courierNetworkBuilder,
-            db: database,
-            networkOptions: networkOptions
-        )
+        let schedulerDependencies = makeDependencies(networkBuilder: highPriorityNetworkBuildable)
         
-        let eventWarehouser = schedulerDependencies.makeEventWarehouser()
+        let eventWarehouser = schedulerDependencies.makeCourierEventWarehouser()
         
         XCTAssertNotNil(eventWarehouser)
     }

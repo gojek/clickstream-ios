@@ -12,7 +12,6 @@ def clickstream_pods
   pod 'SwiftProtobuf', '~> 1.30.0'
   pod 'ReachabilitySwift', '5.2.3'
   pod 'GRDB.swift', '~> 6.7.0'
-  pod 'Starscream', '4.0.5'
   pod 'CourierCore', '1.0.22'
   pod 'CourierMQTT', '1.0.22'
 end

@@ -19,7 +19,7 @@ class SchedulerServiceTests: XCTestCase {
         let prioritiesMock = [Priority(priority: 0, identifier: "realTime", maxBatchSize: 50000.0, maxTimeBetweenTwoBatches: 1)]
         
         SerialQueue.registerDetection(of: schedulerQueueMock) //Registers a queue to be detected.
-        let sut = DefaultSchedulerService(with: prioritiesMock, performOnQueue: schedulerQueueMock)
+        let sut = CourierSchedulerService(with: prioritiesMock, performOnQueue: schedulerQueueMock)
         sut.subscriber = { priority in
             let queueName = SerialQueue.currentQueueLabel ?? ""
             XCTAssertEqual(queueName, "com.mock.gojek.clickstream.schedule")
@@ -37,7 +37,7 @@ class SchedulerServiceTests: XCTestCase {
         let schedulerQueueMock = SerialQueue(label: "com.mock.gojek.clickstream.schedule", qos: .utility)
         let prioritiesMock = [Priority(priority: 0, identifier: "realTime", maxBatchSize: 50000.0, maxTimeBetweenTwoBatches: 1)]
         
-        let sut = DefaultSchedulerService(with: prioritiesMock, performOnQueue: schedulerQueueMock)
+        let sut = CourierSchedulerService(with: prioritiesMock, performOnQueue: schedulerQueueMock)
 
         sut.subscriber = { priority in
             callbackCount += 1
@@ -63,7 +63,7 @@ class SchedulerServiceTests: XCTestCase {
         let prioritiesMock = [Priority(priority: 0, identifier: "realTime", maxBatchSize: 50000.0, maxTimeBetweenTwoBatches: 1),
                               Priority(priority: 1, identifier: "standard", maxBatchSize: 50000.0, maxTimeBetweenTwoBatches: 1)]
         
-        let sut = DefaultSchedulerService(with: prioritiesMock, performOnQueue: schedulerQueueMock)
+        let sut = CourierSchedulerService(with: prioritiesMock, performOnQueue: schedulerQueueMock)
         
         var callbackPriorities = Set<String>()
         sut.subscriber = { priority in

@@ -13,7 +13,7 @@ class NetworkManagerDependenciesTests: XCTestCase {
 
     private let database = try! DefaultDatabase(qos: .WAL)
 
-    func testMakeNetworkBuilder() throws {
+    func testMakeCourierNetworkBuilder() throws {
         // given
         let dummyRequest = URLRequest(url: URL(string: "dummy_url")!)
         Clickstream.configurations = MockConstants.constraints
@@ -23,7 +23,7 @@ class NetworkManagerDependenciesTests: XCTestCase {
                                                                     db: database,
                                                                     networkOptions: ClickstreamNetworkOptions())
         
-        let networkBuilder: any NetworkBuildable = networkManagerDependencies.makeNetworkBuilder()
+        let networkBuilder: any NetworkBuildable = networkManagerDependencies.makeCourierNetworkBuilder()
         
         // then
         XCTAssertNotNil(networkBuilder)

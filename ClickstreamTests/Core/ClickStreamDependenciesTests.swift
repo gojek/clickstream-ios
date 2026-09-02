@@ -42,7 +42,6 @@ class ClickstreamDependenciesTests: XCTestCase {
         let clickStreamDependencies = try! DefaultClickstreamDependencies(with: dummyRequest, networkOptions: networkOptions)
         
         // then
-        XCTAssertNotNil(clickStreamDependencies.socketNetworkBuilder)
         XCTAssertNotNil(clickStreamDependencies.courierNetworkBuilder)
     }
     
@@ -51,7 +50,6 @@ class ClickstreamDependenciesTests: XCTestCase {
         let clickStreamDependencies = try! DefaultClickstreamDependencies(with: dummyRequest, networkOptions: networkOptions)
 
         // then
-        XCTAssertNotNil(clickStreamDependencies.socketEventWarehouser)
         XCTAssertNotNil(clickStreamDependencies.courierEventWarehouser)
     }
     
@@ -64,7 +62,6 @@ class ClickstreamDependenciesTests: XCTestCase {
         let clickStreamDependencies = try! DefaultClickstreamDependencies(with: dummyRequest, networkOptions: networkOptions)
 
         // then
-        XCTAssertNotNil(clickStreamDependencies.socketEventProcessor)
         XCTAssertNotNil(clickStreamDependencies.courierEventProcessor)
     }
 }

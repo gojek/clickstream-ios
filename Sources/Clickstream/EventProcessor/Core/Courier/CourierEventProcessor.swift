@@ -149,8 +149,9 @@ final class CourierEventProcessor: EventProcessor {
         return (classificationId, defaultExpiry)
     }
 
+    /// Courier is the only network channel, so every event is exclusive to it.
     private func isExslusiveEvent(_ event: ClickstreamEvent) -> Bool {
-        !networkOptions.isWebsocketEnabled || networkOptions.courierExclusiveEventTypes.contains(event.messageName)
+        true
     }
 
     func createBinaryEvent(event: CSBinaryEvent, isUserAuthenticated: Bool) {

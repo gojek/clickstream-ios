@@ -14,7 +14,6 @@ class ClickstreamNetworkOptionsTests: XCTestCase {
     func testDefaultInitializationWithAllProperties() {
         let options = ClickstreamNetworkOptions()
         
-        XCTAssertTrue(options.isWebsocketEnabled)
         XCTAssertTrue(options.isCourierEnabled)
         XCTAssertTrue(options.courierEventTypes.isEmpty)
         XCTAssertNotNil(options.courierRetryPolicy)
@@ -31,7 +30,6 @@ class ClickstreamNetworkOptionsTests: XCTestCase {
         let constraints = ClickstreamCourierConstraints()
         
         let options = ClickstreamNetworkOptions(
-            isWebsocketEnabled: false,
             isCourierEnabled: true,
             courierEventTypes: eventTypes,
             courierRetryPolicy: retryPolicy,
@@ -40,7 +38,6 @@ class ClickstreamNetworkOptionsTests: XCTestCase {
             clickstreamConstraints: constraints
         )
         
-        XCTAssertFalse(options.isWebsocketEnabled)
         XCTAssertTrue(options.isCourierEnabled)
         XCTAssertEqual(options.courierEventTypes, eventTypes)
         XCTAssertEqual(options.courierRetryPolicy.isEnabled, retryPolicy.isEnabled)
@@ -52,11 +49,9 @@ class ClickstreamNetworkOptionsTests: XCTestCase {
     func testPartialCustomInitialization() {
         let eventTypes: Set<CourierEventIdentifier> = ["custom_event"]
         let options = ClickstreamNetworkOptions(
-            isWebsocketEnabled: false,
             courierEventTypes: eventTypes
         )
         
-        XCTAssertFalse(options.isWebsocketEnabled)
         XCTAssertTrue(options.isCourierEnabled)
         XCTAssertEqual(options.courierEventTypes, eventTypes)
         XCTAssertNotNil(options.courierRetryPolicy)

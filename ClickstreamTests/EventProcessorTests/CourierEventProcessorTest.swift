@@ -106,9 +106,8 @@ class CourierEventProcessorTest: XCTestCase {
         XCTAssertNotNil(courierEventProcessor)
     }
 
-    func testShouldTrackEventInvalidWithWebsocketEnabledAndNotWhitelisted() {
+    func testShouldTrackEventInvalidWhenNotWhitelisted() {
         let networkOptions = ClickstreamNetworkOptions(
-            isWebsocketEnabled: true,
             courierEventTypes: [],
             courierExclusiveEventTypes: []
         )

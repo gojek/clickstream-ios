@@ -29,7 +29,6 @@ Pod::Spec.new do |s|
   s.dependency    "SwiftProtobuf"
   s.dependency    "ReachabilitySwift", '>= 5.0.0'
   s.dependency    "GRDB.swift", "~> 6.7.0"
-  s.dependency    "Starscream", "4.0.5"
   s.dependency    "CourierCore"
   s.dependency    "CourierMQTT"
   

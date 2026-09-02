@@ -15,10 +15,10 @@ class DatabaseDAOTests: XCTestCase {
     private let dbQueueMock = SerialQueue(label: "com.mock.gojek.clickstream.network",
                                           qos: .utility,
                                           attributes: .concurrent)
-    private var persistence: DefaultDatabaseDAO<Event>!
+    private var persistence: DefaultDatabaseDAO<CourierEvent>!
     
     override func setUp() {
-        persistence = DefaultDatabaseDAO<Event>(database: database,
+        persistence = DefaultDatabaseDAO<CourierEvent>(database: database,
                                                     performOnQueue: dbQueueMock)
     }
     
@@ -27,7 +27,7 @@ class DatabaseDAOTests: XCTestCase {
         let expectation = self.expectation(description: "Table exists")
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            let tableExists = self.persistence.doesTableExist(with: Event.description)
+            let tableExists = self.persistence.doesTableExist(with: CourierEvent.description)
             XCTAssertTrue(tableExists!, "Table Exists")
             expectation.fulfill()
         }
@@ -36,10 +36,10 @@ class DatabaseDAOTests: XCTestCase {
     }
     
     func test_whenInsertOnTheDAOIsCalled_thenTheObjectMustBeAddedToDatabase() {
-        let event = Event(guid: UUID().uuidString, timestamp: Date(), type: "realTime", eventProtoData: Data())
+        let event = CourierEvent(guid: UUID().uuidString, timestamp: Date(), type: "realTime", eventProtoData: Data(), expiryTime: Date())
         
         persistence.insert(event)
-        if let events: [Event] = self.persistence.fetchAll() {
+        if let events: [CourierEvent] = self.persistence.fetchAll() {
             XCTAssertTrue(events.map { $0.guid }.contains(event.guid), "Event exists")
         }
     }
