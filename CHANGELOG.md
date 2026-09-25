@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [3.0.3] - 2026-09-25
+
+[7b55d93] Merge pull request #166 from gojek/fix/confineSessionLifecycleToQueue (by @rishabhabbu-ctrl)
+[372ac4b] Wire Courier confineSessionLifecycleToQueue crash-fix flag through ClickstreamCourierClientConfig (by @Rishab Habbu)
+[394d177] fix: show UInt32/UInt64 fields in EventVisualizer event details (#163) (by @Asif)
+[6d6f34a] [CI] Bump version - 3.0.2 (by @github-actions[bot])
+
 ## [2.0.95] - 2026-07-16
 
 [75eefbd] Merge pull request #150 from gojek/fix/courier_retry_crash_final (by @rishabhabbu-ctrl)
