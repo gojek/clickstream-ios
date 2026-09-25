@@ -49,6 +49,16 @@ public struct ClickstreamCourierClientConfig {
     /// of the courier handler, so changing it takes effect on the next Clickstream setup.
     public let fixPublishAfterDestroyCrash: Bool
 
+    /// Confines the whole `MQTTSession` lifecycle (connect, disconnect, reconnect, publish and
+    /// the session replacement in Courier's session manager) to the session's own queue, fixing
+    /// the `-[MQTTSession .cxx_destruct]` over-release where the old session was closed and
+    /// replaced from the caller's queue while the session's own queue still used it.
+    /// Implies `serializeSessionAccess`.
+    ///
+    /// Read once by the host app and passed in here: Courier captures the value for the
+    /// lifetime of the client, so changing it takes effect on the next Clickstream setup.
+    public let confineSessionLifecycleToQueue: Bool
+
     public let courierConnectPolicy: ClickstreamCourierConnectPolicy
     public let courierInactivityPolicy: ClickstreamCourierInactivityPolicy
     public let courierHealthConfig: ClickstreamCourierHealthConfig
@@ -75,6 +85,7 @@ public struct ClickstreamCourierClientConfig {
         fixMultipleConnectionCrash: Bool = false,
         fixPublishAfterDestroyCrash: Bool = false,
         serializeSessionAccess: Bool = false,
+        confineSessionLifecycleToQueue: Bool = false,
         courierConnectPolicy: ClickstreamCourierConnectPolicy = .init(),
         courierInactivityPolicy: ClickstreamCourierInactivityPolicy = .init(),
         courierHealthConfig: ClickstreamCourierHealthConfig = .init()
@@ -100,6 +111,7 @@ public struct ClickstreamCourierClientConfig {
         self.fixMultipleConnectionCrash = fixMultipleConnectionCrash
         self.fixPublishAfterDestroyCrash = fixPublishAfterDestroyCrash
         self.serializeSessionAccess = serializeSessionAccess
+        self.confineSessionLifecycleToQueue = confineSessionLifecycleToQueue
         self.courierConnectPolicy = courierConnectPolicy
         self.courierInactivityPolicy = courierInactivityPolicy
         self.courierHealthConfig = courierHealthConfig
