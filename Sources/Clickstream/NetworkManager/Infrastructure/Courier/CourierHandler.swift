@@ -181,7 +181,8 @@ extension DefaultCourierHandler {
                                           shouldInitializeCoreDataPersistenceContext: config.courierInitCoreDataPersistenceContextEnabled,
                                           fixCxxDestructCrash: config.fixCxxDestructCrash,
                                           useSafeDeleteForNonSQLiteStore: config.useSafeDeleteForNonSQLiteStore,
-                                          serializeSessionAccess: config.serializeSessionAccess)
+                                          serializeSessionAccess: config.serializeSessionAccess,
+                                          confineSessionLifecycleToQueue: config.confineSessionLifecycleToQueue)
 
         return CourierClientFactory().makeMQTTClient(config: mqttConfig)
     }
