@@ -30,20 +30,21 @@ let package = Package(
                 .product(name: "CourierMQTT", package: "courier-iOS")
             ],
             path: "Sources",
-            sources: ["Clickstream"]
+            sources: ["Clickstream", "Tracker"],
+            swiftSettings: [.define("TRACKER_ENABLED")]
         ),
         .target(
             name: "ClickstreamTracker",
             dependencies: ["Clickstream"],
-            path: "Sources",
-            sources: ["Tracker"],
-            swiftSettings: [.define("TRACKER_ENABLED")]
+            path: "Sources/ClickstreamTrackerSPMShim",
+            sources: ["ClickstreamTrackerShim.swift"]
         ),
         .target(
             name: "ClickstreamEventVisualizer",
             dependencies: ["Clickstream"],
             path: "Sources",
-            sources: ["EventVisualizer"],
+            sources: ["EventVisualizer/src"],
+            resources: [.process("EventVisualizer/Resources")],
             swiftSettings: [.define("EVENT_VISUALIZER_ENABLED")]
         )
     ]
