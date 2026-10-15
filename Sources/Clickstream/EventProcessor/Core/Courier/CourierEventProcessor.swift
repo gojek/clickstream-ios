@@ -198,10 +198,12 @@ final class CourierEventProcessor: EventProcessor {
         }
     }
     
+    #if TRACKER_ENABLED
     private func trackHealthEvent(event: ClickstreamEvent, healthEventName: HealthEvents, reason: String) {
         if let classification = self.classifier.getClassification(event: event), classification == "realTime" {
             let healthEvent = HealthAnalysisEvent(eventName: healthEventName, eventGUID: event.guid, reason: reason, eventCount: 1)
             Tracker.sharedInstance?.record(event: healthEvent)
         }
     }
+    #endif
 }
