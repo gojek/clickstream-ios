@@ -8,8 +8,6 @@ let package = Package(
     ],
     products: [
         .library(name: "Clickstream", targets: ["Clickstream"]),
-        .library(name: "ClickstreamTracker", targets: ["ClickstreamTracker"]),
-        .library(name: "ClickstreamEventVisualizer", targets: ["ClickstreamEventVisualizer"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.0.0"),
@@ -30,22 +28,15 @@ let package = Package(
                 .product(name: "CourierMQTT", package: "courier-iOS")
             ],
             path: "Sources",
-            sources: ["Clickstream", "Tracker"],
-            swiftSettings: [.define("TRACKER_ENABLED")]
-        ),
-        .target(
-            name: "ClickstreamTracker",
-            dependencies: ["Clickstream"],
-            path: "Sources/ClickstreamTrackerSPMShim",
-            sources: ["ClickstreamTrackerShim.swift"]
-        ),
-        .target(
-            name: "ClickstreamEventVisualizer",
-            dependencies: ["Clickstream"],
-            path: "Sources",
-            sources: ["EventVisualizer/src"],
-            resources: [.process("EventVisualizer/Resources")],
-            swiftSettings: [.define("EVENT_VISUALIZER_ENABLED")]
+            exclude: [
+                "Example",
+                "ETETestSuite"
+            ],
+            swiftSettings: [
+                .define("TRACKER_ENABLED"),
+                .define("EVENT_VISUALIZER_ENABLED"),
+            ]
         )
-    ]
+    ],
+    swiftLanguageVersions: [.v5]
 )
