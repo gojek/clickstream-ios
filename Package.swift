@@ -32,10 +32,6 @@ let package = Package(
                 "Example",
                 "ETETestSuite"
             ],
-            swiftSettings: [
-                .define("TRACKER_ENABLED"),
-                .define("EVENT_VISUALIZER_ENABLED"),
-            ]
         )
     ],
     swiftLanguageVersions: [.v5]
