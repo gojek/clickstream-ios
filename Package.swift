@@ -32,6 +32,7 @@ let package = Package(
                 "Example",
                 "ETETestSuite"
             ],
+            swiftSettings: [.define("TRACKER_ENABLED")]
         )
     ],
     swiftLanguageVersions: [.v5]
