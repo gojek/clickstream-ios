@@ -15,6 +15,13 @@ struct Event: EventDatabasePersistable {
     var timestamp: Date
     var type: PriorityType
     var eventProtoData: Data
+
+    init(guid: String, timestamp: Date, type: PriorityType, eventProtoData: Data) {
+        self.guid = guid
+        self.timestamp = timestamp
+        self.type = type
+        self.eventProtoData = eventProtoData
+    }
     
     private enum CodingKeys: String, CodingKey {
         case guid, timestamp, type, eventProtoData
@@ -22,6 +29,32 @@ struct Event: EventDatabasePersistable {
     
     enum Columns {
         static let type = Column(CodingKeys.type)
+    }
+}
+
+extension Event {
+
+    /// Wraps the serialized bytes of a proto message into an `Event` as expected by Raccoon.
+    /// - Parameters:
+    ///   - guid: GUID of the event.
+    ///   - messageBytes: Serialized proto message.
+    ///   - messageName: Full proto name of the message, like `type(of: message).protoMessageName`.
+    ///   - type: Type of the event.
+    init?(guid: String, messageBytes: Data, messageName: String, type: PriorityType) {
+        do {
+            let eventProto = try Odpf_Raccoon_Event.with {
+                $0.eventBytes = messageBytes
+                if let typeOfEvent = messageName.components(separatedBy: ".").last {
+                    $0.type = typeOfEvent.lowercased()
+                }
+            }
+            self.init(guid: guid,
+                      timestamp: Date(),
+                      type: type,
+                      eventProtoData: try eventProto.serializedData())
+        } catch {
+            return nil
+        }
     }
 }
 

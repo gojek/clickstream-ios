@@ -66,16 +66,14 @@ extension CourierEventBatchCreator {
 // MARK: - Track Clickstream health.
 extension CourierEventBatchCreator {
     private func trackHealthEvents(batch: CourierEventBatch, events: [CourierEvent]) {
-        #if TRACKER_ENABLED
         // We are checking only first event's type since batches are created on the basis of evemt priority i.e. realTime, healthEvent etc.
         if events.first?.type != TrackerConstant.HealthEventType && events.first?.type != Constants.EventType.instant.rawValue {
             let eventGUIDs = batch.events.map { $0.guid }
             let eventGUIDString = "\(eventGUIDs.joined(separator: ", "))"
-            let batchCreatedEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamEventBatchCreated,
+            let batchCreatedEvent = ClickstreamHealthEvent(eventName: .Courier_ClickstreamEventBatchCreated,
                                                         events: eventGUIDString,
                                                         eventBatchGUID: batch.uuid)
-            Tracker.sharedInstance?.record(event: batchCreatedEvent)
+            ClickstreamHealth.recorder?.record(event: batchCreatedEvent)
         }
-        #endif
     }
 }

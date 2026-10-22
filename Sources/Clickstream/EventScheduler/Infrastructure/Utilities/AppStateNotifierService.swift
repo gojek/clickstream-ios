@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-enum AppStateNotificationType {
+@_spi(ClickstreamInternal) public enum AppStateNotificationType {
     
     case willTerminate,
     willResignActive,
@@ -35,7 +35,7 @@ enum AppStateNotificationType {
     }
 }
 
-protocol AppStateNotifierServiceInputs {
+@_spi(ClickstreamInternal) public protocol AppStateNotifierServiceInputs {
     
     /** Starts the notification service with subscriber callback.
         - Parameter subscriber: Subscriber callback.
@@ -47,21 +47,21 @@ protocol AppStateNotifierServiceInputs {
     func stop()
 }
 
-protocol AppStateNotifierServiceOutputs {}
+@_spi(ClickstreamInternal) public protocol AppStateNotifierServiceOutputs {}
 
-protocol AppStateNotifierService: AppStateNotifierServiceInputs, AppStateNotifierServiceOutputs  { }
+@_spi(ClickstreamInternal) public protocol AppStateNotifierService: AppStateNotifierServiceInputs, AppStateNotifierServiceOutputs  { }
 
 /// The App State Notifier service which notifies the subscriber of the app state changes.
-final class DefaultAppStateNotifierService: AppStateNotifierService {
+@_spi(ClickstreamInternal) public final class DefaultAppStateNotifierService: AppStateNotifierService {
     
     private var subscriber: ((AppStateNotificationType)->())?
     private let performQueue: SerialQueue
 
-    init(with performOnQueue: SerialQueue) {
+    @_spi(ClickstreamInternal) public init(with performOnQueue: SerialQueue) {
         self.performQueue = performOnQueue
     }
     
-    func start(with subscriber: @escaping (AppStateNotificationType)->()) {
+    @_spi(ClickstreamInternal) public func start(with subscriber: @escaping (AppStateNotificationType)->()) {
         self.subscriber = subscriber
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self,
@@ -94,7 +94,7 @@ final class DefaultAppStateNotifierService: AppStateNotifierService {
         }
     }
     
-    func stop() {
+    @_spi(ClickstreamInternal) public func stop() {
         let notificationCenter = NotificationCenter.default
         notificationCenter.removeObserver(self)
     }

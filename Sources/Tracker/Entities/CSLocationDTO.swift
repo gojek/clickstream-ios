@@ -7,6 +7,9 @@
 //
 
 import Foundation
+#if SWIFT_PACKAGE
+@_spi(ClickstreamInternal) import Clickstream
+#endif
 import SwiftProtobuf
 
 /**
@@ -30,7 +33,7 @@ public struct CSLocation {
     }
 }
 
-extension CSLocation: ProtoConvertible {
+extension CSLocation: TrackerProtoConvertible {
     var proto: Gojek_Clickstream_Internal_HealthMeta.Location {
         let location = Gojek_Clickstream_Internal_HealthMeta.Location.with {
             $0.latitude = self.latitude

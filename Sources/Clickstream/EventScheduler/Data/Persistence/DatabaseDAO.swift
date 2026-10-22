@@ -11,7 +11,7 @@ import GRDB
 
 /// The default database DAO. This DAO is the interface for the database.
 /// The DAO is always resolved to a type and is specific to a given type.
-final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
+@_spi(ClickstreamInternal) public final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
     
     private let performQueue: SerialQueue
     
@@ -25,6 +25,11 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
         self.createTable()
     }
     
+    @_spi(ClickstreamInternal) public convenience init(database: DefaultDatabase,
+                                                       performOnQueue: SerialQueue) {
+        self.init(database: database as Database, performOnQueue: performOnQueue)
+    }
+    
     /// Responsible to create the table.
     private func createTable() {
         do {
@@ -36,7 +41,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
     
     /// Use this method to insert the provided object into the db.
     /// - Parameter object: `DatabasePersistable` object to inserted.
-    func insert(_ object: Object) {
+    @_spi(ClickstreamInternal) public func insert(_ object: Object) {
         performQueue.sync(flags: .barrier) {
             do {
                 try database.insert(object)
@@ -48,7 +53,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
     
     /// Use this method to update the provided object into the db.
     /// - Parameter object: `DatabasePersistable` object to inserted.
-    func update(_ object: Object) {
+    @_spi(ClickstreamInternal) public func update(_ object: Object) {
         performQueue.sync(flags: .barrier) {
             do {
                 try database.update(object)
@@ -60,7 +65,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
     
     /// Use this method to fetch all objects from a table of the db.
     /// - Returns: An array of `DatabasePersistable` objects.
-    func fetchAll() -> [Object]? {
+    @_spi(ClickstreamInternal) public func fetchAll() -> [Object]? {
         performQueue.sync(flags: .barrier) {
             do {
                 return try database.fetchAll()
@@ -74,7 +79,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
     /// Use this method to fetch first `n` objects from a table of the db.
     /// - Parameter n: Count of the items to be fetched.
     /// - Returns: An array of `DatabasePersistable` objects.
-    func fetchFirst(_ n: Int) -> [Object]? {
+    @_spi(ClickstreamInternal) public func fetchFirst(_ n: Int) -> [Object]? {
         performQueue.sync(flags: .barrier) {
             do {
                 return try database.fetchFirst(n)
@@ -89,7 +94,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
     /// - Parameter primaryKeyValue: Value to be matched.
     /// - Returns: An object of `DatabasePersistable` type.
     @discardableResult
-    func fetchOne(_ primaryKeyValue: String) -> Object? {
+    @_spi(ClickstreamInternal) public func fetchOne(_ primaryKeyValue: String) -> Object? {
         performQueue.sync(flags: .barrier) {
             do {
                 return try database.fetchOne(primaryKeyValue)
@@ -103,7 +108,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
     /// Use this method to delete all entries from a table.
     /// - Returns: An array of `DatabasePersistable` objects.
     @discardableResult
-    func deleteAll() -> [Object]? {
+    @_spi(ClickstreamInternal) public func deleteAll() -> [Object]? {
         performQueue.sync(flags: .barrier) {
             do {
                 return try database.deleteAll()
@@ -118,7 +123,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
     /// - Parameter primaryKeyValue: Value to be matched.
     /// - Returns: An object of `DatabasePersistable` type.
     @discardableResult
-    func deleteOne(_ primaryKeyValue: String) -> Object? {
+    @_spi(ClickstreamInternal) public func deleteOne(_ primaryKeyValue: String) -> Object? {
         performQueue.sync(flags: .barrier) {
             do {
                 return try database.deleteOne(primaryKeyValue)
@@ -136,7 +141,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
     ///   - n: The count of the objects to be deleted. If `n == 0` delete All.
     /// - Returns: An array of `DatabasePersistable` objects.
     @discardableResult
-    func deleteWhere(_ column: Column, value: String, n: Int = 0) -> [Object]? {
+    @_spi(ClickstreamInternal) public func deleteWhere(_ column: Column, value: String, n: Int = 0) -> [Object]? {
         performQueue.sync(flags: .barrier) {
             do {
                 return try database.deleteWhere(column, value: value, n: n)
@@ -173,7 +178,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
     ///   - lessThan: The upper bound (exclusive) for the where clause.
     /// - Returns: An array of removed `DatabasePersistable` objects.
     @discardableResult
-    func deleteWhere(_ column: Column, lessThan value: DatabaseValueConvertible) -> [Object]? {
+    @_spi(ClickstreamInternal) public func deleteWhere(_ column: Column, lessThan value: DatabaseValueConvertible) -> [Object]? {
         performQueue.sync(flags: .barrier) {
             do {
                 return try database.deleteWhere(column, lessThan: value)
@@ -184,7 +189,7 @@ final class DefaultDatabaseDAO<Object: Codable & DatabasePersistable> {
         }
     }
 
-    func doesTableExist(with name: String) -> Bool? {
+    @_spi(ClickstreamInternal) public func doesTableExist(with name: String) -> Bool? {
         performQueue.sync(flags: .barrier) {
             do {
                 return try database.doesTableExist(with: name)

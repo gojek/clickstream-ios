@@ -7,6 +7,9 @@
 //
 
 import Foundation
+#if SWIFT_PACKAGE
+@_spi(ClickstreamInternal) import Clickstream
+#endif
 import GRDB
 
 /// Health event to track Drop Rate,  socket  & JSON parsion errors
@@ -74,6 +77,17 @@ struct HealthAnalysisEvent: Codable, Equatable, AnalysisEvent {
         self.eventCount = eventCount
         
         self.trackedVia = Tracker.healthTrackingConfigs.trackedVia.rawValue
+    }
+    
+    /// Creates the persistable health event from the one raised by the SDK.
+    init?(_ event: ClickstreamHealthEvent) {
+        self.init(eventName: event.eventName,
+                  events: event.events,
+                  eventGUID: event.eventGUID,
+                  eventBatchGUID: event.eventBatchGUID,
+                  reason: event.reason,
+                  timeToConnection: event.timeToConnection,
+                  eventCount: event.eventCount)
     }
     
     private enum CodingKeys : String, CodingKey {

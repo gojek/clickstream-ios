@@ -77,10 +77,10 @@ protocol Database {
     func doesTableExist(with name: String) throws -> Bool?
 }
 
-final class DefaultDatabase: Database {
+@_spi(ClickstreamInternal) public final class DefaultDatabase: Database {
     
     /// Defines the quality of service for the Database.
-    enum QoS: String {
+    @_spi(ClickstreamInternal) public enum QoS: String {
         case utility = "utility"
         /// Choose this qos to open the db in WAL (write-ahead logging) mode.
         case WAL = "wal"
@@ -95,7 +95,7 @@ final class DefaultDatabase: Database {
     /// Gated behind a client-supplied feature flag; defaults to `false` to preserve legacy behaviour.
     private let recoveryEnabled: Bool
     
-    init(qos: QoS = .utility, recoveryEnabled: Bool = false) throws {
+    @_spi(ClickstreamInternal) public init(qos: QoS = .utility, recoveryEnabled: Bool = false) throws {
         self.qos = qos
         self.recoveryEnabled = recoveryEnabled
         try prepareDatabase()
@@ -142,16 +142,14 @@ final class DefaultDatabase: Database {
     /// ready yet at SDK-initialisation time, so the event is deferred and flushed once the tracker
     /// is available.
     private func reportDatabaseCorruption() {
-        #if TRACKER_ENABLED
-            if Tracker.debugMode {
-                if let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamDBCorrupted,
+            if ClickstreamHealth.debugMode {
+                if let healthEvent = ClickstreamHealthEvent(eventName: .ClickstreamDBCorrupted,
                                                         reason: FailureReason.db_corrupted.rawValue) {
-                    Tracker.sharedInstance?.record(event: healthEvent)
+                    ClickstreamHealth.recorder?.record(event: healthEvent)
                 } else {
-                    Tracker.pendingDatabaseCorruptionRecovery = true
+                    ClickstreamHealth.pendingDatabaseCorruptionRecovery = true
                 }
             }
-        #endif
     }
     
     /// Opens the on-disk store with the connection type matching the configured `QoS`.

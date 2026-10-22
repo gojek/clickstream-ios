@@ -62,22 +62,18 @@ extension DefaultEventWarehouser {
                 if event.type == Constants.EventType.p0Event.rawValue {
                     checkedSelf.eventBatchProcessor.sendP0(classificationType: event.type)
                 }
-                #if EVENT_VISUALIZER_ENABLED
                 /// Update the status of the event to cached
                 /// to check if the delegate is connected, if not no event should be sent to client
                 if let stateViewer = Clickstream._stateViewer {
                     /// Updating the event state to client to cache based on eventGuid
                     stateViewer.updateStatus(providedEventGuid: event.guid, state: .cached)
                 }
-                #endif
-                #if TRACKER_ENABLED
-                let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventCached,
+                let healthEvent = ClickstreamHealthEvent(eventName: .ClickstreamEventCached,
                                                       eventGUID: event.guid,
                                                       eventCount: 1)
                 if event.type != Constants.EventType.instant.rawValue {
-                    Tracker.sharedInstance?.record(event: healthEvent)
+                    ClickstreamHealth.recorder?.record(event: healthEvent)
                 }
-                #endif
             }
         }
     }
