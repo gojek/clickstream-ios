@@ -7,9 +7,6 @@
 //
 
 import SwiftProtobuf
-#if SWIFT_PACKAGE
-@_spi(ClickstreamInternal) import Clickstream
-#endif
 import UIKit
 
 final class EventsListViewController: UIViewController {

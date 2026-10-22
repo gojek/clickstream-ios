@@ -7,9 +7,6 @@
 //
 
 import Foundation
-#if SWIFT_PACKAGE
-@_spi(ClickstreamInternal) import Clickstream
-#endif
 import SwiftProtobuf
 import UIKit
 
@@ -74,7 +71,7 @@ public struct CSCustomerInfo {
     }
 }
 
-extension CSCustomerInfo: TrackerProtoConvertible {
+extension CSCustomerInfo: ProtoConvertible {
     var proto: Gojek_Clickstream_Internal_HealthMeta.Customer {
         let customerInfo = Gojek_Clickstream_Internal_HealthMeta.Customer.with {
             $0.signedUpCountry = signedUpCountry
@@ -102,7 +99,7 @@ public struct CSSessionInfo {
     }
 }
 
-extension CSSessionInfo: TrackerProtoConvertible {
+extension CSSessionInfo: ProtoConvertible {
     var proto: Gojek_Clickstream_Internal_HealthMeta.Session {
         let sessionInfo = Gojek_Clickstream_Internal_HealthMeta.Session.with {
             $0.sessionID = sessionId
@@ -122,7 +119,7 @@ struct CSDeviceInfo {
     let deviceModel = UIDevice.csModelName
 }
 
-extension CSDeviceInfo: TrackerProtoConvertible {
+extension CSDeviceInfo: ProtoConvertible {
     var proto: Gojek_Clickstream_Internal_HealthMeta.Device {
         return Gojek_Clickstream_Internal_HealthMeta.Device.with {
             $0.operatingSystem = TrackerConstant.deviceOS
@@ -149,7 +146,7 @@ public struct CSAppInfo {
     }
 }
 
-extension CSAppInfo: TrackerProtoConvertible {
+extension CSAppInfo: ProtoConvertible {
     var proto: Gojek_Clickstream_Internal_HealthMeta.App {
         return Gojek_Clickstream_Internal_HealthMeta.App.with {
             $0.version = version

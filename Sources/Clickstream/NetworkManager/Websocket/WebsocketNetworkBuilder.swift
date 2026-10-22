@@ -42,6 +42,7 @@ extension WebsocketNetworkBuilder {
                 }
                 eventRequest.eventCount = eventBatch.events.count
                 checkedSelf.retryMech.trackBatch(with: eventRequest)
+                #if EVENT_VISUALIZER_ENABLED
                 /// Update status of the event batch to sent to network
                 /// to check if the delegate is connected, if not no event should be sent to client
                 if let stateViewer = Clickstream._stateViewer {
@@ -52,6 +53,7 @@ extension WebsocketNetworkBuilder {
                         stateViewer.updateStatus(providedEventGuid: event.guid, eventBatchID: eventBatch.uuid, state: .sent)
                     }
                 }
+                #endif
                 completion?(nil)
             } catch {
                 print("There was an error from the Network builder. Description: \(error)",.critical)
@@ -74,14 +76,16 @@ extension WebsocketNetworkBuilder {
 // MARK: - Track Clickstream health.
 extension WebsocketNetworkBuilder {
     private func trackHealthEvents<T: EventBatchPersistable>(eventBatch: T, eventBatchData: Data) {
-        guard ClickstreamHealth.debugMode else { return }
+        #if TRACKER_ENABLED
+        guard Tracker.debugMode else { return }
         let eventGUIDs: [String] = eventBatch.events.compactMap { $0.guid }
         let eventGUIDsString = "\(eventGUIDs.joined(separator: ", "))"
         
-        let healthEvent = ClickstreamHealthEvent(eventName: .ClickstreamBatchSent,
+        let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamBatchSent,
                                               events: eventGUIDsString,
                                               eventBatchGUID: eventBatch.uuid, 
                                               eventCount: eventBatch.events.count)
-        ClickstreamHealth.recorder?.record(event: healthEvent)
+        Tracker.sharedInstance?.record(event: healthEvent)
+        #endif
     }
 }

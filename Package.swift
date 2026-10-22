@@ -1,4 +1,4 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 6.1
 import PackageDescription
 
 let package = Package(
@@ -7,12 +7,15 @@ let package = Package(
         .iOS(.v15)
     ],
     products: [
-        // Core SDK.
-        .library(name: "Clickstream", targets: ["Clickstream"]),
-        // Optional: health tracking. Link alongside `Clickstream`.
-        .library(name: "Tracker", targets: ["Tracker"]),
-        // Optional: event visualizer UI. Link alongside `Clickstream`.
-        .library(name: "ClickstreamEventVisualizer", targets: ["ClickstreamEventVisualizer"])
+        .library(name: "Clickstream", targets: ["Clickstream"])
+    ],
+    // Optional features, the SPM equivalent of the podspec subspecs. Clients opt in with
+    // `.package(url: "https://github.com/gojek/clickstream-ios.git", from: "x.y.z", traits: ["Tracker"])`.
+    traits: [
+        // Nothing is enabled unless the client asks for it.
+        .default(enabledTraits: []),
+        .trait(name: "Tracker", description: "SDK health tracking. Equivalent to the Clickstream/Tracker subspec."),
+        .trait(name: "EventVisualizer", description: "Event visualizer UI. Equivalent to the Clickstream/EventVisualizer subspec.")
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.0.0"),
@@ -32,25 +35,16 @@ let package = Package(
                 .product(name: "CourierCore", package: "courier-iOS"),
                 .product(name: "CourierMQTT", package: "courier-iOS")
             ],
-            path: "Sources/Clickstream"
-        ),
-        .target(
-            name: "Tracker",
-            dependencies: [
-                "Clickstream",
-                .product(name: "SwiftProtobuf", package: "swift-protobuf"),
-                .product(name: "GRDB", package: "GRDB.swift")
+            path: "Sources",
+            exclude: [
+                "Example",
+                "ETETestSuite"
             ],
-            path: "Sources/Tracker"
-        ),
-        .target(
-            name: "ClickstreamEventVisualizer",
-            dependencies: [
-                "Clickstream",
-                .product(name: "SwiftProtobuf", package: "swift-protobuf")
-            ],
-            path: "Sources/EventVisualizer"
+            swiftSettings: [
+                .define("TRACKER_ENABLED", .when(traits: ["Tracker"])),
+                .define("EVENT_VISUALIZER_ENABLED", .when(traits: ["EventVisualizer"]))
+            ]
         )
     ],
-    swiftLanguageVersions: [.v5]
+    swiftLanguageModes: [.v5]
 )

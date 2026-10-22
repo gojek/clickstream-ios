@@ -58,6 +58,7 @@ final class DefaultEventProcessor: EventProcessor {
                 }
             }
 
+            #if EVENT_VISUALIZER_ENABLED
             /// Sent event data to client with state received
             /// to check if the delegate is connected, if not no event should be sent to client
             if let message = event.message, let stateViewer = Clickstream._stateViewer {
@@ -66,6 +67,7 @@ final class DefaultEventProcessor: EventProcessor {
                 /// Sending the eventData object to client
                 stateViewer.sendEvent(eventsData)
             }
+            #endif
             // Create an Event instance and forward it to the scheduler.
             if let event = checkedSelf.constructEvent(event: event) {
                 checkedSelf.eventWarehouser.store(event)

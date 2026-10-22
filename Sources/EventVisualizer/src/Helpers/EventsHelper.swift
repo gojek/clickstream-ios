@@ -7,9 +7,6 @@
 //
 
 import UIKit
-#if SWIFT_PACKAGE
-@_spi(ClickstreamInternal) import Clickstream
-#endif
 import Foundation
 import os
 
@@ -73,11 +70,15 @@ final public class EventsHelper {
     }
     
     public func startCapturing() {
+        #if EVENT_VISUALIZER_ENABLED
         Clickstream.getInstance()?.stateViewer = self
+        #endif
     }
     
     public func stopCapturing() {
+        #if EVENT_VISUALIZER_ENABLED
         Clickstream.getInstance()?.stateViewer = nil
+        #endif
     }
     public func clearData() {
         withLock {

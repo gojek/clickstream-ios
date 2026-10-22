@@ -7,9 +7,6 @@
 //
 
 import Foundation
-#if SWIFT_PACKAGE
-@_spi(ClickstreamInternal) import Clickstream
-#endif
 
 protocol AppVersionChecker {
     func hasAppVersionChanged() -> Bool

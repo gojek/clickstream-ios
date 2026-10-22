@@ -77,10 +77,10 @@ protocol Database {
     func doesTableExist(with name: String) throws -> Bool?
 }
 
-@_spi(ClickstreamInternal) public final class DefaultDatabase: Database {
+final class DefaultDatabase: Database {
     
     /// Defines the quality of service for the Database.
-    @_spi(ClickstreamInternal) public enum QoS: String {
+    enum QoS: String {
         case utility = "utility"
         /// Choose this qos to open the db in WAL (write-ahead logging) mode.
         case WAL = "wal"
@@ -95,7 +95,7 @@ protocol Database {
     /// Gated behind a client-supplied feature flag; defaults to `false` to preserve legacy behaviour.
     private let recoveryEnabled: Bool
     
-    @_spi(ClickstreamInternal) public init(qos: QoS = .utility, recoveryEnabled: Bool = false) throws {
+    init(qos: QoS = .utility, recoveryEnabled: Bool = false) throws {
         self.qos = qos
         self.recoveryEnabled = recoveryEnabled
         try prepareDatabase()
@@ -142,14 +142,16 @@ protocol Database {
     /// ready yet at SDK-initialisation time, so the event is deferred and flushed once the tracker
     /// is available.
     private func reportDatabaseCorruption() {
-            if ClickstreamHealth.debugMode {
-                if let healthEvent = ClickstreamHealthEvent(eventName: .ClickstreamDBCorrupted,
+        #if TRACKER_ENABLED
+            if Tracker.debugMode {
+                if let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamDBCorrupted,
                                                         reason: FailureReason.db_corrupted.rawValue) {
-                    ClickstreamHealth.recorder?.record(event: healthEvent)
+                    Tracker.sharedInstance?.record(event: healthEvent)
                 } else {
-                    ClickstreamHealth.pendingDatabaseCorruptionRecovery = true
+                    Tracker.pendingDatabaseCorruptionRecovery = true
                 }
             }
+        #endif
     }
     
     /// Opens the on-disk store with the connection type matching the configured `QoS`.

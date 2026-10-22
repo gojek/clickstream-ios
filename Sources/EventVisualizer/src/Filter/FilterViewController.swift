@@ -7,9 +7,6 @@
 //
 
 import UIKit
-#if SWIFT_PACKAGE
-@_spi(ClickstreamInternal) import Clickstream
-#endif
 
 protocol FilterDataProtocol {
     func sendUserInput(data: [(String, String)])

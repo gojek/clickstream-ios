@@ -48,23 +48,25 @@ final class CourierRetryMechanismV2: Retryable {
         let isReachable = reachability.isAvailable
         let isConnected = networkService.isConnected
 
-        if !isReachable && ClickstreamHealth.debugMode && isCSHealthTrackingEnabled {
-            let healthEvent = ClickstreamHealthEvent(eventName: .Courier_ClickstreamEventBatchTriggerFailed,
+        #if TRACKER_ENABLED
+        if !isReachable && Tracker.debugMode && isCSHealthTrackingEnabled {
+            let healthEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamEventBatchTriggerFailed,
                                                   reason: FailureReason.networkUnavailable.rawValue)
-            ClickstreamHealth.recorder?.record(event: healthEvent)
+            Tracker.sharedInstance?.record(event: healthEvent)
         }
         
-        if !isConnected && ClickstreamHealth.debugMode && isCSHealthTrackingEnabled {
-            if !isConnected && ClickstreamHealth.debugMode {
-                let healthEvent = ClickstreamHealthEvent(eventName: .Courier_ClickstreamEventBatchTriggerFailed,
+        if !isConnected && Tracker.debugMode && isCSHealthTrackingEnabled {
+            if !isConnected && Tracker.debugMode {
+                let healthEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamEventBatchTriggerFailed,
                                                       reason: FailureReason.socket_not_open.rawValue)
-                ClickstreamHealth.recorder?.record(event: healthEvent)
+                Tracker.sharedInstance?.record(event: healthEvent)
             } else {
-                let healthEvent = ClickstreamHealthEvent(eventName: .Courier_ClickstreamEventBatchTriggerFailed,
+                let healthEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamEventBatchTriggerFailed,
                                                       reason: FailureReason.socket_not_open.rawValue)
-                ClickstreamHealth.recorder?.record(event: healthEvent)
+                Tracker.sharedInstance?.record(event: healthEvent)
             }
         }
+        #endif
         return isReachable && isConnected
     }
 
@@ -175,6 +177,7 @@ extension CourierRetryMechanismV2 {
         if let eventType = eventRequest.eventType, !(eventType == .internalEvent) {
             trackHealthAndPerformanceEvents(eventRequest: eventRequest, startTime: eventRequest.timeStamp)
         }
+        #if EVENT_VISUALIZER_ENABLED
         /// Update status of the event batch to acknowledged from network
         /// to check if the delegate is connected, if not no event should be sent to client
         if let stateViewer = Clickstream._stateViewer {
@@ -183,6 +186,7 @@ extension CourierRetryMechanismV2 {
             /// then update the state respectively.
             stateViewer.updateStatus(eventBatchID: guid, state: .ackReceived)
         }
+        #endif
 
         #if ETE_TEST_SUITE_ENABLED
         if testMode { FileManagerOverride.writeToFile() }
@@ -205,18 +209,20 @@ extension CourierRetryMechanismV2 {
     }
 
     private func handleFailedEventRequest(with eventRequest: CourierEventRequest, error: Error) {
+        #if TRACKER_ENABLED
         if networkOptions.courierConfig.courierHealthConfig.csTrackingHealthEventsEnabled {
-            let healthEvent = ClickstreamHealthEvent(eventName: .Courier_ClickstreamEventBatchErrorResponse,
+            let healthEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamEventBatchErrorResponse,
                                                   eventBatchGUID: eventRequest.guid,
                                                   reason: error.localizedDescription,
                                                   eventCount: eventRequest.eventCount)
 
-            ClickstreamHealth.recorder?.record(event: healthEvent)
+            Tracker.sharedInstance?.record(event: healthEvent)
         }
 
         #if ETE_TEST_SUITE_ENABLED
         Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "\(error)")
         if testMode { FileManagerOverride.writeToFile() }
+        #endif
         #endif
     }
 
@@ -232,6 +238,7 @@ extension CourierRetryMechanismV2 {
                 if let eventType = eventRequest.eventType, !(eventType == .internalEvent) {
                     trackHealthAndPerformanceEvents(eventRequest: eventRequest, startTime: startTime)
                 }
+                #if EVENT_VISUALIZER_ENABLED
                 /// Update status of the event batch to acknowledged from network
                 /// to check if the delegate is connected, if not no event should be sent to client
                 if let stateViewer = Clickstream._stateViewer {
@@ -241,26 +248,30 @@ extension CourierRetryMechanismV2 {
                     stateViewer.updateStatus(eventBatchID: guid, state: .ackReceived)
                 }
                 print("RetryMechanism, received response for batch with id: \(response.data)")
+                #endif
             }
         } else {
             if response.code == .maxConnectionLimitReached {
-                if ClickstreamHealth.debugMode && isCSHealthTrackingEnabled {
-                    let healthEvent = ClickstreamHealthEvent(eventName: .Courier_ClickstreamConnectionFailure,
+                #if TRACKER_ENABLED
+                if Tracker.debugMode && isCSHealthTrackingEnabled {
+                    let healthEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamConnectionFailure,
                                                           reason: FailureReason.MAX_CONNECTION_LIMIT_REACHED.rawValue)
-                    ClickstreamHealth.recorder?.record(event: healthEvent)
+                    Tracker.sharedInstance?.record(event: healthEvent)
                 }
+                #endif
                 stopObservingFailedBatches()
                 establishConnection()
                 #if ETE_TEST_SUITE_ENABLED
                 Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Max Connection Limit Reached")
                 #endif
             }
+            #if TRACKER_ENABLED
             if response.code == .maxUserLimitReached {
 
                 if isCSHealthTrackingEnabled {
-                    let healthEvent = ClickstreamHealthEvent(eventName: .Courier_ClickstreamConnectionFailure,
+                    let healthEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamConnectionFailure,
                                                           reason: FailureReason.MAX_USER_LIMIT_REACHED.rawValue)
-                    ClickstreamHealth.recorder?.record(event: healthEvent)
+                    Tracker.sharedInstance?.record(event: healthEvent)
                 }
 
                 #if ETE_TEST_SUITE_ENABLED
@@ -270,15 +281,15 @@ extension CourierRetryMechanismV2 {
             
             if response.code == .badRequest {
                 print("Error: Parsing Exception for eventRequest guid \(eventRequest.guid)", .verbose)
-                if ClickstreamHealth.debugMode {
+                if Tracker.debugMode {
 
                     if isCSHealthTrackingEnabled {
-                        var healthEvent: ClickstreamHealthEvent!
-                        healthEvent = ClickstreamHealthEvent(eventName: .Courier_ClickstreamWriteToSocketFailed,
+                        var healthEvent: HealthAnalysisEvent!
+                        healthEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamWriteToSocketFailed,
                                                           eventBatchGUID: eventRequest.guid,
                                                           reason: FailureReason.ParsingException.rawValue,
                                                           eventCount: eventRequest.eventCount)
-                        ClickstreamHealth.recorder?.record(event: healthEvent)
+                        Tracker.sharedInstance?.record(event: healthEvent)
                     }
 
                     #if ETE_TEST_SUITE_ENABLED
@@ -286,6 +297,7 @@ extension CourierRetryMechanismV2 {
                     #endif
                 }
             }
+            #endif
         }
     }
 
@@ -413,12 +425,14 @@ extension CourierRetryMechanismV2 {
         if var fetchedEventRequest = persistence.fetchOne(eventRequest.guid) {
             if fetchedEventRequest.retriesMade >= Clickstream.courierConfigurations.maxRetriesPerBatch {
                 persistence.deleteOne(eventRequest.guid)
-                if ClickstreamHealth.debugMode && isCSHealthTrackingEnabled {
-                    let healthEvent = ClickstreamHealthEvent(eventName: .Courier_ClickstreamEventBatchDropped,
+                #if TRACKER_ENABLED
+                if Tracker.debugMode && isCSHealthTrackingEnabled {
+                    let healthEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamEventBatchDropped,
                                                           eventBatchGUID: fetchedEventRequest.guid,
                                                           eventCount: eventRequest.eventCount)
-                    ClickstreamHealth.recorder?.record(event: healthEvent)
+                    Tracker.sharedInstance?.record(event: healthEvent)
                 }
+                #endif
             } else {
                 fetchedEventRequest.bumpRetriesMade() // This will bump the retriesMade.
                 fetchedEventRequest.refreshCachingTimeStamp() // This will update the timestamp with the latest retry time.
@@ -549,28 +563,32 @@ extension CourierRetryMechanismV2 {
 extension CourierRetryMechanismV2 {
     
     func trackHealthAndPerformanceEvents(eventRequest: CourierEventRequest, startTime: Date) {
-        if ClickstreamHealth.debugMode && networkOptions.courierConfig.courierHealthConfig.csTrackingHealthEventsEnabled {
+        #if TRACKER_ENABLED
+        if Tracker.debugMode && networkOptions.courierConfig.courierHealthConfig.csTrackingHealthEventsEnabled {
             guard eventRequest.eventType != Constants.EventType.instant else { return }
             
-            let healthEvent = ClickstreamHealthEvent(eventName: .Courier_ClickstreamEventBatchSuccessAck,
+            let healthEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamEventBatchSuccessAck,
                                                   eventBatchGUID: eventRequest.guid,
                                                   eventCount: eventRequest.eventCount)
-            ClickstreamHealth.recorder?.record(event: healthEvent)
+            Tracker.sharedInstance?.record(event: healthEvent)
             
         }
+        #endif
     }
     
     func trackHealthEventBatchRetryFailed(eventRequest: CourierEventRequest) {
-        if ClickstreamHealth.debugMode {
+        #if TRACKER_ENABLED
+        if Tracker.debugMode {
             guard eventRequest.eventType != Constants.EventType.instant else { return }
             
-            let healthEvent = ClickstreamHealthEvent(eventName: .ClickstreamEventBatchRetryFailed,
+            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchRetryFailed,
                                                   eventBatchGUID: eventRequest.guid,
                                                   eventCount: eventRequest.eventCount)
                                                   
-            ClickstreamHealth.recorder?.record(event: healthEvent)
+            Tracker.sharedInstance?.record(event: healthEvent)
             
         }
+        #endif
     }
 }
 

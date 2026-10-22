@@ -9,4 +9,4 @@
 import GRDB
 
 /// Any object conforming to this protocol can be persisted on the db.
-@_spi(ClickstreamInternal) public protocol DatabasePersistable: FetchableRecord, PersistableRecord, TableDefinable {}
+protocol DatabasePersistable: FetchableRecord, PersistableRecord, TableDefinable {}

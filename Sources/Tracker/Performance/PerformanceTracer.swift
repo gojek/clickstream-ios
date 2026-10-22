@@ -27,7 +27,7 @@ struct Trace: Traceable {
     }
     
     mutating func start() {
-        if ClickstreamHealth.debugMode && isRunning == false {
+        if Tracker.debugMode && isRunning == false {
             let notificationDict: [String:Any] = [TrackerConstant.traceName: name,
                                                   TrackerConstant.traceAttributes: attributes]
             NotificationCenter.default.post(name: TrackerConstant.TraceStartNotification, object: notificationDict)
@@ -36,7 +36,7 @@ struct Trace: Traceable {
     }
     
     mutating func stop() {
-        if ClickstreamHealth.debugMode && isRunning {
+        if Tracker.debugMode && isRunning {
             isRunning = false
             let notificationDict: [String:Any] = [TrackerConstant.traceName: name,
                                                   TrackerConstant.traceAttributes: attributes]

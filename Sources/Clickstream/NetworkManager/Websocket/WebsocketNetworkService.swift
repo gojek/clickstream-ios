@@ -65,11 +65,13 @@ extension WebsocketNetworkService {
                         completion(Result.failure(ConnectableError.parsingData))
                     }
                 case .failure(let error):
-                    if ClickstreamHealth.debugMode {
-                        let healthEvent = ClickstreamHealthEvent(eventName: .ClickstreamWriteToSocketFailed,
+                    #if TRACKER_ENABLED
+                    if Tracker.debugMode {
+                        let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamWriteToSocketFailed,
                                                               reason: error.localizedDescription)
-                        ClickstreamHealth.recorder?.record(event: healthEvent)
+                        Tracker.sharedInstance?.record(event: healthEvent)
                     }
+                    #endif
                     completion(Result.failure(ConnectableError.networkError(error)))
                 }
             }

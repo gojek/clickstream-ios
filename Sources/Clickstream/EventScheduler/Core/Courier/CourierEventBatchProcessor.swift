@@ -107,12 +107,14 @@ final class CourierEventBatchProcessor: EventBatchProcessor {
 
         _ = eventBatchCreator.forward(with: events)
 
-        if ClickstreamHealth.debugMode && Clickstream.courierConfigurations.flushOnAppLaunch && !hasFlushOnAppLaunchExecutedOnce {
+        #if TRACKER_ENABLED
+        if Tracker.debugMode && Clickstream.courierConfigurations.flushOnAppLaunch && !hasFlushOnAppLaunchExecutedOnce {
             let eventGUIDs = events.map { $0.guid }
             let eventGUIDString = "\(eventGUIDs.joined(separator: ", "))"
-            let healthAnalysisEvent = ClickstreamHealthEvent(eventName: .Courier_ClickstreamFlushOnForeground, events: eventGUIDString)
-            ClickstreamHealth.recorder?.record(event: healthAnalysisEvent)
+            let healthAnalysisEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamFlushOnForeground, events: eventGUIDString)
+            Tracker.sharedInstance?.record(event: healthAnalysisEvent)
         }
+        #endif
     }
     
     /// flushing events. If `flushOnBackground` flag is set then flush.
@@ -142,13 +144,15 @@ final class CourierEventBatchProcessor: EventBatchProcessor {
             
             if !eventsToBeFlushed.isEmpty {
                 _ = eventBatchCreator.forward(with: eventsToBeFlushed)
-                if ClickstreamHealth.debugMode {
+                #if TRACKER_ENABLED
+                if Tracker.debugMode {
                     let eventGUIDs = eventsToBeFlushed.map { $0.guid }
                     let eventGUIDString = "\(eventGUIDs.joined(separator: ", "))"
-                    let healthAnalysisEvent = ClickstreamHealthEvent(eventName: .Courier_ClickstreamFlushOnBackground,
+                    let healthAnalysisEvent = HealthAnalysisEvent(eventName: .Courier_ClickstreamFlushOnBackground,
                                                                   events: eventGUIDString)
-                    ClickstreamHealth.recorder?.record(event: healthAnalysisEvent)
+                    Tracker.sharedInstance?.record(event: healthAnalysisEvent)
                 }
+                #endif
             }
         }
 
@@ -210,11 +214,13 @@ final class CourierEventBatchProcessor: EventBatchProcessor {
 
 private extension CourierEventBatchProcessor {
     func flushObservabilityEvents() {
+        #if TRACKER_ENABLED
         guard eventBatchCreator.isCSHealthTrackingEnabled, eventBatchCreator.canForward,
-              let events = ClickstreamHealth.internalEvents(),
+              let events = Tracker.sharedInstance?.sendHealthEventsToInternalParty(),
               !events.isEmpty else { return }
         
         let courierEvents = events.map({ CourierEvent.initialise(from: $0) })
         _ = eventBatchCreator.forward(with: courierEvents)
+        #endif
     }
 }

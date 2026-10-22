@@ -8,9 +8,6 @@
 
 import Foundation
 import SwiftProtobuf
-#if SWIFT_PACKAGE
-@_spi(ClickstreamInternal) import Clickstream
-#endif
 
 /// Conform to this delegate to receive health events at client app.
 public protocol TrackerDelegate: AnyObject {
@@ -35,9 +32,7 @@ public final class Tracker {
     
     private(set) var healthTracker: HealthTracker
     
-    static var sharedInstance: Tracker? {
-        didSet { ClickstreamHealth.recorder = sharedInstance }
-    }
+    static var sharedInstance: Tracker?
     
     // Holds the health tracking configs for the SDK
     internal static var healthTrackingConfigs: ClickstreamHealthConfigurations!
@@ -46,23 +41,17 @@ public final class Tracker {
     internal var commonProperties: CSCommonProperties?
     
     /// Tells whether the debugMode is enabled or not.
-    public static var debugMode: Bool {
-        get { ClickstreamHealth.debugMode }
-        set { ClickstreamHealth.debugMode = newValue }
-    }
+    public static var debugMode: Bool = false
     
     /// Set when the persistent store was found corrupt and recreated before the tracker was ready.
     /// Flushed as a `ClickstreamDBCorrupted` health event once the tracker is initialised.
-    static var pendingDatabaseCorruptionRecovery: Bool {
-        get { ClickstreamHealth.pendingDatabaseCorruptionRecovery }
-        set { ClickstreamHealth.pendingDatabaseCorruptionRecovery = newValue }
-    }
+    static var pendingDatabaseCorruptionRecovery: Bool = false
     
     var location: CSLocation?
     
     private static let queue = SerialQueue(label: Constants.QueueIdentifiers.tracker.rawValue, qos: .utility)
     private var appStateNotifier: AppStateNotifierService
-    private let database: DefaultDatabase
+    private let database: Database
     
     /// TrackerDelegate.
     internal private(set) var delegate: TrackerDelegate
@@ -86,7 +75,7 @@ public final class Tracker {
     }
     
     init(appStateNotifier: AppStateNotifierService,
-             db: DefaultDatabase,
+             db: Database,
          dataSource: TrackerDataSource, delegate: TrackerDelegate) {
         self.database = db
         self.appStateNotifier = appStateNotifier
@@ -110,7 +99,7 @@ public final class Tracker {
         if Tracker.debugMode {
             guard let instance = self.sharedInstance else {
                 // Create a separate db for health and perf events.
-                var db: DefaultDatabase
+                var db: Database
                 do {
                     db = try DefaultDatabase()
                 } catch {
@@ -145,7 +134,6 @@ public final class Tracker {
         }
     }
     
-    
     /// Adding a subscription to the app state changes.
     private func observeAppStateChanges() {
         appStateNotifier.start { [weak self] (stateNotification) in guard let checkedSelf = self else { return }
@@ -161,10 +149,10 @@ public final class Tracker {
     }
     
     /// Send health events to Clickstream
-    @_spi(ClickstreamInternal) public func sendHealthEventsToInternalParty() -> [ClickstreamHealthPayload]? {
+    func sendHealthEventsToInternalParty() -> [Event]? {
         guard Tracker.healthTrackingConfigs.trackedVia == .internal || Tracker.healthTrackingConfigs.trackedVia == .both else { return nil }
            
-        var events = [ClickstreamHealthPayload]()
+        var events = [Event]()
         
         // get the health events which need to be send to CS
         guard let eventsToBeFlushed = healthTracker.flushFunnelEvents() else { return nil }
@@ -191,8 +179,8 @@ public final class Tracker {
         return events
     }
     
-    private func getInstantEvents(instantEvents: [HealthAnalysisEvent], metaData: Gojek_Clickstream_Internal_HealthMeta) -> [ClickstreamHealthPayload] {
-        var events = [ClickstreamHealthPayload]()
+    private func getInstantEvents(instantEvents: [HealthAnalysisEvent], metaData: Gojek_Clickstream_Internal_HealthMeta) -> [Event] {
+        var events = [Event]()
         for event in instantEvents {
             let eventGuid = UUID().uuidString
             
@@ -236,8 +224,8 @@ public final class Tracker {
         return events
     }
     
-    private func getAggregatedEvents(aggregatedEvents: [HealthAnalysisEvent], metaData: Gojek_Clickstream_Internal_HealthMeta) -> [ClickstreamHealthPayload] {
-        var events = [ClickstreamHealthPayload]()
+    private func getAggregatedEvents(aggregatedEvents: [HealthAnalysisEvent], metaData: Gojek_Clickstream_Internal_HealthMeta) -> [Event] {
+        var events = [Event]()
         let groupingDictionary = Dictionary(grouping: aggregatedEvents, by: { $0.eventName })
         for (key, eventNameBasedAggregation) in groupingDictionary {
             let eventGuid = UUID().uuidString
@@ -291,11 +279,23 @@ public final class Tracker {
     ///   - healthEvent: Gojek_Clickstream_Internal_Health
     ///   - eventGuid: Health meta guid
     /// - Returns: Event
-    private func constructEvent(healthEvent: Gojek_Clickstream_Internal_Health, eventGuid: String) -> ClickstreamHealthPayload? {
-        guard let bytes = try? healthEvent.serializedData() else { return nil }
-        return ClickstreamHealthPayload(guid: eventGuid,
-                                        messageBytes: bytes,
-                                        messageName: type(of: healthEvent).protoMessageName)
+    private func constructEvent(healthEvent: Gojek_Clickstream_Internal_Health, eventGuid: String) -> Event? {
+        do {
+            // Constructing the Gojek_Clickstream_De_Event
+            let eventProto = try Odpf_Raccoon_Event.with {
+                $0.eventBytes = try healthEvent.serializedData()
+                if let typeOfEvent = type(of: healthEvent).protoMessageName.components(separatedBy: ".").last {
+                    $0.type = typeOfEvent.lowercased()
+                }
+            }
+            let event = try Event(guid: eventGuid,
+                                  timestamp: Date(),
+                                  type: TrackerConstant.HealthEventType,
+                                  eventProtoData: eventProto.serializedData())
+            return event
+        } catch {
+            return nil
+        }
     }
     
     /// Flushes health events, being tracked via Clickstream, in case of an app upgrade.
@@ -318,34 +318,5 @@ public final class Tracker {
     /// - Parameter commonProperties: CSCommonProperties
     public func updateCommonProperties(commonProperties: CSCommonProperties) {
         self.commonProperties = commonProperties
-    }
-}
-
-@_spi(ClickstreamInternal)
-extension Tracker: ClickstreamHealthRecording {
-
-    public func record(event: ClickstreamHealthEvent?) {
-        guard let event = event else { return }
-        record(event: HealthAnalysisEvent(event))
-    }
-}
-
-extension Clickstream {
-
-    /// Initialise tracker
-    /// - Parameters:
-    ///   - configs: ClickstreamHealthConfigurations
-    ///   - commonProperties: CSCommonProperties
-    ///   - dataSource: TrackerDataSource
-    ///   - delegate: TrackerDelegate
-    public func setTracker(configs: ClickstreamHealthConfigurations,
-                           commonProperties: CSCommonProperties,
-                           dataSource: TrackerDataSource,
-                           delegate: TrackerDelegate) {
-        Tracker.initialise(commonProperties: commonProperties, healthTrackingConfigs: configs, dataSource: dataSource, delegate: delegate)
-    }
-    
-    public func getTracker() -> Tracker? {
-        return Tracker.sharedInstance
     }
 }

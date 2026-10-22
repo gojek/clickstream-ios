@@ -7,9 +7,6 @@
 //
 
 import Foundation
-#if SWIFT_PACKAGE
-@_spi(ClickstreamInternal) import Clickstream
-#endif
 
 final class HealthTracker {
     
@@ -17,7 +14,7 @@ final class HealthTracker {
                                        qos: .utility,
                                        attributes: .concurrent)
     private var queue: SerialQueue
-    private var database: DefaultDatabase
+    private var database: Database
     private let _persistence: DefaultDatabaseDAO<HealthAnalysisEvent>
     
     var persistence: DefaultDatabaseDAO<HealthAnalysisEvent> {
@@ -27,7 +24,7 @@ final class HealthTracker {
     }
     
     init(performOnQueue: SerialQueue,
-         db: DefaultDatabase) {
+         db: Database) {
         self.database = db
         self.queue = performOnQueue
         _persistence = DefaultDatabaseDAO<HealthAnalysisEvent>(database: database,

@@ -7,9 +7,6 @@
 //
 
 import Foundation
-#if SWIFT_PACKAGE
-@_spi(ClickstreamInternal) import Clickstream
-#endif
 
 /// Used for tracking health events in aggregated form
 struct HealthAnalysisEventBatch: Codable, Equatable {
