@@ -118,15 +118,13 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
         if eventBatchCreator.canForward,
             let events = persistence.deleteAll() {
             eventBatchCreator.forward(with:events)
-            #if TRACKER_ENABLED
             // Track health events only for Clickstream Flush On Foreground
-            if Tracker.debugMode && Clickstream.configurations.flushOnAppLaunch && !hasFlushOnAppLaunchExecutedOnce {
+            if ClickstreamHealth.debugMode && Clickstream.configurations.flushOnAppLaunch && !hasFlushOnAppLaunchExecutedOnce {
                 let eventGUIDs = events.map { $0.guid }
                 let eventGUIDString = "\(eventGUIDs.joined(separator: ", "))"
-                let healthAnalysisEvent = HealthAnalysisEvent(eventName: .ClickstreamFlushOnForeground, events: eventGUIDString)
-                Tracker.sharedInstance?.record(event: healthAnalysisEvent)
+                let healthAnalysisEvent = ClickstreamHealthEvent(eventName: .ClickstreamFlushOnForeground, events: eventGUIDString)
+                ClickstreamHealth.recorder?.record(event: healthAnalysisEvent)
             }
-            #endif
         }
     }
     
@@ -161,15 +159,13 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
                 
                 if !eventsToBeFlushed.isEmpty {
                     eventBatchCreator.forward(with: eventsToBeFlushed)
-                    #if TRACKER_ENABLED
-                    if Tracker.debugMode {
+                    if ClickstreamHealth.debugMode {
                         let eventGUIDs = eventsToBeFlushed.map { $0.guid }
                         let eventGUIDString = "\(eventGUIDs.joined(separator: ", "))"
-                        let healthAnalysisEvent = HealthAnalysisEvent(eventName: .ClickstreamFlushOnBackground,
+                        let healthAnalysisEvent = ClickstreamHealthEvent(eventName: .ClickstreamFlushOnBackground,
                                                                       events: eventGUIDString)
-                        Tracker.sharedInstance?.record(event: healthAnalysisEvent)
+                        ClickstreamHealth.recorder?.record(event: healthAnalysisEvent)
                     }
-                    #endif
                 }
             }
         }
@@ -216,10 +212,8 @@ final class DefaultEventBatchProcessor: EventBatchProcessor {
 private extension DefaultEventBatchProcessor {
     
     func flushObservabilityEvents() {
-        #if TRACKER_ENABLED
-        if eventBatchCreator.canForward, let events = Tracker.sharedInstance?.sendHealthEventsToInternalParty(), !events.isEmpty {
+        if eventBatchCreator.canForward, let events = ClickstreamHealth.internalEvents(), !events.isEmpty {
             eventBatchCreator.forward(with: events)
         }
-        #endif
     }
 }

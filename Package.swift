@@ -7,7 +7,12 @@ let package = Package(
         .iOS(.v15)
     ],
     products: [
+        // Core SDK.
         .library(name: "Clickstream", targets: ["Clickstream"]),
+        // Optional: health tracking. Link alongside `Clickstream`.
+        .library(name: "Tracker", targets: ["Tracker"]),
+        // Optional: event visualizer UI. Link alongside `Clickstream`.
+        .library(name: "ClickstreamEventVisualizer", targets: ["ClickstreamEventVisualizer"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.0.0"),
@@ -27,12 +32,24 @@ let package = Package(
                 .product(name: "CourierCore", package: "courier-iOS"),
                 .product(name: "CourierMQTT", package: "courier-iOS")
             ],
-            path: "Sources",
-            exclude: [
-                "Example",
-                "ETETestSuite"
+            path: "Sources/Clickstream"
+        ),
+        .target(
+            name: "Tracker",
+            dependencies: [
+                "Clickstream",
+                .product(name: "SwiftProtobuf", package: "swift-protobuf"),
+                .product(name: "GRDB", package: "GRDB.swift")
             ],
-            swiftSettings: [.define("TRACKER_ENABLED")]
+            path: "Sources/Tracker"
+        ),
+        .target(
+            name: "ClickstreamEventVisualizer",
+            dependencies: [
+                "Clickstream",
+                .product(name: "SwiftProtobuf", package: "swift-protobuf")
+            ],
+            path: "Sources/EventVisualizer"
         )
     ],
     swiftLanguageVersions: [.v5]

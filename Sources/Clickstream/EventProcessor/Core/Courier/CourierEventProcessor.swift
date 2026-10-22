@@ -50,27 +50,22 @@ final class CourierEventProcessor: EventProcessor {
                 return
             }
             
-            #if TRACKER_ENABLED
-            if Tracker.debugMode {
+            if ClickstreamHealth.debugMode {
                 let isCourierWhitelisted = checkedSelf.networkOptions.courierEventTypes.contains(event.messageName)
                 if isCourierWhitelisted {
                     checkedSelf.trackHealthEvent(event: event, healthEventName: .Courier_ClickstreamEventReceived, reason: "Event Received by SDK")
                 }
             }
-            #endif
             guard event.shouldTrackOnCourier(isUserLoggedIn: isUserAuthenticated, networkOptions: checkedSelf.networkOptions) else {
-                #if TRACKER_ENABLED
-                if Tracker.debugMode {
+                if ClickstreamHealth.debugMode {
                     let isCourierWhitelisted = checkedSelf.networkOptions.courierEventTypes.contains(event.messageName)
                     if isCourierWhitelisted {
                         checkedSelf.trackHealthEvent(event: event, healthEventName: .Courier_ClickstreamEventNotCached, reason: "shouldTrackOnCourier is false with networkoptions: \(checkedSelf.networkOptions)")
                     }
                 }
-                #endif
                 return
             }
 
-            #if EVENT_VISUALIZER_ENABLED
             /// Sent event data to client with state received
             /// to check if the delegate is connected, if not no event should be sent to client
             if let message = event.message, let stateViewer = Clickstream._stateViewer {
@@ -79,7 +74,6 @@ final class CourierEventProcessor: EventProcessor {
                 /// Sending the eventData object to client
                 stateViewer.sendEvent(eventsData)
             }
-            #endif
             // Create an Event instance and forward it to the scheduler.
             if let event = checkedSelf.constructEvent(event: event, isExslusive: checkedSelf.isExslusiveEvent(event)) {
                 checkedSelf.eventWarehouser.store(event)
@@ -198,12 +192,10 @@ final class CourierEventProcessor: EventProcessor {
         }
     }
     
-    #if TRACKER_ENABLED
     private func trackHealthEvent(event: ClickstreamEvent, healthEventName: HealthEvents, reason: String) {
         if let classification = self.classifier.getClassification(event: event), classification == "realTime" {
-            let healthEvent = HealthAnalysisEvent(eventName: healthEventName, eventGUID: event.guid, reason: reason, eventCount: 1)
-            Tracker.sharedInstance?.record(event: healthEvent)
+            let healthEvent = ClickstreamHealthEvent(eventName: healthEventName, eventGUID: event.guid, reason: reason, eventCount: 1)
+            ClickstreamHealth.recorder?.record(event: healthEvent)
         }
     }
-    #endif
 }

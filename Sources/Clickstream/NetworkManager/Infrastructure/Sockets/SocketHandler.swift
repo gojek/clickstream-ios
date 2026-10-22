@@ -37,9 +37,7 @@ final class DefaultSocketHandler: SocketHandler {
     private var writeCallback: ((Result<Data?, ConnectableError>) -> Void)?
     
     /// Tracking time taken by the socket to establish a connection
-    #if TRACKER_ENABLED
     private var socketConnectionTimeTrace: Trace = Trace(name: TrackerConstant.Traces.ClickstreamSocketConnectionTime.rawValue)
-    #endif
     
     /// Provides the socket state
     var isConnected: Atomic<Bool> = Atomic(false)
@@ -105,10 +103,8 @@ final class DefaultSocketHandler: SocketHandler {
                 print("socket-connecting")
                 isConnectionRequestOpen = true
                 connectionCallback?(.success(.connecting))
-                #if TRACKER_ENABLED
                 socketConnectionTimeTrace.attributes = [Constants.Strings.networkType: Reachability.getNetworkType().trackingId]
                 socketConnectionTimeTrace.start()
-                #endif
                 webSocket?.connect()
                 lastConnectRequestTimestamp = Date() // recording time
             }
@@ -127,11 +123,9 @@ final class DefaultSocketHandler: SocketHandler {
     }
     
     deinit {
-        #if TRACKER_ENABLED
         socketConnectionTimeTrace.attributes = [Constants.Strings.networkType: Reachability.getNetworkType().trackingId,
                                                 Constants.Strings.status: Constants.Strings.failure]
         socketConnectionTimeTrace.stop()
-        #endif
         print("socket-deinit")
     }
 }
@@ -180,33 +174,27 @@ extension DefaultSocketHandler {
                 }
                 checkedSelf.isConnectionRequestOpen = false
                 checkedSelf.connectionCallback?(.success(.connected))
-                #if TRACKER_ENABLED
                 checkedSelf.socketConnectionTimeTrace.attributes = [Constants.Strings.networkType: Reachability.getNetworkType().trackingId,
                                                                     Constants.Strings.status: Constants.Strings.success]
                 checkedSelf.socketConnectionTimeTrace.stop()
-                #endif
             case .disconnected(let error, let code):
                 print("disconnected with error: \(error) errorCode: \(code)", .critical)
                 Clickstream.connectionState = .closed
                 checkedSelf.isConnectionRequestOpen = false
-                #if TRACKER_ENABLED
                 checkedSelf.socketConnectionTimeTrace.attributes = [Constants.Strings.networkType: Reachability.getNetworkType().trackingId,
                                                                     Constants.Strings.status: Constants.Strings.failure]
                 checkedSelf.socketConnectionTimeTrace.stop()
                 let errorObject = NSError(domain: "", code: Int(code), userInfo: [NSLocalizedDescriptionKey: error])
                 checkedSelf.trackHealthEvent(eventName: .ClickstreamConnectionDropped, error: errorObject, code: code)
-                #endif
             case .text(let responseString):
                 checkedSelf.writeCallback?(.success(responseString.data(using: .utf8)))
             case .error(let error):
                 checkedSelf.isConnectionRequestOpen = false
-            #if TRACKER_ENABLED
                 checkedSelf.socketConnectionTimeTrace.attributes = [Constants.Strings.networkType: Reachability.getNetworkType().trackingId,
                                                                     Constants.Strings.status: Constants.Strings.failure]
                 checkedSelf.socketConnectionTimeTrace.stop()
                     let timeInterval = Date().timeIntervalSince(checkedSelf.lastConnectRequestTimestamp ?? Date())
                     self?.trackHealthEvent(eventName: .ClickstreamConnectionFailure, error: error, timeToConnection: ("\(timeInterval)"))
-            #endif
                 checkedSelf.writeCallback?(.failure(.failed))
             case .binary(let response):
                 checkedSelf.writeCallback?(.success(response))
@@ -254,37 +242,35 @@ extension SocketHandler {
 }
 
 extension DefaultSocketHandler {
-#if TRACKER_ENABLED
     func trackHealthEvent(eventName: HealthEvents,
                           error: Error? = nil,
                           code: UInt16? = nil,
                           timeToConnection: String? = nil) {
         
-        guard Tracker.debugMode else { return }
+        guard ClickstreamHealth.debugMode else { return }
         if let error = error, case HTTPUpgradeError.notAnUpgrade(let code) = error {
             
             if code.0 == 401 {
-                let event = HealthAnalysisEvent(eventName: eventName,
+                let event = ClickstreamHealthEvent(eventName: eventName,
                                                 reason: FailureReason.AuthenticationError.rawValue)
-                Tracker.sharedInstance?.record(event: event)
+                ClickstreamHealth.recorder?.record(event: event)
             } else if code.0 == 1008 {
-                let event = HealthAnalysisEvent(eventName: eventName,
+                let event = ClickstreamHealthEvent(eventName: eventName,
                                                 reason: FailureReason.DuplicateID.rawValue)
-                Tracker.sharedInstance?.record(event: event)
+                ClickstreamHealth.recorder?.record(event: event)
             } else {
-                let event = HealthAnalysisEvent(eventName: eventName,
+                let event = ClickstreamHealthEvent(eventName: eventName,
                                                 reason: error.localizedDescription)
-                Tracker.sharedInstance?.record(event: event)
+                ClickstreamHealth.recorder?.record(event: event)
             }
         } else if code == 1008 {
-            let event = HealthAnalysisEvent(eventName: eventName,
+            let event = ClickstreamHealthEvent(eventName: eventName,
                                             reason: FailureReason.DuplicateID.rawValue)
-            Tracker.sharedInstance?.record(event: event)
+            ClickstreamHealth.recorder?.record(event: event)
         } else {
-            let event = HealthAnalysisEvent(eventName: eventName,
+            let event = ClickstreamHealthEvent(eventName: eventName,
                                             reason: error?.localizedDescription)
-            Tracker.sharedInstance?.record(event: event)
+            ClickstreamHealth.recorder?.record(event: event)
         }
     }
-#endif
 }

@@ -8,9 +8,9 @@
 
 import GRDB
 
-typealias VersionIdentifier = String
+@_spi(ClickstreamInternal) public typealias VersionIdentifier = String
 
-protocol TableDefinable {
+@_spi(ClickstreamInternal) public protocol TableDefinable {
     // pass the table definition to be created. Tables will be specific to each type.
     // i.e. a generic class which resolve to a type. The db will be common.
     static var tableDefinition: (TableDefinition) -> Void { get }

@@ -8,11 +8,11 @@
 
 import Foundation
 
-typealias QueueIdentifier = String
+@_spi(ClickstreamInternal) public typealias QueueIdentifier = String
 typealias CacheIdentifier = String
-typealias SerialQueue = DispatchQueue
+@_spi(ClickstreamInternal) public typealias SerialQueue = DispatchQueue
 
-enum Constants {
+@_spi(ClickstreamInternal) public enum Constants {
     
     static let SocketConnectionNotification = NSNotification.Name(rawValue: "SocketConnectionNotification")
     static let CourierConnectionNotification = NSNotification.Name(rawValue: "CourierConnectionNotification")
@@ -42,7 +42,7 @@ enum Constants {
         static let databaseBusyTimeout: TimeInterval = 5
     }
     
-    enum QueueIdentifiers: QueueIdentifier {
+    @_spi(ClickstreamInternal) public enum QueueIdentifiers: QueueIdentifier {
         case network = "com.clickstream.network"
         case scheduler = "com.clickstream.schedule"
         case processor = "com.clickstream.processor"
@@ -71,10 +71,10 @@ enum Constants {
         case p0Event = "P0"
     }
     
-    enum EventVisualizer {
+    @_spi(ClickstreamInternal) public enum EventVisualizer {
         static var eventGID = "eventGuid"
-        static var eventGuid = "meta.eventGuid"
-        static var guid = "guid"
+        @_spi(ClickstreamInternal) public static var eventGuid = "meta.eventGuid"
+        @_spi(ClickstreamInternal) public static var guid = "guid"
         static var eventTimestamp = "eventTimestamp"
         static var deviceTimestamp = "deviceTimestamp"
     }

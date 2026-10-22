@@ -13,7 +13,7 @@ import Foundation
 ///
 /// - Parameter object: The object which is to be logged
 ///
-func print(_ object: Any, _ level: Logger.LogLevel = .verbose) {
+@_spi(ClickstreamInternal) public func print(_ object: Any, _ level: Logger.LogLevel = .verbose) {
     
     if level >= Logger.logLevel {
         Swift.print("Clickstream [💬] \(Date().toString()) : \(object)")

@@ -28,37 +28,35 @@ final class WebsocketRetryMechanism: Retryable {
         let isConnected = networkService.isConnected
         let isOnLowPower = deviceStatus.isDeviceLowOnPower
         
-        #if TRACKER_ENABLED
-        if !isReachable && Tracker.debugMode {
-            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
+        if !isReachable && ClickstreamHealth.debugMode {
+            let healthEvent = ClickstreamHealthEvent(eventName: .ClickstreamEventBatchTriggerFailed,
                                                   reason: FailureReason.networkUnavailable.rawValue)
-            Tracker.sharedInstance?.record(event: healthEvent)
+            ClickstreamHealth.recorder?.record(event: healthEvent)
         }
         
-        if !isConnected && Tracker.debugMode {
-            if !isConnected && Tracker.debugMode {
+        if !isConnected && ClickstreamHealth.debugMode {
+            if !isConnected && ClickstreamHealth.debugMode {
                 if isOnLowPower {
-                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
+                    let healthEvent = ClickstreamHealthEvent(eventName: .ClickstreamEventBatchTriggerFailed,
                                                           reason: FailureReason.lowBattery.rawValue)
-                    Tracker.sharedInstance?.record(event: healthEvent)
+                    ClickstreamHealth.recorder?.record(event: healthEvent)
                 } else {
-                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
+                    let healthEvent = ClickstreamHealthEvent(eventName: .ClickstreamEventBatchTriggerFailed,
                                                           reason: FailureReason.socket_not_open.rawValue)
-                    Tracker.sharedInstance?.record(event: healthEvent)
+                    ClickstreamHealth.recorder?.record(event: healthEvent)
                 }
             } else {
-                let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
+                let healthEvent = ClickstreamHealthEvent(eventName: .ClickstreamEventBatchTriggerFailed,
                                                       reason: FailureReason.socket_not_open.rawValue)
-                Tracker.sharedInstance?.record(event: healthEvent)
+                ClickstreamHealth.recorder?.record(event: healthEvent)
             }
         }
         
-        if isOnLowPower && Tracker.debugMode {
-            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchTriggerFailed,
+        if isOnLowPower && ClickstreamHealth.debugMode {
+            let healthEvent = ClickstreamHealthEvent(eventName: .ClickstreamEventBatchTriggerFailed,
                                                   reason: FailureReason.lowBattery.rawValue)
-            Tracker.sharedInstance?.record(event: healthEvent)
+            ClickstreamHealth.recorder?.record(event: healthEvent)
         }
-        #endif
         return isReachable && isConnected && !isOnLowPower
     }
     
@@ -183,7 +181,6 @@ extension WebsocketRetryMechanism {
                             if let eventType = eventRequest.eventType, !(eventType == .internalEvent) {
                                 checkedSelf.trackHealthAndPerformanceEvents(eventRequest: eventRequest, startTime: startTime)
                             }
-                            #if EVENT_VISUALIZER_ENABLED
                             /// Update status of the event batch to acknowledged from network
                             /// to check if the delegate is connected, if not no event should be sent to client
                             if let stateViewer = Clickstream._stateViewer {
@@ -193,28 +190,24 @@ extension WebsocketRetryMechanism {
                                 stateViewer.updateStatus(eventBatchID: guid, state: .ackReceived)
                             }
                             print("RetryMechanism, received response for batch with id: \(response.data)")
-                            #endif
                         }
                     } else {
                         if response.code == .maxConnectionLimitReached {
-                            #if TRACKER_ENABLED
-                            if Tracker.debugMode {
-                                let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamConnectionFailure,
+                            if ClickstreamHealth.debugMode {
+                                let healthEvent = ClickstreamHealthEvent(eventName: .ClickstreamConnectionFailure,
                                                                       reason: FailureReason.MAX_CONNECTION_LIMIT_REACHED.rawValue)
-                                Tracker.sharedInstance?.record(event: healthEvent)
+                                ClickstreamHealth.recorder?.record(event: healthEvent)
                             }
-                            #endif
                             checkedSelf.terminateConnection()
                             checkedSelf.establishConnection()
                             #if ETE_TEST_SUITE_ENABLED
                             Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Max Connection Limit Reached")
                             #endif
                         }
-                        #if TRACKER_ENABLED
                         if response.code == .maxUserLimitReached {
-                           let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamConnectionFailure,
+                           let healthEvent = ClickstreamHealthEvent(eventName: .ClickstreamConnectionFailure,
                                                                  reason: FailureReason.MAX_USER_LIMIT_REACHED.rawValue)
-                            Tracker.sharedInstance?.record(event: healthEvent)
+                            ClickstreamHealth.recorder?.record(event: healthEvent)
                             #if ETE_TEST_SUITE_ENABLED
                             Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Max User Limit Reached")
                             #endif
@@ -222,31 +215,28 @@ extension WebsocketRetryMechanism {
                         
                         if response.code == .badRequest {
                             print("Error: Parsing Exception for eventRequest guid \(eventRequest.guid)", .verbose)
-                            if Tracker.debugMode {
-                                var healthEvent: HealthAnalysisEvent!
-                                healthEvent = HealthAnalysisEvent(eventName: .ClickstreamWriteToSocketFailed,
+                            if ClickstreamHealth.debugMode {
+                                var healthEvent: ClickstreamHealthEvent!
+                                healthEvent = ClickstreamHealthEvent(eventName: .ClickstreamWriteToSocketFailed,
                                                                   eventBatchGUID: eventRequest.guid,
                                                                   reason: FailureReason.ParsingException.rawValue,
                                                                   eventCount: eventRequest.eventCount)
-                                Tracker.sharedInstance?.record(event: healthEvent)
+                                ClickstreamHealth.recorder?.record(event: healthEvent)
                                 #if ETE_TEST_SUITE_ENABLED
                                 Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "Bad Request")
                                 #endif
                             }
                         }
-                        #endif
                     }
                 case .failure(let error):
                     print("Error: \(error.localizedDescription) for eventRequest guid \(eventRequest.guid)", .verbose)
-                    #if TRACKER_ENABLED
-                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchErrorResponse,
+                    let healthEvent = ClickstreamHealthEvent(eventName: .ClickstreamEventBatchErrorResponse,
                                                           eventBatchGUID: eventRequest.guid, // eventRequest.guid is the batch GUID
                                                           reason: error.localizedDescription,
                                                           eventCount: eventRequest.eventCount)
-                    Tracker.sharedInstance?.record(event: healthEvent)
+                    ClickstreamHealth.recorder?.record(event: healthEvent)
                     #if ETE_TEST_SUITE_ENABLED
                     Clickstream.ackEvent = AckEventDetails(guid: eventRequest.guid, status: "\(error)")
-                    #endif
                     #endif
                 }
                 #if ETE_TEST_SUITE_ENABLED
@@ -352,14 +342,12 @@ extension WebsocketRetryMechanism {
         if var fetchedEventRequest = persistence.fetchOne(eventRequest.guid) {
             if fetchedEventRequest.retriesMade >= Clickstream.configurations.maxRetriesPerBatch {
                 persistence.deleteOne(eventRequest.guid)
-                #if TRACKER_ENABLED
-                if Tracker.debugMode {
-                    let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchDropped,
+                if ClickstreamHealth.debugMode {
+                    let healthEvent = ClickstreamHealthEvent(eventName: .ClickstreamEventBatchDropped,
                                                           eventBatchGUID: fetchedEventRequest.guid,
                                                           eventCount: eventRequest.eventCount)
-                    Tracker.sharedInstance?.record(event: healthEvent)
+                    ClickstreamHealth.recorder?.record(event: healthEvent)
                 }
-                #endif
             } else {
                 fetchedEventRequest.bumpRetriesMade() // This will bump the retriesMade.
                 fetchedEventRequest.refreshCachingTimeStamp() // This will update the timestamp with the latest retry time.
@@ -436,32 +424,28 @@ extension WebsocketRetryMechanism {
 extension WebsocketRetryMechanism {
     
     func trackHealthAndPerformanceEvents(eventRequest: EventRequest, startTime: Date) {
-        #if TRACKER_ENABLED
-        if Tracker.debugMode {
+        if ClickstreamHealth.debugMode {
             guard eventRequest.eventType != Constants.EventType.instant else { return }
             
-            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchSuccessAck,
+            let healthEvent = ClickstreamHealthEvent(eventName: .ClickstreamEventBatchSuccessAck,
                                                   eventBatchGUID: eventRequest.guid,
                                                   eventCount: eventRequest.eventCount)
-            Tracker.sharedInstance?.record(event: healthEvent)
+            ClickstreamHealth.recorder?.record(event: healthEvent)
             
         }
-        #endif
     }
 
     func trackHealthEventBatchRetryFailed(eventRequest: EventRequest) {
-        #if TRACKER_ENABLED
-        if Tracker.debugMode {
+        if ClickstreamHealth.debugMode {
             guard eventRequest.eventType != Constants.EventType.instant else { return }
             
-            let healthEvent = HealthAnalysisEvent(eventName: .ClickstreamEventBatchRetryFailed,
+            let healthEvent = ClickstreamHealthEvent(eventName: .ClickstreamEventBatchRetryFailed,
                                                   eventBatchGUID: eventRequest.guid,
                                                   eventCount: eventRequest.eventCount)
                                                   
-            Tracker.sharedInstance?.record(event: healthEvent)
+            ClickstreamHealth.recorder?.record(event: healthEvent)
             
         }
-        #endif
     }
 }
 

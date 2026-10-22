@@ -6,6 +6,9 @@
 //
 
 import Foundation
+#if SWIFT_PACKAGE
+@_spi(ClickstreamInternal) import Clickstream
+#endif
 import SwiftProtobuf
 
 struct EventDisplayFields {

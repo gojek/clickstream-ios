@@ -70,7 +70,6 @@ public final class Clickstream {
     private static var sharedInstance: Clickstream?
     
     private var dependencies: DefaultClickstreamDependencies?
-    #if EVENT_VISUALIZER_ENABLED
     /// internal stored static variable which is a delegate
     /// to sent the events to client for visualization.
     /// If delegate is nil then no events are passed to client.
@@ -86,7 +85,6 @@ public final class Clickstream {
             Clickstream._stateViewer = newValue
         }
     }
-    #endif
     #if ETE_TEST_SUITE_ENABLED
     internal static var ackEvent: AckEventDetails?
     #endif
@@ -224,7 +222,6 @@ public final class Clickstream {
     ///   (the default) to keep the legacy courier scheduling flow.
     /// - Returns: returns a Clickstream instance to keep throughout the project.
     ///            You can always get the instance by calling getInstance()
-    #if TRACKER_ENABLED
     @discardableResult public static func initialise(with request: URLRequest,
                                                      configurations: ClickstreamConstraints,
                                                      courierConfigurations: ClickstreamCourierConstraints,
@@ -261,42 +258,6 @@ public final class Clickstream {
             throw Clickstream.ClickstreamError.initialisation(error.localizedDescription)
         }
     }
-    #else
-    @discardableResult public static func initialise(with request: URLRequest,
-                                                     configurations: ClickstreamConstraints,
-                                                     courierConfigurations: ClickstreamCourierConstraints,
-                                                     eventClassification: ClickstreamEventClassification,
-                                                     delegate: ClickstreamDelegate? = nil,
-                                                     updateConnectionStatus: Bool = false,
-                                                     timerCrashFixFlag: Bool = false,
-                                                     dbCorruptionRecoveryEnabled: Bool = false,
-                                                     appPrefix: String,
-                                                     appVersion: String,
-                                                     samplerConfiguration: EventSamplerConfiguration? = nil,
-                                                     classificationConfig: EventClassificationRemoteConfig.Properties? = nil,
-                                                     networkOptions: ClickstreamNetworkOptions) throws -> Clickstream? {
-        do {
-            return try initializeClickstream(
-                with: request,
-                configurations: configurations,
-                courierConfigurations: courierConfigurations,
-                eventClassification: eventClassification,
-                delegate: delegate,
-                updateConnectionStatus: updateConnectionStatus,
-                timerCrashFixFlag: timerCrashFixFlag,
-                dbCorruptionRecoveryEnabled: dbCorruptionRecoveryEnabled,
-                appPrefix: appPrefix,
-                appVersion: appVersion,
-                samplerConfiguration: samplerConfiguration,
-                classificationConfig: classificationConfig,
-                networkOptions: networkOptions)
-        } catch {
-            print("Cannot initialise Clickstream. Dependencies could not be initialised.",.critical)
-            // Relay the database error.
-            throw Clickstream.ClickstreamError.initialisation(error.localizedDescription)
-        }
-    }
-    #endif
     
     static func initializeClickstream(with request: URLRequest,
                                       configurations: ClickstreamConstraints,
@@ -378,7 +339,6 @@ struct AtomicConnectionState {
 }
 
 // MARK: - Code below here is support for the Clickstream's EventVisualizer.
-#if EVENT_VISUALIZER_ENABLED
 extension Clickstream {
     
     /// Initialise event visualizer state tracking
@@ -395,30 +355,7 @@ extension Clickstream {
         Constants.EventVisualizer.deviceTimestamp = eventTimestamp
     }
 }
-#endif
 
-// MARK: - Code below here is support for the Clickstream's Health Tracking.
-#if TRACKER_ENABLED
-extension Clickstream {
-    
-    /// Initialise tracker
-    /// - Parameters:
-    ///   - configs: ClickstreamHealthConfigurations
-    ///   - commonProperties: CSCommonProperties
-    ///   - dataSource: TrackerDataSource
-    ///   - delegate: TrackerDelegate
-    public func setTracker(configs: ClickstreamHealthConfigurations,
-                           commonProperties: CSCommonProperties,
-                           dataSource: TrackerDataSource,
-                           delegate: TrackerDelegate) {
-        Tracker.initialise(commonProperties: commonProperties, healthTrackingConfigs: configs, dataSource: dataSource, delegate: delegate)
-    }
-    
-    public func getTracker() -> Tracker? {
-        return Tracker.sharedInstance
-    }
-}
-#endif
 
 extension Clickstream {
     
