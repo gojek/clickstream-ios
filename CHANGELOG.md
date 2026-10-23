@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [3.0.4] - 2026-10-23
+
+[2f9e46f] Add Swift settings for tracker and event visualizer (#171) (by @Sanju Naik)
+[4add9f2] Fix: Clickstream Swift Package Build Issues (#168) (by @romitkumar-gjk)
+[b70a42d] [CI] Bump version - 3.0.3 (by @github-actions[bot])
+
 ## [2.0.95] - 2026-07-16
 
 [75eefbd] Merge pull request #150 from gojek/fix/courier_retry_crash_final (by @rishabhabbu-ctrl)
