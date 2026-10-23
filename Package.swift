@@ -8,15 +8,13 @@ let package = Package(
     ],
     products: [
         .library(name: "Clickstream", targets: ["Clickstream"]),
-        .library(name: "ClickstreamTracker", targets: ["ClickstreamTracker"]),
-        .library(name: "ClickstreamEventVisualizer", targets: ["ClickstreamEventVisualizer"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.0.0"),
         .package(url: "https://github.com/ashleymills/Reachability.swift.git", from: "5.0.0"),
         .package(url: "https://github.com/groue/GRDB.swift.git", from: "6.7.0"),
         .package(url: "https://github.com/daltoniam/Starscream.git", exact: "4.0.5"),
-        .package(url: "https://github.com/gojek/courier-iOS.git", exact: "1.0.24")
+        .package(url: "https://github.com/gojek/courier-iOS.git", exact: "1.0.25")
     ],
     targets: [
         .target(
@@ -30,21 +28,11 @@ let package = Package(
                 .product(name: "CourierMQTT", package: "courier-iOS")
             ],
             path: "Sources",
-            sources: ["Clickstream"]
-        ),
-        .target(
-            name: "ClickstreamTracker",
-            dependencies: ["Clickstream"],
-            path: "Sources",
-            sources: ["Tracker"],
-            swiftSettings: [.define("TRACKER_ENABLED")]
-        ),
-        .target(
-            name: "ClickstreamEventVisualizer",
-            dependencies: ["Clickstream"],
-            path: "Sources",
-            sources: ["EventVisualizer"],
-            swiftSettings: [.define("EVENT_VISUALIZER_ENABLED")]
+            exclude: [
+                "Example",
+                "ETETestSuite"
+            ],
         )
-    ]
+    ],
+    swiftLanguageVersions: [.v5]
 )
