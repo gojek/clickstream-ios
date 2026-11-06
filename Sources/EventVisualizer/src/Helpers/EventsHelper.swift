@@ -16,7 +16,11 @@ struct ClickstreamConnectionStatusView {
 }
 
 final public class EventsHelper {
-    
+
+    /// Posted (on the thread that caused the change) whenever captured events, their
+    /// states or the capturing status change. Observers should coalesce and hop to main.
+    public static let didChangeNotification = Notification.Name("EventsHelperDidChangeNotification")
+
     private init() {}
     
     /// singleton variable
@@ -69,22 +73,66 @@ final public class EventsHelper {
         }
     }
     
+    /// Whether this helper is currently registered to receive events from Clickstream.
+    public var isCapturing: Bool {
+        #if EVENT_VISUALIZER_ENABLED
+        return Clickstream._stateViewer === self
+        #else
+        return false
+        #endif
+    }
+
+    /// Starts capturing events.
+    /// Registers on the static viewer slot rather than on the `Clickstream` instance, so it
+    /// works even when called before `Clickstream.initialise` (e.g. at app launch).
     public func startCapturing() {
         #if EVENT_VISUALIZER_ENABLED
-        Clickstream.getInstance()?.stateViewer = self
+        Clickstream._stateViewer = self
         #endif
+        postDidChange()
     }
     
     public func stopCapturing() {
         #if EVENT_VISUALIZER_ENABLED
-        Clickstream.getInstance()?.stateViewer = nil
+        if Clickstream._stateViewer === self {
+            Clickstream._stateViewer = nil
+        }
         #endif
+        postDidChange()
     }
+
     public func clearData() {
         withLock {
             _eventsCaptured = []
             stateByEventGuid = [:]
         }
+        postDidChange()
+    }
+
+    /// Returns, for each requested event name, the most recently captured event.
+    func latestEvents(named names: Set<String>) -> [String: EventData] {
+        guard !names.isEmpty else { return [:] }
+        return withLock {
+            var latest: [String: EventData] = [:]
+            for event in _eventsCaptured.reversed() {
+                guard let name = event.displaySummary?.eventName,
+                      names.contains(name),
+                      latest[name] == nil else { continue }
+                latest[name] = event
+                if latest.count == names.count { break }
+            }
+            return latest
+        }
+    }
+
+    /// Distinct, sorted names of all captured events.
+    func capturedEventNames() -> [String] {
+        let names = withLock { _eventsCaptured.compactMap { $0.displaySummary?.eventName } }
+        return Set(names.filter { !$0.isEmpty }).sorted()
+    }
+
+    private func postDidChange() {
+        NotificationCenter.default.post(name: Self.didChangeNotification, object: self)
     }
     
     @available(iOS 13.0, *)
@@ -132,6 +180,7 @@ extension EventsHelper: EventStateViewable {
                 stateByEventGuid[eventGuid] = event.state.description
             }
         }
+        postDidChange()
     }
     
     /// When providedEventGuid is not nil, then: Update the state of the event and
@@ -166,6 +215,7 @@ extension EventsHelper: EventStateViewable {
                 }
             }
         }
+        postDidChange()
     }
 
     /// Callers must already hold `unfairLock`.

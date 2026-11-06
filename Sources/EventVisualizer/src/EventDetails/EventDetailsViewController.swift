@@ -19,6 +19,11 @@ final class EventDetailsViewController: UIViewController {
     
     private let viewModel: EventDetailsViewModel = EventDetailsViewModel()
     var messageSelected: Message?
+    /// When set, rows can be pinned/unpinned (swipe) for this event name.
+    var pinnedEventName: String?
+    /// When set, the table scrolls to this key path once the screen appears.
+    var focusedKeyPath: String?
+    private var hasScrolledToFocusedRow = false
     
     // MARK: - View Life Cycle
     override func loadView() {
@@ -31,6 +36,24 @@ final class EventDetailsViewController: UIViewController {
         viewModel.viewDidLoad(message: messageSelected)
         setUpViews()
         setUpLayout()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        scrollToFocusedRowIfNeeded()
+    }
+
+    private func scrollToFocusedRowIfNeeded() {
+        guard !hasScrolledToFocusedRow,
+              let focusedKeyPath = focusedKeyPath,
+              let row = viewModel.rowIndex(ofKeyPath: focusedKeyPath) else { return }
+        hasScrolledToFocusedRow = true
+        tableView.scrollToRow(at: IndexPath(row: row, section: 0), at: .middle, animated: true)
+    }
+
+    private func isPinned(keyPath: String) -> Bool {
+        guard let eventName = pinnedEventName else { return false }
+        return EventsPinnedPropertiesStore.shared.contains(EventsPinnedProperty(eventName: eventName, keyPath: keyPath))
     }
     
     private func setUpViews() {
@@ -123,12 +146,32 @@ extension EventDetailsViewController: UITableViewDataSource {
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell() as EventsListingTableViewCell
+        var cellViewModel: EventsListingTableViewCell.ViewModel
         if viewModel.isSearchActive && viewModel.searchText != "" {
-            cell.apply(viewModel.cellViewModel(for: indexPath, with: viewModel.searchedMessage))
+            cellViewModel = viewModel.cellViewModel(for: indexPath, with: viewModel.searchedMessage)
         } else {
-            cell.apply(viewModel.cellViewModel(for: indexPath, with: viewModel.displayedMessage))
+            cellViewModel = viewModel.cellViewModel(for: indexPath, with: viewModel.displayedMessage)
         }
+        if let keyPath = viewModel.keyPath(at: indexPath), isPinned(keyPath: keyPath) {
+            cellViewModel = EventsListingTableViewCell.ViewModel(name: "\(cellViewModel.name) (pinned)", value: cellViewModel.value)
+        }
+        cell.apply(cellViewModel)
         return cell
+    }
+
+    func tableView(
+        _ tableView: UITableView,
+        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
+        guard let eventName = pinnedEventName, let keyPath = viewModel.keyPath(at: indexPath) else { return nil }
+        let pin = EventsPinnedProperty(eventName: eventName, keyPath: keyPath)
+        let title = EventsPinnedPropertiesStore.shared.contains(pin) ? "Unpin" : "Pin"
+        let action = UIContextualAction(style: .normal, title: title) { _, _, completion in
+            EventsPinnedPropertiesStore.shared.toggle(pin)
+            tableView.reloadRows(at: [indexPath], with: .automatic)
+            completion(true)
+        }
+        return UISwipeActionsConfiguration(actions: [action])
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
