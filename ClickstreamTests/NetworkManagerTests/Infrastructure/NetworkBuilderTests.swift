@@ -76,26 +76,34 @@ class NetworkBuilderTests: XCTestCase {
         //given
         let config = DefaultNetworkConfiguration(request: URLRequest(url: URL(string: "ws://mock.clickstream.com")!))
         let expectation = self.expectation(description: "Should return isAvailable flag as false")
-        
+
+        // Pin the termination wait (2s) instead of inheriting whatever an earlier test left in the global config.
+        let originalConfigurations = Clickstream.configurations
+        Clickstream.configurations = MockConstants.constraints
+        defer { Clickstream.configurations = originalConfigurations }
+
         let mockQueue = SerialQueue(label: "com.mock.gojek.clickstream.network", qos: .utility)
         SerialQueue.registerDetection(of: mockQueue) //Registers a queue to be detected.
-        
+
         let deviceStatus = DefaultDeviceStatus(performOnQueue: mockQueue)
         let networkService = WebsocketNetworkService<SocketHandlerMockSuccess>(with: config, performOnQueue: .main)
         let persistence = DefaultDatabaseDAO<EventRequest>(database: database, performOnQueue: dbQueueMock)
-        let keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: mockQueue, duration: 10, reachability: NetworkReachabilityMock(isReachable: true))
+        // AppStateNotifierMock fires synchronously during init, so keep-alive is restarted right after
+        // willResignActive stops it. Use a long interval so it can't reconnect before the assertion runs.
+        let keepAliveService = DefaultKeepAliveServiceWithSafeTimer(with: mockQueue, duration: 60, reachability: NetworkReachabilityMock(isReachable: true))
 
         let retryMech = WebsocketRetryMechanism(networkService: networkService, reachability: NetworkReachabilityMock(isReachable: true), deviceStatus: deviceStatus, appStateNotifier: AppStateNotifierMock(state: .willResignActive), performOnQueue: mockQueue, persistence: persistence, keepAliveService: keepAliveService)
         
         //when
         let sut = WebsocketNetworkBuilder(networkConfigs: config, retryMech: retryMech, performOnQueue: mockQueue)
-        SerialQueue.main.asyncAfter(deadline: .now() + 10) {
+        // Termination fires after the 2s wait; check well after it, with a timeout that leaves headroom.
+        SerialQueue.main.asyncAfter(deadline: .now() + 5) {
             XCTAssertEqual(sut.isAvailable, false)
             expectation.fulfill()
         }
-        
+
         //then
-        wait(for: [expectation], timeout: 10.0)
+        wait(for: [expectation], timeout: 15.0)
     }
 
 }
