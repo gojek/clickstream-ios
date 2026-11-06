@@ -55,9 +55,11 @@ final class CourierEventTests: XCTestCase {
         let timestamp = Date()
         let type = "realtime"
         let eventProtoData = Data()
+        // Share one expiryTime: two separate Date() calls can differ by sub-millisecond amounts.
+        let expiryTime = Date()
         
-        let event1 = CourierEvent(guid: guid, timestamp: timestamp, type: type, eventProtoData: eventProtoData, expiryTime: Date())
-        let event2 = CourierEvent(guid: guid, timestamp: timestamp, type: type, eventProtoData: eventProtoData, expiryTime: Date())
+        let event1 = CourierEvent(guid: guid, timestamp: timestamp, type: type, eventProtoData: eventProtoData, expiryTime: expiryTime)
+        let event2 = CourierEvent(guid: guid, timestamp: timestamp, type: type, eventProtoData: eventProtoData, expiryTime: expiryTime)
         
         XCTAssertEqual(event1, event2)
     }

@@ -69,35 +69,21 @@ final class EventDetailsViewModel: EventDetailsModelInput {
         if let message = message as? CollectionMapper {
             selectedMessage = message.asDictionary
         }
-        if let eventGuid = selectedMessage?[Constants.EventVisualizer.eventGuid] as? String {
-            selectedMessage?["state"] = EventsHelper.shared.getState(of: eventGuid)
-        } else if let eventGuid = selectedMessage?[Constants.EventVisualizer.guid] as? String {
-            selectedMessage?["state"] = EventsHelper.shared.getState(of: eventGuid)
-        }
-        /// sorting the events that needs to be shown to the user
-        displayedMessage = selectedMessage?.sorted { $0.0 < $1.0 }
-        /// removing the events which does not have a value
-        displayedMessage = displayedMessage?.filter {
-            /// $0 provides a [String: Any] and $0.1 provides the value to the dictionary
-            /// checking if value is not empty, then filter it out.
-            let value = $0.1
-            return (value as? String != nil && value as? String != "") ||
-            (value is Bool) ||
-            (value as? Int32 != nil) ||
-            (value as? Int64 != nil) ||
-            (value as? Int != nil) ||
-            (value as? UInt32 != nil) ||
-            (value as? UInt64 != nil) ||
-            (value as? Double != nil) ||
-            (value as? Float != nil) ||
-            (value is NSArray) ||
-            /// checking if value is of enum type
-            Mirror(reflecting: value).displayStyle?.equals(displayCase: .enum) ?? false ? true : false ||
-            // checking if value is of Date type for showing SwiftProtobuf.Google_Protobuf_Timestamp.Date field's value in EV details screen
-            (value is Date)
-        }
+        displayedMessage = EventPropertyReader.entries(from: message)
     }
-    
+
+    /// Returns the key path displayed at the given row, honouring an active search.
+    func keyPath(at indexPath: IndexPath) -> String? {
+        let source = (isSearchActive && searchText != "") ? searchedMessage : displayedMessage
+        guard let source = source, source.indices.contains(indexPath.row) else { return nil }
+        return source[indexPath.row].0
+    }
+
+    /// Returns the row index of the given key path in the full (unfiltered) list.
+    func rowIndex(ofKeyPath keyPath: String) -> Int? {
+        return displayedMessage?.firstIndex { $0.0 == keyPath }
+    }
+
     ///  Action on selecting the row
     /// - Parameter indexPath: indexPath of that cell
     /// - Returns: returning tuple of (selected-event-name, message-array-of-events-with-that-event-name)

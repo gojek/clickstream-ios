@@ -187,7 +187,13 @@ public final class Clickstream {
     /// Calls the 'stopTracking' method internally.
     public static func destroy() {
         stopTracking()
-        sharedInstance = nil
+        // Keep the old instance alive until the write to `sharedInstance` has finished. Its deinit
+        // tears down the socket, which sets `connectionState`, whose didSet reads `sharedInstance`;
+        // deallocating inside the write is an exclusivity violation and crashes at runtime.
+        let instance = sharedInstance
+        withExtendedLifetime(instance) {
+            sharedInstance = nil
+        }
     }
 
     /// Tracks Clickstream event via websocket network channel

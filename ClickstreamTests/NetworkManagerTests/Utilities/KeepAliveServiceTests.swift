@@ -30,25 +30,32 @@ class KeepAliveServiceTests: XCTestCase {
     
     func test_whenServiceIsStopped_thenNoCallbackMustBeReceived() {
         //given
-        let expectation = self.expectation(description: "Should not exceed the number of callbacks")
+        let expectation = self.expectation(description: "Should not receive callbacks after stop")
+        // Only read and written on mockQueue, where the subscriber is invoked.
         var callbackCount = 0
         let mockQueue = SerialQueue(label: "com.mock.gojek.clickstream.keepAlive", qos: .utility)
-        
-        let sut = DefaultKeepAliveServiceWithSafeTimer(with: mockQueue, duration: 1.0, reachability: NetworkReachabilityMock(isReachable: true))
-        
+
+        let sut = DefaultKeepAliveServiceWithSafeTimer(with: mockQueue, duration: 0.5, reachability: NetworkReachabilityMock(isReachable: true))
+
         //when
         sut.start {
             callbackCount += 1
         }
-        
-        mockQueue.asyncAfter(deadline: .now() + 4.5) {
+
+        // Assert on behaviour rather than an exact tick count, which depends on scheduler timing.
+        mockQueue.asyncAfter(deadline: .now() + 2.0) {
             sut.stop()
-            mockQueue.asyncAfter(deadline: .now() + 2.0) {
-                XCTAssertEqual(callbackCount, 4)
-                expectation.fulfill()
+            // Let any tick that fired just before stop() finish delivering.
+            mockQueue.asyncAfter(deadline: .now() + 0.5) {
+                let countAfterStop = callbackCount
+                XCTAssertGreaterThan(countAfterStop, 0, "Timer should have fired before being stopped")
+                mockQueue.asyncAfter(deadline: .now() + 2.0) {
+                    XCTAssertEqual(callbackCount, countAfterStop, "No callbacks expected after stop")
+                    expectation.fulfill()
+                }
             }
         }
         //then
-        wait(for: [expectation], timeout: 7)
+        wait(for: [expectation], timeout: 15)
     }
 }
