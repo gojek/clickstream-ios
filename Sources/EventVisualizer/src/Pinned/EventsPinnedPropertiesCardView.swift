@@ -8,7 +8,8 @@
 import UIKit
 
 /// Callbacks from the pinned-properties card to its host.
-/// All methods have empty default implementations.
+/// All methods have empty default implementations and are called on the main thread.
+@MainActor
 public protocol EventsPinnedPropertiesCardViewDelegate: AnyObject {
     /// The card wants `viewController` presented (event details, pin picker).
     func cardView(_ cardView: EventsPinnedPropertiesCardView, wantsToPresent viewController: UIViewController)
