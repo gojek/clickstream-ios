@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.0.5] - 2026-11-12
+
+[04192d7] Merge pull request #172 from gojek/feature/event-visualizer-pinned-properties (by @rishabhabbu-ctrl)
+[0eec307] Add Pinned Properties View in Clickstream SDK (by @Rishab Habbu)
+[9508f5b] Add Pinned Properties View in Clickstream SDK (by @Rishab Habbu)
+[2a69ced] Add Pinned Properties View in Clickstream SDK (by @Rishab Habbu)
+[44b9745] Add Pinned Properties View in Clickstream SDK (by @Rishab Habbu)
+[3aab87f] [CI] Bump version - 3.0.4 (by @github-actions[bot])
+
 ## [2.0.95] - 2026-07-16
 
 [75eefbd] Merge pull request #150 from gojek/fix/courier_retry_crash_final (by @rishabhabbu-ctrl)
